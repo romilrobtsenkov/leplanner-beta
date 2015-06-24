@@ -1,43 +1,29 @@
 var mongoose = require('mongoose');
-var bcrypt   = require('bcrypt');
+var Schema = mongoose.Schema;
+var userService = require('../services/user-service');
 
-// define the schema for our user model
-var userSchema = mongoose.Schema({
-
-    local            : {
-        email        : String,
-        password     : String,
-    },
-    facebook         : {
-        id           : String,
-        token        : String,
-        email        : String,
-        name         : String
-    },
-    twitter          : {
-        id           : String,
-        token        : String,
-        displayName  : String,
-        username     : String
-    },
-    google           : {
-        id           : String,
-        token        : String,
-        email        : String,
-        name         : String
-    }
-
+var userSchema = new Schema({
+  firstName: {type: String, required: 'Please enter your first name'},
+  lastName: {type: String, required: 'Please enter your last name'},
+  email: {type: String, required: 'Please enter your email'},
+  password: {type: String, required: 'Please enter your password'},
+  created: {type: Date, default: Date.now}
 });
 
-// generating a hash
-userSchema.methods.generateHash = function(password) {
-    return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
-};
+//  roomNumber: {type: Number, required: 'Please enter your room number', min:[100, 'Not a valid room number']},
 
-// checking if password is valid
-userSchema.methods.validPassword = function(password) {
-    return bcrypt.compareSync(password, this.local.password);
-};
+userSchema.path('email').validate(function(value, next) {
+  userService.findUser(value, function(err, user) {
+    if (err) {
+      console.log(err);
+      return next(false);
+    }
+    next(!user);
+  });
+}, 'That email is already in use');
 
-// create the model for users and expose it to our app
-module.exports = mongoose.model('User', userSchema);
+var User = mongoose.model('User', userSchema);
+
+module.exports = {
+  User: User
+};

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>{{#if title}} Title: {{title}}{{/if}}</title>
+
+</head>
+
+<body>
+
+    {{#if firstName}}
+    <div>
+      <strong>Hi, {{firstName}}!</strong>
+      <a href="/users/logout">Log out</a>
+    </div>
+    {{/if}}
+
+    <br>
+    <!-- BEGIN page-specific content -->
+    {{{body}}}
+    <!-- END page-specific content -->
+
+</body>
+
+</html>

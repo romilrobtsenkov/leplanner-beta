@@ -1,0 +1,10 @@
+
+  <strong ng-show="!vm.scenarios">Loading...</strong>
+  <ul>
+    <li ng-repeat="s in vm.scenarios | orderBy: 'na'">
+
+        <strong ng-bind="s.id"></strong>
+
+    </li>
+  </ul>
+  <a href="#/add">Add</a>

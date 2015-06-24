@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
+var config = require('../config/config');
 var app = require('../app');
-var config = require('../config');
 var debug = require('debug')('main');
 var http = require('http');
 
-var port = parseInt(config.port, 10) || 3000;
+var port = config.port;
 app.set('port', port);
 
 var server = http.createServer(app);

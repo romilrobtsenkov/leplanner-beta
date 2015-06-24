@@ -1,5 +1,11 @@
+'use strict';
+
 angular
-  .module('app', ['ngRoute','ngDialog'])
-  .config(['$routeProvider', function($routeProvider) {
-    $routeProvider.otherwise({redirectTo: '/home'});
+  .module('app', ['ngRoute'])
+  .config(['$routeProvider','$locationProvider', function($routeProvider,$locationProvider) {
+    $routeProvider.otherwise({redirectTo: '/timeline'});
+    /*$locationProvider.html5Mode({
+      enabled: true,
+      requireBase: false
+    });*/
   }]);
