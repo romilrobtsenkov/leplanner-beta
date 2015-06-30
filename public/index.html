@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>TITLE</title>
+</head>
+<body>
+
+  <div ng-app="app">
+    <!-- BEGIN page-specific content -->
+
+    <div ng-view></div>
+
+    <!-- END page-specific content -->
+  </div>
+
+  <script src="/bower/angular/angular.min.js"></script>
+  <script src="/bower/angular-route/angular-route.min.js"></script>
+  <script src="/js/app/app.js"></script>
+  <script src="/js/app/route-config.js"></script>
+  <script src="/js/app/home/home.js"></script>
+  <script src="/js/app/login/login.js"></script>
+  <script src="/js/app/add/add.js"></script>
+  <script src="/js/app/services/api-service.js"></script>
+
+</body>
+</html>

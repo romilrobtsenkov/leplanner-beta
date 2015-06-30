@@ -1,0 +1,50 @@
+
+<div ng-if='!user'>
+  <form name="login-form" id="login-form" ng-submit="login(user)">
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" ng-model="user.email" required />
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" ng-model="user.password"  required />
+    </div>
+    <div class="form-submit">
+      <input type="submit" value="Log in" />
+
+      <div ng-if='error' style="color:red;">{{error}}</div>
+
+      <div>
+        or <a ng-click="activateCreateForm($event)" href="#/login">Create an account</a>
+      </div>
+
+    </div>
+  </form>
+</div>
+
+<div ng-if='create' >
+  <form name="create-user-form" id="create-user-form" ng-submit="create()">
+    <div class="form-group">
+      <label for="firstName">First name</label>
+      <input type="text" id="firstName" name="firstName" required/>
+    </div>
+    <div class="form-group">
+      <label for="lastName">Last name</label>
+      <input type="text" id="lastName" name="lastName" required />
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required />
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" autocomplete="off" required />
+    </div>
+    <div class="form-submit">
+      <input type="submit" value="Create my account" />
+    </div>
+
+    <span ng-if='error' style="color:red;">{{error}}</span>
+
+  </form>
+</div>

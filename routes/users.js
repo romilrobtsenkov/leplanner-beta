@@ -5,16 +5,9 @@ var userService = require('../services/user-service');
 var config = require('../config/config');
 var restrict = require('../auth/restrict');
 
-/* GET users listing. */
+/* GET users listing - /api/users/ */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
-});
-
-router.get('/create', function(req, res, next) {
-  var vm = {
-    title: 'Create an account'
-  };
-  res.render('users/create', vm);
 });
 
 router.post('/create', function(req, res, next) {
@@ -41,17 +34,22 @@ router.get('/me', restrict, function(req, res){
 
 router.post('/login',
   function(req, res, next) {
-    req.session.orderId = 12345;
-    if (req.body.rememberMe) {
-      req.session.cookie.maxAge = config.cookieMaxAge;
-    }
-    next();
+
+    req.session.cookie.maxAge = config.cookieMaxAge;
+
+    passport.authenticate('local', {
+      failureRedirect: '/#/login',
+      successRedirect: '/#/'
+    });
   },
-  passport.authenticate('local', {
-    failureRedirect: '/',
-    successRedirect: '/home/',
-    failureFlash: 'Invalid credentials'
-  }));
+
+  function(req, res) {
+    // Successful authentication, redirect home.
+    console.log(req.body);
+    //res.send(200);
+    res.redirect('/#/');
+  }
+);
 
 router.get('/logout', function(req, res, next) {
   req.logout();

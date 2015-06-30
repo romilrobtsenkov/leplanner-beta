@@ -3,8 +3,9 @@ module.exports = function() {
   var bcrypt = require('bcrypt');
   var passportLocal = require('passport-local');
   var userService = require('../services/user-service');
-  
+
   passport.use(new passportLocal.Strategy({usernameField: 'email'}, function(email, password, next) {
+    console.log('email'+email);
     userService.findUser(email, function(err, user) {
       if (err) {
         return next(err);
@@ -23,11 +24,11 @@ module.exports = function() {
       });
     });
   }));
-  
+
   passport.serializeUser(function(user, next) {
     next(null, user.email);
   });
-  
+
   passport.deserializeUser(function(email, next) {
     userService.findUser(email, function(err, user) {
       next(err, user);

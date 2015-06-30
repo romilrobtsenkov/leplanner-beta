@@ -17,7 +17,6 @@
     "debug": "~2.1.1",
     "express": "~4.10.6",
     "express-session": "^1.10.0",
-    "hbs": "~2.8.0",
     "mongoose": "~4",
     "morgan": "~1.5.1",
     "passport": "^0.2.1",
