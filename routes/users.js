@@ -5,7 +5,6 @@ var userService = require('../services/user-service');
 var config = require('../config/config');
 var restrict = require('../auth/restrict');
 
-/* GET users listing - /api/users/ */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
@@ -13,23 +12,33 @@ router.get('/', function(req, res, next) {
 router.post('/create', function(req, res, next) {
   userService.addUser(req.body, function(err) {
     if (err) {
+      //debug
       console.log(err);
-      var vm = {
-        title: 'Create an account',
-        input: req.body,
-        error: err
-      };
-      delete vm.input.password;
-      return res.render('users/create', vm);
+      return res.json({error: err});
+
     }
-    req.login(req.body, function(err) {
-      res.redirect('/home');
-    });
+
+    passport.authenticate('local', function(err, user, info) {
+      if (err) { return next(err); }
+      if (!user) {
+        return res.json({error: info.message});
+      }
+
+      req.logIn(user, function(err) {
+        if (err) { return next(err); }
+
+        // login successful
+        // future: redirect to /users/:id or to linking with social accounts
+        res.json({successful: user});
+      });
+
+    })(req, res, next);
+
   });
 });
 
-router.get('/me', restrict, function(req, res){
-      return res.json(req.session.passport.user);
+router.get('/me', function(req, res){
+      res.json(req.session.passport.user);
 });
 
 router.post('/login',
@@ -37,17 +46,22 @@ router.post('/login',
 
     req.session.cookie.maxAge = config.cookieMaxAge;
 
-    passport.authenticate('local', {
-      failureRedirect: '/#/login',
-      successRedirect: '/#/'
-    });
-  },
+    passport.authenticate('local', function(err, user, info) {
+      if (err) { return next(err); }
+      if (!user) {
+        return res.json({error: info.message});
+      }
 
-  function(req, res) {
-    // Successful authentication, redirect home.
-    console.log(req.body);
-    //res.send(200);
-    res.redirect('/#/');
+      req.logIn(user, function(err) {
+        if (err) { return next(err); }
+
+        // login successful
+        // future: redirect to /users/:id
+        res.json({successful: user});
+      });
+
+    })(req, res, next);
+
   }
 );
 

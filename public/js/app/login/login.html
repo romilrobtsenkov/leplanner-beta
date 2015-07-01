@@ -1,5 +1,5 @@
 
-<div ng-if='!user'>
+<div>
   <form name="login-form" id="login-form" ng-submit="login(user)">
     <div class="form-group">
       <label for="email">Email</label>
@@ -12,7 +12,7 @@
     <div class="form-submit">
       <input type="submit" value="Log in" />
 
-      <div ng-if='error' style="color:red;">{{error}}</div>
+      <div ng-if='login_error' style="color:red;">{{login_error}}</div>
 
       <div>
         or <a ng-click="activateCreateForm($event)" href="#/login">Create an account</a>
@@ -22,29 +22,29 @@
   </form>
 </div>
 
-<div ng-if='create' >
-  <form name="create-user-form" id="create-user-form" ng-submit="create()">
+<div ng-if='create_form' >
+  <form name="create-user-form" id="create-user-form" ng-submit="create(user)">
     <div class="form-group">
       <label for="firstName">First name</label>
-      <input type="text" id="firstName" name="firstName" required/>
+      <input type="text" id="firstName" name="firstName" ng-model="user.firstName" required/>
     </div>
     <div class="form-group">
       <label for="lastName">Last name</label>
-      <input type="text" id="lastName" name="lastName" required />
+      <input type="text" id="lastName" name="lastName" ng-model="user.lastName" required />
     </div>
     <div class="form-group">
       <label for="email">Email</label>
-      <input type="email" id="email" name="email" required />
+      <input type="email" id="email" name="email" ng-model="user.email" required />
     </div>
     <div class="form-group">
       <label for="password">Password</label>
-      <input type="password" id="password" name="password" autocomplete="off" required />
+      <input type="password" id="password" name="password" autocomplete="off" ng-model="user.password" required />
     </div>
     <div class="form-submit">
       <input type="submit" value="Create my account" />
     </div>
 
-    <span ng-if='error' style="color:red;">{{error}}</span>
+    <span ng-if='create_error' style="color:red;">{{create_error}}</span>
 
   </form>
 </div>

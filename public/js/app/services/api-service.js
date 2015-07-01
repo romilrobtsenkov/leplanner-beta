@@ -12,11 +12,12 @@
       getScenarios: getScenarios,
       getScenarioDetails: getScenarioDetails,
       getUser: getUser,
-      loginUser: loginUser
+      loginUser: loginUser,
+      createUser: createUser
     };
 
     function getScenarios() {
-      return $http.get('/api/scenarios/scenarios')
+      return $http.get('/api/scenarios/')
         .then(function(response) {
           return response.data;
         });
@@ -36,8 +37,15 @@
         });
     }
 
-    function loginUser(email,password) {
-      return $http.post('/api/users/login', {email: email, password: password})
+    function loginUser(user) {
+      return $http.post('/api/users/login', {email: user.email, password: user.password})
+        .then(function(response) {
+          return response.data;
+        });
+    }
+
+    function createUser(user) {
+      return $http.post('/api/users/create', user)
         .then(function(response) {
           return response.data;
         });
