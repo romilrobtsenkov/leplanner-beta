@@ -13,7 +13,8 @@
       getScenarioDetails: getScenarioDetails,
       getUser: getUser,
       loginUser: loginUser,
-      createUser: createUser
+      createUser: createUser,
+      recoverUser: recoverUser,
     };
 
     function getScenarios() {
@@ -50,5 +51,13 @@
           return response.data;
         });
     }
+
+    function recoverUser(user) {
+      return $http.post('/api/users/recover', user)
+        .then(function(response) {
+          return response.data;
+        });
+    }
+
   }
 }());

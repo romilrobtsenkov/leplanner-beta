@@ -15,9 +15,22 @@
       <div ng-if='login_error' style="color:red;">{{login_error}}</div>
 
       <div>
-        or <a ng-click="activateCreateForm($event)" href="#/login">Create an account</a>
+        or <a ng-click="activateCreateForm($event)" href="#/login">Create an account</a><br>
+        or <a ng-click="activateRecoverForm($event)" href="#/login">Recover password</a>
       </div>
 
+    </div>
+  </form>
+</div>
+
+<div ng-if='recover_form' >
+  <form name="create-user-form" id="create-user-form" ng-submit="recover(user)">
+    <div class="form-group">
+      <label for="recover_email">Email</label>
+      <input type="text" id="recover_email" name="recover_email" ng-model="user.recover_email" required/>
+    </div>
+    <div class="form-submit">
+      <input type="submit" value="Recover my password" />
     </div>
   </form>
 </div>
@@ -25,20 +38,20 @@
 <div ng-if='create_form' >
   <form name="create-user-form" id="create-user-form" ng-submit="create(user)">
     <div class="form-group">
-      <label for="firstName">First name</label>
-      <input type="text" id="firstName" name="firstName" ng-model="user.firstName" required/>
+      <label for="new_first_name">First name</label>
+      <input type="text" id="new_first_name" name="new_first_name" ng-model="user.new_first_name" required/>
     </div>
     <div class="form-group">
-      <label for="lastName">Last name</label>
-      <input type="text" id="lastName" name="lastName" ng-model="user.lastName" required />
+      <label for="new_last_name">Last name</label>
+      <input type="text" id="new_last_name" name="new_last_name" ng-model="user.new_last_name" required />
     </div>
     <div class="form-group">
-      <label for="email">Email</label>
-      <input type="email" id="email" name="email" ng-model="user.email" required />
+      <label for="new_email">Email</label>
+      <input type="email" id="new_email" name="new_email" ng-model="user.new_email" required />
     </div>
     <div class="form-group">
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password" autocomplete="off" ng-model="user.password" required />
+      <label for="new_password">Password</label>
+      <input type="password" id="new_password" name="new_password" autocomplete="off" ng-model="user.new_password" required />
     </div>
     <div class="form-submit">
       <input type="submit" value="Create my account" />
