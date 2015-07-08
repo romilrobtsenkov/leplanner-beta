@@ -58,11 +58,11 @@ router.post('/login', function(req, res, next) {
 router.get('/logout', restrict, function(req, res, next) {
   req.logout();
   req.session.destroy();
-  res.redirect('/');
+  res.json({success: 'logout sucessfull'});
 });
 
 router.post('/recover', function(req, res){
-  
+
   userService.findByEmail(req.body.recover_email, function(err, user) {
     if (err) { return next(err); }
     if (!user) { return next(null, null,{ message: {id: 20, message: 'No user with that email'}}); }

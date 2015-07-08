@@ -15,6 +15,7 @@
       loginUser: loginUser,
       createUser: createUser,
       recoverUser: recoverUser,
+      logOutUser: logOutUser,
     };
 
     function getScenarios() {
@@ -47,6 +48,13 @@
 
     function createUser(user) {
       return $http.post('/api/users/create', user)
+        .then(function(response) {
+          return response.data;
+        });
+    }
+
+    function logOutUser(user) {
+      return $http.get('/api/users/logout')
         .then(function(response) {
           return response.data;
         });

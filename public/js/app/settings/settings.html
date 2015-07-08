@@ -1,0 +1,40 @@
+<div ng-if='user'>
+  <strong>Hi, {{user.first_name}}!</strong>
+  <a href="/#/" ng-click="logout()" >Log out</a>
+
+  <br>
+</div>
+<div>
+  <form name="update-form" id="update-form" ng-submit="update(user)">
+    <div class="form-group">
+      <label for="new_first_name">First name</label>
+      <input type="text" id="new_first_name" name="new_first_name" ng-model="user.new_first_name" ng-value="user.first_name" required/>
+    </div>
+    <div class="form-group">
+      <label for="new_last_name">Last name</label>
+      <input type="text" id="new_last_name" name="new_last_name" ng-model="user.new_last_name" required />
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" ng-model="user.new_email" required />
+    </div>
+    <div class="form-group">
+      <label for="password">Old password</label>
+      <input type="password" id="password" name="password" ng-model="user.password"  />
+    </div>
+    <div class="form-group">
+      <label for="password">New password</label>
+      <input type="password" id="password" name="password" ng-model="user.new_password"  />
+    </div>
+    <div class="form-group">
+      <label for="password">New password twice</label>
+      <input type="password" id="password" name="password" ng-model="user.new_password_twice"  />
+    </div>
+    <div class="form-submit">
+      <input type="submit" value="Update" />
+
+      <div ng-if='update_error' style="color:red;">{{update_error}}</div>
+
+    </div>
+  </form>
+</div>

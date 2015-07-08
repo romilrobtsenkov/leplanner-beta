@@ -8,11 +8,14 @@
     AddController.$inject = ['api'];
 
     function AddController(api) {
-      var vm = this;
 
-      api.getUser()
+      // rootscope user!
+      /*api.getUser()
         .then(function(data) {
-          vm.user = data;
-        });
+          console.log(data);
+        }).catch(function(fallback) {
+          //401
+          console.log(fallback.status);
+        });*/
     }
 }());

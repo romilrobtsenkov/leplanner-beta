@@ -1,0 +1,19 @@
+
+<div>
+  <form name="recover-form" id="recover-form" ng-submit="save(user)">
+    <div class="form-group">
+      <label for="new_password">Password</label>
+      <input type="password" id="new_password" name="new_password" ng-model="user.new_password" required />
+    </div>
+    <div class="form-group">
+      <label for="new_password_twice">Password twice</label>
+      <input type="password" id="new_password_twice" name="new_password_twice" ng-model="user.new_password_twice"  required />
+    </div>
+    <div class="form-submit">
+      <input type="submit" value="Save" />
+
+      <div ng-if='save_error' style="color:red;">{{save_error}}</div>
+
+    </div>
+  </form>
+</div>

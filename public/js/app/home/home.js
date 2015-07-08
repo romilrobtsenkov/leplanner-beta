@@ -5,14 +5,16 @@
     .module('app')
     .controller('HomeController', HomeController);
 
-    HomeController.$inject = ['api'];
+    HomeController.$inject = ['$scope','$rootScope','api'];
 
-    function HomeController(api) {
-      var vm = this;
+    function HomeController($scope,$rootScope,api) {
 
-      api.getScenarios()
+      console.log($rootScope.user);
+
+      /*api.getScenarios()
         .then(function(data) {
-          vm.scenarios = data;
-        });
+
+        });*/
+
     }
 }());

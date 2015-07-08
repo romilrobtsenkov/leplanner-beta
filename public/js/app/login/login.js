@@ -5,9 +5,9 @@
     .module('app')
     .controller('LoginController', LoginController);
 
-    LoginController.$inject = ['$scope','$location','api'];
+    LoginController.$inject = ['$scope','$rootScope','$location','api'];
 
-    function LoginController($scope,$location,api) {
+    function LoginController($scope,$rootScope,$location,api) {
 
       $scope.activateCreateForm = function($event){
         $event.preventDefault();
@@ -29,6 +29,7 @@
             if(data.user){
               //user id
               console.log(data.user.id);
+              $location.path('/settings');
             }
 
             if(data.error){
@@ -54,6 +55,8 @@
             if(data.user){
               //user id
               console.log(data.user.id);
+              $location.path('/settings');
+
             }
 
             if(data.error){

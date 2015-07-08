@@ -1,7 +1,7 @@
 'use strict';
 
 angular
-  .module('app', ['ngRoute'])
-  .config(['$routeProvider','$locationProvider', function($routeProvider,$locationProvider) {
+  .module('app', ['ngRoute','ngResource'])
+  .config(['$routeProvider','$locationProvider', '$resourceProvider', function($routeProvider,$locationProvider,$resourceProvider) {
     $routeProvider.otherwise({redirectTo: '/'});
   }]);
