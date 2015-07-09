@@ -46,9 +46,14 @@
           }
         }
       })
-      .when('/recover/:token', {
-        templateUrl: '/js/app/recover/recover.html',
-        controller: 'RecoverController'
+      .when('/reset/:token', {
+        templateUrl: '/js/app/reset/reset.html',
+        controller: 'ResetController',
+        resolve: {
+          data: function (userRouteService) {
+            return userRouteService.checkUser();
+          }
+        }
       });
   }
 

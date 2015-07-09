@@ -63,22 +63,19 @@ router.get('/logout', restrict, function(req, res, next) {
 
 router.post('/recover', function(req, res){
 
-  userService.findByEmail(req.body.recover_email, function(err, user) {
-    if (err) { return next(err); }
-    if (!user) { return next(null, null,{ message: {id: 20, message: 'No user with that email'}}); }
+  userService.recoverUser(req.body.recover_email, function(err, user) {
+    if (err) { return res.json({error: err}); }
 
-    // replace with token later -http://sahatyalkabov.com/how-to-implement-password-reset-in-nodejs/
-    var token = Math.random()* 10000000000000000;
-    user.resetPasswordToken = token;
-    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+    if(user){
+      userService.sendUserMail(user, function(err, success){
+        if (err) { return res.json({error: err}); }
 
-    user.save(function(err) {
+        res.json({success: success});
+      });
 
-       console.log(user);
-       //TODO send email
-       res.json({user: user});
-
-     });
+    }else{
+      res.json({error: 'Unknown error'});
+    }
 
   });
 
@@ -90,6 +87,7 @@ router.post('/updateprofile', function(req, res, next) {
     if (err) { return res.json({error: err}); }
     if(user){
       user.password = undefined;
+      if(user.resetPasswordToken){user.resetPasswordToken = undefined;}
       res.json({user: user});
     }else{
       res.json({error: 'Unknown error'});
@@ -102,6 +100,20 @@ router.post('/updateprofile', function(req, res, next) {
 router.post('/updatepassword', function(req, res, next) {
 
   userService.updateUserPassword(req.body, function(err, user) {
+    if (err) { return res.json({error: err}); }
+    if(user){
+      res.json({user: {id: user._id}});
+    }else{
+      res.json({error: 'Unknown error'});
+    }
+
+  });
+
+});
+
+router.post('/resetpassword', function(req, res, next) {
+
+  userService.resetPassword(req.body, function(err, user) {
     if (err) { return res.json({error: err}); }
     if(user){
       res.json({user: {id: user._id}});

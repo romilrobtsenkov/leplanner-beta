@@ -67,8 +67,8 @@
 
       $scope.updatePassword = function(user){
 
-        if(typeof user.password != 'undefined' ||
-           typeof user.new_password != 'undefined' ||
+        if(typeof user.password != 'undefined' &&
+           typeof user.new_password != 'undefined' &&
            typeof user.new_password_twice != 'undefined'
           ){
             if(user.new_password == user.new_password_twice){
@@ -105,9 +105,8 @@
               $scope.updatePassword_error = 'New passwords dont match';
             }
 
-
         }else{
-          $scope.updatePassword_error = 'All field are required';
+          $scope.updatePassword_error = 'All fields are required';
         }
       };
 

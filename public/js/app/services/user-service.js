@@ -15,7 +15,8 @@
       recoverUser: recoverUser,
       logOutUser: logOutUser,
       updateUserProfile: updateUserProfile,
-      updateUserPassword: updateUserPassword
+      updateUserPassword: updateUserPassword,
+      resetPassword: resetPassword,
     };
 
     function getScenarios() {
@@ -76,6 +77,13 @@
 
     function updateUserPassword(user) {
       return $http.post('/api/users/updatepassword', user)
+        .then(function(response) {
+          return response.data;
+        });
+    }
+
+    function resetPassword(user) {
+      return $http.post('/api/users/resetpassword', user)
         .then(function(response) {
           return response.data;
         });

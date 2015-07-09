@@ -24,7 +24,7 @@
 </div>
 
 <div ng-if='recover_form' >
-  <form name="create-user-form" id="create-user-form" ng-submit="recover(user)">
+  <form name="recover-user-form" id="recover-user-form" ng-submit="recover(user)">
     <div class="form-group">
       <label for="recover_email">Email</label>
       <input type="text" id="recover_email" name="recover_email" ng-model="user.recover_email" required/>
@@ -32,6 +32,7 @@
     <div class="form-submit">
       <input type="submit" value="Recover my password" />
     </div>
+    <span ng-if='recover_error' style="color:red;">{{recover_error}}</span>
   </form>
 </div>
 

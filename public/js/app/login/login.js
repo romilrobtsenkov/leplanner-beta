@@ -94,9 +94,20 @@
       $scope.recover = function(user){
         userService.recoverUser(user)
           .then(function(data) {
+            $scope.recover_error = 'Successfully email sent';
             console.log(data);
             if(data.error){
-              console.log(data.error);
+              console.log(data);
+              switch(data.error.id) {
+                case 3:
+                  $scope.recover_error = 'Please enter correct email';
+                  break;
+                case 20:
+                  $scope.recover_error = 'No such email found';
+                  break;
+                default:
+                  $scope.recover_error = 'Unknown error';
+              }
             }
 
         });

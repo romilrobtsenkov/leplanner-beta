@@ -15,6 +15,7 @@ module.exports = function() {
         if (err) { return next(err); }
         if (!same) { return next(null, null,{ message: {id: 10, message: 'Wrong credentials' }}); }
         user.password = undefined;
+        if(user.resetPasswordToken){user.resetPasswordToken = undefined;}
         next(null, user);
       });
 
@@ -31,6 +32,7 @@ module.exports = function() {
     //console.log('deserializeUser');
     userService.findById(id, function(err, user) {
       user.password = undefined;
+      if(user.resetPasswordToken){user.resetPasswordToken = undefined;}
       next(err, user);
     });
   });
