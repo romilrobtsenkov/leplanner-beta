@@ -23,12 +23,12 @@ module.exports = function() {
   }));
 
   passport.serializeUser(function(user, next) {
-    console.log('serializeUser');
+    //console.log('serializeUser');
     next(null, user.id);
   });
 
   passport.deserializeUser(function(id, next) {
-    console.log('deserializeUser');
+    //console.log('deserializeUser');
     userService.findById(id, function(err, user) {
       user.password = undefined;
       next(err, user);

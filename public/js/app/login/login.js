@@ -5,9 +5,9 @@
     .module('app')
     .controller('LoginController', LoginController);
 
-    LoginController.$inject = ['$scope','$rootScope','$location','api'];
+    LoginController.$inject = ['$scope','$rootScope','$location','userService'];
 
-    function LoginController($scope,$rootScope,$location,api) {
+    function LoginController($scope,$rootScope,$location,userService) {
 
       $scope.activateCreateForm = function($event){
         $event.preventDefault();
@@ -23,7 +23,7 @@
 
         // TODO validate for empty fields
 
-        api.loginUser(user)
+        userService.loginUser(user)
           .then(function(data) {
 
             if(data.user){
@@ -49,7 +49,7 @@
 
         // TODO validate for empty fields
 
-        api.createUser(user)
+        userService.createUser(user)
           .then(function(data) {
 
             if(data.user){
@@ -92,7 +92,7 @@
 
 
       $scope.recover = function(user){
-        api.recoverUser(user)
+        userService.recoverUser(user)
           .then(function(data) {
             console.log(data);
             if(data.error){

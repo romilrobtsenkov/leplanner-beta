@@ -5,16 +5,16 @@
     .module('app')
     .controller('RecoverController', RecoverController);
 
-    RecoverController.$inject = ['$scope','$location','api'];
+    RecoverController.$inject = ['$scope','$location','userService'];
 
-    function RecoverController($scope,$location,api) {
+    function RecoverController($scope,$location,userService) {
 
 
       $scope.recover = function(user){
 
         // Save new password
 
-        api.loginUser(user)
+        userService.loginUser(user)
           .then(function(data) {
 
             if(data.user){

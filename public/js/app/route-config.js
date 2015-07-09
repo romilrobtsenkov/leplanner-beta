@@ -15,7 +15,7 @@
         controller: 'HomeController',
         resolve: {
           data: function (userRouteService) {
-            return userRouteService.getUser();
+            return userRouteService.checkUser();
           },
         }
       })
@@ -23,24 +23,8 @@
         templateUrl: '/js/app/add/add.html',
         controller: 'AddController',
         resolve: {
-          checkUser: function($q, $rootScope, $location,$http){
-            var deferred = $q.defer();
-            $http({url: '/api/users/me', method: 'GET'})
-            .success(function (data, status, headers, config) {
-             if(!$rootScope.user){
-                //console.log('rootscope null, saved to rootscope');
-                $rootScope.user = data;
-                deferred.resolve();
-             }else{
-               deferred.resolve();
-             }
-            })
-            .error(function (data, status, headers, config) {
-              $rootScope.user = null;
-              $location.path('/login');
-              deferred.resolve();
-            });
-            return deferred.promise;
+          data: function (userRouteService) {
+            return userRouteService.checkUser({ error_location: '/login'});
           }
         }
       })
@@ -48,25 +32,8 @@
         templateUrl: '/js/app/login/login.html',
         controller: 'LoginController',
         resolve: {
-          checkUser: function($q, $rootScope, $location,$http){
-            var deferred = $q.defer();
-            $http({url: '/api/users/me', method: 'GET'})
-            .success(function (data, status, headers, config) {
-             if(!$rootScope.user){
-                //console.log('rootscope null, saved to rootscope');
-                $rootScope.user = data;
-                $location.path('/');
-                deferred.resolve();
-             }else{
-               $location.path('/');
-               deferred.resolve();
-             }
-            })
-            .error(function (data, status, headers, config) {
-              $rootScope.user = null;
-              deferred.resolve();
-            });
-            return deferred.promise;
+          data: function (userRouteService) {
+            return userRouteService.checkUser({ success_location: '/settings'});
           }
         }
       })
@@ -74,24 +41,8 @@
         templateUrl: '/js/app/settings/settings.html',
         controller: 'SettingsController',
         resolve: {
-          checkUser: function($q, $rootScope, $location,$http){
-            var deferred = $q.defer();
-            $http({url: '/api/users/me', method: 'GET'})
-            .success(function (data, status, headers, config) {
-             if(!$rootScope.user){
-                //console.log('rootscope null, saved to rootscope');
-                $rootScope.user = data;
-                deferred.resolve();
-             }else{
-               deferred.resolve();
-             }
-            })
-            .error(function (data, status, headers, config) {
-              $rootScope.user = null;
-              $location.path('/login');
-              deferred.resolve();
-            });
-            return deferred.promise;
+          data: function (userRouteService) {
+            return userRouteService.checkUser({ error_location: '/login'});
           }
         }
       })

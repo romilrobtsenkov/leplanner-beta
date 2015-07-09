@@ -3,19 +3,19 @@
 
   angular
     .module('app')
-    .factory('api', apiFactory);
+    .factory('userService', userServiceFactory);
 
-  apiFactory.$inject = ['$http'];
+  userServiceFactory.$inject = ['$http'];
 
-  function apiFactory($http) {
+  function userServiceFactory($http) {
     return {
-      getScenarios: getScenarios,
-      getScenarioDetails: getScenarioDetails,
       getUser: getUser,
       loginUser: loginUser,
       createUser: createUser,
       recoverUser: recoverUser,
       logOutUser: logOutUser,
+      updateUserProfile: updateUserProfile,
+      updateUserPassword: updateUserPassword
     };
 
     function getScenarios() {
@@ -62,6 +62,20 @@
 
     function recoverUser(user) {
       return $http.post('/api/users/recover', user)
+        .then(function(response) {
+          return response.data;
+        });
+    }
+
+    function updateUserProfile(user) {
+      return $http.post('/api/users/updateprofile', user)
+        .then(function(response) {
+          return response.data;
+        });
+    }
+
+    function updateUserPassword(user) {
+      return $http.post('/api/users/updatepassword', user)
         .then(function(response) {
           return response.data;
         });

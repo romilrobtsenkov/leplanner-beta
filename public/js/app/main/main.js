@@ -5,14 +5,14 @@
     .module('app')
     .controller('MainController', MainController);
 
-    MainController.$inject = ['$scope','$rootScope','$location','api'];
+    MainController.$inject = ['$scope','$rootScope','$location','userService'];
 
-    function MainController($scope,$rootScope,$location,api) {
+    function MainController($scope,$rootScope,$location,userService) {
 
       /*Auth = function($q, $rootScope, $location,$http) {
         // move to main controller
         var deferred = $q.defer();
-        $http({url: '/api/users/me', method: 'GET'})
+        $http({url: '/userService/users/me', method: 'GET'})
         .success(function (data, status, headers, config) {
          if(!$rootScope.user){
             console.log('rootscope null, saved to rootscope');
@@ -36,7 +36,7 @@
 
       Auth = function($q, $rootScope, $location) {
         var deferred = $q.defer();
-        api.getUser()
+        userService.getUser()
           .then(function(data){
             if(!$rootScope.user){
                console.log('rootscope null, saved to rootscope');

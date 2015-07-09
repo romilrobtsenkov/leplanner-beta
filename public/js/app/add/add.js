@@ -5,12 +5,12 @@
     .module('app')
     .controller('AddController', AddController);
 
-    AddController.$inject = ['api'];
+    AddController.$inject = ['userService'];
 
-    function AddController(api) {
+    function AddController(userService) {
 
       // rootscope user!
-      /*api.getUser()
+      /*userService.getUser()
         .then(function(data) {
           console.log(data);
         }).catch(function(fallback) {

@@ -84,6 +84,35 @@ router.post('/recover', function(req, res){
 
 });
 
+router.post('/updateprofile', function(req, res, next) {
+
+  userService.updateUserProfile(req.body, function(err, user) {
+    if (err) { return res.json({error: err}); }
+    if(user){
+      user.password = undefined;
+      res.json({user: user});
+    }else{
+      res.json({error: 'Unknown error'});
+    }
+
+  });
+
+});
+
+router.post('/updatepassword', function(req, res, next) {
+
+  userService.updateUserPassword(req.body, function(err, user) {
+    if (err) { return res.json({error: err}); }
+    if(user){
+      res.json({user: {id: user._id}});
+    }else{
+      res.json({error: 'Unknown error'});
+    }
+
+  });
+
+});
+
 router.get('/me', function(req, res){
   //http://toon.io/understanding-passportjs-authentication-flow/
   if(!req.session.passport.user){

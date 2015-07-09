@@ -5,13 +5,13 @@
     .module('app')
     .controller('HomeController', HomeController);
 
-    HomeController.$inject = ['$scope','$rootScope','api'];
+    HomeController.$inject = ['$scope','$rootScope','userService'];
 
-    function HomeController($scope,$rootScope,api) {
+    function HomeController($scope,$rootScope,userService) {
 
       console.log($rootScope.user);
 
-      /*api.getScenarios()
+      /*userService.getScenarios()
         .then(function(data) {
 
         });*/

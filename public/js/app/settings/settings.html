@@ -4,8 +4,9 @@
 
   <br>
 </div>
+<h2>Update profile</h2>
 <div>
-  <form name="update-form" id="update-form" ng-submit="update(user)">
+  <form name="updateProfile-form" id="updateProfile-form" ng-submit="updateProfile(user)">
     <div class="form-group">
       <label for="new_first_name">First name</label>
       <input type="text" id="new_first_name" name="new_first_name" ng-model="user.new_first_name" ng-value="user.first_name" required/>
@@ -18,8 +19,18 @@
       <label for="email">Email</label>
       <input type="email" id="email" name="email" ng-model="user.new_email" required />
     </div>
+    <div class="form-submit">
+      <input type="submit" value="Update" />
+
+      <div ng-if='updateProfile_error' style="color:red;">{{updateProfile_error}}</div>
+
+    </div>
+  </form>
+  <br>
+  <h2>Update password</h2>
+  <form name="updatePassword-form" id="updatePassword-form" ng-submit="updatePassword(user)">
     <div class="form-group">
-      <label for="password">Old password</label>
+      <label for="password">Confirm old password</label>
       <input type="password" id="password" name="password" ng-model="user.password"  />
     </div>
     <div class="form-group">
@@ -31,9 +42,9 @@
       <input type="password" id="password" name="password" ng-model="user.new_password_twice"  />
     </div>
     <div class="form-submit">
-      <input type="submit" value="Update" />
+      <input type="submit" value="Update password" />
 
-      <div ng-if='update_error' style="color:red;">{{update_error}}</div>
+      <div ng-if='updatePassword_error' style="color:red;">{{updatePassword_error}}</div>
 
     </div>
   </form>

@@ -5,52 +5,120 @@
     .module('app')
     .controller('SettingsController', SettingsController);
 
-    SettingsController.$inject = ['$scope','$rootScope','$location','api'];
+    SettingsController.$inject = ['$scope','$rootScope','$location','userService'];
 
-    function SettingsController($scope,$rootScope,$location,api) {
+    function SettingsController($scope,$rootScope,$location,userService) {
 
-      console.log($rootScope.user);
       $scope.user = $rootScope.user;
 
-      $scope.user.new_first_name = $scope.user.first_name;
-      $scope.user.new_last_name = $scope.user.last_name;
-      $scope.user.new_email = $scope.user.email;
+      function fillUpdateProfileForm() {
+        $scope.user.new_first_name = $scope.user.first_name;
+        $scope.user.new_last_name = $scope.user.last_name;
+        $scope.user.new_email = $scope.user.email;
+      }
 
-      console.log($scope.user);
+      fillUpdateProfileForm($scope.user);
+
+      $scope.updateProfile = function(user){
+
+        if($scope.user.new_first_name != $scope.user.first_name ||
+           $scope.user.new_last_name != $scope.user.last_name ||
+           $scope.user.new_email != $scope.user.email
+          ){
+
+            userService.updateUserProfile($scope.user)
+              .then(function(data) {
+                console.log(data);
+                if(data.user){
+                  $rootScope.user = data.user;
+                  $scope.user = $rootScope.user;
+                  fillUpdateProfileForm();
+                  $scope.updateProfile_error = 'Update successful';
+                }
+
+                if(data.error){
+                  switch(data.error.id) {
+                    case 0:
+                      $scope.updateProfile_error = 'Please enter your first name';
+                      break;
+                    case 1:
+                      $scope.updateProfile_error = 'Please enter your last name';
+                      break;
+                    case 2:
+                      $scope.updateProfile_error = 'Please enter yout email';
+                      break;
+                    case 3:
+                      $scope.updateProfile_error = 'Please enter correct email';
+                      break;
+                    case 6:
+                      $scope.updateProfile_error = 'That email is already in use';
+                      break;
+                    default:
+                      $scope.updateProfile_error = 'Unknown error';
+                  }
+                }
+
+            });
+
+        }else{
+          $scope.updateProfile_error = 'No profile data modified';
+        }
+      };
+
+      $scope.updatePassword = function(user){
+
+        if(typeof user.password != 'undefined' ||
+           typeof user.new_password != 'undefined' ||
+           typeof user.new_password_twice != 'undefined'
+          ){
+            if(user.new_password == user.new_password_twice){
+
+              userService.updateUserPassword(user)
+                .then(function(data) {
+                  console.log(data);
+                  if(data.user){
+                    $scope.updatePassword_error = 'Update successful';
+                  }
+
+                  if(data.error){
+                    switch(data.error.id) {
+                      case 5:
+                        $scope.updatePassword_error = 'Password has to be min 8 chars long';
+                        break;
+                      case 7:
+                        $scope.updatePassword_error = 'Please enter all fields';
+                        break;
+                      case 8:
+                        $scope.updatePassword_error = 'New password has to be different from old one';
+                        break;
+                      case 9:
+                        $scope.updatePassword_error = 'New passwords dont match';
+                        break;
+                      default:
+                        $scope.updatePassword_error = 'Unknown error';
+                    }
+                  }
+
+              });
+
+            }else{
+              $scope.updatePassword_error = 'New passwords dont match';
+            }
+
+
+        }else{
+          $scope.updatePassword_error = 'All field are required';
+        }
+      };
 
       $scope.logout = function(){
-        api.logOutUser()
+        userService.logOutUser()
           .then(function(data){
             console.log(data);
             $scope.user = null;
             $rootScope.user = null;
             $location.path('/login');
           });
-      };
-
-      $scope.update = function(user){
-
-        // TODO validate for empty fields
-
-        api.loginUser(user)
-          .then(function(data) {
-
-            if(data.user){
-              //user id
-              console.log(data.user.id);
-            }
-
-            if(data.error){
-              switch (data.error.id) {
-                case 10:
-                  $scope.login_error = 'Wrong credentials';
-                  break;
-                default:
-                  $scope.login_error = 'Unknown error';
-              }
-            }
-
-        });
       };
 
 

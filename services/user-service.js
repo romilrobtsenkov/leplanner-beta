@@ -6,7 +6,7 @@ exports.addUser = function(user, next) {
   // prevalidate user input before db, if html validation fails
   if(!user.new_first_name){ return next({id: 0, message: 'Please enter your first name'}); }
   if(!user.new_last_name){ return next({id: 1, message: 'Please enter your last name'}); }
-  if(!user.new_email){ return next({id: 2, message: 'Please enter yout email'}); }
+  if(!user.new_email){ return next({id: 2, message: 'Please enter your email'}); }
   if(user.new_email.match(/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/) == null){
     return next({id: 3, message: 'Please enter correct email'});
   }
@@ -50,4 +50,71 @@ exports.findById = function(id, next) {
   User.findById(id, function(err, user) {
     next(err, user);
   });
+};
+
+exports.updateUserProfile = function(user, next) {
+  // prevalidate user input before db, if html validation fails
+  if(!user.new_first_name){ return next({id: 0, message: 'Please enter your first name'}); }
+  if(!user.new_last_name){ return next({id: 1, message: 'Please enter your last name'}); }
+  if(!user.new_email){ return next({id: 2, message: 'Please enter your email'}); }
+  if(user.new_email.match(/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/) == null){
+    return next({id: 3, message: 'Please enter correct email'});
+  }
+
+  var update = {};
+  if(user.first_name != user.new_first_name){
+    update.first_name = user.new_first_name;
+  }
+  if(user.last_name != user.new_last_name){
+    update.last_name = user.new_last_name;
+  }
+  if(user.email != user.new_email){
+    // mongoose validation fi
+    User.findOne({email: user.new_email}, function(err,user_with_same_email) {
+      if(user_with_same_email){
+        return next({id: 6, message: 'That email is already in use'});
+      }else{
+        update.email = user.new_email;
+        updateProfile(update);
+      }
+    });
+  }else{
+    updateProfile(update);
+  }
+
+  function updateProfile(update){
+    var query = {"_id": user._id};
+    var options = {new: true};
+    User.findOneAndUpdate(query, update, options, function(err, user) {
+      if (err) { return next(err); }
+      if(user){
+        return next(null, user);
+      }
+    });
+  }
+
+};
+
+exports.updateUserPassword = function(user, next) {
+  // prevalidate user input before db, if html validation fails
+  if(!user.password || !user.new_password || !user.new_password_twice){ return next({id: 7, message: 'Please enter all fields'}); }
+  if(user.password.length < 8 || user.new_password.length < 8 || user.new_password_twice.length < 8){ return next({id: 5, message: 'Password has to be min 8 chars long'}); }
+  if(user.password == user.new_password){ return next({id: 8, message: 'New password has to be different from old one'}); }
+  if(user.new_password != user.new_password_twice){ return next({id: 9, message: 'New passwords dont match'}); }
+
+  bcrypt.hash(user.new_password, 10, function(err, hash) {
+    if (err) { return next(err); }
+
+    var update = {password: hash};
+
+    var query = {"_id": user._id};
+    var options = {new: true};
+    User.findOneAndUpdate(query, update, options, function(err, user) {
+      if (err) { return next(err); }
+      if(user){
+        return next(null, user);
+      }
+    });
+  });
+
 };
