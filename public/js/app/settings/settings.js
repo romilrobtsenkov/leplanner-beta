@@ -110,16 +110,5 @@
         }
       };
 
-      $scope.logout = function(){
-        userService.logOutUser()
-          .then(function(data){
-            console.log(data);
-            $scope.user = null;
-            $rootScope.user = null;
-            $location.path('/login');
-          });
-      };
-
-
     } // SettingsController end
 }());

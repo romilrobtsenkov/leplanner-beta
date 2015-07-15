@@ -19,20 +19,6 @@
       resetPassword: resetPassword,
     };
 
-    function getScenarios() {
-      return $http.get('/api/scenarios/')
-        .then(function(response) {
-          return response.data;
-        });
-    }
-
-    function getScenarioDetails(restId) {
-      return $http.get('/api/scenarios/scenarios-details/' + restId)
-        .then(function(response) {
-          return response.data;
-        });
-    }
-
     function getUser() {
       return $http.get('/api/users/me')
         .then(function(response) {

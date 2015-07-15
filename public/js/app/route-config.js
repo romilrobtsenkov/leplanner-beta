@@ -19,9 +19,9 @@
           },
         }
       })
-      .when('/add', {
-        templateUrl: '/js/app/add/add.html',
-        controller: 'AddController',
+      .when('/create', {
+        templateUrl: '/js/app/create/create.html',
+        controller: 'CreateController',
         resolve: {
           data: function (userRouteService) {
             return userRouteService.checkUser({ error_location: '/login'});

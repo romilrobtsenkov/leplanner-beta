@@ -5,52 +5,24 @@
     .module('app')
     .controller('MainController', MainController);
 
-    MainController.$inject = ['$scope','$rootScope','$location','userService'];
+    MainController.$inject = ['$scope','$rootScope','$location','userService',];
 
     function MainController($scope,$rootScope,$location,userService) {
 
-      /*Auth = function($q, $rootScope, $location,$http) {
-        // move to main controller
-        var deferred = $q.defer();
-        $http({url: '/userService/users/me', method: 'GET'})
-        .success(function (data, status, headers, config) {
-         if(!$rootScope.user){
-            console.log('rootscope null, saved to rootscope');
-            $rootScope.user = data;
-            deferred.resolve();
-         }
-          //console.log('routechange still logged in');
-          //console.log($rootScope.user);
-
-
-        })
-        .error(function (data, status, headers, config) {
-          $rootScope.user = null;
-          deferred.resolve();
-
-        });
-
-        return deferred.promise;
-
-      }
-
-      Auth = function($q, $rootScope, $location) {
-        var deferred = $q.defer();
-        userService.getUser()
+      $scope.logout = function(){
+        userService.logOutUser()
           .then(function(data){
-            if(!$rootScope.user){
-               console.log('rootscope null, saved to rootscope');
-               $rootScope.user = data;
-               deferred.resolve();
-            }
-          })
-          .catch(function(fallback){
-            console.log('user not logged in');
+            console.log(data);
+            $scope.user = null;
             $rootScope.user = null;
-            deferred.resolve();
+            $location.path('/login');
           });
-        return deferred.promise;
-      };*/
+      };
+
+      $scope.subject_list = ['Maths', 'History', 'English', 'Basic Education', 'Biology', 'Estonian (native language)', 'Estonian (foreign language)',
+          'Speciality language', 'Special Education', 'Physics', 'Geography', 'Educational Technology', 'Informatics', 'Human Studies', 'Chemistry', 'Physical Education',
+          'Literary', 'Home Economics', 'Arts', 'Crafts', 'Natural Science', 'Economics and Business', 'Media Studies', 'Music', 'French', 'Swedish', 'German', 'Finnish',
+          'Handicraft and Home Economics', 'Russian (native language)', 'Russian (foreign language)', 'Social Education'];
 
     } // MainController end
 }());

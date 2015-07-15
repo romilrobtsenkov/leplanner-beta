@@ -3,11 +3,11 @@
 
   angular
     .module('app')
-    .controller('AddController', AddController);
+    .controller('CreateController', CreateController);
 
-    AddController.$inject = ['userService'];
+    CreateController.$inject = ['userService'];
 
-    function AddController(userService) {
+    function CreateController(userService) {
 
       // rootscope user!
       /*userService.getUser()

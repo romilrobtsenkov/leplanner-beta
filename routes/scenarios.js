@@ -3,22 +3,12 @@ var router = express.Router();
 var restrict = require('../auth/restrict');
 var scenarioService = require('../services/scenario-service');
 
-router.get('/api/scenarios', restrict, function(req, res, next) {
-  scenarioService.getScenarios(function(err, restaurants) {
-    if (err) {
-      return res.status(500).json({error: 'Failed to retrieve scenarios'});
-    }
-    res.json(restaurants);
+router.post('/scenarios-list/', function(req, res, next) {
+    console.log(scenarioService);
+    scenarioService.getScenarios(req.body, function(err, scenarios) {
+      if (err) { return res.json({error: err}); }
+      return res.json({hello: 'hello'});
+    });
   });
-});
-
-router.get('/api/scenario-details/:restId', function(req, res, next) {
-  scenarioService.getScenarioDetails(req.params.restId, function(err, details) {
-    if (err) {
-      return res.status(500).json({error: 'Failed to retrieve details'});
-    }
-    res.json(details);
-  });
-});
 
 module.exports = router;

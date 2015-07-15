@@ -1,18 +1,113 @@
 <!DOCTYPE html>
-<html ng-controller="MainController as main" >
+<html ng-app="app" ng-controller="MainController as main" >
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width" />
-  <title>TITLE</title>
+  <meta charset="UTF-8">
+  <title>LePlanner</title>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+  <!-- Custom styles for this template -->
+  <link href="stylesheets/style.css" rel="stylesheet">
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+  <!-- Bootstrap core JavaScript ================================================== -->
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 </head>
 <body>
 
-  <div ng-app="app">
+  <!-- ////////////////////// -->
+  <!-- ||||||   MENU   |||||| -->
+  <!-- ////////////////////// -->
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+        <ul class="nav navbar-nav">
+          <li ><a class="navbar-brand" href="#/"></a>
+          <li ><a style="cursor:pointer" class="dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="false" >LePlanner</a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+              <li><a href="/#/">Home</a></li>
+              <li><a href="/#/search">Search</a></li>
+              <li><a href="/#/profile/{{user._id}}" ng-show="user">User</a></li>
+              <li><a href="/#/add">Create Scenario</a></li>
+            </ul>
+          </li>
+          </li>
+        </ul>
+
+        <!-- Login button with "My profile" and "Log out" options -->
+        <a ng-hide=user class="pull-right btn btn-primary btn-sm login-top" href="/#/login">Log in</a>
+
+        <div class="header-search dropdown pull-right" ng-show=user {{user.first_name}}>
+          <a href="/#/profile/{{user._id}}"><!--<img src="{{user.google.image}}" alt="myFace" class="img-square" style="height:30px;width:30px">--></a>
+          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+            {{user.first_name}}
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="/#/user/{{user._id}}">My profile</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="/#/settings/">Settings</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="logout()" href="#">Log out</a></li>
+          </ul>
+        </div>
+
+        <div style="margin-right: 50px;" class="header-search inner-addon right-addon pull-right" ng-controllerr="SearchCtrl" >
+
+          <a href="/#/search" ng-click="search()"><i type="submit" class="glyphicon glyphicon-search" ng-click="search()"></i></a>
+          <input type="text" name="search" ng-model="name" class="form-control" placeholder="Search">
+        </div>
+
+      </div><!-- /.navbar-collapse -->
+
+    </div>
+  </nav>
+
+  <div>
     <!-- BEGIN page-specific content -->
-
     <div ng-view></div>
-
     <!-- END page-specific content -->
+  </div>
+
+  <div class="container footer">
+  <!-- Help page -->
+    <div class="col-md-8">
+      <a href="/#/help">Help</a>
+    </div>
+
+  <!-- Script for dynamic year -->
+    <p class="pull-right">
+        &copy;
+          <script language="JavaScript" type="text/javascript">
+          now = new Date
+          theYear=now.getYear()
+          if (theYear < 1900)
+            theYear=theYear+1900
+          document.write(theYear)
+          </script>
+        <a href="/#/help">TLU Institute of Informatics</a>
+      </p>
   </div>
 
   <script src="/bower/angular/angular.min.js"></script>
@@ -23,11 +118,12 @@
   <script src="/js/app/main/main.js"></script>
   <script src="/js/app/home/home.js"></script>
   <script src="/js/app/login/login.js"></script>
-  <script src="/js/app/add/add.js"></script>
+  <script src="/js/app/create/create.js"></script>
   <script src="/js/app/reset/reset.js"></script>
   <script src="/js/app/settings/settings.js"></script>
   <script src="/js/app/services/user-service.js"></script>
   <script src="/js/app/services/user-route-service.js"></script>
+  <script src="/js/app/services/scenario-service.js"></script>
 
 </body>
 </html>
