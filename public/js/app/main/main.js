@@ -19,10 +19,5 @@
           });
       };
 
-      $scope.subject_list = ['Maths', 'History', 'English', 'Basic Education', 'Biology', 'Estonian (native language)', 'Estonian (foreign language)',
-          'Speciality language', 'Special Education', 'Physics', 'Geography', 'Educational Technology', 'Informatics', 'Human Studies', 'Chemistry', 'Physical Education',
-          'Literary', 'Home Economics', 'Arts', 'Crafts', 'Natural Science', 'Economics and Business', 'Media Studies', 'Music', 'French', 'Swedish', 'German', 'Finnish',
-          'Handicraft and Home Economics', 'Russian (native language)', 'Russian (foreign language)', 'Social Education'];
-
     } // MainController end
 }());

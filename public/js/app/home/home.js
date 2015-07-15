@@ -5,9 +5,9 @@
     .module('app')
     .controller('HomeController', HomeController);
 
-    HomeController.$inject = ['$scope','$rootScope','scenarioService'];
+    HomeController.$inject = ['$scope','$rootScope','scenarioService', 'metaService'];
 
-    function HomeController($scope,$rootScope,scenarioService) {
+    function HomeController($scope,$rootScope,scenarioService,metaService) {
 
       //console.log($rootScope.active_tab);
 
@@ -15,17 +15,26 @@
         $rootScope.active_tab = 'latest';
       }
 
-      scenarioService.getScenarios()
-        .then(function(data) {
-          console.log(data);
-          if(data.scenarios){
-            $scope.scenarios = data.scenarios;
-          }
+      getScenarios();
 
-          if(data.error){
+      function getScenarios(query){
+        if(typeof query == 'undefined'){
+          //
+        }
 
-          }
-      });
+        scenarioService.getScenarios(query)
+          .then(function(data) {
+            console.log(data);
+            if(data.scenarios){
+              $scope.scenarios = data.scenarios;
+            }
+
+            if(data.error){
+              console.log(data.error);
+            }
+        });
+
+      }
 
       $scope.isActive = function(tab){
         if(tab == $rootScope.active_tab){ return true; }
@@ -41,7 +50,7 @@
         }
       };
 
-      $scope.subjects = $scope.$parent.subject_list.sort();
+      $scope.subjects = metaService.getSubjectList();
 
     }
 }());
