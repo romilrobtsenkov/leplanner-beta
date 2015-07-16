@@ -216,6 +216,10 @@ a.contains-profile-img {
   margin-left: 10px;
 }
 
+.btn-fixed-width {
+  width: 180px !important;
+}
+
 .simple-browse h3 {
   margin-left: 25px;
   margin-bottom: 20px;

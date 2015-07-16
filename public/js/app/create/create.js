@@ -25,11 +25,7 @@
             var new_scenario = {  //  inserts values to the scenario object
               name: scenario.name,
               subject: scenario.subject,
-              author: {
-                id: $rootScope.user._id,
-                name: $rootScope.user.first_name +' '+$rootScope.user.last_name //  both names in one place
-                                                                        //  used to show who made the scenario
-              },
+              author: $rootScope.user._id,
               language: scenario.language, // from ng-model
               license: scenario.license,
               materialType: scenario.material_type,

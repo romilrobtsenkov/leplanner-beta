@@ -5,9 +5,9 @@
     .module('app')
     .controller('LoginController', LoginController);
 
-    LoginController.$inject = ['$scope','$rootScope','$location','userService'];
+    LoginController.$inject = ['$scope','$rootScope','$location','$timeout','userService'];
 
-    function LoginController($scope,$rootScope,$location,userService) {
+    function LoginController($scope,$rootScope,$location,$timeout,userService) {
 
       $scope.activateCreateForm = function($event){
         $event.preventDefault();
@@ -43,6 +43,7 @@
                 default:
                   $scope.login_error = 'Unknown error';
               }
+              $timeout(function() { $scope.login_error = null; }, 2000);
             }
 
         });
@@ -86,6 +87,7 @@
                 default:
                   $scope.create_error = 'Unknown error';
               }
+              $timeout(function() { $scope.create_error = null; }, 2000);
             }
 
         });
@@ -97,6 +99,7 @@
           .then(function(data) {
             $scope.success_alert = 'Successfully reset email sent';
             $scope.recover_error = null;
+            $timeout(function() { $scope.success_alert = null; }, 2000);
             console.log(data);
             if(data.error){
               console.log(data);
@@ -110,6 +113,7 @@
                 default:
                   $scope.recover_error = 'Unknown error';
               }
+              $timeout(function() { $scope.recover_error = null; }, 2000);
             }
 
         });

@@ -8,8 +8,7 @@
           <!-- Creating a new account -->
 
             <h3>
-              <span ng-if="!create_form">Log in</span>
-              <a ng-click="deactivateCreateForm($event)" style="cursor:pointer" ng-if="create_form">Log in</a>, or
+              <span ng-if="!create_form">Log in</span><a ng-click="deactivateCreateForm($event)" style="cursor:pointer" ng-if="create_form">Log in</a>, or
               <a ng-click="activateCreateForm($event)" href="#/login" style="cursor:pointer">Create user</a>
             </h3>
 

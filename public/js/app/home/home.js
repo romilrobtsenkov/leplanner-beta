@@ -26,8 +26,8 @@
             case 'latest':
                 q= {order: 'latest'};
               break;
-              case 'liked':
-                  q= {order: 'liked'};
+              case 'popular':
+                  q= {order: 'popular'};
                 break;
             default:
               q= {order: 'latest'};
@@ -55,7 +55,7 @@
 
        $scope.updateList = function(tab){
         console.log(tab);
-        if(tab == 'latest ' || tab == 'liked'){
+        if(tab == 'latest ' || tab == 'popular'){
           $rootScope.active_tab = tab;
           getScenarios(tab);
         }else{

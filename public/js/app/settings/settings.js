@@ -5,9 +5,9 @@
     .module('app')
     .controller('SettingsController', SettingsController);
 
-    SettingsController.$inject = ['$scope','$rootScope','$location','userService'];
+    SettingsController.$inject = ['$scope','$rootScope','$location','$timeout','userService'];
 
-    function SettingsController($scope,$rootScope,$location,userService) {
+    function SettingsController($scope,$rootScope,$location,$timeout,userService) {
 
       $scope.user = $rootScope.user;
 
@@ -28,12 +28,14 @@
 
             userService.updateUserProfile($scope.user)
               .then(function(data) {
-                console.log(data);
+                //console.log(data);
                 if(data.user){
                   $rootScope.user = data.user;
                   $scope.user = $rootScope.user;
                   fillUpdateProfileForm();
-                  $scope.updateProfile_error = 'Update successful';
+                  $scope.updateProfile_success = 'Update successful';
+                  $scope.updateProfile_error = null;
+                  $timeout(function() { $scope.updateProfile_success = null; }, 2000);
                 }
 
                 if(data.error){
@@ -56,12 +58,14 @@
                     default:
                       $scope.updateProfile_error = 'Unknown error';
                   }
+                  $timeout(function() { $scope.updateProfile_error = null; }, 2000);
                 }
 
             });
 
         }else{
           $scope.updateProfile_error = 'No profile data modified';
+          $timeout(function() { $scope.updateProfile_error = null; }, 2000);
         }
       };
 
@@ -77,7 +81,9 @@
                 .then(function(data) {
                   console.log(data);
                   if(data.user){
-                    $scope.updatePassword_error = 'Update successful';
+                    $scope.updatePassword_sucess = 'Update successful';
+                    $scope.updatePassword_error = null;
+                    $timeout(function() { $scope.updatePassword_sucess = null; }, 2000);
                   }
 
                   if(data.error){
@@ -97,16 +103,19 @@
                       default:
                         $scope.updatePassword_error = 'Unknown error';
                     }
+                    $timeout(function() { $scope.updatePassword_error = null; }, 2000);
                   }
 
               });
 
             }else{
               $scope.updatePassword_error = 'New passwords dont match';
+              $timeout(function() { $scope.updatePassword_error = null; }, 2000);
             }
 
         }else{
           $scope.updatePassword_error = 'All fields are required';
+          $timeout(function() { $scope.updatePassword_error = null; }, 2000);
         }
       };
 

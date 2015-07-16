@@ -15,7 +15,7 @@
             console.log(data);
             $scope.user = null;
             $rootScope.user = null;
-            $location.path('/login');
+            $location.path('/');
           });
       };
 

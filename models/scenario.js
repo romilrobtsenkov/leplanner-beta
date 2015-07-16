@@ -4,10 +4,7 @@ var Schema = mongoose.Schema;
 var scenarioSchema = new Schema({
     name: { type: String, required: true },
     subject: { type: String, required: true },
-    author: {
-        id: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-        name: { type: String, required: true}
-    },
+    author: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     created: { type: Date, default: Date.now},
     students: { type: Number, default: 0},
     language: { type: String},
@@ -19,8 +16,9 @@ var scenarioSchema = new Schema({
     description: { type: String, required: false},
     subscribers: { type: [mongoose.Schema.Types.ObjectId], ref: 'User', default: [] },
     likes: { type: [mongoose.Schema.Types.ObjectId], ref: 'User', default: [] },
+    views: { type: [mongoose.Schema.Types.ObjectId], ref: 'User', default: [] },
     deleted: {type: Boolean, required: true, default: false},
-    draft: {type: Boolean, required: true, default: true}
+    draft: {type: Boolean, required: true, default: false}
 });
 
 var Scenario = mongoose.model('Scenario', scenarioSchema);

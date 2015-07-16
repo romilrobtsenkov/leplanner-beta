@@ -19,6 +19,15 @@
           },
         }
       })
+      .when('/search', {
+        templateUrl: '/js/app/search/search.html',
+        controller: 'SearchController',
+        resolve: {
+          data: function (userRouteService) {
+            return userRouteService.checkUser();
+          },
+        }
+      })
       .when('/create', {
         templateUrl: '/js/app/create/create.html',
         controller: 'CreateController',

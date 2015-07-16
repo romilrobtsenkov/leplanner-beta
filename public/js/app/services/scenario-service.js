@@ -11,11 +11,19 @@
     return {
       getScenarios: getScenarios,
       createScenario: createScenario,
+      searchScenarios: searchScenarios
 
     };
 
     function getScenarios(query) {
       return $http.post('/api/scenarios/scenarios-list',query)
+        .then(function(response) {
+          return response.data;
+        });
+    }
+
+    function searchScenarios(query) {
+      return $http.post('/api/scenarios/search',query)
         .then(function(response) {
           return response.data;
         });
