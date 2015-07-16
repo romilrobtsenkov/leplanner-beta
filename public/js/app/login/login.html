@@ -1,64 +1,75 @@
 
-<div>
-  <form name="login-form" id="login-form" ng-submit="login(user)">
-    <div class="form-group">
-      <label for="email">Email</label>
-      <input type="email" id="email" name="email" ng-model="user.email" required />
-    </div>
-    <div class="form-group">
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password" ng-model="user.password"  required />
-    </div>
-    <div class="form-submit">
-      <input type="submit" value="Log in" />
+<div class="container main-content">
 
-      <div ng-if='login_error' style="color:red;">{{login_error}}</div>
+    <div class="row login-page">
 
-      <div>
-        or <a ng-click="activateCreateForm($event)" href="#/login">Create an account</a><br>
-        or <a ng-click="activateRecoverForm($event)" href="#/login">Recover password</a>
-      </div>
+        <div class="main-login">
 
-    </div>
-  </form>
-</div>
+          <!-- Creating a new account -->
 
-<div ng-if='recover_form' >
-  <form name="recover-user-form" id="recover-user-form" ng-submit="recover(user)">
-    <div class="form-group">
-      <label for="recover_email">Email</label>
-      <input type="text" id="recover_email" name="recover_email" ng-model="user.recover_email" required/>
-    </div>
-    <div class="form-submit">
-      <input type="submit" value="Recover my password" />
-    </div>
-    <span ng-if='recover_error' style="color:red;">{{recover_error}}</span>
-  </form>
-</div>
+            <h3>
+              <span ng-if="!create_form">Log in</span>
+              <a ng-click="deactivateCreateForm($event)" style="cursor:pointer" ng-if="create_form">Log in</a>, or
+              <a ng-click="activateCreateForm($event)" href="#/login" style="cursor:pointer">Create user</a>
+            </h3>
 
-<div ng-if='create_form' >
-  <form name="create-user-form" id="create-user-form" ng-submit="create(user)">
-    <div class="form-group">
-      <label for="new_first_name">First name</label>
-      <input type="text" id="new_first_name" name="new_first_name" ng-model="user.new_first_name" required/>
-    </div>
-    <div class="form-group">
-      <label for="new_last_name">Last name</label>
-      <input type="text" id="new_last_name" name="new_last_name" ng-model="user.new_last_name" required />
-    </div>
-    <div class="form-group">
-      <label for="new_email">Email</label>
-      <input type="email" id="new_email" name="new_email" ng-model="user.new_email" required />
-    </div>
-    <div class="form-group">
-      <label for="new_password">Password</label>
-      <input type="password" id="new_password" name="new_password" autocomplete="off" ng-model="user.new_password" required />
-    </div>
-    <div class="form-submit">
-      <input type="submit" value="Create my account" />
-    </div>
+            <!-- Using regular username and password to login -->
+            <form ng-if="!create_form && !recover_form" role="form" name="login-form" id="login-form" ng-submit="login(user)">
+              <div ng-if='login_error' class="alert alert-danger" role="alert">{{login_error}}</div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" ng-model="user.email" required />
+              </div>
+              <div class="form-group">
+                <a class="pull-right" style="cursor:pointer" ng-click="activateRecoverForm($event)" href="#/login">Recover password</a>
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" ng-model="user.password"  required />
+              </div>
+              <div class="checkbox pull-right">
+                <label>
+                  <input ng-model="user.rememberMe" type="checkbox">
+                  Remember me</label>
+              </div>
+              <div class="form-submit">
+                <input type="submit" class="btn btn-sm btn btn-primary" value="Log in" />
+              </div>
+            </form>
 
-    <span ng-if='create_error' style="color:red;">{{create_error}}</span>
+            <form ng-if='recover_form && !create_form' name="recover-user-form" id="recover-user-form" ng-submit="recover(user)">
+              <div ng-if='recover_error' class="alert alert-danger" role="alert">{{recover_error}}</div>
+              <div ng-if='success_alert' class="alert alert-success" role="alert">{{success_alert}}</div>
+              <div class="form-group">
+                <label for="recover_email">Email</label>
+                <input type="text" class="form-control" id="recover_email" name="recover_email" ng-model="user.recover_email" required/>
+              </div>
+              <div class="form-submit">
+                <input class="btn btn-sm btn btn-primary" type="submit" value="Recover my password" />
+              </div>
+            </form>
 
-  </form>
+            <form ng-if='create_form' name="create-user-form" id="create-user-form" ng-submit="create(user)">
+              <div ng-if='create_error' class="alert alert-danger" role="alert">{{create_error}}</div>
+              <div class="form-group">
+                <label for="new_first_name">First name</label>
+                <input type="text" class="form-control" id="new_first_name" name="new_first_name" ng-model="user.new_first_name" required/>
+              </div>
+              <div class="form-group">
+                <label for="new_last_name">Last name</label>
+                <input type="text" class="form-control" id="new_last_name" name="new_last_name" ng-model="user.new_last_name" required />
+              </div>
+              <div class="form-group">
+                <label for="new_email">Email</label>
+                <input type="email" class="form-control" id="new_email" name="new_email" ng-model="user.new_email" required />
+              </div>
+              <div class="form-group">
+                <label for="new_password">Password</label>
+                <input type="password" class="form-control" id="new_password" name="new_password" autocomplete="off" ng-model="user.new_password" required />
+              </div>
+              <div class="form-submit">
+                <input class="btn btn-sm btn btn-primary" type="submit" value="Create my account" />
+              </div>
+            </form>
+
+        </div>
+    </div>
 </div>

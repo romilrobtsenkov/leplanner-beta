@@ -14,14 +14,17 @@
         $scope.create_form = true;
       };
 
+      $scope.deactivateCreateForm = function($event){
+        $event.preventDefault();
+        $scope.create_form = false;
+      };
+
       $scope.activateRecoverForm = function($event){
         $event.preventDefault();
         $scope.recover_form = true;
       };
 
       $scope.login = function(user){
-
-        // TODO validate for empty fields
 
         userService.loginUser(user)
           .then(function(data) {
@@ -46,8 +49,6 @@
       };
 
       $scope.create = function(user){
-
-        // TODO validate for empty fields
 
         userService.createUser(user)
           .then(function(data) {
@@ -94,7 +95,8 @@
       $scope.recover = function(user){
         userService.recoverUser(user)
           .then(function(data) {
-            $scope.recover_error = 'Successfully email sent';
+            $scope.success_alert = 'Successfully reset email sent';
+            $scope.recover_error = null;
             console.log(data);
             if(data.error){
               console.log(data);

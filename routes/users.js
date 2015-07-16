@@ -10,8 +10,6 @@ router.post('/create', function(req, res, next) {
   userService.addUser(req.body, function(err) {
     if (err) { return res.json({error: err}); }
 
-    req.session.cookie.maxAge = config.cookieMaxAge;
-
     // Fix for auto logging in new user
     req.body.email = req.body.new_email;
     req.body.password = req.body.new_password;
@@ -35,8 +33,10 @@ router.post('/create', function(req, res, next) {
 });
 
 router.post('/login', function(req, res, next) {
-
-    req.session.cookie.maxAge = config.cookieMaxAge;
+    console.log(req.body);
+    if (req.body.rememberMe) {
+      req.session.cookie.maxAge = config.cookieMaxAge;
+    }
 
     passport.authenticate('local', function(err, user, info) {
 

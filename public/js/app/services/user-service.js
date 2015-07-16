@@ -27,7 +27,7 @@
     }
 
     function loginUser(user) {
-      return $http.post('/api/users/login', {email: user.email, password: user.password})
+      return $http.post('/api/users/login', {email: user.email, password: user.password, rememberMe: user.rememberMe})
         .then(function(response) {
           return response.data;
         });
