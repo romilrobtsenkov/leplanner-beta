@@ -18,6 +18,7 @@ var scenarioSchema = new Schema({
     stage: { type: String}, // kooliaste
     description: { type: String, required: false},
     subscribers: { type: [mongoose.Schema.Types.ObjectId], ref: 'User', default: [] },
+    likes: { type: [mongoose.Schema.Types.ObjectId], ref: 'User', default: [] },
     deleted: {type: Boolean, required: true, default: false},
     draft: {type: Boolean, required: true, default: true}
 });

@@ -18,11 +18,23 @@
       getScenarios();
 
       function getScenarios(query){
+        var q;
         if(typeof query == 'undefined'){
-          //
+          q= {order: 'latest'};
+        }else{
+          switch (query) {
+            case 'latest':
+                q= {order: 'latest'};
+              break;
+              case 'liked':
+                  q= {order: 'liked'};
+                break;
+            default:
+              q= {order: 'latest'};
+          }
         }
 
-        scenarioService.getScenarios(query)
+        scenarioService.getScenarios(q)
           .then(function(data) {
             console.log(data);
             if(data.scenarios){
@@ -43,10 +55,12 @@
 
        $scope.updateList = function(tab){
         console.log(tab);
-        if(tab == 'latest ' || tab == 'alphabetical' || tab == 'oldest'){
+        if(tab == 'latest ' || tab == 'liked'){
           $rootScope.active_tab = tab;
+          getScenarios(tab);
         }else{
           $rootScope.active_tab = 'latest';
+          getScenarios();
         }
       };
 
