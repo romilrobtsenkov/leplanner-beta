@@ -25,6 +25,7 @@ exports.getScenarios = function(q, next) {
   args.deleted = false;
   //args.draft = false;
   query.where(args);
+  query.select('-favorites');
   query.sort(sort_args);
   query.limit(4);
 
@@ -127,6 +128,7 @@ exports.addRemoveFavorite = function(params, next){
 
         // add to favorite array
         scenario.favorites.push(params.user_id);
+        scenario.favorites_count = scenario.favorites.length;
 
         scenario.save(function(err, scenario){
           if (err) return next(err);
@@ -144,6 +146,7 @@ exports.addRemoveFavorite = function(params, next){
         // remove from favorite array
         var index = scenario.favorites.indexOf(params.user_id);
         scenario.favorites.splice(index, 1);
+        scenario.favorites_count = scenario.favorites.length;
 
         scenario.save(function(err, scenario){
           if (err) return next(err);
