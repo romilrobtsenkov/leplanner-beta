@@ -57,7 +57,7 @@
         </ul>
 
         <!-- Login button with "My profile" and "Log out" options -->
-        <a ng-hide=user class="pull-right btn btn-primary btn-sm login-top" href="/#/login">Log in</a>
+        <a ng-hide=user class="pull-right btn btn-primary btn-sm login-top" href="/#/login" ng-click="navigateToLogin($event)" >Log in</a>
 
         <div class="header-search dropdown pull-right" ng-show=user {{user.first_name}}>
           <a href="/#/profile/{{user._id}}"><!--<img src="{{user.google.image}}" alt="myFace" class="img-square" style="height:30px;width:30px">--></a>

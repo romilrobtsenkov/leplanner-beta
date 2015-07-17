@@ -12,7 +12,8 @@
       getScenarios: getScenarios,
       createScenario: createScenario,
       searchScenarios: searchScenarios,
-      getSingleScenario: getSingleScenario
+      getSingleScenario: getSingleScenario,
+      addRemoveFavorite: addRemoveFavorite
 
     };
 
@@ -30,9 +31,15 @@
         });
     }
 
-    function getSingleScenario(id) {
-      console.log(id);
-      return $http.post('/api/scenarios/single-scenario',{id: id})
+    function getSingleScenario(params) {
+      return $http.post('/api/scenarios/single-scenario',params)
+        .then(function(response) {
+          return response.data;
+        });
+    }
+
+    function addRemoveFavorite(params) {
+      return $http.post('/api/scenarios/add-remove-favorite',params)
         .then(function(response) {
           return response.data;
         });

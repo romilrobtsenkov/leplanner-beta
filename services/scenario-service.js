@@ -24,11 +24,8 @@ exports.getScenarios = function(q, next) {
 
   args.deleted = false;
   //args.draft = false;
-
   query.where(args);
-
   query.sort(sort_args);
-
   query.limit(4);
 
   query.exec(function(err, scenarios) {
@@ -81,19 +78,82 @@ exports.searchScenarios = function(q, next) {
 
 };
 
-exports.getSingleScenario = function(req, next){
-  console.log('find'+req.id);
+exports.getSingleScenario = function(params, next){
+
   var query = Scenario.findOne();
-  query.where({_id: req.id});
+  query.where({_id: params.scenario_id});
   query.populate('author', 'first_name last_name created');
   //query.limit(1);
   query.exec(function(err, scenario) {
     //console.log(err);
     if (err) return next(err);
 
-    return next(null, scenario);
+    scenario.view_count = scenario.view_count+1;
+    scenario.save(function(err, scenario){
+      if (err) return next(err);
+
+      var response = {};
+      response.is_favorite = false;
+      if(typeof params.user_id !== 'undefined'){
+        // check if favorite
+        if(scenario.favorites.indexOf(params.user_id) !== -1){
+          response.is_favorite = true;
+        }
+      }
+
+      response.scenario = scenario;
+      return next(null, response);
+    });
+
   });
 
+};
+
+exports.addRemoveFavorite = function(params, next){
+
+  var query = Scenario.findOne();
+  query.where({_id: params.scenario_id});
+
+  query.exec(function(err, scenario) {
+    //console.log(err);
+    if (err) return next(err);
+
+    if(typeof params.remove === 'undefined'){
+
+      // ADD
+      if(scenario.favorites.indexOf(params.user_id) !== -1){
+        return next(null, {success: 'add'});
+      }else{
+
+        // add to favorite array
+        scenario.favorites.push(params.user_id);
+
+        scenario.save(function(err, scenario){
+          if (err) return next(err);
+
+          return next(null, {success: 'add'});
+        });
+      }
+    }else{
+
+      // REMOVE
+      if(scenario.favorites.indexOf(params.user_id) === -1){
+        return next(null, {success: 'remove'});
+      }else{
+
+        // remove from favorite array
+        var index = scenario.favorites.indexOf(params.user_id);
+        scenario.favorites.splice(index, 1);
+
+        scenario.save(function(err, scenario){
+          if (err) return next(err);
+          return next(null, {success: 'remove'});
+        });
+      }
+
+    }
+
+  });
 };
 
 exports.saveScenario = function(scenario, next) {

@@ -1,187 +1,145 @@
 <div class="container main-content">
 
-<img class="full-scenario-image" src="./images/full_scenario.png" alt="Scenario">
+  <img class="full-scenario-image" src="./images/full_scenario.png" alt="Scenario">
 
+  <br>
+  <div class="row scenario-page">
+    <div class="col-sm-3">
 
-<br>
-<div class="row scenario-page">
-<div class="col-sm-3">
+      <!-- Users Google profile picture -->
+      <div class="profile-sidebar">
 
-<!-- Users Google profile picture -->
-<div class="profile-sidebar">
-<!--<div class="profile-userpic">
-  <img src="./images/unnamed.png" class="img-responsive" alt="{{user.first_name}} {{user.last_name}}">
-</div>-->
-<!-- Follow button -->
-<div class="profile-userbuttons">
-<a href="" class="btn btn-success btn-sm" disabled="disabled"><span class="glyphicon glyphicon-plus-sign"></span> Follow</a>
-</div>
-<!-- Users first name and last name -->
-<div class="profile-usertitle">
-<div class="profile-usertitle-name">
-<a a href="/#/profile/{{scenario.author._id}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a>
-</div>
+        <div class="profile-userpic">
+          <img src="./images/profile.png" class="img-responsive" alt="{{user.first_name}} {{user.last_name}}">
+        </div>
 
-<!-- School -->
-<div class="profile-usertitle-job">
-{{school}} School?
-</div>
-<!-- Join date -->
-<div class="profile-usertitle-sign-up">
-<span class="glyphicon glyphicon-time"></span> <span>Joined {{scenario.author.created | date:'MMMM yyyy'}}</span>
-</div>
-</div>
+        <div class="profile-userbuttons">
+          <a href="" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Follow</a>
+        </div>
 
-</div>
-<!-- Similar scenarios -->
-<div class="similar-scenarios">
-<h3>Similar scenarios</h3>
+        <div class="profile-usertitle">
+          <div class="profile-usertitle-name">
+            <a a href="/#/profile/{{scenario.author._id}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a>
+          </div>
+          <div class="profile-usertitle-job">
+            {{scenario.author.organization}}
+          </div>
+          <div class="profile-usertitle-sign-up">
+            <span class="glyphicon glyphicon-time"></span> <span>Joined {{scenario.author.created | date:'MMMM yyyy'}}</span>
+          </div>
+        </div>
 
-<div class="">
-<div class="thumbnail thumbnail-first-page">
-<a href="">
-  <img class="thumbnail-preview" src="./images/thumbnail_200.png" alt="Generic placeholder thumbnail">
-</a>
-<!-- Scenario name -->
-<div class="caption">
-  <h4>{{scenario.name}}</h4>
-  <!-- Scenario description -->
-  <p class="thumbnail-caption">{{scenario.description}}</p>
-  <p class="clearfix"><span class="favorited-and-comments"><span class="glyphicon glyphicon-heart"></span> 23 <span class="glyphicon glyphicon-comment"></span> 2</span><a class="open-link pull-right" href="#">OPEN <span class="glyphicon glyphicon-chevron-right"></span></a></p>
-</div>
-</div>
-</div>
-<div class="">
-<div class="thumbnail thumbnail-first-page">
-<a href="">
-  <img class="thumbnail-preview" src="./images/thumbnail_200.png" alt="Generic placeholder thumbnail">
-</a>
-<div class="caption">
-  <h4>{{scenario.name}}</h4>
-  <p class="thumbnail-caption">{{scenario.description}}</p>
-  <p class="clearfix"><span class="favorited-and-comments"><span class="glyphicon glyphicon-heart"></span> 23 <span class="glyphicon glyphicon-comment"></span> 2</span><a class="open-link pull-right" href="#">OPEN <span class="glyphicon glyphicon-chevron-right"></span></a></p>
-</div>
-</div>
-</div>
-<div class="">
-<div class="thumbnail thumbnail-first-page">
-<a href="scenario.php">
-  <img class="thumbnail-preview" src="./images/thumbnail_200.png" alt="Generic placeholder thumbnail">
-</a>
-<div class="caption">
-  <h4>{{scenario.name}}</h4>
-  <p class="thumbnail-caption">{{scenario.description}}</p>
-  <p class="clearfix"><span class="favorited-and-comments"><span class="glyphicon glyphicon-heart"></span> 23 <span class="glyphicon glyphicon-comment"></span> 2</span><a class="open-link pull-right" href="#">OPEN <span class="glyphicon glyphicon-chevron-right"></span></a></p>
-</div>
-</div>
-</div>
-
-</div>
-
-
-
-
-</div>
-
-<div class="col-sm-9">
-
-<div class="single_scenario_item">
-
-<div class="row">
-<div class="col-sm-12">
-<h2><strong>{{scenario.name}}</strong></h2>
-
-<!-- Subscribe and unsubscribe -->
-<div ng-if="user">
-  <div ng-if="!isSubscribed()">
-      <a ng-click="subscribe()" class="add-favorite-button btn btn-success btn-sm pull-right"><span class="glyphicon glyphicon-heart"></span> Subscribe</a>
-  </div>
-  <div ng-if="isSubscribed()">
-    <a ng-click="unsubscribe()" class="add-favorite-button btn btn-danger btn-sm pull-right"><span class="glyphicon glyphicon-ban-circle"></span> Unsubscribe</a>
-  </div>
-</div>
-<div ng-if="!user">
-  <a href="/#/login">Login to Subscribe</a>
-</div>
-
-
-
-</div>
-
-</div>
-
-<!-- Scenario info -->
-<div class="row">
-<div class="col-sm-12">
-<span class="glyphicon glyphicon-calendar"></span> <span> {{scenario.created | date:'dd.MM.yyyy HH:mm'}}</span>
-
-<br />
-
- <a class="print-button btn btn-sm pull-right" ng-if="user._id==scenario.author._id" href="/#/edit/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> Edit</a><a class="save-button btn btn-sm pull-right" ng-if="user._id==scenario.author.id" ng-click="delete(scenario._id)" href="/#/"><span class="glyphicon glyphicon-remove"></span> Delete</a>
-
-</div>
-</div>
-
-
-
-<div class="row">
-<div class="col-sm-12">
-<br>
-<p>
-    {{scenario.description}}
-</p>
-<div class="row">
-  <div class="col-sm-12">
-    <span class="labels">
-    <a href=""><span class="label label-danger">{{scenario.method}}</span></a>
-      <a href=""><span class="label label-success">{{scenario.materialType}}</span></a>
-     </span>
-  </div>
-</div>
-
-</div>
-</div>
-
-</div>
-
-
-<!-- Comments -->
-
-<div class="commets">
-
-<h3>Comments (1)</h3>
-
-<!-- First Comment -->
-<article class="row">
-<div class="col-md-2 col-sm-2 hidden-xs">
-  <figure class="thumbnail">
-    <img style="min-height: 81px;" class="img-responsive" src="./images/unnamed.png">
-  </figure>
-</div>
-<div class="col-sm-10 comment-closer">
-  <div class="panel panel-default">
-    <div class="panel-body">
-      <header class="text-left">
-        <div class="comment-user">Kati Kask</div>
-        <time class="comment-date"><span class="glyphicon glyphicon-time"></span> 03.05.2015</time>
-      </header>
-      <div class="comment-post">
-        <p>
-          {{scenario.description}}
-        </p>
       </div>
-      <p class="text-right"><a href="#" disabled="disabled" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-share-alt"></span> Respond</a></p>
+
+      <!-- Similar scenarios -->
+      <div class="similar-scenarios">
+        <h3>Popular scenarios</h3>
+
+        <div class="">
+          <div class="thumbnail thumbnail-first-page">
+          <a href="">
+            <img class="thumbnail-preview" src="./images/thumbnail_200.png" alt="Generic placeholder thumbnail">
+          </a>
+          <!-- Scenario name -->
+          <div class="caption">
+            <h4>{{scenario.name}}</h4>
+            <!-- Scenario description -->
+            <p class="thumbnail-caption">{{scenario.description}}</p>
+            <p class="clearfix"><span class="favorited-and-comments"><span class="glyphicon glyphicon-heart"></span> 23 <span class="glyphicon glyphicon-comment"></span> 2</span><a class="open-link pull-right" href="#">OPEN <span class="glyphicon glyphicon-chevron-right"></span></a></p>
+          </div>
+          </div>
+        </div>
+
+      </div>
+
+
+
+
+    </div>
+
+    <div class="col-sm-9">
+
+      <div class="single_scenario_item">
+
+        <div class="row">
+          <div class="col-sm-12">
+            <h2><strong>{{scenario.name}}</strong></h2>
+            <div ng-if="user">
+              <div ng-if="!is_favorite">
+                  <a ng-click="addRemoveFavorite()" class="add-favorite-button btn btn-success btn-sm pull-right"><span class="glyphicon glyphicon-heart"></span> Favorite</a>
+              </div>
+              <div ng-if="is_favorite">
+                <a ng-click="addRemoveFavorite('remove')" class="add-favorite-button btn btn-default btn-sm pull-right"><span class="glyphicon glyphicon-heart-empty"></span> Unfavorite</a>
+              </div>
+            </div>
+            <div ng-if="!user">
+              <a class="pull-right" href="/#/login">Login to Subscribe</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12">
+            <span class="glyphicon glyphicon-calendar"></span> <span> {{scenario.created | date:'dd.MM.yyyy HH:mm'}}</span><br>
+            <a class="print-button btn btn-sm pull-right" ng-if="user._id==scenario.author._id" href="/#/edit-scenario/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> Edit</a>
+            <span class="glyphicon glyphicon-eye-open"></span> <span> {{scenario.view_count}}</span><br />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12">
+            <br>
+            <p>
+              {{scenario.description}}
+            </p>
+            <div class="row">
+              <div class="col-sm-12">
+                <span class="labels">
+                  <span class="label label-danger">{{scenario.method}}</span>
+                  <span class="label label-success">{{scenario.materialType}}</span>
+               </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="commets">
+
+        <h3>Comments (1)</h3>
+
+        <!-- First Comment -->
+        <article class="row">
+        <div class="col-md-2 col-sm-2 hidden-xs">
+          <figure class="thumbnail">
+            <img style="min-height: 81px;" class="img-responsive" src="./images/unnamed.png">
+          </figure>
+        </div>
+        <div class="col-sm-10 comment-closer">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <header class="text-left">
+                <div class="comment-user">Kati Kask</div>
+                <time class="comment-date"><span class="glyphicon glyphicon-time"></span> 03.05.2015</time>
+              </header>
+              <div class="comment-post">
+                <p>
+                  {{scenario.description}}
+                </p>
+              </div>
+              <p class="text-right"><a href="#" disabled="disabled" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-share-alt"></span> Respond</a></p>
+            </div>
+          </div>
+        </div>
+        </article>
+
+      <!-- Add a comment info -->
+      <h3>Add a comment</h3>
+
+      <p><strong>You have to login to comment!</strong></p>
+
+      </div>
     </div>
   </div>
-</div>
-</article>
-<
-<!-- Add a comment info -->
-<h3>Add a comment</h3>
-
-<p><strong>You have to login to comment!</strong></p>
-
-</div>
-</div>
-</div>
 </div>

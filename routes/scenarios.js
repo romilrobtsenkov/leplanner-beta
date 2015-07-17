@@ -25,9 +25,16 @@ router.post('/search/', function(req, res, next) {
 });
 
 router.post('/single-scenario/', function(req, res, next) {
-  scenarioService.getSingleScenario(req.body, function(err, scenario) {
+  scenarioService.getSingleScenario(req.body, function(err, response) {
     if (err) { return res.json({error: err}); }
-    return res.json({scenario: scenario});
+    return res.json(response);
+  });
+});
+
+router.post('/add-remove-favorite/', function(req, res, next) {
+  scenarioService.addRemoveFavorite(req.body, function(err, response) {
+    if (err) { return res.json({error: err}); }
+    return res.json(response);
   });
 });
 

@@ -32,7 +32,17 @@
             if(data.user){
               //user id
               console.log(data.user.id);
-              $location.path('/settings');
+              if(typeof $rootScope.navigatedToLoginFrom !== 'undefined'){
+                $location.path($rootScope.navigatedToLoginFrom);
+                $rootScope.navigatedToLoginFrom = undefined;
+              }else{
+                if(typeof $rootScope.navigatedToLoginFrom !== 'undefined'){
+                  $location.path($rootScope.navigatedToLoginFrom);
+                  $rootScope.navigatedToLoginFrom = undefined;
+                }else{
+                  $location.path('/settings');
+                }
+              }
             }
 
             if(data.error){
@@ -57,7 +67,12 @@
             if(data.user){
               //user id
               console.log(data.user.id);
-              $location.path('/settings');
+              if(typeof $rootScope.navigatedToLoginFrom !== 'undefined'){
+                $location.path($rootScope.navigatedToLoginFrom);
+                $rootScope.navigatedToLoginFrom = undefined;
+              }else{
+                $location.path('/settings');
+              }
 
             }
 

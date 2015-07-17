@@ -52,8 +52,8 @@
                           <p class="thumbnail-caption">{{scenario.description | limitTo: 60}}{{scenario.description.length > 60 ? '...' : ''}}</p>
 
                               <span class="favorited-and-comments">
-                                  <span class="glyphicon glyphicon-heart"> 23</span>
-                                  <!--<span class="glyphicon glyphicon-comment">2</span>-->
+                                  <span class="glyphicon glyphicon-heart">{{scenario.favorites.length}}</span>
+                                  <span class="glyphicon glyphicon-comment">2</span>
                               </span>
 
                               <a class="open-link pull-right" href="/#/scenario/{{scenario._id}}">OPEN<span class="glyphicon glyphicon-chevron-right"></span></a>

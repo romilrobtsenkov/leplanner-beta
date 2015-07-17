@@ -19,6 +19,12 @@
           });
       };
 
+      $scope.navigateToLogin = function($event){
+        $event.preventDefault();
+        $rootScope.navigatedToLoginFrom = $location.path();
+        $location.path('/login');
+      };
+
       $scope.searchFromTop = function($event){
         if($location.path() == '/search'){
           $rootScope.top_search_word = $scope.top_search_word;
