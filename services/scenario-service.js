@@ -55,14 +55,13 @@ exports.searchScenarios = function(q, next) {
     args.$or = [ { name: { "$regex": q.search_word, "$options": "i" } }, { description: { "$regex": q.search_word, "$options": "i" } }];
   }
   if(typeof q.subjects !== 'undefined' && q.subjects.length > 0){
-    console.log('here');
     filter_args.push({subject: { $in : q.subjects }});
   }
-  if(typeof q.method !== 'undefined' && q.method.length > 0){
-    filter_args.push({method: q.method[0]});
+  if(typeof q.methods !== 'undefined' && q.methods.length > 0){
+    filter_args.push({method: { $in : q.methods }});
     }
-  if(typeof q.stage !== 'undefined' && q.stage.length > 0){
-    filter_args.push({stage: q.stage[0]});
+  if(typeof q.stages !== 'undefined' && q.stages.length > 0){
+    filter_args.push({stage: { $in : q.stages }});
   }
 
   if(filter_args.length > 0){
