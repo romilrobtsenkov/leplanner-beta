@@ -31,7 +31,7 @@ exports.getScenarios = function(q, next) {
 
   query.limit(4);
 
-  query.exec(function(err, scenarios) { //  executes the query(show all on the page or show what was searched)
+  query.exec(function(err, scenarios) {
     if (err) return next(err);
     return next(null, scenarios);
   });
@@ -74,10 +74,25 @@ exports.searchScenarios = function(q, next) {
   query.sort(sort_args);
   query.populate('author', 'first_name last_name');
   query.limit(4);
-  query.exec(function(err, scenarios) { //  executes the query(show all on the page or show what was searched)
+  query.exec(function(err, scenarios) {
     //console.log(err);
     if (err) return next(err);
     return next(null, scenarios);
+  });
+
+};
+
+exports.getSingleScenario = function(req, next){
+  console.log('find'+req.id);
+  var query = Scenario.findOne();
+  query.where({_id: req.id});
+  query.populate('author', 'first_name last_name created');
+  //query.limit(1);
+  query.exec(function(err, scenario) {
+    //console.log(err);
+    if (err) return next(err);
+
+    return next(null, scenario);
   });
 
 };

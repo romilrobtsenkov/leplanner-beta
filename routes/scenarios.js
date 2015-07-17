@@ -24,4 +24,11 @@ router.post('/search/', function(req, res, next) {
   });
 });
 
+router.post('/single-scenario/', function(req, res, next) {
+  scenarioService.getSingleScenario(req.body, function(err, scenario) {
+    if (err) { return res.json({error: err}); }
+    return res.json({scenario: scenario});
+  });
+});
+
 module.exports = router;

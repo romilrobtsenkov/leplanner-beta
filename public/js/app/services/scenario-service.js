@@ -11,7 +11,8 @@
     return {
       getScenarios: getScenarios,
       createScenario: createScenario,
-      searchScenarios: searchScenarios
+      searchScenarios: searchScenarios,
+      getSingleScenario: getSingleScenario
 
     };
 
@@ -24,6 +25,14 @@
 
     function searchScenarios(query) {
       return $http.post('/api/scenarios/search',query)
+        .then(function(response) {
+          return response.data;
+        });
+    }
+
+    function getSingleScenario(id) {
+      console.log(id);
+      return $http.post('/api/scenarios/single-scenario',{id: id})
         .then(function(response) {
           return response.data;
         });

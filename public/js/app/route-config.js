@@ -28,6 +28,15 @@
           },
         }
       })
+      .when('/scenario/:id', {
+        templateUrl: '/js/app/scenario/scenario.html',
+        controller: 'ScenarioController',
+        resolve: {
+          data: function (userRouteService) {
+            return userRouteService.checkUser();
+          },
+        }
+      })
       .when('/create', {
         templateUrl: '/js/app/create/create.html',
         controller: 'CreateController',
