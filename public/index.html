@@ -38,14 +38,13 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-
+        <a class="navbar-brand" href="#/"></a>
       </div>
 
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
         <ul class="nav navbar-nav">
-          <li ><a class="navbar-brand" href="#/"></a>
           <li ><a style="cursor:pointer" class="dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="false" >LePlanner</a>
             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
               <li><a href="/#/">Home</a></li>
@@ -73,10 +72,11 @@
           </ul>
         </div>
 
-        <div style="margin-right: 50px;" class="header-search inner-addon right-addon pull-right" ng-controllerr="SearchCtrl" >
-
-          <a href="/#/search" ng-click="search()"><i type="submit" class="glyphicon glyphicon-search" ng-click="search()"></i></a>
-          <input type="text" name="search" ng-model="name" class="form-control" placeholder="Search">
+        <div style="margin-right: 50px;" class="header-search inner-addon right-addon pull-right" >
+          <form ng-submit="searchFromTop()">
+            <a href="/#/search" ng-click="searchFromTop($event)"><i type="submit" class="glyphicon glyphicon-search" ng-click="search()"></i></a>
+            <input type="text" name="search" ng-model="top_search_word" class="form-control" placeholder="Search">
+          </form>
         </div>
 
       </div><!-- /.navbar-collapse -->
@@ -115,6 +115,7 @@
   <script src="/bower/angular-resource/angular-resource.min.js"></script>
   <script src="/bower/lodash/dist/lodash.min.js"></script>
   <script src="/bower/angularjs-dropdown-multiselect/dist/angularjs-dropdown-multiselect.min.js"></script>
+  <script src="/bower/angular-utils-pagination/dirPagination.js"></script>
   <script src="/js/app/app.js"></script>
   <script src="/js/app/route-config.js"></script>
   <script src="/js/app/main/main.js"></script>

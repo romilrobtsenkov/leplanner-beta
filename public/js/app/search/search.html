@@ -4,15 +4,20 @@
 	<div class="row search-fields-top">
 		<form class='search-form' ng-submit="search()" >
 			<div class="col-sm-3">
-				<input class="form-control" type="text" ng-model="search_word" name="name" placeholder="Search">
+				<input id='search-word-input' class="form-control" type="text" ng-model="search_word" name="name" placeholder="Search" autofocus >
 			</div>
-		  <div style="display: inline; width: 240px !important;" ng-dropdown-multiselect="" options="subjects" selected-model="selected_subjects" extra-settings="subjectSettings" translation-texts="subjectText"></div>
-
-			<div style="display: inline; width: 240px;" ng-dropdown-multiselect="" options="methods" selected-model="selected_method" extra-settings="methodSettings" translation-texts="methodText"></div>
-
-			<div style="display: inline; width: 240px;" ng-dropdown-multiselect="" options="stages" selected-model="selected_stage" extra-settings="stageSettings" translation-texts="stageText"></div>
-
-			<input style="width:100px;display: inline" class="btn btn-primary btn-block" type="submit" value="Search">
+			<div class="col-sm-3">
+		  	<div style="display: inline; width: 100%;" ng-dropdown-multiselect="" options="subjects" selected-model="selected_subjects" extra-settings="subjectSettings" translation-texts="subjectText"></div>
+			</div>
+			<div class="col-sm-2">
+				<div style="display: inline; width: 100%;" ng-dropdown-multiselect="" options="methods" selected-model="selected_method" extra-settings="methodSettings" translation-texts="methodText"></div>
+			</div>
+			<div class="col-sm-2">
+				<div style="display: inline; width: 100%;" ng-dropdown-multiselect="" options="stages" selected-model="selected_stage" extra-settings="stageSettings" translation-texts="stageText"></div>
+			</div>
+			<div class="col-sm-2">
+				<input style="width: 100%; display: inline" class="btn btn-primary btn-block" type="submit" value="Search">
+			</div>
 		</form>
 	</div>
 <!-- Search div where all the results are shown -->
@@ -43,7 +48,9 @@
 		<div class="col-sm-9">
 			<h4 class="results-heading">Found <strong>{{scenarios.length}}</strong>  scenarios <span ng-if="search_word_end">for keyword <strong >"{{search_word_end}}"</strong></span></h4>
 			<!-- ng-repeat that repeats the divs for each scenario in scenarios array/object -->
-			<div class="single_scenario_item" id="{{scenario._id}}" ng-repeat="scenario in scenarios | filter:query">
+			<!-- <div class="single_scenario_item" id="{{scenario._id}}" ng-repeat="scenario in scenarios"> -->
+			<!-- https://github.com/michaelbromley/angularUtils/tree/master/src/directives/pagination -->
+			<div class="single_scenario_item" id="{{scenario._id}}" dir-paginate="scenario in scenarios | itemsPerPage: 10">
 
 		    <div class="row">
 		      <div class="col-sm-12">
@@ -81,6 +88,10 @@
 		      </div>
 		    </div>
 			</div>
+
+			<!-- https://github.com/michaelbromley/angularUtils/tree/master/src/directives/pagination -->
+			<dir-pagination-controls></dir-pagination-controls>
+
 		</div>
 	</div>
 </div>

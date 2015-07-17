@@ -9,11 +9,15 @@
 
     function SearchController($scope,$rootScope,scenarioService,metaService) {
 
+      $scope.$on('triggerSearchForm', function(e) {
+        angular.element('#search-word-input').trigger('focus');
+        $scope.search();
+      });
+
       //  arrays to store selected multiple choices
       $scope.selected_subjects = [];
       $scope.selected_method = [];
       $scope.selected_stage = [];
-
 
       $scope.subjectSettings = {
         externalIdProp: '',
@@ -48,9 +52,24 @@
       $scope.methods = metaService.getMethodJSONList();
       $scope.stages = metaService.getStageJSONList();
 
-      searchScenarios();
+      if(typeof $rootScope.top_search_word !== 'undefined'){
+        $scope.search_word = $rootScope.top_search_word;
+        searchScenarios({search_word: $rootScope.top_search_word});
+        $rootScope.top_search_word = null;
+        $scope.$parent.top_search_word = null;
+        angular.element('#search-word-input').trigger('focus');
+      }else{
+        searchScenarios();
+      }
 
       $scope.search = function() {
+
+        if(typeof $rootScope.top_search_word !== 'undefined'){
+          $scope.search_word = $rootScope.top_search_word;
+          searchScenarios({search_word: $rootScope.top_search_word});
+          $rootScope.top_search_word = null;
+          $scope.$parent.top_search_word = null;
+        }
 
         var subjects = [];
         var selected_subjects_labels = [];
@@ -60,13 +79,6 @@
         $scope.selected_subjects.forEach(function(element) {
           selected_subjects_labels.push(element.label);
         });
-
-        /*$scope.selected_method.forEach(function(element) {
-          selected_method_labels.push(element.label);
-        });
-        $scope.selected_stage.forEach(function(element) {
-          selected_stage_labels.push(element.label);
-        });*/
         if(typeof $scope.selected_method.label != 'undefined'){
           selected_method_labels.push($scope.selected_method.label);
         }

@@ -215,9 +215,9 @@ a.contains-profile-img {
   font-size: 12px;
   margin-left: 10px;
 }
-
+.search-form .multiselect-parent.btn-group.dropdown-multiselect,
 .btn-fixed-width {
-  width: 180px !important;
+  width: 100% !important;
 }
 
 .simple-browse h3 {
@@ -269,12 +269,23 @@ span.not-selected {
   text-overflow: ellipsis;
 }
 
-.search-fields-top .col-sm-2 button {
+.search-fields-top .col-sm-2 button,
+.search-fields-top .col-sm-3 button {
   text-align: left;
 }
-.search-fields-top .col-sm-2 .caret {
-  float: right;
+
+.search-fields-top .col-sm-2 .caret,
+.search-fields-top .col-sm-3 .caret {
+  position: absolute;
+  right: 10px;
   margin-top: 10px;
+}
+
+.search-fields-top .dropdown-menu>li>a span {
+  padding-left: 18px;
+}
+.search-fields-top .dropdown-menu>li>a span.glyphicon {
+  padding-left: 0px;
 }
 
 .search-fields-top .col-sm-2,

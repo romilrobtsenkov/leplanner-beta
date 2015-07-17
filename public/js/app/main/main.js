@@ -19,5 +19,18 @@
           });
       };
 
+      $scope.searchFromTop = function($event){
+        if($location.path() == '/search'){
+          $rootScope.top_search_word = $scope.top_search_word;
+          $scope.$broadcast ('triggerSearchForm');
+        }else{
+          if(typeof $event !== 'undefined'){
+            $event.preventDefault();
+          }
+          $rootScope.top_search_word = $scope.top_search_word;
+          $location.path('/search');
+        }
+      };
+
     } // MainController end
 }());
