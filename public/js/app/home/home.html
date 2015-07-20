@@ -42,23 +42,19 @@
           </ul>
 
             <div>
-                <div class="col-xs-6 col-sm-3" id="scenarios_list" ng-repeat="scenario in scenarios | limitTo:4" >
+                <div class="col-xs-6 col-sm-3" id="scenarios_list" ng-repeat="scenario in scenarios" >
                   <div class="thumbnail thumbnail-first-page">
-                      <a href="/#/scenario/{{scenario._id}}">
-                        <img class="thumbnail-preview" src="./images/thumbnail_200.png" alt="Generic placeholder thumbnail">
-                      </a>
-                      <p id="{{scenario._id}}">
-                        <h4>{{scenario.name}}</h4>
-                          <p class="thumbnail-caption">{{scenario.description | limitTo: 60}}{{scenario.description.length > 60 ? '...' : ''}}</p>
-
-                              <span class="favorited-and-comments">
-                                  <span class="glyphicon glyphicon-heart">{{scenario.favorites_count}}</span>
-                                  <span class="glyphicon glyphicon-comment">2</span>
-                              </span>
-
-                              <a class="open-link pull-right" href="/#/scenario/{{scenario._id}}">OPEN<span class="glyphicon glyphicon-chevron-right"></span></a>
-
-                      </div>
+                    <a href="/#/scenario/{{scenario._id}}">
+                      <img class="thumbnail-preview" src="./images/thumbnail_200.png" alt="Generic placeholder thumbnail">
+                    </a>
+                    <h4>{{scenario.name}}</h4>
+                    <p class="thumbnail-caption">{{scenario.description | limitTo: 60}}{{scenario.description.length > 60 ? '...' : ''}}</p>
+                      <span class="favorited-and-comments">
+                        <span class="glyphicon glyphicon-heart"><span class="icon-space-after">{{scenario.favorites_count}}</span></span>
+                        <span class="glyphicon glyphicon-comment"><span class="icon-space-after">2</span></span>
+                      </span>
+                      <a class="open-link pull-right" href="/#/scenario/{{scenario._id}}">OPEN<span class="glyphicon glyphicon-chevron-right"></span></a>
+                    </div>
                   </div>
                 </div>
 

@@ -18,19 +18,21 @@
       getScenarios();
 
       function getScenarios(query){
-        var q;
+        var q = {};
+        q.limit = 4;
+
         if(typeof query == 'undefined'){
-          q= {order: 'latest'};
+          q.order = 'latest';
         }else{
           switch (query) {
             case 'latest':
-                q= {order: 'latest'};
+                q.order = 'latest';
               break;
               case 'popular':
-                  q= {order: 'popular'};
+                  q.order = 'popular';
                 break;
             default:
-              q= {order: 'latest'};
+              q.order = 'latest';
           }
         }
 

@@ -1,4 +1,7 @@
-<div class="container main-content">
+<div class="container main-content" ng-if="!scenario">
+  Loading...
+</div>
+<div class="container main-content" ng-if="scenario">
 
   <img class="full-scenario-image" src="./images/full_scenario.png" alt="Scenario">
 
@@ -35,19 +38,19 @@
       <div class="similar-scenarios">
         <h3>Popular scenarios</h3>
 
-        <div class="">
+        <div ng-repeat="scenario in scenarios">
           <div class="thumbnail thumbnail-first-page">
-          <a href="">
-            <img class="thumbnail-preview" src="./images/thumbnail_200.png" alt="Generic placeholder thumbnail">
-          </a>
-          <!-- Scenario name -->
-          <div class="caption">
+            <a href="/#/scenario/{{scenario._id}}">
+              <img class="thumbnail-preview" src="./images/thumbnail_200.png" alt="Generic placeholder thumbnail">
+            </a>
             <h4>{{scenario.name}}</h4>
-            <!-- Scenario description -->
-            <p class="thumbnail-caption">{{scenario.description}}</p>
-            <p class="clearfix"><span class="favorited-and-comments"><span class="glyphicon glyphicon-heart"></span> 23 <span class="glyphicon glyphicon-comment"></span> 2</span><a class="open-link pull-right" href="#">OPEN <span class="glyphicon glyphicon-chevron-right"></span></a></p>
-          </div>
-          </div>
+            <p class="thumbnail-caption">{{scenario.description | limitTo: 60}}{{scenario.description.length > 60 ? '...' : ''}}</p>
+              <span class="favorited-and-comments">
+                <span class="glyphicon glyphicon-heart"><span class="icon-space-after">{{scenario.favorites_count}}</span></span>
+                <span class="glyphicon glyphicon-comment"><span class="icon-space-after">2</span></span>
+              </span>
+              <a class="open-link pull-right" href="/#/scenario/{{scenario._id}}">OPEN<span class="glyphicon glyphicon-chevron-right"></span></a>
+            </div>
         </div>
 
       </div>
@@ -63,26 +66,23 @@
 
         <div class="row">
           <div class="col-sm-12">
-            <h2><strong>{{scenario.name}}</strong></h2>
-            <div ng-if="user">
-              <div ng-if="!is_favorite">
-                  <a ng-click="addRemoveFavorite()" class="add-favorite-button btn btn-success btn-sm pull-right"><span class="glyphicon glyphicon-heart"></span> Favorite</a>
-              </div>
-              <div ng-if="is_favorite">
-                <a ng-click="addRemoveFavorite('remove')" class="add-favorite-button btn btn-default btn-sm pull-right"><span class="glyphicon glyphicon-heart-empty"></span> Unfavorite</a>
-              </div>
+            <h2 class="pull-left" ><strong>{{scenario.name}}</strong></h2>
+            <div ng-if="!is_favorite && user">
+                <a ng-click="addRemoveFavorite()" class="add-favorite-button btn btn-success btn-sm pull-right"><span class="glyphicon glyphicon-heart"></span> Favorite</a>
+            </div>
+            <div ng-if="is_favorite && user">
+              <a ng-click="addRemoveFavorite('remove')" class="add-favorite-button btn btn-default btn-sm pull-right"><span class="glyphicon glyphicon-heart-empty"></span> Unfavorite</a>
             </div>
             <div ng-if="!user">
-              <a class="pull-right" href="/#/login">Login to Subscribe</a>
+              <a class="pull-right" ng-click='navigateToLogin($event)' href="/#/login">Login to Subscribe</a>
             </div>
           </div>
         </div>
 
         <div class="row">
           <div class="col-sm-12">
-            <span class="glyphicon glyphicon-calendar"></span> <span> {{scenario.created | date:'dd.MM.yyyy HH:mm'}}</span><br>
+            <span class="glyphicon glyphicon-calendar"></span> <span> {{scenario.created | date:'dd.MM.yyyy HH:mm'}}</span> | <span class="glyphicon glyphicon-eye-open"></span> <span> {{scenario.view_count}}</span>
             <a class="print-button btn btn-sm pull-right" ng-if="user._id==scenario.author._id" href="/#/edit-scenario/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> Edit</a>
-            <span class="glyphicon glyphicon-eye-open"></span> <span> {{scenario.view_count}}</span><br />
           </div>
         </div>
 
@@ -107,37 +107,53 @@
 
       <div class="commets">
 
-        <h3>Comments (1)</h3>
-
-        <!-- First Comment -->
-        <article class="row">
-        <div class="col-md-2 col-sm-2 hidden-xs">
-          <figure class="thumbnail">
-            <img style="min-height: 81px;" class="img-responsive" src="./images/unnamed.png">
-          </figure>
+        <p ng-if="!user"><strong>You have to login to comment!</strong></p>
+        <div ng-if="user">
+          <form ng-submit="addComment(comment)">
+            <div class="form-group">
+              <label for="comment-text"><h3>Add a comment</h3></label><br>
+              <div ng-if='save_error' class="alert alert-danger" role="alert">{{save_error}}</div>
+              <div ng-if='save_success' class="alert alert-success" role="alert">{{save_success}}</div>
+              <textarea id="comment-text" name="comment-text" ng-model="comment.text" class="form-control" rows="5" placeholder="Write comment here"></textarea>
+            </div>
+            <div class="form-submit">
+              <button type="submit" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-share-alt"></span> ADD</button>
+            </div>
+          </form>
         </div>
-        <div class="col-sm-10 comment-closer">
-          <div class="panel panel-default">
-            <div class="panel-body">
-              <header class="text-left">
-                <div class="comment-user">Kati Kask</div>
-                <time class="comment-date"><span class="glyphicon glyphicon-time"></span> 03.05.2015</time>
-              </header>
-              <div class="comment-post">
-                <p>
-                  {{scenario.description}}
-                </p>
+        <br>
+
+        <div ng-if="comments">
+
+          <h3>Comments (1)</h3>
+
+          <!-- First Comment -->
+          <article class="row">
+          <div class="col-md-2 col-sm-2 hidden-xs">
+            <figure class="thumbnail">
+              <img style="min-height: 81px;" class="img-responsive" src="./images/unnamed.png">
+            </figure>
+          </div>
+          <div class="col-sm-10 comment-closer">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <header class="text-left">
+                  <div class="comment-user">Kati Kask</div>
+                  <time class="comment-date"><span class="glyphicon glyphicon-time"></span> 03.05.2015</time>
+                </header>
+                <div class="comment-post">
+                  <p>
+                    {{scenario.description}}
+                  </p>
+                </div>
+                <p class="text-right"><a href="#" disabled="disabled" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-share-alt"></span> Respond</a></p>
               </div>
-              <p class="text-right"><a href="#" disabled="disabled" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-share-alt"></span> Respond</a></p>
             </div>
           </div>
+          </article>
         </div>
-        </article>
 
-      <!-- Add a comment info -->
-      <h3>Add a comment</h3>
-
-      <p><strong>You have to login to comment!</strong></p>
+        <p ng-if="!comments">Be the first one to comment!</p>
 
       </div>
     </div>

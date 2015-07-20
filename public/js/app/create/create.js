@@ -34,7 +34,7 @@
               description: scenario.description
             };
 
-            scenarioService.createScenario(new_scenario)
+            scenarioService.createScenario({scenario: new_scenario, user: {_id: $rootScope.user._id}})
               .then(function(data) {
                 console.log(data);
                 if(data.success){
@@ -55,6 +55,10 @@
 
                 if(data.error){
                   switch (data.error.id) {
+                    case 100:
+                      // user changed
+                      $location.path('/');
+                      break;
                     case 0:
                       $scope.errorMessage = 'Title empty';
                       break;
@@ -64,30 +68,6 @@
                 }
 
             });
-
-
-            //  sends the scenario object to server side - index.js
-            /*$http.post('/api/savescenario', scenario) //  sends object to /api/savescenario (index.js)
-            .success(function(data, status, headers, config) {
-              console.log('saved');
-              $scope.successMessage = "Scenario has been submitted successfully";
-              $scope.errorMessage = null;
-              //  resets the selected criterions
-              $scope.name = null;
-              $scope.subject = null;
-              $scope.language = null;
-              $scope.license = null;
-              $scope.materialType = null;
-              $scope.method = null;
-              $scope.stage = null;
-              $scope.description = null;
-            }).
-            error(function(data, status, headers, config) {
-              // called asynchronously if an error occurs
-              // or server returns response with an error status.
-              $scope.errorMessage = "There was an error while submitting scenario";
-              $scope.successMessage = null;
-            });*/
         }
       };
 

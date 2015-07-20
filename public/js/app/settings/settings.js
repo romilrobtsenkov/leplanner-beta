@@ -8,7 +8,10 @@
     SettingsController.$inject = ['$scope','$rootScope','$location','$timeout','userService'];
 
     function SettingsController($scope,$rootScope,$location,$timeout,userService) {
+      console.log(typeof $rootScope.user);
+      /// UNDEFINED?
 
+      console.log('hello');
       $scope.user = $rootScope.user;
 
       function fillUpdateProfileForm() {
@@ -26,7 +29,7 @@
            $scope.user.new_email != $scope.user.email
           ){
 
-            userService.updateUserProfile($scope.user)
+            userService.updateUserProfile({user: $scope.user})
               .then(function(data) {
                 //console.log(data);
                 if(data.user){
@@ -40,6 +43,10 @@
 
                 if(data.error){
                   switch(data.error.id) {
+                    case 100:
+                      // user changed
+                      $location.path('/');
+                      break;
                     case 0:
                       $scope.updateProfile_error = 'Please enter your first name';
                       break;
@@ -77,17 +84,21 @@
           ){
             if(user.new_password == user.new_password_twice){
 
-              userService.updateUserPassword(user)
+              userService.updateUserPassword({user: user})
                 .then(function(data) {
                   console.log(data);
                   if(data.user){
-                    $scope.updatePassword_sucess = 'Update successful';
+                    $scope.updatePassword_success = 'Update successful';
                     $scope.updatePassword_error = null;
-                    $timeout(function() { $scope.updatePassword_sucess = null; }, 2000);
+                    $timeout(function() { $scope.updatePassword_success = null; }, 2000);
                   }
 
                   if(data.error){
                     switch(data.error.id) {
+                      case 100:
+                        // user changed
+                        $location.path('/');
+                        break;
                       case 5:
                         $scope.updatePassword_error = 'Password has to be min 8 chars long';
                         break;

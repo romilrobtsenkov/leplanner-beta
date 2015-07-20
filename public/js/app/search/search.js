@@ -19,7 +19,7 @@
       if(typeof $rootScope.search_page_nr !== 'undefined'){
         $scope.search_page_nr = $rootScope.search_page_nr;
       }
-      console.log($scope.search_page_nr);
+      //console.log($scope.search_page_nr);
 
       createDropDownMenus();
       getSearchParamsAndSearch();
@@ -31,7 +31,7 @@
 
       $scope.pageChanged = function(new_page_nr) {
         $rootScope.search_page_nr = new_page_nr;
-        console.log($scope.search_page_nr);
+        //console.log($scope.search_page_nr);
       };
 
       function createDropDownMenus(){
@@ -110,7 +110,6 @@
           $scope.search_word = $rootScope.top_search_word;
           $rootScope.top_search_word = undefined;
           $scope.$parent.top_search_word = undefined;
-          console.log('here');
           angular.element('#search-word-input').trigger('focus');
         }
 

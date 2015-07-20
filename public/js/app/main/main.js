@@ -8,13 +8,12 @@
     MainController.$inject = ['$scope','$rootScope','$location','userService',];
 
     function MainController($scope,$rootScope,$location,userService) {
-
+      //console.log($rootScope.user);
       $scope.logout = function(){
         userService.logOutUser()
           .then(function(data){
             console.log(data);
-            $scope.user = null;
-            $rootScope.user = null;
+            $rootScope.user = undefined;
             $location.path('/');
           });
       };

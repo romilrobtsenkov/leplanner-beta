@@ -1,5 +1,6 @@
 var config = require('../config/config');
 var Scenario = require('../models/scenario').Scenario;
+var Comment = require('../models/comments').Comment;
 
 
 exports.getScenarios = function(q, next) {
@@ -22,12 +23,22 @@ exports.getScenarios = function(q, next) {
     }
   }
 
+  if(typeof q != 'undefined' && typeof q.limit != 'undefined'){
+    query.limit(q.limit);
+  }else{
+    query.limit(10);
+  }
+
+  if(typeof q != 'undefined' && typeof q.exclude != 'undefined'){
+    args._id = {'$ne': q.exclude };
+  }
+
   args.deleted = false;
   //args.draft = false;
   query.where(args);
   query.select('-favorites');
   query.sort(sort_args);
-  query.limit(4);
+
 
   query.exec(function(err, scenarios) {
     if (err) return next(err);
@@ -122,12 +133,12 @@ exports.addRemoveFavorite = function(params, next){
     if(typeof params.remove === 'undefined'){
 
       // ADD
-      if(scenario.favorites.indexOf(params.user_id) !== -1){
+      if(scenario.favorites.indexOf(params.user._id) !== -1){
         return next(null, {success: 'add'});
       }else{
 
         // add to favorite array
-        scenario.favorites.push(params.user_id);
+        scenario.favorites.push(params.user._id);
         scenario.favorites_count = scenario.favorites.length;
 
         scenario.save(function(err, scenario){
@@ -139,12 +150,12 @@ exports.addRemoveFavorite = function(params, next){
     }else{
 
       // REMOVE
-      if(scenario.favorites.indexOf(params.user_id) === -1){
+      if(scenario.favorites.indexOf(params.user._id) === -1){
         return next(null, {success: 'remove'});
       }else{
 
         // remove from favorite array
-        var index = scenario.favorites.indexOf(params.user_id);
+        var index = scenario.favorites.indexOf(params.user._id);
         scenario.favorites.splice(index, 1);
         scenario.favorites_count = scenario.favorites.length;
 
@@ -157,6 +168,48 @@ exports.addRemoveFavorite = function(params, next){
     }
 
   });
+};
+
+exports.getComments = function(scenario_id, next) {
+
+  var query = Comment.find();
+
+  args = {};
+
+  if(typeof scenario_id != 'undefined' ){
+    //args
+
+  }else{
+    return next({'error': 'no scenario id sent'});
+  }
+
+  args.deleted = false;
+
+  query.where(args);
+  query.sort({'created': -1});
+
+
+  query.exec(function(err, comments) {
+    if (err) return next(err);
+    return next(null, comments);
+  });
+
+};
+
+
+exports.saveComment = function(comment, next) {
+  console.log(comment);
+  if(!comment.name){ return next({id: 0, message: 'Please enter scenario title'}); }
+  // TODO full validation
+
+  var new_comment = new Comment(comment);
+
+    new_comment.save(function(err, comment){
+      if(err){ return next(err); }
+
+      return next(null, 'Saved successfully, id:'+ comment._id);
+    });
+
 };
 
 exports.saveScenario = function(scenario, next) {

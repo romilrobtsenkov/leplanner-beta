@@ -81,9 +81,9 @@ router.post('/recover', function(req, res){
 
 });
 
-router.post('/updateprofile', function(req, res, next) {
+router.post('/updateprofile', restrict, function(req, res, next) {
 
-  userService.updateUserProfile(req.body, function(err, user) {
+  userService.updateUserProfile(req.body.user, function(err, user) {
     if (err) { return res.json({error: err}); }
     if(user){
       user.password = undefined;
@@ -97,9 +97,9 @@ router.post('/updateprofile', function(req, res, next) {
 
 });
 
-router.post('/updatepassword', function(req, res, next) {
+router.post('/updatepassword', restrict, function(req, res, next) {
 
-  userService.updateUserPassword(req.body, function(err, user) {
+  userService.updateUserPassword(req.body.user, function(err, user) {
     if (err) { return res.json({error: err}); }
     if(user){
       res.json({user: {id: user._id}});
