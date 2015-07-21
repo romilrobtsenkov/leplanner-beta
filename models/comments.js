@@ -4,6 +4,7 @@ var Schema = mongoose.Schema;
 var scenarioSchema = new Schema({
     text: { type: String, required: true },
     author: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+    scenario: { type: mongoose.Schema.Types.ObjectId, ref: 'Scenario'},
     created: { type: Date, default: Date.now},
     deleted: {type: Boolean, required: true, default: false}
 });

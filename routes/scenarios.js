@@ -39,9 +39,9 @@ router.post('/add-remove-favorite/',restrict, function(req, res, next) {
 });
 
 router.post('/add-comment/',restrict, function(req, res, next) {
-  scenarioService.addComment(req.body, function(err, response) {
+  scenarioService.addComment(req.body, function(err, comments) {
     if (err) { return res.json({error: err}); }
-    return res.json(response);
+    return res.json(comments);
   });
 });
 

@@ -26,41 +26,42 @@
   <!-- //////////////////////////// -->
   <!-- ||||||   THUMBNAILS   |||||| -->
   <!-- //////////////////////////// -->
-  	<!-- tab controller to change how subjects are shown on home page-->
-  <div class="row">
-      <div class="container">
-          <section>
+  <div class="row home-page-carousel">
+    <div class="container">
+      <section>
 
-          <!-- makes the clicked tab active-->
-          <ul class="nav nav-tabs nav-tab-pop">
-              <li ng-class="{active:isActive('latest')}">
-                  <a href ng-click="updateList('latest')">Latest</a>
-              </li>
-              <li ng-class="{active:isActive('popular')}">
-                  <a href ng-click="updateList('popular')">Popular</a>
-              </li>
-          </ul>
+      <!-- makes the clicked tab active-->
+        <ul class="nav nav-tabs nav-tab-pop">
+          <li ng-class="{active:isActive('latest')}">
+            <a href ng-click="updateList('latest')">Latest</a>
+          </li>
+          <li ng-class="{active:isActive('popular')}">
+            <a href ng-click="updateList('popular')">Popular</a>
+          </li>
+        </ul>
 
-            <div>
-                <div class="col-xs-6 col-sm-3" id="scenarios_list" ng-repeat="scenario in scenarios" >
-                  <div class="thumbnail thumbnail-first-page">
-                    <a href="/#/scenario/{{scenario._id}}">
-                      <img class="thumbnail-preview" src="./images/thumbnail_200.png" alt="Generic placeholder thumbnail">
-                    </a>
-                    <h4>{{scenario.name}}</h4>
-                    <p class="thumbnail-caption">{{scenario.description | limitTo: 60}}{{scenario.description.length > 60 ? '...' : ''}}</p>
-                      <span class="favorited-and-comments">
-                        <span class="glyphicon glyphicon-heart"><span class="icon-space-after">{{scenario.favorites_count}}</span></span>
-                        <span class="glyphicon glyphicon-comment"><span class="icon-space-after">2</span></span>
-                      </span>
-                      <a class="open-link pull-right" href="/#/scenario/{{scenario._id}}">OPEN<span class="glyphicon glyphicon-chevron-right"></span></a>
-                    </div>
-                  </div>
-                </div>
-
-          </section>
+        <div class="col-xs-6 col-sm-3" id="scenarios_list" ng-repeat="scenario in scenarios" >
+          <div class="thumbnail thumbnail-first-page">
+            <a href="/#/scenario/{{scenario._id}}">
+              <img class="thumbnail-preview" src="./images/thumbnail_200.png" alt="Generic placeholder thumbnail">
+            </a>
+            <div class="caption">
+              <h4>{{scenario.name}}</h4>
+              <p class="thumbnail-caption">{{scenario.description | limitTo: 60}}{{scenario.description.length > 60 ? '...' : ''}}</p>
+              <p class="clearfix">
+                <span class="favorited-and-comments">
+                  <span class="glyphicon glyphicon-heart"><span class="icon-space-after">{{scenario.favorites_count}}</span></span>
+                  <span class="glyphicon glyphicon-comment"><span class="icon-space-after">{{scenario.comments_count}}</span></span>
+                </span>
+                <a class="open-link pull-right" href="/#/scenario/{{scenario._id}}">OPEN<span class="glyphicon glyphicon-chevron-right"></span></a>
+              </p>
+            </div>
+          </div>
         </div>
-</div>
+
+      </section>
+    </div>
+  </div>
 
   <h3>Subjects</h3>
           	<!-- show list of subjects -->

@@ -16,6 +16,7 @@ var scenarioSchema = new Schema({
     description: { type: String, required: false},
     favorites: { type: [mongoose.Schema.Types.ObjectId], ref: 'User', default: [] },
     favorites_count: { type: Number, default: 0},
+    comments_count: { type: Number, default: 0},
     view_count: { type: Number, default: 0},
     deleted: {type: Boolean, required: true, default: false},
     draft: {type: Boolean, required: true, default: false}

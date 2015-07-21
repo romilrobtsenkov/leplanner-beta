@@ -15,11 +15,13 @@
       });
 
       // search default pagination start
-      $scope.search_page_nr = 1;
       if(typeof $rootScope.search_page_nr !== 'undefined'){
         $scope.search_page_nr = $rootScope.search_page_nr;
+        console.log('here');
+      }else{
+        $rootScope.search_page_nr = 1;
       }
-      //console.log($scope.search_page_nr);
+      console.log($scope.search_page_nr);
 
       createDropDownMenus();
       getSearchParamsAndSearch();
@@ -138,7 +140,7 @@
         //return search_params;
         //var search_params = getSearchParams();
         $rootScope.searchParams = search_params;
-        $rootScope.search_page_nr = 'undefined';
+        $rootScope.search_page_nr = 1;
         searchScenarios(search_params);
       }
 

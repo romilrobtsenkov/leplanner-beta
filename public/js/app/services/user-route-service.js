@@ -31,7 +31,7 @@
             }else{
               deferred.resolve();
             }
-            return deferred.promise;
+            
           })
           .catch(function(fallback){
             $rootScope.user = undefined;
@@ -41,8 +41,9 @@
             }else{
               deferred.resolve();
             }
-            return deferred.promise;
           });
+
+          return deferred.promise;
       }
     };
   }

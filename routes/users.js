@@ -33,7 +33,7 @@ router.post('/create', function(req, res, next) {
 });
 
 router.post('/login', function(req, res, next) {
-    console.log(req.body);
+    //console.log(req.body);
     if (req.body.rememberMe) {
       req.session.cookie.maxAge = config.cookieMaxAge;
     }

@@ -170,45 +170,59 @@ exports.addRemoveFavorite = function(params, next){
   });
 };
 
-exports.getComments = function(scenario_id, next) {
+exports.getComments = function(params, next) {
 
   var query = Comment.find();
-
-  args = {};
-
-  if(typeof scenario_id != 'undefined' ){
-    //args
-
-  }else{
-    return next({'error': 'no scenario id sent'});
-  }
-
-  args.deleted = false;
-
-  query.where(args);
-  query.sort({'created': -1});
-
-
+  query.where({scenario: params.scenario_id, deleted: false});
+  query.populate('author', 'first_name last_name');
   query.exec(function(err, comments) {
     if (err) return next(err);
-    return next(null, comments);
+    return next(null, {comments: comments});
   });
 
 };
 
 
-exports.saveComment = function(comment, next) {
-  console.log(comment);
-  if(!comment.name){ return next({id: 0, message: 'Please enter scenario title'}); }
-  // TODO full validation
+exports.addComment = function(params, next) {
+  console.log('scenario text '+ params.comment.text);
+  console.log('user '+params.user._id);
+  if(!params.comment.text){ return next({id: 0, message: 'Comment can not be empty'}); }
+  if(!params.user._id){ return next({id: 1, message: 'User id missing'}); }
+  if(!params.scenario._id){ return next({id: 2, message: 'Scenario id missing'}); }
 
+  var comment = {
+    text: params.comment.text,
+    author: params.user._id,
+    scenario: params.scenario._id,
+  };
+
+  // save comment
   var new_comment = new Comment(comment);
+  new_comment.save(function(err){
+    if(err){ return next(err); }
 
-    new_comment.save(function(err, comment){
-      if(err){ return next(err); }
+    // update comment count
+    var query = Scenario.findOne();
+    query.where({_id: params.scenario._id});
+    query.exec(function(err, scenario) {
+      if (err) return next(err);
+      scenario.comments_count = scenario.comments_count+1;
+      scenario.save(function(err, scenario){
+        if (err) return next(err);
 
-      return next(null, 'Saved successfully, id:'+ comment._id);
+        // return all comments
+        var query = Comment.find();
+        query.where({scenario: params.scenario._id, deleted: false});
+        query.populate('author', 'first_name last_name');
+        query.exec(function(err, comments) {
+          if (err) return next(err);
+          return next(null, {comments: comments});
+        });
+
+      });
     });
+
+  });
 
 };
 

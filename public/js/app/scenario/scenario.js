@@ -5,9 +5,9 @@
     .module('app')
     .controller('ScenarioController', ScenarioController);
 
-    ScenarioController.$inject = ['$scope','$rootScope','$routeParams','$location','scenarioService'];
+    ScenarioController.$inject = ['$scope','$rootScope','$routeParams','$location','$timeout','scenarioService'];
 
-    function ScenarioController($scope,$rootScope,$routeParams,$location,scenarioService) {
+    function ScenarioController($scope,$rootScope,$routeParams,$location,$timeout,scenarioService) {
 
       if(typeof $routeParams.id !== 'undefined'){
         $scope.scenario_id = $routeParams.id;
@@ -28,6 +28,7 @@
             $scope.scenario = data.scenario;
             $scope.is_favorite = data.is_favorite;
             getSidebarScenarios();
+            getComments();
           }
 
           if(data.error){
@@ -41,6 +42,21 @@
           .then(function(data) {
             if(data.scenarios){
               $scope.scenarios = data.scenarios;
+            }
+            if(data.error){
+              console.log(data.error);
+            }
+        });
+      }
+
+      function getComments(){
+        scenarioService.getComments({scenario_id: $scope.scenario._id})
+          .then(function(data) {
+            console.log(data);
+            if(data.comments){
+              if(data.comments.length > 0){
+                $scope.comments = data.comments;
+              }
             }
             if(data.error){
               console.log(data.error);
@@ -65,7 +81,6 @@
           .then(function(data) {
 
             if(data.success){
-              //DID NOT update scenario object favorites array
 
               if(data.success == 'remove'){
                 $scope.is_favorite = false;
@@ -84,7 +99,6 @@
                   console.log(data.error);
 
               }
-              console.log(data.error);
             }
         });
       };
@@ -98,14 +112,48 @@
       $scope.addComment = function(comment){
         if(typeof comment === 'undefined' || typeof comment.text == 'undefined' ){
           $scope.save_error = "Comment text cannot be empty";
+          $timeout(function() { $scope.save_error = null; }, 2000);
           return;
         }
 
-        if($scope){
+        var params = {
+          comment: {
+            text: comment.text
+          },
+          user: {
+            _id: $rootScope.user._id
+          },
+          scenario: {
+            _id: $scope.scenario_id
+          }
+        };
 
-        }
+        scenarioService.addComment(params)
+          .then(function(data) {
+            if(data.comments){
+              $scope.comments = data.comments;
+              $scope.scenario.comments_count = data.comments.length;
+              comment.text = undefined;
+              $scope.save_success = "Comment posted successfully!";
+              $timeout(function() { $scope.save_success = null; }, 2000);
+            }
 
-        console.log(comment);
+            if(data.error){
+              switch (data.error.id) {
+                case 100:
+                  // user changed
+                  $location.path('/');
+                  break;
+                case 0:
+                  $scope.save_error = "Comment text cannot be empty";
+                  $timeout(function() { $scope.save_error = null; }, 2000);
+                  break;
+                default:
+                  console.log(data.error);
+              }
+            }
+        });
+
       };
 
     }

@@ -9,9 +9,7 @@
 
     function SettingsController($scope,$rootScope,$location,$timeout,userService) {
       console.log(typeof $rootScope.user);
-      /// UNDEFINED?
 
-      console.log('hello');
       $scope.user = $rootScope.user;
 
       function fillUpdateProfileForm() {
