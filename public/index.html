@@ -32,7 +32,7 @@
       <!-- Brand and toggle get grouped for better mobile display -->
       <div class="navbar-header">
 
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
           <span class="sr-only">Toggle navigation</span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
@@ -42,34 +42,42 @@
       </div>
 
       <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse">
+      <div class="collapse navbar-collapse" id="navbar-collapse">
+        <!--<div>
+          <ul class="nav navbar-nav menu-links pull-left">
+            <li><a href="/#/search">Search</a></li>
+          <ul>
+        </div>-->
 
-        <ul class="nav navbar-nav">
-          <li><a href="/#/">Home</a></li>
-          <li><a href="/#/search">Search</a></li>
-          <li><a href="/#/create">Create Scenario</a></li>
-        </ul>
-
-        <!-- Login button with "My profile" and "Log out" options -->
+        <!-- CREATE ALTERNATIVE LAYOUT FOR XS DEVICES / LINK -->
         <a ng-hide=user class="pull-right btn btn-primary btn-sm login-top" href="/#/login" ng-click="navigateToLogin($event)" >Log in</a>
 
-        <div class="header-search dropdown pull-right" ng-show=user {{user.first_name}}>
-          <a href="/#/profile/{{user._id}}"><!--<img src="{{user.google.image}}" alt="myFace" class="img-square" style="height:30px;width:30px">--></a>
-          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
-            {{user.first_name}}
-            <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-            <li role="presentation"><a role="menuitem" tabindex="-1" href="/#/user/{{user._id}}">My profile</a></li>
-            <li role="presentation"><a role="menuitem" tabindex="-1" href="/#/settings/">Settings</a></li>
-            <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="logout()" href="#">Log out</a></li>
-          </ul>
+
+        <!-- CREATE ALTERNATIVE LAYOUT FOR XS DEVICES / LINK ONE BENEATH ANOTHER // PROFILE/ CREATE (SEARCH!! AND LOGIN!!) SETTINGS LOG OUT--> 
+        <div class=" pull-right" ng-show="user">
+          <a style="margin-top: 3px;" class="btn" href="/#/profile/{{user._id}}">
+            <img src="./images/profile.png" alt="myFace" class="img-square" style="height:30px;width:30px">
+            <span>{{user.first_name}} {{user.last_name}}</span>
+          </a>
+
+          <div class="dropdown pull-right">
+            <a style=" padding: 11px; margin-top: 3px;"role="button" class="dropdown-toggle btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+              <span class="top-menu-dropdown-icon glyphicon glyphicon-triangle-bottom"></span>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="/#/create"><span class="glyphicon glyphicon-plus"></span> Create scenario</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="/#/user/{{user._id}}"><span class="glyphicon glyphicon-user"></span> My profile</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="/#/settings/"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+              <li role="separator" class="divider"></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="logout()" href="#"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
+            </ul>
+          </div>
         </div>
 
-        <div style="margin-right: 50px;" class="header-search inner-addon right-addon pull-right" >
+        <div style="margin-right: 10px;" class="header-search inner-addon right-addon pull-right" >
           <form ng-submit="searchFromTop()">
             <a href="/#/search" ng-click="searchFromTop($event)"><i type="submit" class="glyphicon glyphicon-search" ng-click="search()"></i></a>
-            <input type="text" name="search" ng-model="top_search_word" class="form-control" placeholder="Search">
+            <input type="text" name="search" ng-model="top_search_word" class="form-control" placeholder="Search scenarios">
           </form>
         </div>
 
