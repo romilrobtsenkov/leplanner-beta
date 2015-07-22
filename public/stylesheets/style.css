@@ -47,8 +47,8 @@ h6, .h6 {
   color: #fff !important;
   font-weight: normal !important;
   text-shadow: none !important;
-  margin-top: 7px;
-  margin-right: 20px;
+  margin-top: 3px;
+  margin-right: 0;
   background-color: #419641 !important;
 }
 
@@ -59,12 +59,12 @@ h6, .h6 {
   font-weight: normal !important;
   text-shadow: none !important;
   margin-top: 7px;
-  display: inline-block !important;
+  display: inline-block;
   line-height: 16px !important;
 }
 
 .top-menu-dropdown-icon {
-  
+  font-size: 10px;
 }
 
 .login-top {
@@ -736,7 +736,7 @@ p.content-for-notification {
 
 .search-dash {
   margin-right: 20px;
-  width: 400px;
+  width: 30%;
 }
 
 .dash-scenario-label {
