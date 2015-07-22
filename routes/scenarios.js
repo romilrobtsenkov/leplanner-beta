@@ -10,6 +10,13 @@ router.post('/scenarios-list/', function(req, res, next) {
   });
 });
 
+router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
+  scenarioService.getDashScenarios(req.body, function(err, scenarios) {
+    if (err) { return res.json({error: err}); }
+    return res.json(scenarios);
+  });
+});
+
 router.post('/create/',restrict, function(req, res, next) {
   scenarioService.saveScenario(req.body.scenario, function(err, success) {
     if (err) { return res.json({error: err}); }

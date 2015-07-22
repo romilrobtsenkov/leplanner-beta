@@ -17,14 +17,14 @@
 
       getScenarios();
 
-      function getScenarios(query){
+      function getScenarios(){
         var q = {};
         q.limit = 4;
 
-        if(typeof query == 'undefined'){
-          q.order = 'latest';
+        if(typeof $rootScope.active_tab == 'undefined'){
+          $rootScope.active_tab = 'latest';
         }else{
-          switch (query) {
+          switch ($rootScope.active_tab) {
             case 'latest':
                 q.order = 'latest';
               break;
@@ -38,7 +38,7 @@
 
         scenarioService.getScenarios(q)
           .then(function(data) {
-            console.log(data);
+            //console.log(data);
             if(data.scenarios){
               $scope.scenarios = data.scenarios;
             }
@@ -56,10 +56,9 @@
       };
 
        $scope.updateList = function(tab){
-        console.log(tab);
         if(tab == 'latest ' || tab == 'popular'){
           $rootScope.active_tab = tab;
-          getScenarios(tab);
+          getScenarios();
         }else{
           $rootScope.active_tab = 'latest';
           getScenarios();

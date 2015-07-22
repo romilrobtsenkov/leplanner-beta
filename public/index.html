@@ -50,8 +50,8 @@
         <ul class="nav navbar-nav menu-links pull-left visible-xs-block">
           <li ng-if="!user"><a href="/#/login" ng-click="navigateToLogin($event)" data-toggle="collapse" data-target="#navbar-collapse" >Log in</a></li>
           <li ng-if="user">
-            <a style="margin-top: 3px;" data-toggle="collapse" data-target="#navbar-collapse" class="btn" href="/#/profile/{{user._id}}">
-              <img src="./images/profile.png" alt="myFace" class="img-square" style="height:30px;width:30px">
+            <a style="margin-top: 3px;" data-toggle="collapse" data-target="#navbar-collapse" class="btn" href="/#/dashboard">
+              <img src="./images/profile.png" alt="myFace" class="img-circle" style="height:30px;width:30px">
               <span>{{user.first_name}} {{user.last_name}}</span>
             </a>
           </li>
@@ -64,7 +64,7 @@
 
         <div class="hidden-xs pull-right" ng-if="user">
           <a href="/#/create" class="btn btn-success btn-sm add-new-top-button"><span class="glyphicon glyphicon-plus"></span> Create scenario</a>
-          <a style="margin-top: 3px;" class="btn" href="/#/profile/{{user._id}}">
+          <a style="margin-top: 3px;" class="btn" href="/#/dashboard">
             <img src="./images/profile.png" alt="myFace" class="img-square" style="height:30px;width:30px">
             <span>{{user.first_name}} {{user.last_name}}</span>
           </a>
@@ -134,6 +134,7 @@
   <script src="/js/app/scenario/scenario.js"></script>
   <script src="/js/app/reset/reset.js"></script>
   <script src="/js/app/settings/settings.js"></script>
+  <script src="/js/app/dashboard/dashboard.js"></script>
   <script src="/js/app/search/search.js"></script>
   <script src="/js/app/services/user-service.js"></script>
   <script src="/js/app/services/user-route-service.js"></script>

@@ -14,7 +14,6 @@ var scenarioSchema = new Schema({
     method: { type: String},
     stage: { type: String}, // kooliaste
     description: { type: String, required: false},
-    favorites: { type: [mongoose.Schema.Types.ObjectId], ref: 'User', default: [] },
     favorites_count: { type: Number, default: 0},
     comments_count: { type: Number, default: 0},
     view_count: { type: Number, default: 0},

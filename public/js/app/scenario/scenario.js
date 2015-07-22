@@ -52,7 +52,7 @@
       function getComments(){
         scenarioService.getComments({scenario_id: $scope.scenario._id})
           .then(function(data) {
-            console.log(data);
+            //console.log(data);
             if(data.comments){
               if(data.comments.length > 0){
                 $scope.comments = data.comments;

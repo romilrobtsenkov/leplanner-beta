@@ -31,7 +31,7 @@
 
             if(data.user){
               //user id
-              console.log(data.user.id);
+              //console.log(data.user.id);
               if(typeof $rootScope.navigatedToLoginFrom !== 'undefined'){
                 $location.path($rootScope.navigatedToLoginFrom);
                 $rootScope.navigatedToLoginFrom = undefined;
@@ -40,7 +40,7 @@
                   $location.path($rootScope.navigatedToLoginFrom);
                   $rootScope.navigatedToLoginFrom = undefined;
                 }else{
-                  $location.path('/settings');
+                  $location.path('/dashboard');
                 }
               }
             }
@@ -66,12 +66,12 @@
 
             if(data.user){
               //user id
-              console.log(data.user.id);
+              //console.log(data.user.id);
               if(typeof $rootScope.navigatedToLoginFrom !== 'undefined'){
                 $location.path($rootScope.navigatedToLoginFrom);
                 $rootScope.navigatedToLoginFrom = undefined;
               }else{
-                $location.path('/settings');
+                $location.path('/dashboard');
               }
 
             }

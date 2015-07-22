@@ -26,12 +26,12 @@
             }
 
             if(typeof option !== 'undefined' && option.success_location){
-              //console.log('redirected to '+ option.success_location);
+              console.log('redirected to '+ option.success_location);
               $location.path(option.success_location);
             }else{
               deferred.resolve();
             }
-            
+
           })
           .catch(function(fallback){
             $rootScope.user = undefined;

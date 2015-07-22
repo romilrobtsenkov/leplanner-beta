@@ -51,13 +51,22 @@
         controller: 'LoginController',
         resolve: {
           data: function (userRouteService) {
-            return userRouteService.checkUser({ success_location: '/settings'});
+            return userRouteService.checkUser({ success_location: '/dashboard'});
           }
         }
       })
       .when('/settings', {
         templateUrl: '/js/app/settings/settings.html',
         controller: 'SettingsController',
+        resolve: {
+          data: function (userRouteService) {
+            return userRouteService.checkUser({ error_location: '/login'});
+          }
+        }
+      })
+      .when('/dashboard', {
+        templateUrl: '/js/app/dashboard/dashboard.html',
+        controller: 'DashboardController',
         resolve: {
           data: function (userRouteService) {
             return userRouteService.checkUser({ error_location: '/login'});
