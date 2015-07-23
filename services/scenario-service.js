@@ -2,6 +2,7 @@ var config = require('../config/config');
 var Scenario = require('../models/scenario').Scenario;
 var Comment = require('../models/comment').Comment;
 var Favorite = require('../models/favorite').Favorite;
+var Follower = require('../models/follower').Follower;
 var ScenarioView = require('../models/scenario-view').ScenarioView;
 
 
@@ -240,7 +241,10 @@ exports.getSingleScenario = function(params, next){
 
       var response = {};
       response.is_favorite = false;
+      response.is_following = false;
       response.scenario = scenario;
+
+      // if logged in user - check if following user & favorited scenario & extra log view separetly
       if(typeof params.user_id !== 'undefined'){
         var query = Favorite.findOne();
         query.where({scenario: scenario._id, user: params.user_id});
@@ -251,16 +255,27 @@ exports.getSingleScenario = function(params, next){
               response.is_favorite = true;
             }
 
-            // log scenario view separetly for future notifications
-            var view = {
-              user: params.user_id,
-              scenario: scenario._id
-            };
-            var new_view = new ScenarioView(view);
-            new_view.save(function(err, scenario){
+            var query = Follower.findOne();
+            query.where({follower: params.user_id});
+            query.exec(function(err, following) {
               if (err) return next(err);
-              return next(null, response);
-            });
+                //console.log(following);
+                if(following !== null){
+                  response.is_following = true;
+                }
+
+                // log scenario view separetly for future notifications
+                var view = {
+                  user: params.user_id,
+                  scenario: scenario._id
+                };
+                var new_view = new ScenarioView(view);
+                new_view.save(function(err, scenario){
+                  if (err) return next(err);
+                  return next(null, response);
+                });
+
+              });
 
           });
       }else{

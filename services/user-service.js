@@ -224,7 +224,7 @@ exports.resetPassword = function(user, next) {
 
 };
 
-exports.getFollowing = function(q, next) {
+exports.loadUserData = function(q, next) {
 
   // update profile view count
   var query = User.findOne();
@@ -258,10 +258,44 @@ exports.getFollowing = function(q, next) {
       following_query.populate('following','first_name last_name');
       following_query.exec(function(err, follow_array) {
         if (err) return next(err);
-        console.log(follow_array);
-        user.follow_array = follow_array;
+        console.log(follow_array.length);
 
-        return next(null, user);
+        var response = {};
+        response.profile = user;
+
+        // create separate arrays for followers and following
+        if(follow_array.length > 0){
+          for(var i = 0; i < follow_array.length; i++){
+
+            // could not compare to objects -> .toString() fixed
+            if(follow_array[i].follower._id.toString() == user._id.toString()){
+              // following
+              if(typeof response.following === 'undefined'){
+                response.following = [];
+              }
+              response.following.push({
+                _id: follow_array[i].following._id,
+                first_name: follow_array[i].following.first_name,
+                last_name: follow_array[i].following.last_name
+              });
+
+            }else if(follow_array[i].following._id.toString() == user._id.toString()){
+              // followers
+              if(typeof response.followers === 'undefined'){
+                response.followers = [];
+              }
+              response.followers.push({
+                _id: follow_array[i].follower._id,
+                first_name: follow_array[i].follower.first_name,
+                last_name: follow_array[i].follower.last_name
+              });
+
+            }
+      
+          }
+        }
+
+        return next(null, response);
       });
 
     });
@@ -303,10 +337,28 @@ exports.addRemoveFollow = function(params, next){
 
           Follower.count({follower: params.user._id}, function (err, count) {
             // update user following count
-            console.log(count);
-            return next(null, {success: 'follow'});
+            var update = {following_count: count};
+            var query = {"_id": params.user._id};
+            var options = {new: true};
+            User.findOneAndUpdate(query, update, options, function(err, user) {
+              if (err) { return next(err); }
+
+              // update other user followers count
+              Follower.count({following: params.following._id}, function (err, count) {
+                var update = {followers_count: count};
+                var query = {"_id": params.following._id};
+                var options = {new: true};
+                User.findOneAndUpdate(query, update, options, function(err, user) {
+                  if (err) { return next(err); }
+                  return next(null, {success: 'follow'});
+                });
+
+              });
+
+            });
 
           });
+
         });
 
       }else{
@@ -325,7 +377,18 @@ exports.addRemoveFollow = function(params, next){
         follow_doc.remove(function(err, a){
           if (err) return next(err);
 
-          return next(null, {success: 'unfollow'});
+          Follower.count({follower: params.user._id}, function (err, count) {
+            // update user following count
+            var update = {following_count: count};
+            var query = {"_id": params.user._id};
+            var options = {new: true};
+            User.findOneAndUpdate(query, update, options, function(err, user) {
+              if (err) { return next(err); }
+              return next(null, {success: 'unfollow'});
+            });
+
+          });
+
         });
       }
     }

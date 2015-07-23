@@ -142,14 +142,14 @@
 
         <div class="profile-userbuttons">
           <a ng-click="addRemoveFollow()" ng-if="!is_following && user && user._id!=scenario.author._id" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Follow</a>
-          <a ng-click="addRemoveFollow('remove')" ng-if="is_following && user && user._id!=scenario.author._id" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-circle-minus"></span> Unfollow</a>
+          <a ng-click="addRemoveFollow('remove')" ng-if="is_following && user && user._id!=scenario.author._id" class="btn btn-default btn-sm"><span class="glyphicon glyphicons-circle-minus"></span> Unfollow</a>
           <a href="/#/login" ng-if="!user" class=""> Login to follow</a>
           <a ng-if="user._id==scenario.author._id" disabled="disabled" class="btn btn-success btn-sm">You are awesome</a>
         </div>
 
         <div class="profile-usertitle">
           <div class="profile-usertitle-name">
-            <a a href="/#/profile/{{scenario.author._id}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a>
+            <a a href="/#/user/{{scenario.author._id}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a>
           </div>
           <div class="profile-usertitle-job">
             {{scenario.author.organization}}

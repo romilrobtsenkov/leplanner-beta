@@ -12,7 +12,7 @@
       getUser: getUser,
       loginUser: loginUser,
       createUser: createUser,
-      getFollowing: getFollowing,
+      loadUserData: loadUserData,
       addRemoveFollow: addRemoveFollow,
       recoverUser: recoverUser,
       logOutUser: logOutUser,
@@ -42,8 +42,8 @@
         });
     }
 
-    function getFollowing(query) {
-      return $http.post('/api/users/get-user-following', query)
+    function loadUserData(query) {
+      return $http.post('/api/users/load-user-data', query)
         .then(function(response) {
           return response.data;
         });

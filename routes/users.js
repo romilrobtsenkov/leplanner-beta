@@ -122,10 +122,10 @@ router.post('/resetpassword', function(req, res, next) {
 
 });
 
-router.post('/get-user-following', function(req, res, next) {
-  userService.getFollowing(req.body, function(err, profile) {
+router.post('/load-user-data', function(req, res, next) {
+  userService.loadUserData(req.body, function(err, response) {
     if (err) { return res.json({error: err}); }
-    return res.json({profile: profile});
+    return res.json(response);
   });
 
 });

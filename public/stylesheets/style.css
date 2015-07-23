@@ -43,7 +43,7 @@ h6, .h6 {
 }
 
 .navbar-nav {
-    margin:0; 
+    margin:0;
 }
 
 .add-new-top-button,
@@ -471,25 +471,27 @@ span.not-selected {
   color: gray;
 }
 
-.following {
-
+.profile-side-box {
   margin-top: 40px;
   padding: 10px;
-
 }
 
-.following .col-md-3 {
+.profile-side-box h3 {
+  margin-left: -10px;
+}
+
+.profile-side-box .col-md-3 {
   padding-left: 3px;
   padding-right: 3px;
 }
 
-.following .thumbnail {
+.profile-side-box .thumbnail {
   margin-bottom: 2px;
   padding: 2px;
 
 }
 
-.following .thumbnail img {
+.profile-side-box .thumbnail img {
   width:100%;
 }
 

@@ -27,6 +27,7 @@
           if(data.scenario){
             $scope.scenario = data.scenario;
             $scope.is_favorite = data.is_favorite;
+            $scope.is_following = data.is_following;
             getSidebarScenarios();
             getComments();
           }
@@ -129,7 +130,7 @@
           .then(function(data) {
 
             if(data.success){
-              console.log(data.success);
+              //console.log(data.success);
               if(data.success == 'unfollow'){
                 $scope.is_following = false;
               }else{
