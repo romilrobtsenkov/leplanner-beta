@@ -5,7 +5,7 @@ var Favorite = require('../models/favorite').Favorite;
 var ScenarioView = require('../models/scenario-view').ScenarioView;
 
 
-exports.getScenarios = function(q, next) {
+exports.getWidgetScenarios = function(q, next) {
 
   var query = Scenario.find();
 
@@ -13,9 +13,7 @@ exports.getScenarios = function(q, next) {
   args.draft = false;
   args.deleted = false;
 
-
   sort_args = {};
-
   if(typeof q != 'undefined' && typeof q.order != 'undefined'){
     switch (q.order) {
       case 'latest':
@@ -23,6 +21,12 @@ exports.getScenarios = function(q, next) {
         break;
       case 'popular':
         sort_args.view_count = -1 ;
+        break;
+      case 'favorited':
+        sort_args.favorites_count = -1 ;
+        break;
+      case 'commented':
+        sort_args.comments_count = -1 ;
         break;
       default:
         sort_args.created = -1;
@@ -34,29 +38,6 @@ exports.getScenarios = function(q, next) {
   }
 
   if(typeof q != 'undefined' && typeof q.exclude != 'undefined'){
-    args._id = {'$ne': q.exclude };
-  }
-
-  if(typeof q != 'undefined' && typeof q.filter != 'undefined' && typeof q.user_id != 'undefined'){
-    switch (q.filter) {
-      case 'drafts':
-        args.draft = true;
-        args.author = q.user_id;
-        break;
-      case 'published':
-          q.filter = 'published';
-          args.author = q.user_id;
-        break;
-      case 'favorites':
-          q.filter = 'favorites';
-        break;
-      case 'following':
-          q.filter = 'following';
-        break;
-      default:
-        sort_args.created = -1;
-    }
-
     args._id = {'$ne': q.exclude };
   }
 
@@ -78,7 +59,6 @@ exports.getDashScenarios = function(q, next) {
 
   args = {};
   sort_args = {};
-
   if(typeof q != 'undefined' && typeof q.order != 'undefined'){
     switch (q.order) {
       case 'latest':
@@ -86,6 +66,12 @@ exports.getDashScenarios = function(q, next) {
         break;
       case 'popular':
         sort_args.view_count = -1 ;
+        break;
+      case 'favorited':
+        sort_args.favorites_count = -1 ;
+        break;
+      case 'commented':
+        sort_args.comments_count = -1 ;
         break;
       default:
         sort_args.created = -1;
@@ -178,10 +164,28 @@ exports.searchScenarios = function(q, next) {
 
   var query = Scenario.find();
   args = {};
-  sort_args = {};
   filter_args = [];
 
-  sort_args.created = -1;
+  sort_args = {};
+  if(typeof q != 'undefined' && typeof q.order != 'undefined'){
+    switch (q.order) {
+      case 'latest':
+        sort_args.created = -1;
+        break;
+      case 'popular':
+        sort_args.view_count = -1 ;
+        break;
+      case 'favorited':
+        sort_args.favorites_count = -1 ;
+        break;
+      case 'commented':
+        sort_args.comments_count = -1 ;
+        break;
+      default:
+        sort_args.created = -1;
+    }
+  }
+
   filter_args.push({deleted: false});
   args.draft = false;
 

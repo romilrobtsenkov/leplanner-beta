@@ -4,7 +4,7 @@
     <div class="col-sm-2 side-menu">
       <nav class="navbar navbar-default" role="navigation">
         <div class="side-menu-container">
-          <ul class="nav navbar-nav">
+          <ul class="nav navbar-nav dash-menu">
             <!--<li class="active"><a href><span class="glyphicon glyphicon-list-alt"></span> Voog <span class="badge">5</span></a></li>-->
             <li ng-class="{active:isActiveDash('drafts')}"><a ng-click="updateDashList('drafts')" href><span class="glyphicon glyphicon glyphicon-file"></span> <strong>Drafts</strong><span class="badge">{{drafts_count}}</span></a></li>
             <li ng-class="{active:isActiveDash('published')}"><a ng-click="updateDashList('published')" href><span class="glyphicon glyphicon-globe"></span> Published</a></li>
@@ -15,56 +15,7 @@
       </nav>
     </div><!-- /.sidemenu -->
 
-    <div class="col-sm-7" style="height:100%; min-height: 100px; margin-bottom:-80px;">
-      <div class="dashboard-main-content">
-
-        <p ng-if="!scenarios" class="loading-gif-animation"><img src="./images/loading.gif"></p>
-        <p ng-if="no_favorites"> Add favorites by clickking on <button class="add-favorite-button btn btn-success btn-sm"><span class="glyphicon glyphicon-heart"></span> Favorite</button> button while viewing single scenario </p>
-        <p ng-if="no_drafts"> Start your first scenario by clicking <a href="/#/create" class="add-favorite-button btn btn-success btn-sm"><span class="glyphicon glyphicon-plus"></span> Create scenario</a></p>
-        <p ng-if="no_published"> Create scenario draft and then publish it. All your published scenarios will appear here!</p>
-        <p ng-if="no_following"> Follow other users by clicking <a href="/#/follow" class="add-favorite-button btn btn-success btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Follow</a> next to user name!</p>
-
-
-        <!-- scenario items -->
-        <div class="single_scenario_item" ng-repeat="scenario in scenarios">
-
-          <div class="row">
-            <a href="/#/subject/"><span class="dash-scenario-label pull-right label label-primary">{{scenario.subject}}</span></a>
-            <div class="col-sm-12">
-              <h4><strong><a href="/#/scenario/{{scenario._id}}">{{scenario.name}}</a></strong></h4>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-sm-4">
-              <a href="/#/scenario/{{scenario._id}}" class="thumbnail">
-                <img src="./images/thumbnail_200.png" alt="">
-              </a>
-            </div>
-            <div class="col-sm-8">
-              <p class="extra-info">
-                <span class="glyphicon glyphicon-user"></span> <a href="/#/user/{{scenario.author._id}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a><br>
-                <span class="glyphicon glyphicon-calendar"></span> {{scenario.created | date:'dd.MM.yyyy'}}
-                <span>| <span class="glyphicon glyphicon-eye-open"></span><span> {{scenario.view_count}}</span></span>
-                <span>| <span class="glyphicon glyphicon-comment"></span><span> {{scenario.comments_count}}</span></span>
-              </p>
-              <p>{{scenario.description}}</p>
-              <div class="row open-button">
-                <div class="col-sm-9"></div>
-                <div class="col-sm-3">
-                 <a class="btn btn-success btn-block btn-sm pull-right" href="/#/scenario/{{scenario._id}}">OPEN <span class="glyphicon glyphicon-chevron-right"></span></a>
-                </div>
-              </div>
-            </div>
-          </div>
-          <hr>
-
-        </div>
-
-      </div>
-    </div>
-
-    <div class="col-sm-3">
+    <div class="col-sm-3 col-sm-push-7 col-lg-push-7 col-md-push-7">
       <h3>Notifications</h3>
       <div class="panel panel-default">
         <div class="panel-collapse">
@@ -96,6 +47,79 @@
              <a hred ="#" class="pull-right" >Load all</a>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div class="col-sm-7 col-sm-pull-3 col-lg-pull-3 col-md-pull-3" style="height:100%; min-height: 100px;">
+      <div class="dashboard-main-content">
+
+        <ul class="nav nav-tabs nav-tab-pop">
+  				<li ng-class="{active:isSortActive('latest')}">
+  					<a href ng-click="updateSortList('latest')">Latest</a>
+  				</li>
+  				<li ng-class="{active:isSortActive('popular')}">
+  					<a href ng-click="updateSortList('popular')">Popular</a>
+  				</li>
+  				<li ng-class="{active:isSortActive('favorited')}">
+  					<a href ng-click="updateSortList('favorited')">Top favorited</a>
+  				</li>
+  				<li ng-class="{active:isSortActive('commented')}">
+  					<a href ng-click="updateSortList('commented')">Top commented</a>
+  				</li>
+  			</ul>
+
+        <p ng-if="!scenarios || loading_animation" class="loading-gif-animation"><img src="./images/loading.gif"></p>
+
+        <p ng-if="no_favorites"> Add favorites by clickking on <button class="add-favorite-button btn btn-success btn-sm"><span class="glyphicon glyphicon-heart"></span> Favorite</button> button while viewing single scenario </p>
+        <p ng-if="no_drafts"> Start your first scenario by clicking <a href="/#/create" class="add-favorite-button btn btn-success btn-sm"><span class="glyphicon glyphicon-plus"></span> Create scenario</a></p>
+        <p ng-if="no_published"> Create scenario draft and then publish it. All your published scenarios will appear here!</p>
+        <p ng-if="no_following"> Follow other users by clicking <a href="/#/follow" class="add-favorite-button btn btn-success btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Follow</a> next to user name!</p>
+
+        <hr>
+        <!-- scenario items -->
+        <div class="single_scenario_item" ng-repeat="scenario in scenarios">
+
+          <!-- SINGLE SCENARIO -->
+          <div class="row no-margin">
+            <a href="/#/subject/"><span class="dash-scenario-label pull-right label label-primary">{{scenario.subject}}</span></a>
+            <div class="col-sm-12">
+              <h4><strong><a href="/#/scenario/{{scenario._id}}">{{scenario.name}}</a></strong></h4>
+            </div>
+          </div>
+
+          <div class="row no-margin">
+            <div class="col-sm-4">
+              <a href="/#/scenario/{{scenario._id}}" class="thumbnail">
+                <img src="./images/thumbnail_200.png" alt="">
+              </a>
+            </div>
+            <div class="col-sm-8">
+              <p class="extra-info">
+                <span class="glyphicon glyphicon-user"></span> <a href="/#/user/{{scenario.author._id}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a><br>
+                <span class="glyphicon glyphicon-calendar"></span> {{scenario.created | date:'dd.MM.yyyy'}}
+                <span>| <span class="glyphicon glyphicon-eye-open"></span><span> {{scenario.view_count}}</span></span>
+                <span>| <span class="glyphicon glyphicon-heart"></span><span> {{scenario.favorites_count}}</span></span>
+                <span>| <span class="glyphicon glyphicon-comment"></span><span> {{scenario.comments_count}}</span></span>
+              </p>
+              <p>{{scenario.description}}</p>
+              <div class="row open-button">
+                <div class="col-sm-8">
+                  <span class="labels">
+      							<a href="#"><span class="label label-danger">{{scenario.method}}</span></a>
+      							<a href="#"><span class="label label-success">{{scenario.materialType}}</span></a>
+      						 </span>
+                </div>
+                <div class="col-sm-4">
+                 <a class="btn btn-success btn-block btn-sm pull-right" href="/#/scenario/{{scenario._id}}">OPEN <span class="glyphicon glyphicon-chevron-right"></span></a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr>
+          <!-- SINGLE SCENARIO END -->
+
+        </div>
+
       </div>
     </div>
 

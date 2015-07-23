@@ -13,23 +13,45 @@
         $rootScope.dash_active_tab = 'drafts';
       }
 
-
-      //$rootScope.user;
-
-      // when saving scenario -oon save save as draft
-      // get all created
-      // get all favorite scenarios
-      // enable following users and enable find followers? search for new users by 3 letters and then open up show user followers
+      if(typeof $rootScope.dash_active_sort_tab === 'undefined'){
+        $rootScope.dash_active_sort_tab = 'latest';
+      }
 
       getDashboardScenarios();
 
       function getDashboardScenarios(){
+
+        $scope.loading_animation = true;
+        clearMessages();
+        $scope.scenarios = [];
+
         var q = {
           order : 'latest',
           user: {
             _id: $rootScope.user._id
           }
         };
+
+        if(typeof $rootScope.dash_active_sort_tab == 'undefined'){
+          $rootScope.dash_active_sort_tab = 'latest';
+        }else{
+          switch ($rootScope.dash_active_sort_tab) {
+            case 'latest':
+                q.order = 'latest';
+              break;
+              case 'popular':
+                  q.order = 'popular';
+                break;
+              case 'favorited':
+                  q.order = 'favorited';
+                break;
+              case 'commented':
+                  q.order = 'commented';
+                break;
+            default:
+              q.order = 'latest';
+          }
+        }
 
         if(typeof $rootScope.dash_active_tab == 'undefined'){
           q.filter = 'drafts';
@@ -57,75 +79,33 @@
               switch (q.filter) {
                 case 'drafts':
                   $scope.drafts_count = data.scenarios.length;
-                  
-                  $scope.no_drafts = undefined;
-                  $scope.no_published = undefined;
-                  $scope.no_favorites = undefined;
-                  $scope.no_following = undefined;
-
                   if(data.scenarios.length === 0){
                     $scope.no_drafts = true;
-
-                    $scope.scenarios = [];
-                  }else{
-                    $scope.scenarios = data.scenarios;
                   }
                   break;
                 case 'published':
-
-                  $scope.no_drafts = undefined;
-                  $scope.no_published = undefined;
-                  $scope.no_favorites = undefined;
-                  $scope.no_following = undefined;
-
                   if(data.scenarios.length === 0){
                     $scope.no_published = true;
-
-                    $scope.scenarios = [];
-                  }else{
-                    $scope.scenarios = data.scenarios;
                   }
-
                   break;
                 case 'favorites':
-
-                  $scope.no_drafts = undefined;
-                  $scope.no_published = undefined;
-                  $scope.no_favorites = undefined;
-                  $scope.no_following = undefined;
-
                   if(data.scenarios.length === 0){
                     $scope.no_favorites = true;
-
-                    $scope.scenarios = [];
-                  }else{
-                    $scope.scenarios = data.scenarios;
                   }
-
                   break;
                 case 'following':
 
-                  $scope.no_drafts = undefined;
-                  $scope.no_published = undefined;
-                  $scope.no_favorites = undefined;
-                  $scope.no_following = undefined;
-
                   if(data.scenarios.length === 0){
                     $scope.no_following = true;
-
-                    $scope.scenarios = [];
-                  }else{
-                    $scope.scenarios = data.scenarios;
                   }
 
                   break;
               }
 
-
               $scope.scenarios = data.scenarios;
+              $scope.loading_animation = false;
 
             }
-
 
             if(data.error){
               switch(data.error.id) {
@@ -141,6 +121,13 @@
 
       }
 
+      function clearMessages(){
+        $scope.no_drafts = undefined;
+        $scope.no_published = undefined;
+        $scope.no_favorites = undefined;
+        $scope.no_following = undefined;
+      }
+
       $scope.isActiveDash = function(tab){
         if(tab == $rootScope.dash_active_tab){ return true; }
         return false;
@@ -152,6 +139,21 @@
           getDashboardScenarios();
         }else{
           $rootScope.dash_active_tab = 'drafts';
+          getDashboardScenarios();
+        }
+      };
+
+      $scope.isSortActive = function(tab){
+        if(tab == $rootScope.dash_active_sort_tab){ return true; }
+        return false;
+      };
+
+      $scope.updateSortList = function(tab){
+        if(tab == 'latest ' || tab == 'popular' || tab == 'favorited' || tab == 'commented'){
+          $rootScope.dash_active_sort_tab = tab;
+          getDashboardScenarios();
+        }else{
+          $rootScope.dash_active_sort_tab = 'latest';
           getDashboardScenarios();
         }
       };

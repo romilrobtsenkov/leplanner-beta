@@ -11,8 +11,8 @@
 
       //console.log($rootScope.active_tab);
 
-      if(typeof $rootScope.active_tab === 'undefined'){
-        $rootScope.active_tab = 'latest';
+      if(typeof $rootScope.home_active_sort_tab === 'undefined'){
+        $rootScope.home_active_sort_tab = 'latest';
       }
 
       getScenarios();
@@ -21,22 +21,28 @@
         var q = {};
         q.limit = 4;
 
-        if(typeof $rootScope.active_tab == 'undefined'){
-          $rootScope.active_tab = 'latest';
+        if(typeof $rootScope.home_active_sort_tab == 'undefined'){
+          $rootScope.home_active_sort_tab = 'latest';
         }else{
-          switch ($rootScope.active_tab) {
+          switch ($rootScope.home_active_sort_tab) {
             case 'latest':
                 q.order = 'latest';
               break;
               case 'popular':
                   q.order = 'popular';
                 break;
+              case 'favorited':
+                  q.order = 'favorited';
+                break;
+              case 'commented':
+                  q.order = 'commented';
+                break;
             default:
               q.order = 'latest';
           }
         }
 
-        scenarioService.getScenarios(q)
+        scenarioService.getWidgetScenarios(q)
           .then(function(data) {
             //console.log(data);
             if(data.scenarios){
@@ -50,17 +56,17 @@
 
       }
 
-      $scope.isActive = function(tab){
-        if(tab == $rootScope.active_tab){ return true; }
+      $scope.isSortActive = function(tab){
+        if(tab == $rootScope.home_active_sort_tab){ return true; }
         return false;
       };
 
-       $scope.updateList = function(tab){
-        if(tab == 'latest ' || tab == 'popular'){
-          $rootScope.active_tab = tab;
+       $scope.updateSortList = function(tab){
+        if(tab == 'latest ' || tab == 'popular' || tab == 'favorited' || tab == 'commented'){
+          $rootScope.home_active_sort_tab = tab;
           getScenarios();
         }else{
-          $rootScope.active_tab = 'latest';
+          $rootScope.home_active_sort_tab = 'latest';
           getScenarios();
         }
       };

@@ -9,7 +9,7 @@
 
   function scenarioServiceFactory($http) {
     return {
-      getScenarios: getScenarios,
+      getWidgetScenarios: getWidgetScenarios,
       getDashScenarios: getDashScenarios,
       createScenario: createScenario,
       searchScenarios: searchScenarios,
@@ -20,8 +20,8 @@
 
     };
 
-    function getScenarios(query) {
-      return $http.post('/api/scenarios/scenarios-list',query)
+    function getWidgetScenarios(query) {
+      return $http.post('/api/scenarios/scenarios-widget-list',query)
         .then(function(response) {
           return response.data;
         });

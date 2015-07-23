@@ -22,6 +22,10 @@ h6, .h6 {
   color: #333;
 }
 
+.no-margin {
+  margin: 0;
+}
+
 .navbar-brand,
 .navbar-brand:hover {
   background-image: url(../images/logo.png);
@@ -36,6 +40,10 @@ h6, .h6 {
 
 .menu-links {
   margin-left: 10px;
+}
+
+.navbar-nav {
+    margin:0; 
 }
 
 .add-new-top-button,

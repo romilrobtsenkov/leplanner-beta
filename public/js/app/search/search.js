@@ -14,14 +14,16 @@
         $scope.search();
       });
 
+      if(typeof $rootScope.search_active_sort_tab === 'undefined'){
+        $rootScope.search_active_sort_tab = 'latest';
+      }
+
       // search default pagination start
       if(typeof $rootScope.search_page_nr !== 'undefined'){
         $scope.search_page_nr = $rootScope.search_page_nr;
-        console.log('here');
       }else{
         $rootScope.search_page_nr = 1;
       }
-      console.log($scope.search_page_nr);
 
       createDropDownMenus();
       getSearchParamsAndSearch();
@@ -34,6 +36,21 @@
       $scope.pageChanged = function(new_page_nr) {
         $rootScope.search_page_nr = new_page_nr;
         //console.log($scope.search_page_nr);
+      };
+
+      $scope.isSortActive = function(tab){
+        if(tab == $rootScope.search_active_sort_tab){ return true; }
+        return false;
+      };
+
+      $scope.updateSortList = function(tab){
+        if(tab == 'latest ' || tab == 'popular' || tab == 'favorited' || tab == 'commented'){
+          $rootScope.search_active_sort_tab = tab;
+          getSearchParamsAndSearch();
+        }else{
+          $rootScope.search_active_sort_tab = 'latest';
+          getSearchParamsAndSearch();
+        }
       };
 
       function createDropDownMenus(){
@@ -151,6 +168,27 @@
         var q;
         if(typeof query != 'undefined'){
           q = query;
+        }
+
+        if(typeof $rootScope.search_active_sort_tab == 'undefined'){
+          $rootScope.search_active_sort_tab = 'latest';
+        }else{
+          switch ($rootScope.search_active_sort_tab) {
+            case 'latest':
+                q.order = 'latest';
+              break;
+              case 'popular':
+                  q.order = 'popular';
+                break;
+              case 'favorited':
+                  q.order = 'favorited';
+                break;
+              case 'commented':
+                  q.order = 'commented';
+                break;
+            default:
+              q.order = 'latest';
+          }
         }
 
         scenarioService.searchScenarios(q)

@@ -38,7 +38,7 @@
 
       function getSidebarScenarios(){
         var q= {order: 'popular', limit: 3, exclude: $scope.scenario._id};
-        scenarioService.getScenarios(q)
+        scenarioService.getWidgetScenarios(q)
           .then(function(data) {
             if(data.scenarios){
               $scope.scenarios = data.scenarios;

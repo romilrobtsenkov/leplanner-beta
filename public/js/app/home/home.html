@@ -32,11 +32,17 @@
 
       <!-- makes the clicked tab active-->
         <ul class="nav nav-tabs nav-tab-pop">
-          <li ng-class="{active:isActive('latest')}">
-            <a href ng-click="updateList('latest')">Latest</a>
+          <li ng-class="{active:isSortActive('latest')}">
+            <a href ng-click="updateSortList('latest')">Latest</a>
           </li>
-          <li ng-class="{active:isActive('popular')}">
-            <a href ng-click="updateList('popular')">Popular</a>
+          <li ng-class="{active:isSortActive('popular')}">
+            <a href ng-click="updateSortList('popular')">Popular</a>
+          </li>
+          <li ng-class="{active:isSortActive('favorited')}">
+            <a href ng-click="updateSortList('favorited')">Top favorited</a>
+          </li>
+          <li ng-class="{active:isSortActive('commented')}">
+            <a href ng-click="updateSortList('commented')">Top commented</a>
           </li>
         </ul>
 
