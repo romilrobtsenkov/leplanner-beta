@@ -14,8 +14,10 @@
         $scope.search();
       });
 
-      if(typeof $rootScope.search_active_sort_tab === 'undefined'){
-        $rootScope.search_active_sort_tab = 'latest';
+      if(typeof $rootScope.sort_tab === 'undefined'){
+        $rootScope.sort_tab = {};
+      }else if(typeof $rootScope.sort_tab.search === 'undefined') {
+        $rootScope.sort_tab.search = 'latest';
       }
 
       // search default pagination start
@@ -24,6 +26,8 @@
       }else{
         $rootScope.search_page_nr = 1;
       }
+
+      $scope.loading_animation = true;
 
       createDropDownMenus();
       getSearchParamsAndSearch();
@@ -39,16 +43,16 @@
       };
 
       $scope.isSortActive = function(tab){
-        if(tab == $rootScope.search_active_sort_tab){ return true; }
+        if(tab == $rootScope.sort_tab.search){ return true; }
         return false;
       };
 
       $scope.updateSortList = function(tab){
         if(tab == 'latest ' || tab == 'popular' || tab == 'favorited' || tab == 'commented'){
-          $rootScope.search_active_sort_tab = tab;
+          $rootScope.sort_tab.search = tab;
           getSearchParamsAndSearch();
         }else{
-          $rootScope.search_active_sort_tab = 'latest';
+          $rootScope.sort_tab.search = 'latest';
           getSearchParamsAndSearch();
         }
       };
@@ -125,6 +129,8 @@
 
       function getSearchParamsAndSearch(){
 
+        $scope.loading_animation = true;
+
         if(typeof $rootScope.top_search_word !== 'undefined'){
           $scope.search_word = $rootScope.top_search_word;
           $rootScope.top_search_word = undefined;
@@ -170,10 +176,10 @@
           q = query;
         }
 
-        if(typeof $rootScope.search_active_sort_tab == 'undefined'){
-          $rootScope.search_active_sort_tab = 'latest';
+        if(typeof $rootScope.sort_tab.search == 'undefined'){
+          $rootScope.sort_tab.search = 'latest';
         }else{
-          switch ($rootScope.search_active_sort_tab) {
+          switch ($rootScope.sort_tab.search) {
             case 'latest':
                 q.order = 'latest';
               break;
@@ -193,7 +199,7 @@
 
         scenarioService.searchScenarios(q)
           .then(function(data) {
-            console.log(data);
+            //console.log(data);
             if(data.scenarios){
               $scope.scenarios = data.scenarios;
               if(typeof q != 'undefined'){
@@ -202,7 +208,8 @@
                 $scope.search_word_end = undefined;
               }
               // update how many results found label
-              $scope.search_end = 1;
+              //$scope.search_end = 1;
+              $scope.loading_animation = false;
             }
 
             if(data.error){

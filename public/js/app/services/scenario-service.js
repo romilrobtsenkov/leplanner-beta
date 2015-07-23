@@ -11,6 +11,7 @@
     return {
       getWidgetScenarios: getWidgetScenarios,
       getDashScenarios: getDashScenarios,
+      getUserScenarios: getUserScenarios,
       createScenario: createScenario,
       searchScenarios: searchScenarios,
       getSingleScenario: getSingleScenario,
@@ -29,6 +30,13 @@
 
     function getDashScenarios(query) {
       return $http.post('/api/scenarios/scenarios-dash-list',query)
+        .then(function(response) {
+          return response.data;
+        });
+    }
+
+    function getUserScenarios(query) {
+      return $http.post('/api/scenarios/scenarios-user-list',query)
         .then(function(response) {
           return response.data;
         });

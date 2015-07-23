@@ -53,7 +53,7 @@
     <div class="col-sm-7 col-sm-pull-3 col-lg-pull-3 col-md-pull-3" style="height:100%; min-height: 100px;">
       <div class="dashboard-main-content">
 
-        <ul class="nav nav-tabs nav-tab-pop">
+        <ul ng-if="!isActiveDash('following')" ng-hide="no_drafts || no_published || no_favorites || no_following" class="nav nav-tabs nav-tab-pop">
   				<li ng-class="{active:isSortActive('latest')}">
   					<a href ng-click="updateSortList('latest')">Latest</a>
   				</li>
@@ -70,9 +70,9 @@
 
         <p ng-if="!scenarios || loading_animation" class="loading-gif-animation"><img src="./images/loading.gif"></p>
 
-        <p ng-if="no_favorites"> Add favorites by clickking on <button class="add-favorite-button btn btn-success btn-sm"><span class="glyphicon glyphicon-heart"></span> Favorite</button> button while viewing single scenario </p>
         <p ng-if="no_drafts"> Start your first scenario by clicking <a href="/#/create" class="add-favorite-button btn btn-success btn-sm"><span class="glyphicon glyphicon-plus"></span> Create scenario</a></p>
         <p ng-if="no_published"> Create scenario draft and then publish it. All your published scenarios will appear here!</p>
+        <p ng-if="no_favorites"> Add favorites by clickking on <button class="add-favorite-button btn btn-success btn-sm"><span class="glyphicon glyphicon-heart"></span> Favorite</button> button while viewing single scenario </p>
         <p ng-if="no_following"> Follow other users by clicking <a href="/#/follow" class="add-favorite-button btn btn-success btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Follow</a> next to user name!</p>
 
         <hr>

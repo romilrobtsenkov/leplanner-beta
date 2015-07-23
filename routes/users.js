@@ -21,8 +21,6 @@ router.post('/create', function(req, res, next) {
       req.logIn(user, function(err) {
         if (err) { return next(err); }
 
-        // login successful
-        // future: redirect to /users/:id or to linking with social accounts
         res.json({user: {id: user._id}});
       });
 
@@ -46,8 +44,6 @@ router.post('/login', function(req, res, next) {
       req.logIn(user, function(err) {
         if (err) { return next(err); }
 
-        // login successful
-        // future: redirect to /users/:id
         res.json({user: {id: user._id}});
       });
 
@@ -88,6 +84,7 @@ router.post('/updateprofile', restrict, function(req, res, next) {
     if(user){
       user.password = undefined;
       if(user.resetPasswordToken){user.resetPasswordToken = undefined;}
+      if(user.resetPasswordExpires){user.resetPasswordExpires = undefined;}
       res.json({user: user});
     }else{
       res.json({error: 'Unknown error'});
@@ -123,6 +120,21 @@ router.post('/resetpassword', function(req, res, next) {
 
   });
 
+});
+
+router.post('/get-user-following', function(req, res, next) {
+  userService.getFollowing(req.body, function(err, profile) {
+    if (err) { return res.json({error: err}); }
+    return res.json({profile: profile});
+  });
+
+});
+
+router.post('/add-remove-follow/',restrict, function(req, res, next) {
+  userService.addRemoveFollow(req.body, function(err, response) {
+    if (err) { return res.json({error: err}); }
+    return res.json(response);
+  });
 });
 
 router.get('/me', function(req, res){

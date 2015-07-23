@@ -31,8 +31,11 @@ module.exports = function() {
   passport.deserializeUser(function(id, next) {
     //console.log('deserializeUser');
     userService.findById(id, function(err, user) {
-      user.password = undefined;
-      if(user.resetPasswordToken){user.resetPasswordToken = undefined;}
+      if(typeof user !== 'undefined' && user !== null){
+        user.password = undefined;
+        if(user.resetPasswordExpires){user.resetPasswordExpires = undefined;}
+        if(user.resetPasswordToken){user.resetPasswordToken = undefined;}
+      }
       next(err, user);
     });
   });

@@ -37,6 +37,15 @@
           },
         }
       })
+      .when('/user/:id', {
+        templateUrl: '/js/app/user/user.html',
+        controller: 'UserController',
+        resolve: {
+          data: function (userRouteService) {
+            return userRouteService.checkUser();
+          },
+        }
+      })
       .when('/create', {
         templateUrl: '/js/app/create/create.html',
         controller: 'CreateController',

@@ -91,7 +91,7 @@ exports.getDashScenarios = function(q, next) {
         query.sort(sort_args);
         query.exec(function(err, scenarios) {
           if (err) return next(err);
-          return next(null, {scenarios: scenarios});
+          return next(null, scenarios);
         });
 
         break;
@@ -105,7 +105,7 @@ exports.getDashScenarios = function(q, next) {
           query.sort(sort_args);
           query.exec(function(err, scenarios) {
             if (err) return next(err);
-            return next(null, {scenarios: scenarios});
+            return next(null, scenarios);
           });
         break;
       case 'favorites':
@@ -139,21 +139,22 @@ exports.getDashScenarios = function(q, next) {
               query.sort(sort_args);
               query.exec(function(err, scenarios) {
                 if (err) return next(err);
-                return next(null, {scenarios: scenarios});
+                return next(null, scenarios);
               });
 
             }else{
-              return next(null, {scenarios: []});
+              return next(null, []);
             }
 
           });
 
+        break;
 
-        break;
-      case 'following':
-        return next(null, {scenarios: []});
-        break;
+      default:
+        return next(null, []);
+
     }
+
   }
 
 };
@@ -229,6 +230,10 @@ exports.getSingleScenario = function(params, next){
     //console.log(err);
     if (err) return next(err);
 
+    if(scenario === null){
+      return next({id: 0, message: "no such scenario found"});
+    }
+
     scenario.view_count = scenario.view_count+1;
     scenario.save(function(err, scenario){
       if (err) return next(err);
@@ -241,7 +246,7 @@ exports.getSingleScenario = function(params, next){
         query.where({scenario: scenario._id, user: params.user_id});
         query.exec(function(err, favorite) {
           if (err) return next(err);
-            console.log(favorite);
+            //console.log(favorite);
             if(favorite !== null){
               response.is_favorite = true;
             }
@@ -268,9 +273,55 @@ exports.getSingleScenario = function(params, next){
 
 };
 
+exports.getUserScenarios = function(q, next){
+
+  var query = Scenario.find();
+
+  args = {};
+  args.draft = false;
+  args.deleted = false;
+
+  sort_args = {};
+
+  if(typeof q != 'undefined' && typeof q.user != 'undefined'){
+    args.author = q.user._id;
+  }else{
+    return next(null, []);
+  }
+
+  if(typeof q != 'undefined' && typeof q.order != 'undefined'){
+    switch (q.order) {
+      case 'latest':
+        sort_args.created = -1;
+        break;
+      case 'popular':
+        sort_args.view_count = -1 ;
+        break;
+      case 'favorited':
+        sort_args.favorites_count = -1 ;
+        break;
+      case 'commented':
+        sort_args.comments_count = -1 ;
+        break;
+      default:
+        sort_args.created = -1;
+    }
+  }
+
+  query.where(args);
+  query.populate('author', 'first_name last_name created');
+  query.sort(sort_args);
+
+  query.exec(function(err, scenarios) {
+    if (err) return next(err);
+    return next(null, scenarios);
+  });
+};
+
 exports.addRemoveFavorite = function(params, next){
 
   var query = Favorite.find();
+  // using find insted to get latest favorites count
   query.where({scenario: params.scenario_id});
   query.exec(function(err, favorites) {
     if (err) return next(err);
@@ -284,7 +335,7 @@ exports.addRemoveFavorite = function(params, next){
         }
     }
 
-    console.log(favorite);
+    //console.log(favorite);
 
     if(typeof params.remove === 'undefined'){
 
@@ -368,8 +419,8 @@ exports.getComments = function(params, next) {
 
 
 exports.addComment = function(params, next) {
-  console.log('scenario text '+ params.comment.text);
-  console.log('user '+params.user._id);
+  //console.log('scenario text '+ params.comment.text);
+  //console.log('user '+params.user._id);
   if(!params.comment.text){ return next({id: 0, message: 'Comment can not be empty'}); }
   if(!params.user._id){ return next({id: 1, message: 'User id missing'}); }
   if(!params.scenario._id){ return next({id: 2, message: 'Scenario id missing'}); }
@@ -411,7 +462,7 @@ exports.addComment = function(params, next) {
 };
 
 exports.saveScenario = function(scenario, next) {
-  console.log(scenario);
+  //console.log(scenario);
   if(!scenario.name){ return next({id: 0, message: 'Please enter scenario title'}); }
   scenario.draft = true;
   // TODO full validation

@@ -3,6 +3,7 @@ var crypto = require('crypto');
 var nodemailer = require('nodemailer');
 var config = require('../config/config');
 var User = require('../models/user').User;
+var Follower = require('../models/follower').Follower;
 
 exports.addUser = function(user, next) {
 
@@ -45,6 +46,7 @@ exports.addUser = function(user, next) {
 
 exports.findByEmail = function(email, next) {
   User.findOne({email: email.toLowerCase()}, function(err, user) {
+    console.log(user);
     next(err, user);
   });
 };
@@ -216,6 +218,116 @@ exports.resetPassword = function(user, next) {
 
     }else{
       return next({id: 11, message: 'Token expired'});
+    }
+
+  });
+
+};
+
+exports.getFollowing = function(q, next) {
+
+  // update profile view count
+  var query = User.findOne();
+  query.where({"_id": q.user._id});
+  query.exec(function(err, profile) {
+    if (err) return next(err);
+    if(profile === null){
+      return next({id: 0, message: "no such profile found"});
+    }
+
+    var update = {profile_views: profile.profile_views+1};
+    var query = {"_id": profile._id};
+    var options = {new: true};
+    User.findOneAndUpdate(query, update, options, function(err, user) {
+      if (err) { return next(err); }
+
+      user.password = undefined;
+      user.email = undefined;
+      if(user.resetPasswordToken){user.resetPasswordToken = undefined;}
+      if(user.resetPasswordExpires){user.resetPasswordExpires = undefined;}
+
+      // get following and followers alphabetical order
+      var following_query = Follower.find();
+      args = {};
+      multiple_args = [];
+      multiple_args.push({follower: user._id});
+      multiple_args.push({following: user._id});
+      args.$or = multiple_args;
+      following_query.where(args);
+      following_query.populate('follower','first_name last_name');
+      following_query.populate('following','first_name last_name');
+      following_query.exec(function(err, follow_array) {
+        if (err) return next(err);
+        console.log(follow_array);
+        user.follow_array = follow_array;
+
+        return next(null, user);
+      });
+
+    });
+
+  });
+
+};
+
+exports.addRemoveFollow = function(params, next){
+
+  if(typeof params === 'undefined'){return next('no params sent');}
+  if(params.user._id == params.following._id){ return next("can not follow yourself");}
+  if(!params.user._id){return next("no user data sent");}
+  if(!params.following._id){return next("to follow/unfollow not sent");}
+
+  var query = Follower.findOne();
+  var args = {};
+  var multiple_args = [];
+  multiple_args.push({follower: params.user._id});
+  multiple_args.push({following: params.following._id});
+  args.$and = multiple_args;
+  query.where(args);
+  query.exec(function(err, follow_doc) {
+    if (err) return next(err);
+
+    if(typeof params.remove_follow === 'undefined'){
+
+      // follow
+      if(follow_doc === null){
+
+        follow_doc = {
+          follower: params.user._id,
+          following: params.following._id
+        };
+
+        new_follow_doc = new Follower(follow_doc);
+        new_follow_doc.save(function(err, favorite){
+          if(err){ return next(err); }
+
+          Follower.count({follower: params.user._id}, function (err, count) {
+            // update user following count
+            console.log(count);
+            return next(null, {success: 'follow'});
+
+          });
+        });
+
+      }else{
+        //already following
+        return next(null, {success: 'follow'});
+      }
+
+    }else{
+
+      // unfollow
+      if(follow_doc === null){
+        // already not following
+        return next(null, {success: 'unfollow'});
+      }else{
+        // unfollow that user
+        follow_doc.remove(function(err, a){
+          if (err) return next(err);
+
+          return next(null, {success: 'unfollow'});
+        });
+      }
     }
 
   });

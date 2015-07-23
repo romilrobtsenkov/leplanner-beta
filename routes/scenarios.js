@@ -13,7 +13,14 @@ router.post('/scenarios-widget-list/', function(req, res, next) {
 router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
   scenarioService.getDashScenarios(req.body, function(err, scenarios) {
     if (err) { return res.json({error: err}); }
-    return res.json(scenarios);
+    return res.json({scenarios: scenarios});
+  });
+});
+
+router.post('/scenarios-user-list/', function(req, res, next) {
+  scenarioService.getUserScenarios(req.body, function(err, scenarios) {
+    if (err) { return res.json({error: err}); }
+    return res.json({scenarios: scenarios});
   });
 });
 

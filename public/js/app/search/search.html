@@ -22,7 +22,7 @@
 	</div>
 <!-- Search div where all the results are shown -->
 	<div class="row advanced-options-and-results">
-		<div class="col-sm-3">
+		<!--<div class="col-sm-3">
 			<div id="accordion" class="panel-group">
           <div class="panel panel-default">
 
@@ -44,7 +44,7 @@
 						</div>
           </div>
       </div>
-    </div>
+    </div>-->
 		<div class="col-sm-12 col-md-9 col-lg-9 col-xs-12">
 			<h4 class="results-heading">Found <strong>{{scenarios.length}}</strong>  scenarios <span ng-if="search_word_end">for keyword <strong >"{{search_word_end}}"</strong></span></h4>
 
@@ -62,6 +62,8 @@
 					<a href ng-click="updateSortList('commented')">Top commented</a>
 				</li>
 			</ul>
+
+			<p ng-if="!scenarios || loading_animation" class="loading-gif-animation"><img src="./images/loading.gif"></p>
 
 			<hr>
 			<div class="single_scenario_item" id="{{scenario._id}}" current-page="search_page_nr" dir-paginate="scenario in scenarios | itemsPerPage: 3">
@@ -104,7 +106,7 @@
 				</div>
 				<hr>
 				<!-- SINGLE SCENARIO END -->
-				
+
 			</div>
 
 			<!-- https://github.com/michaelbromley/angularUtils/tree/master/src/directives/pagination -->

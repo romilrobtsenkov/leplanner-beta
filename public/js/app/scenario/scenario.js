@@ -5,9 +5,9 @@
     .module('app')
     .controller('ScenarioController', ScenarioController);
 
-    ScenarioController.$inject = ['$scope','$rootScope','$routeParams','$location','$timeout','scenarioService'];
+    ScenarioController.$inject = ['$scope','$rootScope','$routeParams','$location','$timeout','scenarioService', 'userService'];
 
-    function ScenarioController($scope,$rootScope,$routeParams,$location,$timeout,scenarioService) {
+    function ScenarioController($scope,$rootScope,$routeParams,$location,$timeout,scenarioService,userService) {
 
       if(typeof $routeParams.id !== 'undefined'){
         $scope.scenario_id = $routeParams.id;
@@ -32,7 +32,14 @@
           }
 
           if(data.error){
-            console.log(data.error);
+            switch (data.error.id) {
+              case 0:
+                $scope.no_scenario = true;
+                break;
+              default:
+                $scope.no_scenario = true;
+                console.log(data.error);
+            }
           }
       });
 
@@ -86,6 +93,47 @@
                 $scope.is_favorite = false;
               }else{
                 $scope.is_favorite = true;
+              }
+            }
+
+            if(data.error){
+              switch (data.error.id) {
+                case 100:
+                  // user changed
+                  $location.path('/');
+                  break;
+                default:
+                  console.log(data.error);
+
+              }
+            }
+        });
+      };
+
+      $scope.addRemoveFollow = function(remove_follow){
+
+        var params = {
+          user: {
+            _id: $rootScope.user._id
+          },
+          following: {
+            _id: $scope.scenario.author._id
+          }
+        };
+
+        if(typeof remove_follow !== 'undefined'){
+          params.remove_follow = true;
+        }
+
+        userService.addRemoveFollow(params)
+          .then(function(data) {
+
+            if(data.success){
+              console.log(data.success);
+              if(data.success == 'unfollow'){
+                $scope.is_following = false;
+              }else{
+                $scope.is_following = true;
               }
             }
 

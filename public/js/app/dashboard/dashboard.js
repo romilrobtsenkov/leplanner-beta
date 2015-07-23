@@ -13,8 +13,10 @@
         $rootScope.dash_active_tab = 'drafts';
       }
 
-      if(typeof $rootScope.dash_active_sort_tab === 'undefined'){
-        $rootScope.dash_active_sort_tab = 'latest';
+      if(typeof $rootScope.sort_tab === 'undefined'){
+        $rootScope.sort_tab = {};
+      }else if(typeof $rootScope.sort_tab.dash === 'undefined') {
+        $rootScope.sort_tab.dash = 'latest';
       }
 
       getDashboardScenarios();
@@ -32,10 +34,10 @@
           }
         };
 
-        if(typeof $rootScope.dash_active_sort_tab == 'undefined'){
-          $rootScope.dash_active_sort_tab = 'latest';
+        if(typeof $rootScope.sort_tab.dash == 'undefined'){
+          $rootScope.sort_tab.dash = 'latest';
         }else{
-          switch ($rootScope.dash_active_sort_tab) {
+          switch ($rootScope.sort_tab.dash) {
             case 'latest':
                 q.order = 'latest';
               break;
@@ -71,53 +73,58 @@
           }
         }
 
-        scenarioService.getDashScenarios(q)
-          .then(function(data) {
-            //console.log(data);
-            if(data.scenarios){
+        if(q.filter != 'following'){
 
-              switch (q.filter) {
-                case 'drafts':
-                  $scope.drafts_count = data.scenarios.length;
-                  if(data.scenarios.length === 0){
-                    $scope.no_drafts = true;
-                  }
-                  break;
-                case 'published':
-                  if(data.scenarios.length === 0){
-                    $scope.no_published = true;
-                  }
-                  break;
-                case 'favorites':
-                  if(data.scenarios.length === 0){
-                    $scope.no_favorites = true;
-                  }
-                  break;
-                case 'following':
+          scenarioService.getDashScenarios(q)
+            .then(function(data) {
+              //console.log(data);
+              if(data.scenarios){
 
-                  if(data.scenarios.length === 0){
-                    $scope.no_following = true;
-                  }
+                switch (q.filter) {
+                  case 'drafts':
+                    $scope.drafts_count = data.scenarios.length;
+                    if(data.scenarios.length === 0){
+                      $scope.no_drafts = true;
+                    }
+                    break;
+                  case 'published':
+                    if(data.scenarios.length === 0){
+                      $scope.no_published = true;
+                    }
+                    break;
+                  case 'favorites':
+                    if(data.scenarios.length === 0){
+                      $scope.no_favorites = true;
+                    }
+                    break;
+                  default:
+                    alert('something went wrong, please refresh the page');
+                    break;
+                }
 
-                  break;
+                $scope.scenarios = data.scenarios;
+                $scope.loading_animation = false;
+
               }
 
-              $scope.scenarios = data.scenarios;
-              $scope.loading_animation = false;
-
-            }
-
-            if(data.error){
-              switch(data.error.id) {
-                case 100:
-                  // user changed
-                  $location.path('/');
-                  break;
-                default:
-                  console.log(data.error);
+              if(data.error){
+                switch(data.error.id) {
+                  case 100:
+                    // user changed
+                    $location.path('/');
+                    break;
+                  default:
+                    console.log(data.error);
+                }
               }
-            }
-        });
+          });
+
+        }else{
+          //q.filter == 'following'
+
+          console.log('query followers');
+
+        }
 
       }
 
@@ -144,16 +151,16 @@
       };
 
       $scope.isSortActive = function(tab){
-        if(tab == $rootScope.dash_active_sort_tab){ return true; }
+        if(tab == $rootScope.sort_tab.dash){ return true; }
         return false;
       };
 
       $scope.updateSortList = function(tab){
         if(tab == 'latest ' || tab == 'popular' || tab == 'favorited' || tab == 'commented'){
-          $rootScope.dash_active_sort_tab = tab;
+          $rootScope.sort_tab.dash = tab;
           getDashboardScenarios();
         }else{
-          $rootScope.dash_active_sort_tab = 'latest';
+          $rootScope.sort_tab.dash = 'latest';
           getDashboardScenarios();
         }
       };

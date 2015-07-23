@@ -1,7 +1,10 @@
-<div class="container main-content" ng-if="!scenario">
+<div class="container main-content" ng-if="!scenario && !no_scenario">
   Loading...
 </div>
-<div class="container main-content" ng-if="scenario">
+<div class="container main-content" ng-show="no_scenario">
+  No such scenario found, check URL
+</div>
+<div class="container main-content" ng-if="scenario && !no_scenario">
 
   <img class="full-scenario-image" src="./images/full_scenario.png" alt="Scenario">
 
@@ -31,10 +34,10 @@
 
             <div class="small-profile visible-xs-block">
               <div class="small-profile-userbuttons">
-                <a href="" class="btn btn-success btn-sm pull-right"><span class="glyphicon glyphicon-plus-sign"></span> Follow</a>
+                <a href="#" ng-if="user._id!=scenario.author._id" class="btn btn-success btn-sm pull-right"><span class="glyphicon glyphicon-plus-sign"></span> Follow</a>
               </div>
               <div class="profile-usertitle-name">
-                <a a href="/#/profile/{{scenario.author._id}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a>
+                <a a href="/#/user/{{scenario.author._id}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a>
               </div>
               <div class="profile-usertitle-job">
                 {{scenario.author.organization}}
@@ -138,7 +141,10 @@
         </div>
 
         <div class="profile-userbuttons">
-          <a href="" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Follow</a>
+          <a ng-click="addRemoveFollow()" ng-if="!is_following && user && user._id!=scenario.author._id" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Follow</a>
+          <a ng-click="addRemoveFollow('remove')" ng-if="is_following && user && user._id!=scenario.author._id" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-circle-minus"></span> Unfollow</a>
+          <a href="/#/login" ng-if="!user" class=""> Login to follow</a>
+          <a ng-if="user._id==scenario.author._id" disabled="disabled" class="btn btn-success btn-sm">You are awesome</a>
         </div>
 
         <div class="profile-usertitle">
