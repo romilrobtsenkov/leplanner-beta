@@ -78,6 +78,12 @@
 
             if(data.error){
               switch(data.error.id) {
+                case 'beta':
+                  $scope.create_error = 'Please enter required beta code';
+                  break;
+                case 'wrong_beta':
+                  $scope.create_error = 'Wrong beta code!';
+                  break;
                 case 0:
                   $scope.create_error = 'Please enter your first name';
                   break;

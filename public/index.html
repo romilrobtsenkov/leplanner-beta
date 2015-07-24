@@ -54,6 +54,7 @@
           </li>
 
           <li ng-if="user"><a href="/#/create" data-toggle="collapse" data-target="#navbar-collapse"><span class="glyphicon glyphicon-plus"></span> Create scenario</a></li>
+          <li ng-if="user"><a href="/#/user/{{user._id}}" data-toggle="collapse" data-target="#navbar-collapse" ><span class="glyphicon glyphicon-user"></span> User page</a></li>
           <li><a href="/#/search" data-toggle="collapse" data-target="#navbar-collapse"><span class="glyphicon glyphicon-search"></span> Search</a></li>
           <li ng-if="user" role="presentation"><a role="menuitem" tabindex="-1" href="/#/settings/" data-toggle="collapse" data-target="#navbar-collapse"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
           <li ng-if="user" role="presentation"><a role="menuitem" tabindex="-1" ng-click="logout()" href="#" data-toggle="collapse" data-target="#navbar-collapse"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
@@ -62,7 +63,7 @@
         <div class="hidden-xs pull-right" ng-if="user">
           <a href="/#/create" class="btn btn-success btn-sm add-new-top-button"><span class="glyphicon glyphicon-plus"></span> Create scenario</a>
           <a style="margin-top: 3px;" class="btn" href="/#/dashboard">
-            <img src="./images/profile.png" alt="myFace" class="img-square" style="height:30px;width:30px">
+            <img src="./images/profile.png" alt="myFace" class="img-circle" style="height:30px;width:30px">
             <span>{{user.first_name}} {{user.last_name}}</span>
           </a>
 
@@ -72,6 +73,7 @@
             </a>
             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
               <li role="presentation"><a role="menuitem" tabindex="-1" href="/#/create"><span class="glyphicon glyphicon-plus"></span> Create scenario</a></li>
+              <li role="separator" class="divider"></li>
               <li role="presentation"><a role="menuitem" tabindex="-1" href="/#/user/{{user._id}}"><span class="glyphicon glyphicon-user"></span> User page</a></li>
               <li role="presentation"><a role="menuitem" tabindex="-1" href="/#/settings/"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
               <li role="separator" class="divider"></li>

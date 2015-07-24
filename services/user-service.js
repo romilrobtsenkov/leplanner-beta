@@ -7,6 +7,14 @@ var Follower = require('../models/follower').Follower;
 
 exports.addUser = function(user, next) {
 
+  //BETA
+  if(!user.new_beta_code){
+    return next({id: 'beta', message: 'Please enter required beta code!'});
+  }else if(user.new_beta_code != config.beta_code){
+    return next({id: 'wrong_beta', message: 'Wrong beta code!'});
+  }
+
+
   // prevalidate user input before db, if html validation fails
   if(!user.new_first_name){ return next({id: 0, message: 'Please enter your first name'}); }
   if(!user.new_last_name){ return next({id: 1, message: 'Please enter your last name'}); }
