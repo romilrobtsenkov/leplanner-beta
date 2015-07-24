@@ -5,10 +5,10 @@
     .module('app')
     .controller('SettingsController', SettingsController);
 
-    SettingsController.$inject = ['$scope','$rootScope','$location','$timeout','userService'];
+    SettingsController.$inject = ['$scope','$rootScope','$location','$timeout','userService','Upload'];
 
-    function SettingsController($scope,$rootScope,$location,$timeout,userService) {
-      console.log($rootScope.user);
+    function SettingsController($scope,$rootScope,$location,$timeout,userService,Upload) {
+      //console.log($rootScope.user);
 
       $scope.user = $rootScope.user;
 
@@ -139,6 +139,37 @@
         }else{
           $scope.updatePassword_error = 'All fields are required';
           $timeout(function() { $scope.updatePassword_error = null; }, 2000);
+        }
+      };
+
+      $scope.uploadPicture = function(files){
+        console.log('upload');
+        console.log(files);
+        if ($scope.files && $scope.files.length) {
+
+          var file = $scope.files[0];
+          console.log(file);
+
+          //check size
+          // type
+          // then upload
+          //https://github.com/danialfarid/ng-file-upload
+          // no upload+
+          var user = {};
+          user._id = $rootScope.user._id;
+          Upload.upload({
+              url: 'api/upload/profile-image',
+              fields: {user: user},
+              file: file
+          }).progress(function (evt) {
+              var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+              console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
+          }).success(function (data, status, headers, config) {
+              console.log('file ' + config.file.name + 'uploaded. Response: ' + data);
+          }).error(function (data, status, headers, config) {
+              console.log('error status: ' + status);
+          });
+
         }
       };
 
