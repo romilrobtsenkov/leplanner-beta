@@ -38,14 +38,14 @@
 
         <div class="row">
           <div class="col-xs-3 col-md-3" ng-repeat="following in followings | limitTo:sidebox_quantity.followings">
-            <a href="/#/user/{{following._id}}" class="thumbnail" alt="{{following.first_name}} {{following.last_name}}">
+            <a href="/#/user/{{following._id}}" class="thumbnail" title="{{following.first_name}} {{following.last_name}}">
               <img src="./images/profile.png" alt="User">
             </a>
           </div>
         </div>
 
         <!-- more button -->
-        <a ng-click="expandSideBox('followings')" ng-if="sidebox_quantity.followings == 8  && followings.length > 8" class="pull-right" style="margin-right:-10px; margin-top:10px;"> More <span class="glyphicon glyphicon-menu-right"></span></a>
+        <a ng-click="expandSideBox('followings')" ng-if="sidebox_quantity.followings == 8  && followings.length > 8" class="pull-right" style="cursor: pointer; margin-right:-10px; margin-top:10px;"> More <span class="glyphicon glyphicon-menu-right"></span></a>
 
       </div>
 
@@ -54,14 +54,14 @@
 
         <div class="row">
           <div class="col-xs-3 col-md-3" ng-repeat="follower in followers | limitTo:sidebox_quantity.followers">
-            <a href="/#/user/{{follower._id}}" class="thumbnail" alt="{{follower.first_name}} {{follower.last_name}}">
+            <a href="/#/user/{{follower._id}}" class="thumbnail" title="{{follower.first_name}} {{follower.last_name}}">
               <img src="./images/profile.png" alt="User">
             </a>
           </div>
         </div>
 
         <!-- more button -->
-        <a ng-click="expandSideBox('followers')" ng-if="sidebox_quantity.followers == 8 && followers.length > 8" class="pull-right" style="margin-right:-10px; margin-top:10px;"> More <span class="glyphicon glyphicon-menu-right"></span></a>
+        <a ng-click="expandSideBox('followers')" ng-if="sidebox_quantity.followers == 8 && followers.length > 8" class="pull-right" style="cursor: pointer; margin-right:-10px; margin-top:10px;"> More <span class="glyphicon glyphicon-menu-right"></span></a>
 
       </div>
       <br>

@@ -258,7 +258,7 @@ exports.loadUserData = function(q, next) {
       following_query.populate('following','first_name last_name');
       following_query.exec(function(err, follow_array) {
         if (err) return next(err);
-        console.log(follow_array.length);
+        //console.log(follow_array.length);
 
         var response = {};
         response.profile = user;
@@ -291,7 +291,7 @@ exports.loadUserData = function(q, next) {
               });
 
             }
-      
+
           }
         }
 
