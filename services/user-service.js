@@ -75,9 +75,6 @@ exports.updateUserProfile = function(user, next) {
     return next({id: 3, message: 'Please enter correct email'});
   }
 
-  if(!user.new_organization){ console.log('no user organization'); }
-
-
   var update = {};
   if(user.first_name != user.new_first_name){
     update.first_name = user.new_first_name;
@@ -90,14 +87,32 @@ exports.updateUserProfile = function(user, next) {
   }
 
   if(user.email != user.new_email){
-    // mongoose validation fi
+
+    if(!user.confirm_password){
+      return next({id: 7, message: 'Please enter password to confirm email change!'});
+    }
+
     User.findOne({email: user.new_email}, function(err,user_with_same_email) {
       if (err) { return next(err); }
       if(user_with_same_email){
         return next({id: 6, message: 'That email is already in use'});
       }else{
         update.email = user.new_email;
-        updateProfile(update);
+        User.findOne({_id: user._id}, function(err,user_object) {
+          if (err) { return next(err); }
+
+            bcrypt.compare(user.confirm_password, user_object.password, function(err, same) {
+              if (err) { return next(err); }
+
+              if(same){
+                updateProfile(update);
+              }else{
+                return next({id: 10, message: 'Wrong password'});
+              }
+
+            });
+
+        });
       }
     });
   }else{
@@ -105,6 +120,7 @@ exports.updateUserProfile = function(user, next) {
   }
 
   function updateProfile(update){
+
     var query = {"_id": user._id};
     var options = {new: true};
     User.findOneAndUpdate(query, update, options, function(err, user) {
@@ -124,19 +140,35 @@ exports.updateUserPassword = function(user, next) {
   if(user.password == user.new_password){ return next({id: 8, message: 'New password has to be different from old one'}); }
   if(user.new_password != user.new_password_twice){ return next({id: 9, message: 'New passwords dont match'}); }
 
-  bcrypt.hash(user.new_password, 10, function(err, hash) {
+  User.findOne({_id: user._id}, function(err,user_object) {
     if (err) { return next(err); }
 
-    var update = {password: hash};
+      bcrypt.compare(user.password, user_object.password, function(err, same) {
+        if (err) { return next(err); }
 
-    var query = {"_id": user._id};
-    var options = {new: true};
-    User.findOneAndUpdate(query, update, options, function(err, user) {
-      if (err) { return next(err); }
-      if(user){
-        return next(null, user);
-      }
-    });
+        if(same){
+
+          bcrypt.hash(user.new_password, 10, function(err, hash) {
+            if (err) { return next(err); }
+
+            var update = {password: hash};
+
+            var query = {"_id": user._id};
+            var options = {new: true};
+            User.findOneAndUpdate(query, update, options, function(err, user) {
+              if (err) { return next(err); }
+              if(user){
+                return next(null, user);
+              }
+            });
+          });
+
+        }else{
+          return next({id: 10, message: 'Wrong password'});
+        }
+
+      });
+
   });
 
 };

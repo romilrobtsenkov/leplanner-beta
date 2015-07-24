@@ -62,6 +62,12 @@
                     case 6:
                       $scope.updateProfile_error = 'That email is already in use';
                       break;
+                    case 7:
+                      $scope.updateProfile_error = 'Please enter password to confirm email change!';
+                      break;
+                    case 10:
+                      $scope.updateProfile_error = 'Wrong password!';
+                      break;
                     default:
                       $scope.updateProfile_error = 'Unknown error';
                   }
@@ -90,6 +96,9 @@
                   if(data.user){
                     $scope.updatePassword_success = 'Update successful';
                     $scope.updatePassword_error = null;
+                    user.password = undefined;
+                    user.new_password = undefined;
+                    user.new_password_twice = undefined;
                     $timeout(function() { $scope.updatePassword_success = null; }, 2000);
                   }
 
@@ -110,6 +119,9 @@
                         break;
                       case 9:
                         $scope.updatePassword_error = 'New passwords dont match';
+                        break;
+                      case 10:
+                        $scope.updatePassword_error = 'Wrong password';
                         break;
                       default:
                         $scope.updatePassword_error = 'Unknown error';
