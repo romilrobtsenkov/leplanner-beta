@@ -3,7 +3,7 @@
 
   angular
     .module('app')
-    .config(config)
+    .config(config);
 
   config.$inject = ['$routeProvider','$locationProvider','$resourceProvider'];
 
@@ -14,81 +14,81 @@
         templateUrl: '/js/app/home/home.html',
         controller: 'HomeController',
         resolve: {
-          data: function (userRouteService) {
+          data: ['userRouteService', function(userRouteService) {
             return userRouteService.checkUser();
-          },
+          }]
         }
       })
       .when('/search', {
         templateUrl: '/js/app/search/search.html',
         controller: 'SearchController',
         resolve: {
-          data: function (userRouteService) {
+          data: ['userRouteService', function(userRouteService) {
             return userRouteService.checkUser();
-          },
+          }]
         }
       })
       .when('/scenario/:id', {
         templateUrl: '/js/app/scenario/scenario.html',
         controller: 'ScenarioController',
         resolve: {
-          data: function (userRouteService) {
+          data: ['userRouteService', function(userRouteService) {
             return userRouteService.checkUser();
-          },
+          }]
         }
       })
       .when('/user/:id', {
         templateUrl: '/js/app/user/user.html',
         controller: 'UserController',
         resolve: {
-          data: function (userRouteService) {
+          data: ['userRouteService', function(userRouteService) {
             return userRouteService.checkUser();
-          },
+          }]
         }
       })
       .when('/create', {
         templateUrl: '/js/app/create/create.html',
         controller: 'CreateController',
         resolve: {
-          data: function (userRouteService) {
+          data: ['userRouteService', function(userRouteService) {
             return userRouteService.checkUser({ error_location: '/login'});
-          }
+          }]
         }
       })
       .when('/login', {
         templateUrl: '/js/app/login/login.html',
         controller: 'LoginController',
         resolve: {
-          data: function (userRouteService) {
+          data: ['userRouteService', function(userRouteService) {
             return userRouteService.checkUser({ success_location: '/dashboard'});
-          }
+          }]
         }
       })
       .when('/settings', {
         templateUrl: '/js/app/settings/settings.html',
         controller: 'SettingsController',
         resolve: {
-          data: function (userRouteService) {
+          data: ['userRouteService', function(userRouteService) {
             return userRouteService.checkUser({ error_location: '/login'});
-          }
+          }]
         }
       })
       .when('/dashboard', {
         templateUrl: '/js/app/dashboard/dashboard.html',
         controller: 'DashboardController',
         resolve: {
-          data: function (userRouteService) {
+          data: ['userRouteService', function(userRouteService) {
             return userRouteService.checkUser({ error_location: '/login'});
-          }
+          }]
         }
       })
       .when('/reset/:token', {
         templateUrl: '/js/app/reset/reset.html',
         controller: 'ResetController',
         resolve: {
-          data: function (userRouteService) {
+          data: ['userRouteService', function(userRouteService) {
             return userRouteService.checkUser();
-          }
+          }]
         }
       });
   }

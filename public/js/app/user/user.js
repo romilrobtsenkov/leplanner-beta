@@ -21,7 +21,6 @@
         $rootScope.sort_tab.profile = 'latest';
       }
 
-      // sideboxes default visible
       $scope.sidebox_quantity = {};
       $scope.sidebox_quantity.followings = 8;
       $scope.sidebox_quantity.followers = 8;
@@ -41,7 +40,7 @@
           .then(function(data) {
 
             if(data.profile){
-              console.log(data);
+              //console.log(data);
               $scope.profile = data.profile;
 
               //check if user is following
@@ -138,7 +137,7 @@
 
         var q = {};
 
-        q.user = {_id: $rootScope.user._id};
+        q.user = {_id: $scope.get_profile_id};
 
         if(typeof $rootScope.sort_tab.profile == 'undefined'){
           $rootScope.sort_tab.profile = 'latest';
@@ -163,7 +162,7 @@
 
         scenarioService.getUserScenarios(q)
           .then(function(data) {
-            console.log(data);
+            //console.log(data);
             if(data.scenarios){
               if(data.scenarios.length === 0){
                   $scope.no_scenarios = true;
