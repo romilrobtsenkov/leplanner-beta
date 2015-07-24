@@ -52,7 +52,7 @@
               <img class="thumbnail-preview" src="./images/thumbnail_200.png" alt="Generic placeholder thumbnail">
             </a>
             <div class="caption">
-              <h4>{{scenario.name}}</h4>
+              <a href="/#/scenario/{{scenario._id}}"><h4>{{scenario.name}}</h4></a>
               <p class="thumbnail-caption">{{scenario.description | limitTo: 60}}{{scenario.description.length > 60 ? '...' : ''}}</p>
               <p class="clearfix">
                 <span class="favorited-and-comments">

@@ -49,19 +49,23 @@
             <form ng-if='create_form' name="create-user-form" id="create-user-form" ng-submit="create(user)">
               <div ng-if='create_error' class="alert alert-danger" role="alert">{{create_error}}</div>
               <div class="form-group">
-                <label for="new_first_name">First name</label>
+                <label for="new_first_name">First name (required)</label>
                 <input type="text" class="form-control" id="new_first_name" name="new_first_name" ng-model="user.new_first_name" required/>
               </div>
               <div class="form-group">
-                <label for="new_last_name">Last name</label>
+                <label for="new_last_name">Last name (required)</label>
                 <input type="text" class="form-control" id="new_last_name" name="new_last_name" ng-model="user.new_last_name" required />
               </div>
               <div class="form-group">
-                <label for="new_email">Email</label>
+                <label for="new_organization">Organization</label>
+                <input type="text" class="form-control" id="new_organization" name="new_organization" ng-model="user.new_organization" />
+              </div>
+              <div class="form-group">
+                <label for="new_email">Email  (required)</label>
                 <input type="email" class="form-control" id="new_email" name="new_email" ng-model="user.new_email" required />
               </div>
               <div class="form-group">
-                <label for="new_password">Password</label>
+                <label for="new_password">Password  (required)</label>
                 <input type="password" class="form-control" id="new_password" name="new_password" autocomplete="off" ng-model="user.new_password" required />
               </div>
               <div class="form-submit">

@@ -8,7 +8,7 @@
     SettingsController.$inject = ['$scope','$rootScope','$location','$timeout','userService'];
 
     function SettingsController($scope,$rootScope,$location,$timeout,userService) {
-      console.log(typeof $rootScope.user);
+      console.log($rootScope.user);
 
       $scope.user = $rootScope.user;
 
@@ -16,6 +16,7 @@
         $scope.user.new_first_name = $scope.user.first_name;
         $scope.user.new_last_name = $scope.user.last_name;
         $scope.user.new_email = $scope.user.email;
+        $scope.user.new_organization = $scope.user.organization;
       }
 
       fillUpdateProfileForm($scope.user);
@@ -24,7 +25,8 @@
 
         if($scope.user.new_first_name != $scope.user.first_name ||
            $scope.user.new_last_name != $scope.user.last_name ||
-           $scope.user.new_email != $scope.user.email
+           $scope.user.new_email != $scope.user.email ||
+           $scope.user.new_organization != $scope.user.organization
           ){
 
             userService.updateUserProfile({user: $scope.user})

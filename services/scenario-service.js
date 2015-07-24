@@ -225,7 +225,7 @@ exports.getSingleScenario = function(params, next){
 
   var query = Scenario.findOne();
   query.where({_id: params.scenario_id});
-  query.populate('author', 'first_name last_name created');
+  query.populate('author', 'first_name last_name organization created');
   //query.limit(1);
   query.exec(function(err, scenario) {
     //console.log(err);

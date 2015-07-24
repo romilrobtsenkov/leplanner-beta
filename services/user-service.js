@@ -26,6 +26,7 @@ exports.addUser = function(user, next) {
       var newUser = new User({
         first_name: user.new_first_name,
         last_name: user.new_last_name,
+        organization: user.new_organization,
         email: user.new_email.toLowerCase(),
         password: user.hashedpassword
       });
@@ -66,6 +67,9 @@ exports.updateUserProfile = function(user, next) {
     return next({id: 3, message: 'Please enter correct email'});
   }
 
+  if(!user.new_organization){ console.log('no user organization'); }
+
+
   var update = {};
   if(user.first_name != user.new_first_name){
     update.first_name = user.new_first_name;
@@ -73,6 +77,10 @@ exports.updateUserProfile = function(user, next) {
   if(user.last_name != user.new_last_name){
     update.last_name = user.new_last_name;
   }
+  if(user.organization != user.new_organization){
+    update.organization = user.new_organization;
+  }
+
   if(user.email != user.new_email){
     // mongoose validation fi
     User.findOne({email: user.new_email}, function(err,user_with_same_email) {

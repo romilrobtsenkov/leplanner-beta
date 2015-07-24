@@ -34,7 +34,10 @@
 
             <div class="small-profile visible-xs-block">
               <div class="small-profile-userbuttons">
-                <a href="#" ng-if="user._id!=scenario.author._id" class="btn btn-success btn-sm pull-right"><span class="glyphicon glyphicon-plus-sign"></span> Follow</a>
+                <a ng-click="addRemoveFollow()" ng-if="!is_following && user && user._id!=scenario.author._id" class="btn btn-success btn-sm pull-right"><span class="glyphicon glyphicon-plus-sign"></span> Follow</a>
+                <a ng-click="addRemoveFollow('remove')" ng-if="is_following && user && user._id!=scenario.author._id" class="btn btn-default btn-sm pull-right"><span class="glyphicon glyphicons-circle-minus"></span> Unfollow</a>
+                <a href="/#/login" ng-if="!user" class="pull-right"> Login to follow</a>
+                <a ng-if="user._id==scenario.author._id" disabled="disabled" class="btn btn-success btn-sm pull-right">You are awesome</a>
               </div>
               <div class="profile-usertitle-name">
                 <a a href="/#/user/{{scenario.author._id}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a>
@@ -54,6 +57,7 @@
         <div class="row">
           <div class="col-sm-12">
             <span class="glyphicon glyphicon-calendar"></span> <span> {{scenario.created | date:'dd.MM.yyyy HH:mm'}}</span> | <span class="glyphicon glyphicon-eye-open"></span> <span> {{scenario.view_count}}</span>
+            <span>| <span class="glyphicon glyphicon-heart"></span><span> {{scenario.favorites_count}}</span></span>
             <a class="print-button btn btn-sm pull-right" ng-if="user._id==scenario.author._id" href="/#/edit-scenario/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> Edit</a>
           </div>
         </div>
@@ -101,12 +105,12 @@
 
           <!-- First Comment -->
           <article ng-repeat="comment in comments" class="row comments-list">
-          <div class="col-md-2 col-sm-2 hidden-xs">
+          <div class="col-sm-2 col-xs-3">
             <figure class="thumbnail">
               <img class="img-responsive" src="./images/profile.png">
             </figure>
           </div>
-          <div class="col-sm-10 comment-closer">
+          <div class="col-sm-10 col-xs-9 comment-closer">
             <div class="panel panel-default">
               <div class="panel-body">
                 <header class="text-left">
