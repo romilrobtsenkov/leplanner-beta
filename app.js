@@ -6,7 +6,6 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var expressSession = require('express-session');
-var flash = require('connect-flash');
 var connectMongo = require('connect-mongo');
 var MongoStore = connectMongo(expressSession);
 
@@ -14,6 +13,7 @@ var config = require('./config/config');
 
 var users = require('./routes/users');
 var scenarios = require('./routes/scenarios');
+var upload = require('./routes/upload');
 
 var passportConfig = require('./auth/passport-config');
 var restrict = require('./auth/restrict');
@@ -28,6 +28,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+var multipart = require('connect-multiparty');
 
 app.use(expressSession(
     {
@@ -39,13 +40,16 @@ app.use(expressSession(
         })
     }
 ));
-app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(multipart({
+    uploadDir: config.profile_image_upload_temp_path
+}));
+
 app.use('/api/users', users);
-//app.use(restrict);
 app.use('/api/scenarios', scenarios);
+app.use('/api/upload', upload);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

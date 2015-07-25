@@ -5,9 +5,13 @@
     <div class="row login-page">
 
         <div class="main-login">
-            <h2>Upload profile picture</h2>
+            <h2>Profile picture</h2>
+            <img height='200px' width='200px' class="img-circle" style="height:200px;width:200px" src="./images/user/{{user._id}}.jpg"/>
+            <div ng-if='upload_error' class="alert alert-danger" role="alert">{{upload_error}}</div>
+            <div ng-if='upload_success' class="alert alert-success" role="alert">{{upload_success}}</div>
             <p>Accepts image file types .png / .jpg / .jpeg  - file size up to 1MB</p>
               <input type="file" ngf-select ngf-change="uploadPicture($files)"></input>
+              <p ng-if="progress_percentage">Upload - {{progress_percentage}}</p>
             <br>
 
             <h2>Update profile</h2>

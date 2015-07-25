@@ -1,4 +1,6 @@
 node_modules/
 config/
 public/bower/
+public/images/user/
+public/images/user-temp/
 .DS_Store

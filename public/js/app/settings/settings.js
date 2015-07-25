@@ -143,31 +143,57 @@
       };
 
       $scope.uploadPicture = function(files){
-        console.log('upload');
-        console.log(files);
-        if ($scope.files && $scope.files.length) {
+        if (files && files.length) {
 
-          var file = $scope.files[0];
-          console.log(file);
-
-          //check size
-          // type
-          // then upload
-          //https://github.com/danialfarid/ng-file-upload
-          // no upload+
-          var user = {};
-          user._id = $rootScope.user._id;
+          var file = files[0];
+          //console.log(file);
+          var user_for_restrict_check = {};
+          user_for_restrict_check._id = $rootScope.user._id;
           Upload.upload({
               url: 'api/upload/profile-image',
-              fields: {user: user},
+              fields: {
+                  user: user_for_restrict_check
+              },
+              sendFieldsAs: "form",
               file: file
           }).progress(function (evt) {
               var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-              console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
+              $scope.progress_percentage = progressPercentage+ '% ';
+              //console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
           }).success(function (data, status, headers, config) {
-              console.log('file ' + config.file.name + 'uploaded. Response: ' + data);
+
+              if(data.success){
+                //console.log('success');
+                $scope.upload_success = 'Upload successful';
+                $scope.progress_percentage = null;
+                $timeout(function() { $scope.upload_success = null; }, 2000);
+              }
+
+              if(data.error){
+                switch(data.error.id) {
+                  case 100:
+                    // user changed
+                    $location.path('/');
+                    break;
+                  case 20:
+                    $scope.upload_error = 'File too large';
+                    break;
+                  case 22:
+                    $scope.upload_error = 'Unsupported file type';
+                    break;
+                  case 23:
+                    $scope.upload_error = 'Upload larger image than 400px x 400px';
+                    break;
+
+                }
+                $scope.progress_percentage = null;
+                $timeout(function() { $scope.upload_error = null; }, 2000);
+              }
+
           }).error(function (data, status, headers, config) {
-              console.log('error status: ' + status);
+            $scope.progress_percentage = null;
+            $scope.upload_error = 'Unknown error!';
+            $timeout(function() { $scope.upload_error = null; }, 2000);
           });
 
         }
