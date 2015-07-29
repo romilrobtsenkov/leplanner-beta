@@ -661,12 +661,16 @@ span.not-selected {
   text-decoration: none;
 }
 
+.dashboard-user-thumb {
+  width: 40px;
+  padding: 10px 0;
+}
+
 .loading-gif-animation {
   text-align: center;
   margin: 0 auto;
 
 }
-
 
 .notifications
 {

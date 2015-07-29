@@ -15,6 +15,7 @@
       loadUserData: loadUserData,
       addRemoveFollow: addRemoveFollow,
       recoverUser: recoverUser,
+      getUsersList: getUsersList,
       logOutUser: logOutUser,
       updateUserProfile: updateUserProfile,
       updateUserPassword: updateUserPassword,
@@ -65,6 +66,13 @@
 
     function recoverUser(user) {
       return $http.post('/api/users/recover', user)
+        .then(function(response) {
+          return response.data;
+        });
+    }
+
+    function getUsersList(user) {
+      return $http.post('/api/users/list', user)
         .then(function(response) {
           return response.data;
         });

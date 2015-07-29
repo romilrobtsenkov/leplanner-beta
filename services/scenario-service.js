@@ -446,6 +446,8 @@ exports.addComment = function(params, next) {
     scenario: params.scenario._id,
   };
 
+  //console.log(JSON.stringify(comment));
+
   // save comment
   var new_comment = new Comment(comment);
   new_comment.save(function(err){

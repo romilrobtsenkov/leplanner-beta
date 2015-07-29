@@ -23,6 +23,7 @@ mongoose.connect(config.db);
 
 var app = express();
 
+//app.use(logger('combined'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));

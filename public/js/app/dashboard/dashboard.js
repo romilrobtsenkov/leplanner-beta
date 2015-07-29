@@ -5,9 +5,9 @@
     .module('app')
     .controller('DashboardController', DashboardController);
 
-    DashboardController.$inject = ['$scope','$rootScope','scenarioService', 'metaService'];
+    DashboardController.$inject = ['$scope','$rootScope','scenarioService', 'userService', 'metaService'];
 
-    function DashboardController($scope,$rootScope,scenarioService,metaService) {
+    function DashboardController($scope,$rootScope,scenarioService,userService,metaService) {
 
       if(typeof $rootScope.dash_active_tab === 'undefined'){
         $rootScope.dash_active_tab = 'drafts';
@@ -19,13 +19,14 @@
         $rootScope.sort_tab.dash = 'latest';
       }
 
-      getDashboardScenarios();
+      getDashboardData();
 
-      function getDashboardScenarios(){
+      function getDashboardData(){
 
         $scope.loading_animation = true;
         clearMessages();
         $scope.scenarios = [];
+        $scope.users_list = [];
 
         var q = {
           order : 'latest',
@@ -65,46 +66,33 @@
               case 'favorites':
                   q.filter = 'favorites';
                 break;
-              case 'following':
-                  q.filter = 'following';
+              case 'users':
+                  q.filter = 'users';
                 break;
             default:
               q.filter = 'drafts';
           }
         }
 
-        if(q.filter != 'following'){
+        if(q.filter != 'users'){
 
-          scenarioService.getDashScenarios(q)
+          getScenarios(q);
+
+        }else{
+
+          var params = {
+              user: {
+                _id: $rootScope.user._id
+              }
+          };
+
+          userService.getUsersList(params)
             .then(function(data) {
               //console.log(data);
-              if(data.scenarios){
-
-                switch (q.filter) {
-                  case 'drafts':
-                    $scope.drafts_count = data.scenarios.length;
-                    if(data.scenarios.length === 0){
-                      $scope.no_drafts = true;
-                    }
-                    break;
-                  case 'published':
-                    if(data.scenarios.length === 0){
-                      $scope.no_published = true;
-                    }
-                    break;
-                  case 'favorites':
-                    if(data.scenarios.length === 0){
-                      $scope.no_favorites = true;
-                    }
-                    break;
-                  default:
-                    alert('something went wrong, please refresh the page');
-                    break;
-                }
-
-                $scope.scenarios = data.scenarios;
+              if(data.users){
+                $scope.users_list = data.users;
+                console.log(data.users);
                 $scope.loading_animation = false;
-
               }
 
               if(data.error){
@@ -119,13 +107,56 @@
               }
           });
 
-        }else{
-          //q.filter == 'following'
-
           console.log('query followers');
 
         }
 
+      }
+
+      function getScenarios(q){
+        scenarioService.getDashScenarios(q)
+          .then(function(data) {
+            //console.log(data);
+            if(data.scenarios){
+
+              switch (q.filter) {
+                case 'drafts':
+                  $scope.drafts_count = data.scenarios.length;
+                  if(data.scenarios.length === 0){
+                    $scope.no_drafts = true;
+                  }
+                  break;
+                case 'published':
+                  if(data.scenarios.length === 0){
+                    $scope.no_published = true;
+                  }
+                  break;
+                case 'favorites':
+                  if(data.scenarios.length === 0){
+                    $scope.no_favorites = true;
+                  }
+                  break;
+                default:
+                  alert('something went wrong, please refresh the page');
+                  break;
+              }
+
+              $scope.scenarios = data.scenarios;
+              $scope.loading_animation = false;
+
+            }
+
+            if(data.error){
+              switch(data.error.id) {
+                case 100:
+                  // user changed
+                  $location.path('/');
+                  break;
+                default:
+                  console.log(data.error);
+              }
+            }
+        });
       }
 
       function clearMessages(){
@@ -141,12 +172,12 @@
       };
 
        $scope.updateDashList = function(tab){
-        if(tab == 'drafts ' || tab == 'published' || tab == 'favorites' || tab == 'following'){
+        if(tab == 'drafts ' || tab == 'published' || tab == 'favorites' || tab == 'users'){
           $rootScope.dash_active_tab = tab;
-          getDashboardScenarios();
+          getDashboardData();
         }else{
           $rootScope.dash_active_tab = 'drafts';
-          getDashboardScenarios();
+          getDashboardData();
         }
       };
 
@@ -158,10 +189,10 @@
       $scope.updateSortList = function(tab){
         if(tab == 'latest ' || tab == 'popular' || tab == 'favorited' || tab == 'commented'){
           $rootScope.sort_tab.dash = tab;
-          getDashboardScenarios();
+          getDashboardData();
         }else{
           $rootScope.sort_tab.dash = 'latest';
-          getDashboardScenarios();
+          getDashboardData();
         }
       };
 

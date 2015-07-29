@@ -454,3 +454,16 @@ exports.addRemoveFollow = function(params, next){
   });
 
 };
+
+exports.getUsersList = function(req, next) {
+  console.log(req.user._id);
+
+  query = User.find();
+  query.select('first_name last_name organization image_thumb last_modified');
+  query.sort({first_name: 1});
+  query.exec(function(err, users) {
+    if (err) return next(err);
+    return next(null, {users: users});
+  });
+
+};

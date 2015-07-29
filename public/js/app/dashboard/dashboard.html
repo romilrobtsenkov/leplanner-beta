@@ -9,7 +9,7 @@
             <li ng-class="{active:isActiveDash('drafts')}"><a ng-click="updateDashList('drafts')" href><span class="glyphicon glyphicon glyphicon-file"></span> <strong>Drafts</strong><span class="badge">{{drafts_count}}</span></a></li>
             <li ng-class="{active:isActiveDash('published')}"><a ng-click="updateDashList('published')" href><span class="glyphicon glyphicon-globe"></span> Published</a></li>
             <li ng-class="{active:isActiveDash('favorites')}"><a ng-click="updateDashList('favorites')" href><span class="glyphicon glyphicon-heart"></span> Favorites</a></li>
-            <li ng-class="{active:isActiveDash('following')}"><a ng-click="updateDashList('following')" href><span class="glyphicon glyphicon-user"></span> Following</a></li>
+            <li ng-class="{active:isActiveDash('users')}"><a ng-click="updateDashList('users')" href><span class="glyphicon glyphicon-user"></span> Users</a></li>
           </ul>
         </div>
       </nav>
@@ -53,7 +53,7 @@
     <div class="col-sm-7 col-sm-pull-3 col-lg-pull-3 col-md-pull-3" style="height:100%; min-height: 100px;">
       <div class="dashboard-main-content">
 
-        <ul ng-if="!isActiveDash('following')" ng-hide="no_drafts || no_published || no_favorites || no_following" class="nav nav-tabs nav-tab-pop">
+        <ul ng-if="!isActiveDash('users')" ng-hide="no_drafts || no_published || no_favorites || no_following" class="nav nav-tabs nav-tab-pop">
   				<li ng-class="{active:isSortActive('latest')}">
   					<a href ng-click="updateSortList('latest')">Latest</a>
   				</li>
@@ -75,7 +75,6 @@
         <p ng-if="no_favorites"> Add favorites by clickking on <button class="add-favorite-button btn btn-success btn-sm"><span class="glyphicon glyphicon-heart"></span> Favorite</button> button while viewing single scenario </p>
         <p ng-if="no_following"> Follow other users by clicking <a href="/#/follow" class="add-favorite-button btn btn-success btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Follow</a> next to user name!</p>
 
-        <hr>
         <!-- scenario items -->
         <div class="single_scenario_item" ng-repeat="scenario in scenarios">
 
@@ -117,7 +116,23 @@
           </div>
           <hr>
           <!-- SINGLE SCENARIO END -->
+        </div>
 
+        <!-- USERS LIST -->
+        <div ng-repeat="u in users_list">
+          <div class="row no-margin">
+            <div class="col-xs-9">
+                <a style="padding-right: 15px;" href="/#/user/{{u._id}}" title="{{u.first_name}} {{u.last_name}}">
+                  <img ng-src=/images/user/{{u.image_thumb}}?last_modified={{u.last_modified}} alt="{{u.first_name}} {{u.last_name}}" class="img-circle dashboard-user-thumb" />
+                </a>
+                <a href="/#/user/{{u._id}}" title="{{u.first_name}} {{u.last_name}}">{{u.first_name}} {{u.last_name}}</a> <span style="color: gray;" class="organization">| {{u.organization}}</span>
+            </div>
+            <div class="col-xs-3">
+              <a style="margin-top: 19px;" class="btn btn-success btn-xs">Follow</a>
+            </div>
+
+          </div>
+          <hr class="no-margin">
         </div>
 
       </div>
