@@ -55,7 +55,7 @@ exports.addUser = function(user, next) {
 
 exports.findByEmail = function(email, next) {
   User.findOne({email: email.toLowerCase()}, function(err, user) {
-    console.log(user);
+    //console.log(user);
     next(err, user);
   });
 };
