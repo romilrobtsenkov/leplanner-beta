@@ -1,5 +1,5 @@
 <div class="container main-content" ng-if="!profile && !no_user">
-  Loading...
+  <p class="loading-gif-animation"><img src="./images/loading.gif"></p>
 </div>
 <div class="container main-content" ng-show="no_user">
   No such user found, check URL
@@ -12,7 +12,7 @@
       <!-- user data -->
       <div class="profile-sidebar">
         <div class="profile-userpic">
-          <img src="./images/profile.png" class="img-responsive" alt="">
+          <img ng-src="./images/user/{{profile.image}}?last_modified={{profile.last_modified}}" class="img-responsive" alt="">
         </div>
         <div class="profile-userbuttons">
           <a ng-click="addRemoveFollow()" ng-if="!is_following && user && user._id!=profile._id" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Follow</a>
@@ -39,7 +39,7 @@
         <div class="row">
           <div class="col-xs-3 col-md-3" ng-repeat="following in followings | limitTo:sidebox_quantity.followings">
             <a href="/#/user/{{following._id}}" class="thumbnail" title="{{following.first_name}} {{following.last_name}}">
-              <img src="./images/profile.png" alt="User">
+              <img ng-src="./images/user/{{following.image_thumb}}?last_modified={{following.last_modified}}" alt="User">
             </a>
           </div>
         </div>
@@ -55,7 +55,7 @@
         <div class="row">
           <div class="col-xs-3 col-md-3" ng-repeat="follower in followers | limitTo:sidebox_quantity.followers">
             <a href="/#/user/{{follower._id}}" class="thumbnail" title="{{follower.first_name}} {{follower.last_name}}">
-              <img src="./images/profile.png" alt="User">
+              <img ng-src="./images/user/{{follower.image_thumb}}?last_modified={{follower.last_modified}}" alt="User">
             </a>
           </div>
         </div>
@@ -109,7 +109,7 @@
           </div>
           <div class="col-sm-8">
             <p class="extra-info">
-              <span class="glyphicon glyphicon-user"></span> <a href="/#/user/{{scenario.author._id}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a><br>
+              <span class="glyphicon glyphicon-user"></span>{{scenario.author.first_name}} {{scenario.author.last_name}}<br>
               <span class="glyphicon glyphicon-calendar"></span> {{scenario.created | date:'dd.MM.yyyy'}}
               <span>| <span class="glyphicon glyphicon-eye-open"></span><span> {{scenario.view_count}}</span></span>
               <span>| <span class="glyphicon glyphicon-heart"></span><span> {{scenario.favorites_count}}</span></span>

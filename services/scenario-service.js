@@ -225,7 +225,7 @@ exports.getSingleScenario = function(params, next){
 
   var query = Scenario.findOne();
   query.where({_id: params.scenario_id});
-  query.populate('author', 'first_name last_name organization created');
+  query.populate('author', 'first_name last_name organization created image last_modified');
   //query.limit(1);
   query.exec(function(err, scenario) {
     //console.log(err);
@@ -424,7 +424,7 @@ exports.getComments = function(params, next) {
 
   var query = Comment.find();
   query.where({scenario: params.scenario_id, deleted: false});
-  query.populate('author', 'first_name last_name');
+  query.populate('author', 'first_name last_name image_thumb last_modified');
   query.exec(function(err, comments) {
     if (err) return next(err);
     return next(null, {comments: comments});
@@ -463,7 +463,7 @@ exports.addComment = function(params, next) {
         // return all comments
         var query = Comment.find();
         query.where({scenario: params.scenario._id, deleted: false});
-        query.populate('author', 'first_name last_name');
+        query.populate('author', 'first_name last_name image_thumb last_modified');
         query.exec(function(err, comments) {
           if (err) return next(err);
           return next(null, {comments: comments});

@@ -63,7 +63,7 @@
         <div class="hidden-xs pull-right" ng-if="user">
           <a href="/#/create" class="btn btn-success btn-sm add-new-top-button"><span class="glyphicon glyphicon-plus"></span> Create scenario</a>
           <a style="margin-top: 3px;" class="btn" href="/#/dashboard">
-            <img src="./images/profile.png" alt="myFace" class="img-circle" style="height:30px;width:30px">
+            <img ng-src="./images/user/{{user.image}}" alt="{{user.first_name}} {{user.last_name}}" class="img-circle" style="height:30px;width:30px">
             <span>{{user.first_name}} {{user.last_name}}</span>
           </a>
 

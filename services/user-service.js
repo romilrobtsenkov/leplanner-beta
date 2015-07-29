@@ -86,6 +86,8 @@ exports.updateUserProfile = function(user, next) {
     update.organization = user.new_organization;
   }
 
+  update.last_modified = new Date();
+
   if(user.email != user.new_email){
 
     if(!user.confirm_password){
@@ -151,7 +153,10 @@ exports.updateUserPassword = function(user, next) {
           bcrypt.hash(user.new_password, 10, function(err, hash) {
             if (err) { return next(err); }
 
-            var update = {password: hash};
+            var update = {
+              password: hash,
+              last_modified: new Date()
+            };
 
             var query = {"_id": user._id};
             var options = {new: true};
@@ -251,7 +256,8 @@ exports.resetPassword = function(user, next) {
         var update = {
           password: hash,
           resetPasswordToken: undefined,
-          resetPasswordExpires: undefined
+          resetPasswordExpires: undefined,
+          last_modified: new Date()
         };
 
         var query = {"_id": user_db._id};
@@ -302,8 +308,8 @@ exports.loadUserData = function(q, next) {
       multiple_args.push({following: user._id});
       args.$or = multiple_args;
       following_query.where(args);
-      following_query.populate('follower','first_name last_name');
-      following_query.populate('following','first_name last_name');
+      following_query.populate('follower','first_name last_name image_thumb last_modified');
+      following_query.populate('following','first_name last_name image_thumb last_modified');
       following_query.exec(function(err, follow_array) {
         if (err) return next(err);
         //console.log(follow_array.length);
@@ -324,7 +330,9 @@ exports.loadUserData = function(q, next) {
               response.following.push({
                 _id: follow_array[i].following._id,
                 first_name: follow_array[i].following.first_name,
-                last_name: follow_array[i].following.last_name
+                last_name: follow_array[i].following.last_name,
+                image_thumb: follow_array[i].following.image_thumb,
+                last_modified: follow_array[i].following.last_modified
               });
 
             }else if(follow_array[i].following._id.toString() == user._id.toString()){
@@ -335,7 +343,9 @@ exports.loadUserData = function(q, next) {
               response.followers.push({
                 _id: follow_array[i].follower._id,
                 first_name: follow_array[i].follower.first_name,
-                last_name: follow_array[i].follower.last_name
+                last_name: follow_array[i].follower.last_name,
+                image_thumb: follow_array[i].follower.image_thumb,
+                last_modified: follow_array[i].follower.last_modified
               });
 
             }

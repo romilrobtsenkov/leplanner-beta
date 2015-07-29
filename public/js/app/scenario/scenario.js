@@ -28,7 +28,7 @@
             $scope.scenario = data.scenario;
             $scope.is_favorite = data.is_favorite;
             $scope.is_following = data.is_following;
-            console.log(data.scenario);
+            //console.log(data.scenario);
             getSidebarScenarios();
             getComments();
           }

@@ -11,6 +11,7 @@
       //console.log($rootScope.user);
 
       $scope.user = $rootScope.user;
+      $scope.user.profile_image ="./images/user/"+$scope.user._id+".jpg";
 
       function fillUpdateProfileForm() {
         $scope.user.new_first_name = $scope.user.first_name;
@@ -92,7 +93,7 @@
 
               userService.updateUserPassword({user: user})
                 .then(function(data) {
-                  console.log(data);
+                  //console.log(data);
                   if(data.user){
                     $scope.updatePassword_success = 'Update successful';
                     $scope.updatePassword_error = null;
@@ -164,6 +165,16 @@
 
               if(data.success){
                 //console.log('success');
+
+                // to update image src & update image in browser
+                var last_modified = new Date();
+                $scope.user.profile_image ="./images/user/"+$scope.user._id+".jpg?last_modified="+last_modified;
+
+                //console.log(last_modified);
+                // update rootScope to change user profile_image everywhere
+                $rootScope.user.image = $scope.user._id+".jpg?last_modified="+last_modified;
+                $rootScope.user.image_thumb = $scope.user._id+"_thumb.jpg?last_modified="+last_modified;
+
                 $scope.upload_success = 'Upload successful';
                 $scope.progress_percentage = null;
                 $timeout(function() { $scope.upload_success = null; }, 2000);

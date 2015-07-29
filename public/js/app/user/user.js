@@ -59,6 +59,8 @@
                 }
               }
 
+              //console.log(data.following);
+
               if(typeof data.following !== 'undefined'){
                 $scope.followings = data.following;
               }else{

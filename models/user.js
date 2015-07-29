@@ -8,10 +8,13 @@ var userSchema = new Schema({
   email: {type: String, required: true},
   password: {type: String, required: true},
   organization: {type: String},
+  image: {type: String, default: 'default.jpg'},
+  image_thumb: {type: String, default: 'default_thumb.jpg'},
   profile_views: { type: Number, default: 0},
   following_count: { type: Number, default: 0},
   followers_count: { type: Number, default: 0},
   created: {type: Date, default: Date.now},
+  last_modified: {type: Date, default: Date.now},
   resetPasswordToken: String,
   resetPasswordExpires: Date,
 });
