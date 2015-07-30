@@ -280,85 +280,85 @@ exports.resetPassword = function(user, next) {
 
 exports.loadUserData = function(q, next) {
 
-  // update profile view count
-  var query = User.findOne();
-  query.where({"_id": q.user._id});
-  query.exec(function(err, profile) {
-    if (err) return next(err);
-    if(profile === null){
-      return next({id: 0, message: "no such profile found"});
-    }
+    // update profile view count
+    var query = User.findOne();
+    query.where({"_id": q.user._id});
+    query.exec(function(err, profile) {
+      if (err) return next(err);
+      if(profile === null){
+        return next({id: 0, message: "no such profile found"});
+      }
 
-    var update = {profile_views: profile.profile_views+1};
-    var query = {"_id": profile._id};
-    var options = {new: true};
-    User.findOneAndUpdate(query, update, options, function(err, user) {
-      if (err) { return next(err); }
+      var update = {profile_views: profile.profile_views+1};
+      var query = {"_id": profile._id};
+      var options = {new: true};
+      User.findOneAndUpdate(query, update, options, function(err, user) {
+        if (err) { return next(err); }
 
-      user.password = undefined;
-      user.email = undefined;
-      if(user.resetPasswordToken){user.resetPasswordToken = undefined;}
-      if(user.resetPasswordExpires){user.resetPasswordExpires = undefined;}
+        user.password = undefined;
+        user.email = undefined;
+        if(user.resetPasswordToken){user.resetPasswordToken = undefined;}
+        if(user.resetPasswordExpires){user.resetPasswordExpires = undefined;}
 
-      // get following and followers alphabetical order
-      var following_query = Follower.find();
-      args = {};
-      multiple_args = [];
-      multiple_args.push({follower: user._id});
-      multiple_args.push({following: user._id});
-      args.$or = multiple_args;
-      following_query.where(args);
-      following_query.populate('follower','first_name last_name image_thumb last_modified');
-      following_query.populate('following','first_name last_name image_thumb last_modified');
-      following_query.exec(function(err, follow_array) {
-        if (err) return next(err);
-        //console.log(follow_array.length);
+        // get following and followers alphabetical order
+        var following_query = Follower.find();
+        args = {};
+        multiple_args = [];
+        multiple_args.push({follower: user._id});
+        multiple_args.push({following: user._id});
+        args.$or = multiple_args;
+        following_query.where(args);
+        following_query.populate('follower','first_name last_name image_thumb last_modified');
+        following_query.populate('following','first_name last_name image_thumb last_modified');
+        following_query.exec(function(err, follow_array) {
+          if (err) return next(err);
+          //console.log(follow_array.length);
 
-        var response = {};
-        response.profile = user;
+          var response = {};
+          response.profile = user;
 
-        // create separate arrays for followers and following
-        if(follow_array.length > 0){
-          for(var i = 0; i < follow_array.length; i++){
+          // create separate arrays for followers and following
+          if(follow_array.length > 0){
+            for(var i = 0; i < follow_array.length; i++){
 
-            // could not compare to objects -> .toString() fixed
-            if(follow_array[i].follower._id.toString() == user._id.toString()){
-              // following
-              if(typeof response.following === 'undefined'){
-                response.following = [];
+              // could not compare to objects -> .toString() fixed
+              if(follow_array[i].follower._id.toString() == user._id.toString()){
+                // following
+                if(typeof response.following === 'undefined'){
+                  response.following = [];
+                }
+                response.following.push({
+                  _id: follow_array[i].following._id,
+                  first_name: follow_array[i].following.first_name,
+                  last_name: follow_array[i].following.last_name,
+                  image_thumb: follow_array[i].following.image_thumb,
+                  last_modified: follow_array[i].following.last_modified
+                });
+
+              }else if(follow_array[i].following._id.toString() == user._id.toString()){
+                // followers
+                if(typeof response.followers === 'undefined'){
+                  response.followers = [];
+                }
+                response.followers.push({
+                  _id: follow_array[i].follower._id,
+                  first_name: follow_array[i].follower.first_name,
+                  last_name: follow_array[i].follower.last_name,
+                  image_thumb: follow_array[i].follower.image_thumb,
+                  last_modified: follow_array[i].follower.last_modified
+                });
+
               }
-              response.following.push({
-                _id: follow_array[i].following._id,
-                first_name: follow_array[i].following.first_name,
-                last_name: follow_array[i].following.last_name,
-                image_thumb: follow_array[i].following.image_thumb,
-                last_modified: follow_array[i].following.last_modified
-              });
-
-            }else if(follow_array[i].following._id.toString() == user._id.toString()){
-              // followers
-              if(typeof response.followers === 'undefined'){
-                response.followers = [];
-              }
-              response.followers.push({
-                _id: follow_array[i].follower._id,
-                first_name: follow_array[i].follower.first_name,
-                last_name: follow_array[i].follower.last_name,
-                image_thumb: follow_array[i].follower.image_thumb,
-                last_modified: follow_array[i].follower.last_modified
-              });
 
             }
-
           }
-        }
 
-        return next(null, response);
+          return next(null, response);
+        });
+
       });
 
     });
-
-  });
 
 };
 
@@ -456,14 +456,30 @@ exports.addRemoveFollow = function(params, next){
 };
 
 exports.getUsersList = function(req, next) {
-  console.log(req.user._id);
+  //console.log(req.user._id);
 
   query = User.find();
+  query.where({_id: {'$ne':req.user._id }});
   query.select('first_name last_name organization image_thumb last_modified');
   query.sort({first_name: 1});
   query.exec(function(err, users) {
     if (err) return next(err);
-    return next(null, {users: users});
+
+    var following_query = Follower.find();
+    following_query.where({follower: req.user._id});
+    following_query.select('following');
+    following_query.exec(function(err, following) {
+      if (err) return next(err);
+
+      var response = {
+        users: users
+      };
+
+      if(following){response.following = following;}
+
+      return next(null, response);
+    });
+
   });
 
 };

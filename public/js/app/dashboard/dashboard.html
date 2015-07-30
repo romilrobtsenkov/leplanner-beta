@@ -5,9 +5,9 @@
       <nav class="navbar navbar-default" role="navigation">
         <div class="side-menu-container">
           <ul class="nav navbar-nav dash-menu">
-            <!--<li class="active"><a href><span class="glyphicon glyphicon-list-alt"></span> Voog <span class="badge">5</span></a></li>-->
-            <li ng-class="{active:isActiveDash('drafts')}"><a ng-click="updateDashList('drafts')" href><span class="glyphicon glyphicon glyphicon-file"></span> <strong>Drafts</strong><span class="badge">{{drafts_count}}</span></a></li>
-            <li ng-class="{active:isActiveDash('published')}"><a ng-click="updateDashList('published')" href><span class="glyphicon glyphicon-globe"></span> Published</a></li>
+            <li ng-class="{active:isActiveDash('feed')}"><a ng-click="updateDashList('feed')" href><span class="glyphicon glyphicon-globe"></span> Feed</a></li>
+            <li ng-class="{active:isActiveDash('drafts')}"><a ng-click="updateDashList('drafts')" href><span class="glyphicon glyphicon glyphicon-file"></span> <strong>Drafts</strong><!--<span class="badge">{{drafts_count}}</span>--></a></li>
+            <li ng-class="{active:isActiveDash('published')}"><a ng-click="updateDashList('published')" href><span class="glyphicon glyphicon-list-alt"></span> Published</a></li>
             <li ng-class="{active:isActiveDash('favorites')}"><a ng-click="updateDashList('favorites')" href><span class="glyphicon glyphicon-heart"></span> Favorites</a></li>
             <li ng-class="{active:isActiveDash('users')}"><a ng-click="updateDashList('users')" href><span class="glyphicon glyphicon-user"></span> Users</a></li>
           </ul>
@@ -73,7 +73,7 @@
         <p ng-if="no_drafts"> Start your first scenario by clicking <a href="/#/create" class="add-favorite-button btn btn-success btn-sm"><span class="glyphicon glyphicon-plus"></span> Create scenario</a></p>
         <p ng-if="no_published"> Create scenario draft and then publish it. All your published scenarios will appear here!</p>
         <p ng-if="no_favorites"> Add favorites by clickking on <button class="add-favorite-button btn btn-success btn-sm"><span class="glyphicon glyphicon-heart"></span> Favorite</button> button while viewing single scenario </p>
-        <p ng-if="no_following"> Follow other users by clicking <a href="/#/follow" class="add-favorite-button btn btn-success btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Follow</a> next to user name!</p>
+        <p ng-if="no_following"> Follow other users who have <strong>published scenarios</strong> by clicking <button class="add-favorite-button btn btn-success btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Follow</button> next to user. <br> Go to <a style="cursor:pointer;" ng-click="updateDashList('users')"> Users</a></p>
 
         <!-- scenario items -->
         <div class="single_scenario_item" ng-repeat="scenario in scenarios">
@@ -118,24 +118,30 @@
           <!-- SINGLE SCENARIO END -->
         </div>
 
-        <!-- USERS LIST -->
-        <div ng-repeat="u in users_list">
-          <div class="row no-margin">
-            <div class="col-xs-9">
-                <a style="padding-right: 15px;" href="/#/user/{{u._id}}" title="{{u.first_name}} {{u.last_name}}">
-                  <img ng-src=/images/user/{{u.image_thumb}}?last_modified={{u.last_modified}} alt="{{u.first_name}} {{u.last_name}}" class="img-circle dashboard-user-thumb" />
-                </a>
-                <a href="/#/user/{{u._id}}" title="{{u.first_name}} {{u.last_name}}">{{u.first_name}} {{u.last_name}}</a> <span style="color: gray;" class="organization">| {{u.organization}}</span>
-            </div>
-            <div class="col-xs-3">
-              <a style="margin-top: 19px;" class="btn btn-success btn-xs">Follow</a>
-            </div>
+        <div ng-if="users_list.length > 0" >
+          <label>Filter by first name / last name / organization </label><input class="form-control" type="search" ng-model="filter_text">
+          <!-- USERS LIST -->
+          <div ng-repeat="u in users_list | filter:filter_text">
+            <div class="row no-margin">
+              <div class="col-xs-9">
+                  <a style="padding-right: 15px;" href="/#/user/{{u._id}}" title="{{u.first_name}} {{u.last_name}}">
+                    <img ng-src=/images/user/{{u.image_thumb}}?last_modified={{u.last_modified}} alt="{{u.first_name}} {{u.last_name}}" class="img-circle dashboard-user-thumb" />
+                  </a>
+                  <a href="/#/user/{{u._id}}" title="{{u.first_name}} {{u.last_name}}">{{u.first_name}} {{u.last_name}}</a> <span style="color: gray;" class="organization">| {{u.organization}}</span>
+                  <span style="display: none;" class="follow">{{u.following}}</span>
+              </div>
+              <div class="col-xs-3">
+                <a ng-click="addRemoveFollow(u._id,'remove')" ng-if="u.following" style="margin-top: 19px;" class="btn btn-default btn-xs">Unfollow</a>
+                <a ng-click="addRemoveFollow(u._id)" ng-if="!u.following" style="margin-top: 19px;" class="btn btn-success btn-xs">Follow</a>
+              </div>
 
+            </div>
+            <hr class="no-margin">
           </div>
-          <hr class="no-margin">
+
         </div>
 
-      </div>
+      </div><!-- dashboard main content end -->
     </div>
 
   </div>

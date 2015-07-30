@@ -81,6 +81,37 @@ exports.getDashScenarios = function(q, next) {
 
   if(typeof q != 'undefined' && typeof q.filter != 'undefined' && typeof q.user != 'undefined'){
     switch (q.filter) {
+      case 'feed':
+
+        // get list of following ids
+        var following_query = Follower.find();
+        following_query.where({follower: q.user._id});
+        following_query.select('following');
+        following_query.exec(function(err, following) {
+          if (err) return next(err);
+
+          var list_of_following_ids = [];
+          for(var i = 0; i< following.length; i++){
+            list_of_following_ids[i] = following[i].following;
+          }
+
+          args.draft = false;
+          args.deleted = false;
+          var filter_args = [];
+          filter_args.push({author: { $in : list_of_following_ids }});
+          args.$and = filter_args;
+          query = Scenario.find();
+          query.populate('author', 'first_name last_name');
+          query.where(args);
+          query.sort(sort_args);
+          query.exec(function(err, scenarios) {
+            if (err) return next(err);
+            return next(null, scenarios);
+          });
+
+        });
+
+        break;
       case 'drafts':
         args.draft = true;
         args.deleted = false;

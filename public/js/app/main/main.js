@@ -20,8 +20,14 @@
 
       $scope.navigateToLogin = function($event){
         $event.preventDefault();
-        $rootScope.navigatedToLoginFrom = $location.path();
-        $location.path('/login');
+        if($location.path().toString() != '/'){
+          $rootScope.navigatedToLoginFrom = $location.path();
+          $location.path('/login');
+        }else{
+          // if from home page 
+          $location.path('/login');
+        }
+
       };
 
       $scope.searchFromTop = function($event){

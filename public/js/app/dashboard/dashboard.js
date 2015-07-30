@@ -10,7 +10,7 @@
     function DashboardController($scope,$rootScope,scenarioService,userService,metaService) {
 
       if(typeof $rootScope.dash_active_tab === 'undefined'){
-        $rootScope.dash_active_tab = 'drafts';
+        $rootScope.dash_active_tab = 'feed';
       }
 
       if(typeof $rootScope.sort_tab === 'undefined'){
@@ -57,20 +57,26 @@
         }
 
         if(typeof $rootScope.dash_active_tab == 'undefined'){
-          q.filter = 'drafts';
+          q.filter = 'feed';
         }else{
           switch ($rootScope.dash_active_tab) {
+            case 'feed':
+                q.filter = 'feed';
+              break;
+            case 'drafts':
+                q.filter = 'drafts';
+              break;
             case 'published':
                 q.filter = 'published';
               break;
-              case 'favorites':
-                  q.filter = 'favorites';
-                break;
-              case 'users':
-                  q.filter = 'users';
-                break;
+            case 'favorites':
+                q.filter = 'favorites';
+              break;
+            case 'users':
+                q.filter = 'users';
+              break;
             default:
-              q.filter = 'drafts';
+              q.filter = 'feed';
           }
         }
 
@@ -80,6 +86,8 @@
 
         }else{
 
+          // get users list to follow/unfollow
+
           var params = {
               user: {
                 _id: $rootScope.user._id
@@ -88,10 +96,21 @@
 
           userService.getUsersList(params)
             .then(function(data) {
-              //console.log(data);
+
               if(data.users){
+
+                if(data.following.length > 0){
+
+                  for(var i = 0; i < data.users.length; i++){
+                    for(var j = 0; j < data.following.length; j++){
+                      if(data.users[i]._id == data.following[j].following){
+                        data.users[i].following = true;
+                      }
+                    }
+                  }
+                }
+
                 $scope.users_list = data.users;
-                console.log(data.users);
                 $scope.loading_animation = false;
               }
 
@@ -107,8 +126,6 @@
               }
           });
 
-          console.log('query followers');
-
         }
 
       }
@@ -116,10 +133,14 @@
       function getScenarios(q){
         scenarioService.getDashScenarios(q)
           .then(function(data) {
-            //console.log(data);
             if(data.scenarios){
 
               switch (q.filter) {
+                case 'feed':
+                  if(data.scenarios.length === 0){
+                    $scope.no_following = true;
+                  }
+                  break;
                 case 'drafts':
                   $scope.drafts_count = data.scenarios.length;
                   if(data.scenarios.length === 0){
@@ -172,11 +193,11 @@
       };
 
        $scope.updateDashList = function(tab){
-        if(tab == 'drafts ' || tab == 'published' || tab == 'favorites' || tab == 'users'){
+        if(tab == 'feed ' || tab == 'drafts' || tab == 'published' || tab == 'favorites' || tab == 'users'){
           $rootScope.dash_active_tab = tab;
           getDashboardData();
         }else{
-          $rootScope.dash_active_tab = 'drafts';
+          $rootScope.dash_active_tab = 'feed';
           getDashboardData();
         }
       };
@@ -195,6 +216,59 @@
           getDashboardData();
         }
       };
+
+
+      $scope.addRemoveFollow = function(user_id,remove_follow){
+
+        var params = {
+          user: {
+            _id: $rootScope.user._id
+          },
+          following: {
+            _id: user_id
+          }
+        };
+
+        if(typeof remove_follow !== 'undefined'){
+          params.remove_follow = true;
+        }
+
+        userService.addRemoveFollow(params)
+          .then(function(data) {
+
+            if(data.success){
+              if(data.success == 'unfollow'){
+
+                for(var i = 0; i < $scope.users_list.length; i++){
+                  if($scope.users_list[i]._id == user_id){
+                    $scope.users_list[i].following = undefined;
+                  }
+                }
+
+              }else{
+                for(var j = 0; j < $scope.users_list.length; j++){
+                  if($scope.users_list[j]._id == user_id){
+                    $scope.users_list[j].following = true;
+                  }
+                }
+              }
+
+            }
+
+            if(data.error){
+              switch (data.error.id) {
+                case 100:
+                  // user changed
+                  $location.path('/');
+                  break;
+                default:
+                  console.log(data.error);
+
+              }
+            }
+        });
+      };
+
 
     } // DashboardController end
 }());
