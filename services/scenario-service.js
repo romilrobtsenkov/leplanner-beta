@@ -509,6 +509,65 @@ exports.addComment = function(params, next) {
 
 };
 
+exports.deleteComment = function(req, next) {
+  var params = req.body;
+
+  if(!params.comment._id){ return next({id: 0, message: 'Comment id missing'}); }
+  if(!params.user._id){ return next({id: 1, message: 'User id missing'}); }
+  if(!params.scenario._id){ return next({id: 2, message: 'Scenario id missing'}); }
+
+  //check if user has rights to delete the comment
+  s_query = Scenario.findOne();
+  s_query.where({_id: params.scenario._id, author: req.user._id});
+  s_query.exec(function(err, check) {
+
+    if(check === null){
+      // req user different for scenario author
+      return next({id: 3, message: 'no rights'});
+    }
+
+    // delete comment
+    var comment_query = Comment.findOne();
+    comment_query.where({_id: params.comment._id},{deleted: false});
+    comment_query.exec(function(err, comment) {
+
+      if(comment === null){
+        // no comment
+        return next({error: "no comment to remove"});
+      }else{
+        // delete that comment
+        comment.deleted = true;
+        comment.save(function(err, a){
+          if (err) return next(err);
+
+          // update comment count
+          var query = Scenario.findOne();
+          query.where({_id: params.scenario._id});
+          query.exec(function(err, scenario) {
+            if (err) return next(err);
+            scenario.comments_count = scenario.comments_count-1;
+            scenario.save(function(err, scenario){
+              if (err) return next(err);
+
+              // return all comments
+              var query = Comment.find();
+              query.where({scenario: params.scenario._id, deleted: false});
+              query.populate('author', 'first_name last_name image_thumb last_modified');
+              query.exec(function(err, comments) {
+                if (err) return next(err);
+                return next(null, {comments: comments});
+              });
+
+            });
+          });
+
+        });
+      }
+    });
+
+  });
+};
+
 exports.saveScenario = function(scenario, next) {
   //console.log(scenario);
   if(!scenario.name){ return next({id: 0, message: 'Please enter scenario title'}); }

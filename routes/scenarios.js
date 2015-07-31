@@ -59,6 +59,13 @@ router.post('/add-comment/',restrict, function(req, res, next) {
   });
 });
 
+router.post('/delete-comment/',restrict, function(req, res, next) {
+  scenarioService.deleteComment(req, function(err, comments) {
+    if (err) { return res.json({error: err}); }
+    return res.json(comments);
+  });
+});
+
 router.post('/comments/', function(req, res, next) {
   scenarioService.getComments(req.body, function(err, comments) {
     if (err) { return res.json({error: err}); }

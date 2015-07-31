@@ -208,5 +208,82 @@
 
       };
 
+      // disable delete button while deleting
+      $scope.showDeleteText = function(comment_id){
+        if($rootScope.is_deleting == comment_id){
+          return true;
+        }else{
+          return false;
+        }
+      };
+
+      $scope.deleteComment = function(comment_id, text){
+        var del = confirm("Are you sure that you want to delete comment: "+text);
+        if (del === true) {
+
+          $rootScope.is_deleting = comment_id;
+          $scope.comment_delete_text = "deleting...";
+
+          var params = {
+            user: {
+              _id: $rootScope.user._id
+            },
+            scenario: {
+              _id: $scope.scenario_id
+            },
+            comment: {
+              _id: comment_id
+            }
+          };
+
+          scenarioService.deleteComment(params)
+            .then(function(data) {
+              if(data.comments){
+
+                $scope.comment_delete_text = "deleted";
+
+                $timeout(function() {
+                  $rootScope.is_deleting = undefined;
+                  $scope.comments = data.comments;
+                  $scope.scenario.comments_count = data.comments.length;
+
+                }, 1500);
+
+              }
+
+              if(data.error){
+                switch (data.error.id) {
+                  case 100:
+                    // user changed
+                    $location.path('/');
+                    break;
+                  case 0:
+                    console.log("Comment id missing");
+                    break;
+                  case 1:
+                    console.log("User id missing");
+                    break;
+                  case 2:
+                    console.log("Scenario id missing");
+                    break;
+                  case 3:
+                    $scope.comment_delete_text = "error, no rights";
+                    console.log("No rights");
+                    break;
+                  default:
+                    console.log(data.error);
+                }
+
+                $scope.comment_delete_text = "error, refresh the page";
+                $timeout(function() {
+                  $rootScope.is_deleting = undefined;
+                }, 2000);
+
+              }
+          });
+
+        }
+      };
+
     }
 }());
