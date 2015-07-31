@@ -137,6 +137,13 @@ router.post('/add-remove-follow/',restrict, function(req, res, next) {
   });
 });
 
+router.post('/notifications/',restrict, function(req, res, next) {
+  userService.getNotifications(req.body, function(err, response) {
+    if (err) { return res.json({error: err}); }
+    return res.json(response);
+  });
+});
+
 router.post('/list', restrict, function(req, res, next){
   userService.getUsersList(req.body, function(err, response) {
     if (err) { return res.json({error: err}); }

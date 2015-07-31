@@ -22,29 +22,35 @@
           <div class="panel-body">
             <ul class="notifications">
 
-              <!-- notifications -->
-              <li class="left clearfix new">
+              <p ng-if="!notifications || notifications_loading_animation" class="loading-gif-animation"><img src="./images/loading.gif"></p>
+              <p ng-if="notifications && notifications.length == 0" >Notifications will appear if someone comments your published scenarios.</p>
+
+
+              <!-- SINGLE NOTIFICATION -->
+              <li ng-repeat="n in notifications" ng-class="n.new ? 'new' : 'old'" class="left clearfix">
                 <span class="notification-img pull-left">
-                  <img src="./images/profile.png" alt="User Avatar" class="img-circle" />
+                  <img ng-src="./images/user/{{n.user.image_thumb}}?last_modified={{n.user.last_modified}}" alt="{{n.user.first_name}} {{n.user.last_name}}" class="img-circle" />
                 </span>
                 <div class="notification-body clearfix">
                   <div class="header">
                     <p>
-                      <a href="member.php"><strong class="primary-font">Romil Rõbtšenkov</strong></a>
+                      <a href="/#/user/{{n.user._id}}"><strong class="primary-font">{{n.user.first_name}} {{n.user.last_name}}</strong></a><br>
                       <small class="pull-left text-muted clearfix">
-                        <span class="glyphicon glyphicon-time"></span>12 min tagasi
+                        <span class="glyphicon glyphicon-time"></span> {{n.comment.created | date:'dd.MM.yy HH:mm'}}
                       </small>
                     </p>
                   </div>
-                  <p class="content-for-notification">Commented: "<a href="scenario.php">Õuseõpe bioloogia tunnis</a>"</p>
+                  <p class="content-for-notification">Commented: "<a href="/#/scenario/{{n.comment.scenario._id}}">{{n.comment.scenario.name}}</a>"</p>
                 </div>
               </li>
+              <!-- SINGLE NOTIFICATION  END-->
 
             </ul>
           </div>
 
           <div class="panel-footer clearfix">
-             <a hred ="#" class="pull-right" >Load all</a>
+             <a  ng-click="getLatestNotifications()" style="cursor:pointer" class="pull-left" >Get latest</a>
+             <a  ng-if="notifications.length > 0" ng-hide="notifications.length > 10" ng-click="getAllNotifications()" style="cursor:pointer" class="pull-right" >Load all</a>
           </div>
         </div>
       </div>
@@ -53,7 +59,7 @@
     <div class="col-sm-7 col-sm-pull-3 col-lg-pull-3 col-md-pull-3" style="height:100%; min-height: 100px;">
       <div class="dashboard-main-content">
 
-        <ul ng-if="!isActiveDash('users')" ng-hide="no_drafts || no_published || no_favorites || no_following" class="nav nav-tabs nav-tab-pop">
+        <ul ng-if="!isActiveDash('users')" ng-hide="messages.no_drafts || messages.no_published || messages.no_favorites || messages.no_following" class="nav nav-tabs nav-tab-pop">
   				<li ng-class="{active:isSortActive('latest')}">
   					<a href ng-click="updateSortList('latest')">Latest</a>
   				</li>
@@ -70,10 +76,10 @@
 
         <p ng-if="!scenarios || loading_animation" class="loading-gif-animation"><img src="./images/loading.gif"></p>
 
-        <p ng-if="no_drafts"> Start your first scenario by clicking <a href="/#/create" class="add-favorite-button btn btn-success btn-sm"><span class="glyphicon glyphicon-plus"></span> Create scenario</a></p>
-        <p ng-if="no_published"> Create scenario draft and then publish it. All your published scenarios will appear here!</p>
-        <p ng-if="no_favorites"> Add favorites by clickking on <button class="add-favorite-button btn btn-success btn-sm"><span class="glyphicon glyphicon-heart"></span> Favorite</button> button while viewing single scenario </p>
-        <p ng-if="no_following"> Follow other users who have <strong>published scenarios</strong> by clicking <button class="add-favorite-button btn btn-success btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Follow</button> next to user. <br> Go to <a style="cursor:pointer;" ng-click="updateDashList('users')"> Users</a></p>
+        <p ng-if="messages.no_drafts"> Start your first scenario by clicking <a href="/#/create" class="add-favorite-button btn btn-success btn-sm"><span class="glyphicon glyphicon-plus"></span> Create scenario</a></p>
+        <p ng-if="messages.no_published"> Create scenario draft and then publish it. All your published scenarios will appear here!</p>
+        <p ng-if="messages.no_favorites"> Add favorites by clickking on <button class="add-favorite-button btn btn-success btn-sm"><span class="glyphicon glyphicon-heart"></span> Favorite</button> button while viewing single scenario </p>
+        <p ng-if="messages.no_following"> Follow other users who have <strong>published scenarios</strong> by clicking <button class="add-favorite-button btn btn-success btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Follow</button> next to user. <br> Go to <a style="cursor:pointer;" ng-click="updateDashList('users')"> Users</a></p>
 
         <!-- scenario items -->
         <div class="single_scenario_item" ng-repeat="scenario in scenarios">

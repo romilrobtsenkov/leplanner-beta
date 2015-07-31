@@ -4,6 +4,7 @@ module.exports = function(req, res, next) {
   if(typeof req.body.user !== 'undefined' && typeof req.body.user._id !== 'undefined'){
     //console.log('check');
     if(req.body.user._id != req.user._id){
+      console.log("new user:"+req.body.user._id+" changed old user:"+req.user._id);
       return res.json({error: {id: 100, message: "refresh page, user changed"}});
     }
   }

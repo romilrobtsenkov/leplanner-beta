@@ -20,11 +20,12 @@
       }
 
       getDashboardData();
+      getNotifications(10);
 
       function getDashboardData(){
 
         $scope.loading_animation = true;
-        clearMessages();
+        $scope.messages = {};
         $scope.scenarios = [];
         $scope.users_list = [];
 
@@ -138,23 +139,23 @@
               switch (q.filter) {
                 case 'feed':
                   if(data.scenarios.length === 0){
-                    $scope.no_following = true;
+                    $scope.messages.no_following = true;
                   }
                   break;
                 case 'drafts':
                   $scope.drafts_count = data.scenarios.length;
                   if(data.scenarios.length === 0){
-                    $scope.no_drafts = true;
+                    $scope.messages.no_drafts = true;
                   }
                   break;
                 case 'published':
                   if(data.scenarios.length === 0){
-                    $scope.no_published = true;
+                    $scope.messages.no_published = true;
                   }
                   break;
                 case 'favorites':
                   if(data.scenarios.length === 0){
-                    $scope.no_favorites = true;
+                    $scope.messages.no_favorites = true;
                   }
                   break;
                 default:
@@ -180,11 +181,41 @@
         });
       }
 
-      function clearMessages(){
-        $scope.no_drafts = undefined;
-        $scope.no_published = undefined;
-        $scope.no_favorites = undefined;
-        $scope.no_following = undefined;
+      function getNotifications(limit){
+
+        $scope.notifications_loading_animation = true;
+
+        var params = {
+          user: {
+            _id: $rootScope.user._id
+          }
+        };
+
+        if(typeof limit != 'undefined'){
+          params.limit = limit;
+        }
+
+        userService.getNotifications(params)
+          .then(function(data) {
+
+            if(data.notifications){
+              $scope.notifications = data.notifications;
+              $scope.notifications_loading_animation = undefined;
+            }
+
+            if(data.error){
+              switch (data.error.id) {
+                case 100:
+                  // user changed
+                  $location.path('/');
+                  break;
+                default:
+                  console.log(data.error);
+              }
+            }
+        });
+
+
       }
 
       $scope.isActiveDash = function(tab){
@@ -263,12 +294,18 @@
                   break;
                 default:
                   console.log(data.error);
-
               }
             }
         });
       };
 
+      $scope.getAllNotifications = function(){
+        getNotifications();
+      };
+
+      $scope.getLatestNotifications = function(){
+        getNotifications(10);
+      };
 
     } // DashboardController end
 }());

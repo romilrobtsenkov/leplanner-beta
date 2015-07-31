@@ -14,6 +14,7 @@
       createUser: createUser,
       loadUserData: loadUserData,
       addRemoveFollow: addRemoveFollow,
+      getNotifications: getNotifications,
       recoverUser: recoverUser,
       getUsersList: getUsersList,
       logOutUser: logOutUser,
@@ -52,6 +53,13 @@
 
     function addRemoveFollow(query) {
       return $http.post('/api/users/add-remove-follow', query)
+        .then(function(response) {
+          return response.data;
+        });
+    }
+
+    function getNotifications(query) {
+      return $http.post('/api/users/notifications', query)
         .then(function(response) {
           return response.data;
         });

@@ -3,6 +3,9 @@ var crypto = require('crypto');
 var nodemailer = require('nodemailer');
 var config = require('../config/config');
 var User = require('../models/user').User;
+var Scenario = require('../models/scenario').Scenario;
+var ScenarioView = require('../models/scenario-view').ScenarioView;
+var Comment = require('../models/comment').Comment;
 var Follower = require('../models/follower').Follower;
 
 exports.addUser = function(user, next) {
@@ -452,6 +455,134 @@ exports.addRemoveFollow = function(params, next){
     }
 
   });
+
+};
+
+exports.getNotifications = function(req, next) {
+
+    // get user scenarios
+    var args = {};
+    args.deleted = false;
+    args.draft = false;
+    args.author = req.user._id;
+    query = Scenario.find();
+    query.where(args);
+    query.select('_id');
+    query.exec(function(err, scenarios) {
+
+      var list_of_scenario_ids = [];
+      for(var i = 0; i< scenarios.length; i++){
+        list_of_scenario_ids[i] = scenarios[i]._id;
+      }
+
+      //get list of comments on those scenarios
+      var args = {};
+      args.deleted = false;
+      var filter_args = [];
+      filter_args.push({scenario: { $in : list_of_scenario_ids }});
+      args.$and = filter_args;
+      query = Comment.find();
+      query.populate('author', 'first_name last_name last_modified image_thumb');
+      query.populate('scenario', 'name');
+      query.where(args);
+      query.sort({created: 1});
+      query.exec(function(err, comments) {
+        if (err) return next(err);
+
+        var list_of_commented_scenario_ids = [];
+        var k = 0;
+
+        for(var i = 0; i< comments.length; i++){
+          if(list_of_commented_scenario_ids.indexOf(comments[i].scenario._id) == -1){
+            list_of_commented_scenario_ids[k] = comments[i].scenario._id;
+            k++;
+          }
+        }
+
+        //get views on commented scenarios
+        var args = {};
+        args.user = req.user._id;
+        var filter_args = [];
+        filter_args.push({scenario: { $in : list_of_commented_scenario_ids }});
+        args.$and = filter_args;
+        query = ScenarioView.aggregate([
+          { $match: {scenario: { $in : list_of_commented_scenario_ids } }},
+          { $group: { _id: '$scenario', view: {$addToSet : {user: '$user', date: '$date'}}}},
+          { $sort: { date: -1 } }
+        ]);
+        query.exec(function(err, scenario_views) {
+          if (err) return next(err);
+
+          createNotifications(comments, scenario_views);
+
+        });
+
+      });
+
+    });
+
+    function createNotifications(comments, scenario_views){
+
+      //console.log(views.length);
+      var notifications = [];
+
+      //check if there are comments in user scenarios
+      for(var k = 0; k < comments.length; k++){
+        for(var i = 0; i < scenario_views.length; i++){
+          for(var j = 0; j < scenario_views[i].view.length; j++){
+
+            // if user viewed, check the latest comment date and compare with latest user view date
+            if(scenario_views[i].view[j].user == req.user._id && scenario_views[i]._id.toString() == comments[k].scenario._id.toString()){
+
+                var notification = {
+                  user: {
+                    _id: comments[k].author._id,
+                    first_name: comments[k].author.first_name,
+                    last_name: comments[k].author.last_name,
+                    last_modified: comments[k].author.last_modified,
+                    image_thumb: comments[k].author.image_thumb,
+                  },
+                  comment: {
+                    created: comments[k].created,
+                    scenario: {
+                      _id: comments[k].scenario._id,
+                      name: comments[k].scenario.name
+                    }
+                  }
+                };
+
+                if(comments[k].created > scenario_views[i].view[j].date){
+                  notification.new = true;
+                }
+
+                notifications.push(notification);
+
+                // add only one from view list
+                break;
+
+            }
+          }
+        }
+      }
+
+      //order by comment date
+      notifications = notifications.sort(notificationsSortFunction);
+      function notificationsSortFunction(a, b) {
+        if (a.comment.created === b.comment.created) {
+          return 0;
+        }
+        else {
+          return (a.comment.created > b.comment.created) ? -1 : 1;
+        }
+      }
+
+      if(typeof req.limit !== 'undefined'){
+        notifications = notifications.slice(0, req.limit);
+      }
+
+      return next(null, {notifications: notifications});
+    }
+
 
 };
 
