@@ -63,6 +63,7 @@
           .then(function(data) {
             //console.log(data);
             if(data.comments){
+              console.log(data.comments);
               if(data.comments.length > 0){
                 $scope.comments = data.comments;
               }

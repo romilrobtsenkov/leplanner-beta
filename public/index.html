@@ -2,7 +2,7 @@
 <html ng-app="app" ng-controller="MainController as main" ng-cloak>
 <head>
   <meta charset="UTF-8">
-  <title>LePlanner</title>
+  <title>LePlanner beta</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
@@ -36,35 +36,35 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#/"></a>
+        <a class="navbar-brand" href="#/" title="LePlanner beta"></a>
       </div>
 
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="navbar-collapse">
 
-        <a ng-if="!user" class="pull-right btn btn-primary btn-sm login-top hidden-xs" href="/#/login" ng-click="navigateToLogin($event)" >Log in</a>
+        <a ng-if="!user" class="pull-right btn btn-primary btn-sm login-top hidden-xs" href="/#/login" ng-click="navigateToLogin($event)" title="Log in">Log in</a>
 
         <!-- ALTERNATIVE FOR XS devices -->
         <ul class="nav navbar-nav menu-links pull-left visible-xs-block">
-          <li ng-if="!user"><a href="/#/login" ng-click="navigateToLogin($event)" data-toggle="collapse" data-target="#navbar-collapse" >Log in</a></li>
+          <li ng-if="!user"><a href="/#/login" ng-click="navigateToLogin($event)" data-toggle="collapse" data-target="#navbar-collapse" title="Log in">Log in</a></li>
           <li ng-if="user">
-            <a style="margin-top: 3px;" data-toggle="collapse" data-target="#navbar-collapse" class="btn" href="/#/dashboard">
+            <a style="margin-top: 3px;" data-toggle="collapse" data-target="#navbar-collapse" class="btn" href="/#/dashboard" title="Dashboard">
               <img src="./images/profile.png" alt="myFace" class="img-circle" style="height:30px;width:30px">
               <span>{{user.first_name}} {{user.last_name}}</span>
             </a>
           </li>
 
-          <li ng-if="user"><a href="/#/create" data-toggle="collapse" data-target="#navbar-collapse"><span class="glyphicon glyphicon-plus"></span> Create scenario</a></li>
-          <li ng-if="user"><a href="/#/user/{{user._id}}" data-toggle="collapse" data-target="#navbar-collapse" ><span class="glyphicon glyphicon-user"></span> User page</a></li>
-          <li><a href="/#/search" data-toggle="collapse" data-target="#navbar-collapse"><span class="glyphicon glyphicon-search"></span> Search</a></li>
-          <li ng-if="user" role="presentation"><a role="menuitem" tabindex="-1" href="/#/settings/" data-toggle="collapse" data-target="#navbar-collapse"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
-          <li ng-if="user" role="presentation"><a role="menuitem" tabindex="-1" ng-click="logout()" href="#" data-toggle="collapse" data-target="#navbar-collapse"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
+          <li ng-if="user"><a href="/#/create" data-toggle="collapse" data-target="#navbar-collapse" title="Create scenario"><span class="glyphicon glyphicon-plus"></span> Create scenario</a></li>
+          <li ng-if="user"><a href="/#/user/{{user._id}}" data-toggle="collapse" data-target="#navbar-collapse" title="{{user.first_name}} {{user.last_name}}"><span class="glyphicon glyphicon-user"></span> User page</a></li>
+          <li><a href="/#/search" data-toggle="collapse" data-target="#navbar-collapse" title="Search"><span class="glyphicon glyphicon-search"></span> Search</a></li>
+          <li ng-if="user" role="presentation"><a role="menuitem" tabindex="-1" href="/#/settings/" data-toggle="collapse" data-target="#navbar-collapse" title="Settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+          <li ng-if="user" role="presentation"><a role="menuitem" tabindex="-1" ng-click="logout()" href="#" data-toggle="collapse" data-target="#navbar-collapse" title="Log out"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
         </ul>
 
         <div class="hidden-xs pull-right" ng-if="user">
           <a href="/#/create" class="btn btn-success btn-sm add-new-top-button"><span class="glyphicon glyphicon-plus"></span> Create scenario</a>
           <a style="margin-top: 3px;" class="btn" href="/#/dashboard">
-            <img ng-src="./images/user/{{user.image}}" alt="{{user.first_name}} {{user.last_name}}" class="img-circle" style="height:30px;width:30px">
+            <img ng-src="./images/user/{{user.image}}" title="{{user.first_name}} {{user.last_name}}" class="img-circle" style="height:30px;width:30px">
             <span>{{user.first_name}} {{user.last_name}}</span>
           </a>
 
@@ -73,18 +73,18 @@
               <span class="top-menu-dropdown-icon glyphicon glyphicon-triangle-bottom"></span>
             </a>
             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-              <li role="presentation"><a role="menuitem" tabindex="-1" href="/#/create"><span class="glyphicon glyphicon-plus"></span> Create scenario</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="/#/create" title="Create scenario"><span class="glyphicon glyphicon-plus"></span> Create scenario</a></li>
               <li role="separator" class="divider"></li>
-              <li role="presentation"><a role="menuitem" tabindex="-1" href="/#/user/{{user._id}}"><span class="glyphicon glyphicon-user"></span> User page</a></li>
-              <li role="presentation"><a role="menuitem" tabindex="-1" href="/#/settings/"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="/#/user/{{user._id}}" title="{{user.first_name}} {{user.last_name}}"><span class="glyphicon glyphicon-user"></span> User page</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="/#/settings/" title="Settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
               <li role="separator" class="divider"></li>
-              <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="logout()" href="#"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="logout()" href title="Log out"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
             </ul>
           </div>
         </div>
         <div style="margin-right: 10px;" class="header-search search-dash inner-addon right-addon pull-right hidden-xs" >
           <form ng-submit="searchFromTop()">
-            <a href="/#/search" ng-click="searchFromTop($event)"><i type="submit" class="glyphicon glyphicon-search" ng-click="search()"></i></a>
+            <a href="/#/search" ng-click="searchFromTop($event)" title="Search"><i type="submit" class="glyphicon glyphicon-search" ng-click="search()"></i></a>
             <input type="text" name="search" ng-model="top_search_word" class="form-control" placeholder="Search scenarios">
           </form>
         </div>
@@ -103,7 +103,7 @@
   <div class="container footer">
   <!-- Help page -->
     <div class="pull-left">
-      <a href="/#/help">Help</a>
+      <a href="/#/help" title="Help">Help</a>
     </div>
 
   <!-- Script for dynamic year -->
@@ -116,7 +116,7 @@
             theYear=theYear+1900
           document.write(theYear)
           </script>
-        <a href="/#/help">TLU Institute of Informatics</a>
+        <a target="_blank" href="https://www.tlu.ee/et/informaatika">TLU Institute of Informatics</a>
       </p>
   </div>
 

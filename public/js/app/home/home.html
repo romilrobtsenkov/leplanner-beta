@@ -12,49 +12,45 @@
       <div class="col-sm-5">
         <h2>Create. Share. Discover. Scenarios</h2>
         <p class="lead home-intro" class="thumbnail-caption">Cras justo odio, dapibus ac facilisis in, egestas eget quam. todio, dapibus ac facilisis in, egestas eget quam.</p>
-        <p><a class="btn btn-sm  btn-success" href="#/create" role="button">CREATE SCENARIO <span class="glyphicon glyphicon-chevron-right"></span></a></p>
+        <p><a class="btn btn-sm  btn-success" href="#/create" title="create scenario" role="button">CREATE SCENARIO <span class="glyphicon glyphicon-chevron-right"></span></a></p>
       </div>
     </div>
   </div>
 
-
-  <!-- //////////////////////////// -->
-  <!-- ||||||   THUMBNAILS   |||||| -->
-  <!-- //////////////////////////// -->
   <div ng-if="scenarios" class="row home-page-carousel">
     <div class="container">
       <section>
 
       <!-- makes the clicked tab active-->
-        <ul class="nav nav-tabs nav-tab-pop">
-          <li ng-class="{active:isSortActive('latest')}">
-            <a href ng-click="updateSortList('latest')">Latest</a>
-          </li>
-          <li ng-class="{active:isSortActive('popular')}">
-            <a href ng-click="updateSortList('popular')">Popular</a>
-          </li>
-          <li ng-class="{active:isSortActive('favorited')}">
-            <a href ng-click="updateSortList('favorited')">Top favorited</a>
-          </li>
-          <li ng-class="{active:isSortActive('commented')}">
-            <a href ng-click="updateSortList('commented')">Top commented</a>
-          </li>
-        </ul>
+      <ul class="nav nav-tabs nav-tab-pop">
+        <li ng-class="{active:isSortActive('latest')}">
+          <a href ng-click="updateSortList('latest')" title="Latest">Latest</a>
+        </li>
+        <li ng-class="{active:isSortActive('popular')}">
+          <a href ng-click="updateSortList('popular')" title="Popular">Popular</a>
+        </li>
+        <li ng-class="{active:isSortActive('favorited')}">
+          <a href ng-click="updateSortList('favorited')" title="Top favorited">Top favorited</a>
+        </li>
+        <li ng-class="{active:isSortActive('commented')}">
+          <a href ng-click="updateSortList('commented')" title="Top commented">Top commented</a>
+        </li>
+      </ul>
 
         <div class="col-xs-6 col-sm-3" id="scenarios_list" ng-repeat="scenario in scenarios" >
           <div class="thumbnail thumbnail-first-page">
-            <a href="/#/scenario/{{scenario._id}}">
+            <a href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">
               <img class="thumbnail-preview" src="./images/thumbnail_200.png" alt="Generic placeholder thumbnail">
             </a>
             <div class="caption">
-              <a href="/#/scenario/{{scenario._id}}"><h4>{{scenario.name}}</h4></a>
+              <a href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}"><h4>{{scenario.name}}</h4></a>
               <p class="thumbnail-caption">{{scenario.description | limitTo: 60}}{{scenario.description.length > 60 ? '...' : ''}}</p>
               <p class="clearfix">
                 <span class="favorited-and-comments">
                   <span class="glyphicon glyphicon-heart"><span class="icon-space-after">{{scenario.favorites_count}}</span></span>
                   <span class="glyphicon glyphicon-comment"><span class="icon-space-after">{{scenario.comments_count}}</span></span>
                 </span>
-                <a class="open-link pull-right" href="/#/scenario/{{scenario._id}}">OPEN<span class="glyphicon glyphicon-chevron-right"></span></a>
+                <a class="open-link pull-right" href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">OPEN<span class="glyphicon glyphicon-chevron-right"></span></a>
               </p>
             </div>
           </div>
