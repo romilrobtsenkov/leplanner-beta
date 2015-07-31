@@ -16,8 +16,10 @@
       <div class="single_scenario_item">
 
         <div class="row">
-          <div class="col-sm-12">
+          <div class="col-xs-9">
             <h2 class="pull-left" ><strong>{{scenario.name}}</strong></h2>
+          </div>
+          <div class="col-xs-3">
             <div ng-if="!is_favorite && user">
                 <a ng-click="addRemoveFavorite()" class="add-favorite-button btn btn-success btn-sm pull-right"><span class="glyphicon glyphicon-heart"></span> Favorite</a>
             </div>
@@ -29,16 +31,20 @@
             </div>
           </div>
         </div>
-        <div class="row">
-          <div class="col-sm-12">
 
+        <div class="row">
+          <div class="col-xs-9">
+            <span class="glyphicon glyphicon-calendar"></span> <span> {{scenario.created | date:'dd.MM.yyyy HH:mm'}}</span> | <span class="glyphicon glyphicon-eye-open"></span> <span> {{scenario.view_count}}</span>
+            <span>| <span class="glyphicon glyphicon-heart"></span><span> {{scenario.favorites_count}}</span></span>
+          </div>
+          <div class="col-xs-3">
+            <!--<a class="print-button btn btn-sm pull-right" ng-if="user._id==scenario.author._id" href="/#/edit-scenario/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> Edit</a>-->
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-9">
             <div class="small-profile visible-xs-block">
-              <div class="small-profile-userbuttons">
-                <a ng-click="addRemoveFollow()" ng-if="!is_following && user && user._id!=scenario.author._id" class="btn btn-success btn-sm pull-right"><span class="glyphicon glyphicon-plus-sign"></span> Follow</a>
-                <a ng-click="addRemoveFollow('remove')" ng-if="is_following && user && user._id!=scenario.author._id" class="btn btn-default btn-sm pull-right"><span class="glyphicon glyphicons-circle-minus"></span> Unfollow</a>
-                <a href="/#/login" ng-if="!user" class="pull-right"> Login to follow</a>
-                <a ng-if="user._id==scenario.author._id" disabled="disabled" class="btn btn-success btn-sm pull-right">You are awesome</a>
-              </div>
               <div class="profile-usertitle-name">
                 <a a href="/#/user/{{scenario.author._id}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a>
               </div>
@@ -48,17 +54,15 @@
               <div class="small-profile-usertitle-sign-up">
                 <span class="glyphicon glyphicon-time"></span> <span>Joined {{scenario.author.created | date:'MMMM yyyy'}}</span>
               </div>
-
             </div>
-
           </div>
-        </div>
-
-        <div class="row">
-          <div class="col-sm-12">
-            <span class="glyphicon glyphicon-calendar"></span> <span> {{scenario.created | date:'dd.MM.yyyy HH:mm'}}</span> | <span class="glyphicon glyphicon-eye-open"></span> <span> {{scenario.view_count}}</span>
-            <span>| <span class="glyphicon glyphicon-heart"></span><span> {{scenario.favorites_count}}</span></span>
-            <a class="print-button btn btn-sm pull-right" ng-if="user._id==scenario.author._id" href="/#/edit-scenario/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> Edit</a>
+          <div class="col-xs-3">
+            <div class="small-profile-userbuttons">
+              <a ng-click="addRemoveFollow()" ng-if="!is_following && user && user._id!=scenario.author._id" class="btn btn-success btn-sm pull-right"><span class="glyphicon glyphicon-plus-sign"></span> Follow</a>
+              <a ng-click="addRemoveFollow('remove')" ng-if="is_following && user && user._id!=scenario.author._id" class="btn btn-default btn-sm pull-right"><span class="glyphicon glyphicons-circle-minus"></span> Unfollow</a>
+              <a href="/#/login" ng-if="!user" class="pull-right"> Login to follow</a>
+              <a ng-if="user._id==scenario.author._id" disabled="disabled" class="btn btn-success btn-sm pull-right">You are awesome</a>
+            </div>
           </div>
         </div>
 
