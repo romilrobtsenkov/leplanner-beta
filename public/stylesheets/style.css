@@ -719,6 +719,19 @@ p.content-for-notification {
   color: #000;
 }
 
+/* user list dashboard */
+.user-list-follow-unfollow-btn {
+  margin-top: 19px;
+}
+
+.user-list-image {
+  padding-right: 15px;
+}
+
+.user-list-organization {
+  color:gray;
+}
+
 /* enable absolute positioning */
 .inner-addon {
   position: relative;
