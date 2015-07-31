@@ -5,9 +5,12 @@
     .module('app')
     .controller('MainController', MainController);
 
-    MainController.$inject = ['$scope','$rootScope','$location','userService',];
+    MainController.$inject = ['$scope','$rootScope','$location','userService'];
 
     function MainController($scope,$rootScope,$location,userService) {
+
+      $rootScope.title = 'Leplanner beta';
+
       //console.log($rootScope.user);
       $scope.logout = function(){
         userService.logOutUser()
@@ -24,7 +27,7 @@
           $rootScope.navigatedToLoginFrom = $location.path();
           $location.path('/login');
         }else{
-          // if from home page 
+          // if from home page
           $location.path('/login');
         }
 

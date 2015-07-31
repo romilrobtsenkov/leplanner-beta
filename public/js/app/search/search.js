@@ -9,6 +9,8 @@
 
     function SearchController($scope,$rootScope,scenarioService,metaService) {
 
+      $rootScope.title = 'Search | Leplanner beta';
+
       $scope.$on('triggerSearchForm', function(e) {
         angular.element('#search-word-input').trigger('focus');
         $scope.search();

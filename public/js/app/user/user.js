@@ -9,6 +9,8 @@
 
     function UserController($scope,$rootScope,$routeParams,userService,scenarioService) {
 
+      $rootScope.title = $rootScope.user.first_name+' '+$rootScope.user.last_name+' | Leplanner beta';
+
       if(typeof $routeParams.id !== 'undefined'){
         $scope.get_profile_id = $routeParams.id;
       }else{

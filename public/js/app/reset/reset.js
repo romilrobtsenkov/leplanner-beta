@@ -9,7 +9,7 @@
 
     function ResetController($scope,$location,$routeParams,userService) {
 
-      console.log($routeParams.token);
+      $rootScope.title = 'Password reset | Leplanner beta';
 
       $scope.reset = function(user){
 

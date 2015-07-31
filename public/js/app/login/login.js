@@ -9,6 +9,8 @@
 
     function LoginController($scope,$rootScope,$location,$timeout,userService) {
 
+      $rootScope.title = ' Login | Leplanner beta';
+
       $scope.activateCreateForm = function($event){
         $event.preventDefault();
         $scope.create_form = true;

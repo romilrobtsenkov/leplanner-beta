@@ -9,6 +9,8 @@
 
     function DashboardController($scope,$rootScope,scenarioService,userService,metaService) {
 
+      $rootScope.title = $rootScope.user.first_name+' '+$rootScope.user.last_name+' dashboard | Leplanner beta';
+
       if(typeof $rootScope.dash_active_tab === 'undefined'){
         $rootScope.dash_active_tab = 'feed';
       }

@@ -8,7 +8,8 @@
     SettingsController.$inject = ['$scope','$rootScope','$location','$timeout','userService','Upload'];
 
     function SettingsController($scope,$rootScope,$location,$timeout,userService,Upload) {
-      //console.log($rootScope.user);
+
+      $rootScope.title = 'Settings | Leplanner beta';
 
       $scope.user = $rootScope.user;
       $scope.user.profile_image ="./images/user/"+$scope.user._id+".jpg";

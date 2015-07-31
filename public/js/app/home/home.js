@@ -9,7 +9,7 @@
 
     function HomeController($scope,$rootScope,scenarioService,metaService) {
 
-      //console.log($rootScope.active_tab);
+      $rootScope.title = 'Leplanner beta';
 
       if(typeof $rootScope.home_active_sort_tab === 'undefined'){
         $rootScope.home_active_sort_tab = 'latest';

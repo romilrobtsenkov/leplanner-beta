@@ -9,6 +9,8 @@
 
     function CreateController($scope,$rootScope,scenarioService,metaService) {
 
+      $rootScope.title = 'Create scenario | Leplanner beta';
+
       $scope.subjects = metaService.getSubjectList();
       $scope.languages = metaService.getLanguageList();
       $scope.licenses = metaService.getLicenseList();

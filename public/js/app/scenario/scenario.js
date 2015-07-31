@@ -25,6 +25,9 @@
         .then(function(data) {
           //console.log(data);
           if(data.scenario){
+
+            $rootScope.title = data.scenario.name+' - '+data.scenario.author.first_name+' '+data.scenario.author.last_name+' | Leplanner beta';
+
             $scope.scenario = data.scenario;
             $scope.is_favorite = data.is_favorite;
             $scope.is_following = data.is_following;
