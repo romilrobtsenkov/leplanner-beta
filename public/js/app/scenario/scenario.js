@@ -210,7 +210,7 @@
 
       // disable delete button while deleting
       $scope.showDeleteText = function(comment_id){
-        if($rootScope.is_deleting == comment_id){
+        if($scope.is_deleting == comment_id){
           return true;
         }else{
           return false;
@@ -221,7 +221,7 @@
         var del = confirm("Are you sure that you want to delete comment: "+text);
         if (del === true) {
 
-          $rootScope.is_deleting = comment_id;
+          $scope.is_deleting = comment_id;
           $scope.comment_delete_text = "deleting...";
 
           var params = {
@@ -243,7 +243,7 @@
                 $scope.comment_delete_text = "deleted";
 
                 $timeout(function() {
-                  $rootScope.is_deleting = undefined;
+                  $scope.is_deleting = undefined;
                   $scope.comments = data.comments;
                   $scope.scenario.comments_count = data.comments.length;
 
@@ -257,15 +257,6 @@
                     // user changed
                     $location.path('/');
                     break;
-                  case 0:
-                    console.log("Comment id missing");
-                    break;
-                  case 1:
-                    console.log("User id missing");
-                    break;
-                  case 2:
-                    console.log("Scenario id missing");
-                    break;
                   case 3:
                     $scope.comment_delete_text = "error, no rights";
                     console.log("No rights");
@@ -276,7 +267,7 @@
 
                 $scope.comment_delete_text = "error, refresh the page";
                 $timeout(function() {
-                  $rootScope.is_deleting = undefined;
+                  $scope.is_deleting = undefined;
                 }, 2000);
 
               }

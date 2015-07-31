@@ -532,8 +532,10 @@ exports.getNotifications = function(req, next) {
           for(var j = 0; j < scenario_views[i].view.length; j++){
 
             // if user viewed, check the latest comment date and compare with latest user view date
-            if(scenario_views[i].view[j].user == req.user._id && scenario_views[i]._id.toString() == comments[k].scenario._id.toString()){
-
+            if( req.user._id != comments[k].author._id &&
+                scenario_views[i].view[j].user == req.user._id &&
+                scenario_views[i]._id.toString() == comments[k].scenario._id.toString()
+              ){
                 var notification = {
                   user: {
                     _id: comments[k].author._id,

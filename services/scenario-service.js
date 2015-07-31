@@ -522,7 +522,7 @@ exports.deleteComment = function(req, next) {
   s_query.exec(function(err, check) {
 
     if(check === null){
-      // req user different for scenario author
+      // passport req user different from scenario author
       return next({id: 3, message: 'no rights'});
     }
 

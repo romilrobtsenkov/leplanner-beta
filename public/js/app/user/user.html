@@ -91,7 +91,7 @@
 
       <hr>
       <!-- scenario items -->
-      <div class="single_scenario_item" ng-repeat="scenario in scenarios">
+      <div class="single_scenario_item" dir-paginate="scenario in scenarios | itemsPerPage: 10">
 
         <!-- SINGLE SCENARIO -->
 				<div class="row no-margin">
@@ -133,7 +133,7 @@
 				<!-- SINGLE SCENARIO END -->
 
       </div>
-
+      <dir-pagination-controls></dir-pagination-controls>
 
     </div>
 
