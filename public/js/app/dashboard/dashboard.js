@@ -107,7 +107,7 @@
                   for(var i = 0; i < data.users.length; i++){
                     for(var j = 0; j < data.following.length; j++){
                       if(data.users[i]._id == data.following[j].following){
-                        data.users[i].following = true;
+                        data.users[i].following = "following";
                       }
                     }
                   }
@@ -281,7 +281,7 @@
               }else{
                 for(var j = 0; j < $scope.users_list.length; j++){
                   if($scope.users_list[j]._id == user_id){
-                    $scope.users_list[j].following = true;
+                    $scope.users_list[j].following = 'following';
                   }
                 }
               }
