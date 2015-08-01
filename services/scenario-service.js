@@ -85,7 +85,12 @@ exports.getDashScenarios = function(q, next) {
 
         // get list of following ids
         var following_query = Follower.find();
-        following_query.where({follower: q.user._id});
+        args = {};
+        multiple_args = [];
+        multiple_args.push({follower: q.user._id});
+        multiple_args.push({ removed: null });
+        args.$and = multiple_args;
+        following_query.where(args);
         following_query.select('following');
         following_query.exec(function(err, following) {
           if (err) return next(err);
@@ -287,7 +292,13 @@ exports.getSingleScenario = function(params, next){
             }
 
             var query = Follower.findOne();
-            query.where({follower: params.user_id});
+            var args = {};
+            var multiple_args = [];
+            multiple_args.push({follower: params.user_id});
+            multiple_args.push({following: scenario.author._id});
+            multiple_args.push({ removed: null });
+            args.$and = multiple_args;
+            query.where(args);
             query.exec(function(err, following) {
               if (err) return next(err);
                 //console.log(following);
@@ -537,6 +548,7 @@ exports.deleteComment = function(req, next) {
       }else{
         // delete that comment
         comment.deleted = true;
+        comment.deleted_date = new Date();
         comment.save(function(err, a){
           if (err) return next(err);
 

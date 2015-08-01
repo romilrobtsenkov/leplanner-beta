@@ -1,88 +1,68 @@
 <!-- Main content container that is inserted to index.html-->
 <div class="container main-content">
+  <h2>Create scenario</h2>
+  <p ng-hide="user"><strong class="alert alert-warning" role="alert">Please <a href="/#/login">login</a> to add scenario</strong></p>
 
-<h2>Create scenario</h2>
+  <form ng-show="user" id="create-scenario" ng-submit="saveScenario(scenario)">
 
-<br />
-<!-- if user is not logged in a message will be shown to login-->
-<p ng-hide="user"><strong class="alert alert-warning" role="alert">Please <a href="/#/login">login</a> to add scenario</strong></p>
+    <div class="row no-margin">
 
-<br />
-<!-- Scenario adding form-->
-<form ng-show="user" id="create-scenario" ng-submit="saveScenario(scenario)">
+      <!-- META DATA -->
+      <div class="col-sm-4">
 
-  <span><strong>Title: &nbsp </strong></span>
-  <input type="text" placeholder="Title subject" ng-model="scenario.name" name="titleName" class="input-group input-group-lg" style="display:inline;text-align:center" autofocus required/>
-  <br />
-  <br />
+        <div class="row no-margin">
+          <div class=" form-group">
+            <label for="title"><strong>Title: (required)</strong></label>
+            <input type="text" ng-model="scenario.title" name="title" id="title" class="form-control" autofocus required/>
+          </div>
+        </div>
 
-  <!-- dropdown menu for all subjects-->
-  <span><strong>Subject: &nbsp </strong></span>
-  <select ng-model="scenario.subject" name="subjectName" required>
-    <option value="">Choose subject</option>
-    <option ng-repeat="subject in subjects" value="{{subject}}">{{subject}}</option>
-  </select>
-  <br />
-  <br />
+        <div class="row no-margin">
+          <div class=" form-group">
+            <label for="subject"><strong>Subject: (required)</strong></label>
+            <select class="form-control" id="subject" ng-model="scenario.subject" name="subject" required>
+              <option value="" selected disabled>Choose subject</option>
+              <option ng-repeat="subject in subjects" value="{{subject}}">{{subject}}</option>
+            </select>
+          </div>
+        </div>
 
-  <!-- dropdown menu for licenses-->
-  <span>License: &nbsp</span>
-  <select ng-model="scenario.license" name="licenseName">
-    <option ng-repeat="license in licenses" value="{{license}}">{{license}}</option>
-  </select>
+        <div class="row no-margin">
+          <div class=" form-group">
+            <label for="stage"><strong>Stage: (required)</strong></label>
+            <select class="form-control" id="stage" ng-model="scenario.stage" name="stage" required>
+              <option value="" selected disabled>Choose stage</option>
+              <option ng-repeat="stage in stages" value="{{stage}}">{{stage}}</option>
+            </select>
+          </div>
+        </div>
 
-  <br />
-  <br />
-    <!-- dropdown menu for language-->
-  <span>Language: &nbsp</span>
-  <select ng-model="scenario.language" name="languageName">
-    <option ng-repeat="language in languages" value="{{language}}">{{language}}</option>
-  </select>
+        <div class="row no-margin">
+          <div class=" form-group">
+            <label for="description"><strong>Description:</strong></label>
+            <textarea class="form-control" id="description" ng-model="scenario.description" placeholder="Add a description to the subject" name="description"></textarea>
+          </div>
+        </div>
 
-  <br />
-  <br />
-  <!-- dropdown menu for material type-->
-  <span>Material type: &nbsp</span>
-  <select ng-model="scenario.material_type" name="materialTypeName">
-    <option ng-repeat="material in materials" value="{{material}}">{{material}}</option>
-  </select>
+      </div>
 
+      <div class="col-sm-8">
 
-  <br />
-  <br />
-  <!-- dropdown menu for scenario method-->
-  <span>Method: &nbsp</span>
-  <select ng-model="scenario.method" name="methodName">
-    <option ng-repeat="method in methods" value="{{method}}">{{method}}</option>
-  </select>
+        time and exersize fields list - auto populated
 
-  <br />
-  <br />
-  <!-- dropdown menu for lscenario stage-->
-  <span>Stage: &nbsp</span>
-  <select ng-model="scenario.stage" name="stageName">
-    <option ng-repeat="stage in stages" value="{{stage}}">{{stage}}</option>
-  </select>
+      </div>
 
+    </div>
 
+    <input type="submit" id="submit" value="Save & continue editing" class="btn btn-success" />
 
-  <br />
-  <br />
-  <!-- textbox for adding description-->
-  <span>Add description: &nbsp</span> <br />
-  <textarea style="text-align:center;" ng-model="scenario.description" placeholder="Add a description to the subject" name="description"></textarea>
+  </form>
 
   <br />
   <br />
 
-  <input type="submit" id="submit" value="Save" class="btn btn-success" />
-</form>
-
-<br />
-<br />
-
-<!-- Success / Error messages -->
-<div style="width:400px" id="successMessage" ng-show="successMessage" class="alert alert-success" role="alert"><strong>Success!</strong> {{successMessage}}</div>
-<div style="width:400px" id="errorMessage" ng-show="errorMessage" class="alert alert-danger" role="alert"><strong>Error!</strong> {{errorMessage}}</div>
+  <!-- Success / Error messages -->
+  <div style="width:400px" id="successMessage" ng-show="successMessage" class="alert alert-success" role="alert"><strong>Success!</strong> {{successMessage}}</div>
+  <div style="width:400px" id="errorMessage" ng-show="errorMessage" class="alert alert-danger" role="alert"><strong>Error!</strong> {{errorMessage}}</div>
 
 </div>

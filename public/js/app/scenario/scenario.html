@@ -120,7 +120,7 @@
             <div class="panel panel-default">
               <div class="panel-body">
                 <header class="text-left">
-                  <a ng-if="user._id==scenario.author._id" ng-click="deleteComment(comment._id,comment.text)" class="pull-right" style="cursor:pointer;"><span style="color:#000;" class="glyphicon glyphicon-remove"><span ng-if="showDeleteText(comment._id)">{{comment_delete_text}}</span></span></a>
+                  <a ng-if="user._id==scenario.author._id" ng-click="deleteComment(comment._id,comment.text)" class="pull-right" style="cursor:pointer;"><span style="color:gray;" class="glyphicon glyphicon-remove"><span ng-if="showDeleteText(comment._id)">{{comment_delete_text}}</span></span></a>
                   <div class="comment-user">
                     <a href="/#/user/{{comment.author._id}}" title="{{comment.author.first_name}} {{comment.author.last_name}}">
                       {{comment.author.first_name}} {{comment.author.last_name}}

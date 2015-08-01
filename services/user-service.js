@@ -307,9 +307,12 @@ exports.loadUserData = function(q, next) {
         var following_query = Follower.find();
         args = {};
         multiple_args = [];
+        multiple_and_args = [];
         multiple_args.push({follower: user._id});
         multiple_args.push({following: user._id});
+        multiple_and_args.push({ removed: null });
         args.$or = multiple_args;
+        args.$and = multiple_and_args;
         following_query.where(args);
         following_query.populate('follower','first_name last_name image_thumb last_modified');
         following_query.populate('following','first_name last_name image_thumb last_modified');
@@ -377,6 +380,7 @@ exports.addRemoveFollow = function(params, next){
   var multiple_args = [];
   multiple_args.push({follower: params.user._id});
   multiple_args.push({following: params.following._id});
+  multiple_args.push({ removed: null });
   args.$and = multiple_args;
   query.where(args);
   query.exec(function(err, follow_doc) {
@@ -435,7 +439,10 @@ exports.addRemoveFollow = function(params, next){
         return next(null, {success: 'unfollow'});
       }else{
         // unfollow that user
-        follow_doc.remove(function(err, a){
+
+        follow_doc.removed = new Date();
+
+        follow_doc.save(function(err, a){
           if (err) return next(err);
 
           Follower.count({follower: params.user._id}, function (err, count) {
@@ -599,7 +606,12 @@ exports.getUsersList = function(req, next) {
     if (err) return next(err);
 
     var following_query = Follower.find();
-    following_query.where({follower: req.user._id});
+    args = {};
+    multiple_args = [];
+    multiple_args.push({follower: req.user._id});
+    multiple_args.push({ removed: null });
+    args.$and = multiple_args;
+    following_query.where(args);
     following_query.select('following');
     following_query.exec(function(err, following) {
       if (err) return next(err);

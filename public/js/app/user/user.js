@@ -9,8 +9,6 @@
 
     function UserController($scope,$rootScope,$routeParams,userService,scenarioService) {
 
-      $rootScope.title = $rootScope.user.first_name+' '+$rootScope.user.last_name+' | Leplanner beta';
-
       if(typeof $routeParams.id !== 'undefined'){
         $scope.get_profile_id = $routeParams.id;
       }else{
@@ -44,6 +42,9 @@
             if(data.profile){
               //console.log(data);
               $scope.profile = data.profile;
+
+              $rootScope.title = data.profile.first_name+' '+data.profile.last_name+' | Leplanner beta';
+
 
               //check if user is following
               if(typeof $rootScope.user === 'undefined'){
