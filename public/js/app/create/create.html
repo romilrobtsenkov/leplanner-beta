@@ -19,10 +19,17 @@
 
         <div class="row no-margin">
           <div class=" form-group">
+            <label for="description"><strong>Description:</strong></label>
+            <textarea class="form-control" id="description" ng-model="scenario.description" placeholder="Add a description to the subject" name="description"></textarea>
+          </div>
+        </div>
+
+        <div class="row no-margin">
+          <div class=" form-group">
             <label for="subject"><strong>Subject: (required)</strong></label>
             <select class="form-control" id="subject" ng-model="scenario.subject" name="subject" required>
               <option value="" selected disabled>Choose subject</option>
-              <option ng-repeat="subject in subjects" value="{{subject}}">{{subject}}</option>
+              <option ng-repeat="subject in subjects" value="{{subject._id}}">{{subject.name}}</option>
             </select>
           </div>
         </div>
@@ -39,8 +46,15 @@
 
         <div class="row no-margin">
           <div class=" form-group">
-            <label for="description"><strong>Description:</strong></label>
-            <textarea class="form-control" id="description" ng-model="scenario.description" placeholder="Add a description to the subject" name="description"></textarea>
+            <label for="grade"><strong>Grade: (required)</strong></label>
+            <input type="text" ng-model="scenario.grade" name="grade" id="grade" class="form-control" required/>
+          </div>
+        </div>
+
+        <div class="row no-margin">
+          <div class=" form-group">
+            <label for="duration"><strong>Duration (min): (required)</strong></label>
+            <input type="text" ng-model="scenario.duration" name="duration" id="duration" class="form-control" required/>
           </div>
         </div>
 

@@ -5,7 +5,7 @@ var userService = require('../services/user-service');
 var userSchema = new Schema({
   first_name: {type: String, required: true },
   last_name: {type: String, required: true },
-  email: {type: String, required: true },
+  email: {type: String, required: true, unique: true },
   password: {type: String, required: true },
   organization: {type: String },
   image: {type: String, default: 'default.jpg' },
@@ -19,6 +19,7 @@ var userSchema = new Schema({
   resetPasswordExpires: Date,
 });
 
+//validation on first save
 userSchema.path('email').validate(function(value, next) {
   userService.findByEmail(value, function(err, user) {
     if (err) { return next(false); }

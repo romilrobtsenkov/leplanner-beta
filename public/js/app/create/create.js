@@ -11,7 +11,24 @@
 
       $rootScope.title = 'Create scenario | Leplanner beta';
 
-      $scope.subjects = metaService.getSubjectList();
+      load();
+
+      function load(){
+
+        metaService.getSubjectList()
+        .then(function(data) {
+
+          if(data.subjects){
+            $scope.subjects = data.subjects;
+          }
+
+          if(data.error){
+            console.log(data.error);
+          }
+        });
+
+      }
+
       $scope.languages = metaService.getLanguageList();
       $scope.licenses = metaService.getLicenseList();
       $scope.materials = metaService.getMaterialList();

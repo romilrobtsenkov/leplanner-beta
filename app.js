@@ -14,6 +14,7 @@ var config = require('./config/config');
 var users = require('./routes/users');
 var scenarios = require('./routes/scenarios');
 var upload = require('./routes/upload');
+var meta = require('./routes/meta');
 
 var passportConfig = require('./auth/passport-config');
 var restrict = require('./auth/restrict');
@@ -51,6 +52,7 @@ app.use(multipart({
 app.use('/api/users', users);
 app.use('/api/scenarios', scenarios);
 app.use('/api/upload', upload);
+app.use('/api/meta', meta);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
