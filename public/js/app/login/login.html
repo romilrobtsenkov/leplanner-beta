@@ -7,19 +7,21 @@
           <!-- Creating a new account -->
 
             <h3>
-              <span ng-if="!create_form">Log in</span><a ng-click="deactivateCreateForm($event)" style="cursor:pointer" ng-if="create_form">Log in</a>, or
+              <span ng-if="!create_form && !reset_form">Log in</span>
+              <a ng-click="deactivateCreateForm($event)" style="cursor:pointer" ng-if="create_form">Log in</a>
+              <a ng-click="deactivateResetForm($event)" style="cursor:pointer" ng-if="reset_form">Log in</a> or
               <a ng-click="activateCreateForm($event)" href="#/login" style="cursor:pointer">Create user</a>
             </h3>
 
             <!-- Using regular username and password to login -->
-            <form ng-if="!create_form && !recover_form" role="form" name="login-form" id="login-form" ng-submit="login(user)">
+            <form ng-if="!create_form && !reset_form" role="form" name="login-form" id="login-form" ng-submit="login(user)">
               <div ng-if='login_error' class="alert alert-danger" role="alert">{{login_error}}</div>
               <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" class="form-control" id="email" name="email" ng-model="user.email" required />
               </div>
               <div class="form-group">
-                <a class="pull-right" style="cursor:pointer" ng-click="activateRecoverForm($event)" href="#/login">Recover password</a>
+                <a class="pull-right" style="cursor:pointer" ng-click="activateResetForm($event)" href="#/login">Reset password</a>
                 <label for="password">Password</label>
                 <input type="password" class="form-control" id="password" name="password" ng-model="user.password"  required />
               </div>
@@ -33,15 +35,15 @@
               </div>
             </form>
 
-            <form ng-if='recover_form && !create_form' name="recover-user-form" id="recover-user-form" ng-submit="recover(user)">
-              <div ng-if='recover_error' class="alert alert-danger" role="alert">{{recover_error}}</div>
+            <form ng-if='reset_form && !create_form' name="reset-user-form" id="reset-user-form" ng-submit="reset(user)">
+              <div ng-if='reset_error' class="alert alert-danger" role="alert">{{reset_error}}</div>
               <div ng-if='success_alert' class="alert alert-success" role="alert">{{success_alert}}</div>
               <div class="form-group">
-                <label for="recover_email">Email</label>
-                <input type="text" class="form-control" id="recover_email" name="recover_email" ng-model="user.recover_email" required/>
+                <label for="reset_email">Email</label>
+                <input type="text" class="form-control" id="reset_email" name="reset_email" ng-model="user.reset_email" required/>
               </div>
               <div class="form-submit">
-                <input class="btn btn-sm btn btn-primary" type="submit" value="Recover my password" />
+                <input class="btn btn-sm btn btn-primary" type="submit" value="Reset my password" />
               </div>
             </form>
 

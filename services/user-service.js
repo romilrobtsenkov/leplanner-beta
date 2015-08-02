@@ -181,7 +181,7 @@ exports.updateUserPassword = function(user, next) {
 
 };
 
-exports.recoverUser = function(email, next) {
+exports.sendResetUserToken = function(email, next) {
 
   if(email.match(/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/) === null){
     return next({id: 3, message: 'Please enter correct email'});

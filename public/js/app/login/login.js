@@ -14,6 +14,7 @@
       $scope.activateCreateForm = function($event){
         $event.preventDefault();
         $scope.create_form = true;
+        $scope.reset_form = false;
       };
 
       $scope.deactivateCreateForm = function($event){
@@ -21,9 +22,15 @@
         $scope.create_form = false;
       };
 
-      $scope.activateRecoverForm = function($event){
+      $scope.activateResetForm = function($event){
         $event.preventDefault();
-        $scope.recover_form = true;
+        $scope.reset_form = true;
+        $scope.create_form = false;
+      };
+
+      $scope.deactivateResetForm = function($event){
+        $event.preventDefault();
+        $scope.reset_form = false;
       };
 
       $scope.login = function(user){
@@ -117,26 +124,29 @@
       };
 
 
-      $scope.recover = function(user){
-        userService.recoverUser(user)
+      $scope.reset = function(user){
+        userService.sendResetUserToken(user)
           .then(function(data) {
-            $scope.success_alert = 'Successfully reset email sent';
-            $scope.recover_error = null;
-            $timeout(function() { $scope.success_alert = null; }, 2000);
-            console.log(data);
+
+            if(data.success){
+              $scope.success_alert = 'Successfully reset email sent';
+              $scope.reset_error = null;
+              $timeout(function() { $scope.success_alert = null; }, 2000);
+            }
+
             if(data.error){
               console.log(data);
               switch(data.error.id) {
                 case 3:
-                  $scope.recover_error = 'Please enter correct email';
+                  $scope.reset_error = 'Please enter correct email';
                   break;
                 case 20:
-                  $scope.recover_error = 'No such email found';
+                  $scope.reset_error = 'No such email found';
                   break;
                 default:
-                  $scope.recover_error = 'Unknown error';
+                  $scope.reset_error = 'Unknown error';
               }
-              $timeout(function() { $scope.recover_error = null; }, 2000);
+              $timeout(function() { $scope.reset_error = null; }, 2000);
             }
 
         });

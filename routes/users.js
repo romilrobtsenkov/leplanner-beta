@@ -57,9 +57,9 @@ router.get('/logout', restrict, function(req, res, next) {
   res.json({success: 'logout sucessfull'});
 });
 
-router.post('/recover', function(req, res){
+router.post('/reset', function(req, res){
 
-  userService.recoverUser(req.body.recover_email, function(err, user) {
+  userService.sendResetUserToken(req.body.reset_email, function(err, user) {
     if (err) { return res.json({error: err}); }
 
     if(user){

@@ -15,7 +15,7 @@
       loadUserData: loadUserData,
       addRemoveFollow: addRemoveFollow,
       getNotifications: getNotifications,
-      recoverUser: recoverUser,
+      sendResetUserToken: sendResetUserToken,
       getUsersList: getUsersList,
       logOutUser: logOutUser,
       updateUserProfile: updateUserProfile,
@@ -72,8 +72,8 @@
         });
     }
 
-    function recoverUser(user) {
-      return $http.post('/api/users/recover', user)
+    function sendResetUserToken(user) {
+      return $http.post('/api/users/reset', user)
         .then(function(response) {
           return response.data;
         });
