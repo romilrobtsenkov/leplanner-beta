@@ -1,16 +1,17 @@
-var express = require('express');
-var router = express.Router();
-var passport = require('passport');
-var userService = require('../services/user-service');
+var async = require('async');
 var config = require('../config/config');
+var express = require('express');
+var passport = require('passport');
 var restrict = require('../auth/restrict');
+var router = express.Router();
+var userService = require('../services/user-service');
 
 router.post('/create', function(req, res, next) {
 
   userService.addUser(req.body, function(err) {
     if (err) { return res.json({error: err}); }
 
-    // Fix for auto logging in new user
+    // Fix for auto logging in on new user save
     req.body.email = req.body.new_email;
     req.body.password = req.body.new_password;
 
@@ -32,10 +33,11 @@ router.post('/create', function(req, res, next) {
 
 router.post('/login', function(req, res, next) {
     //console.log(req.body);
-    if (req.body.rememberMe) {
+    if (req.body.remember_me) {
       req.session.cookie.maxAge = config.cookieMaxAge;
     }
 
+    // useing req.body.email & password
     passport.authenticate('local', function(err, user, info) {
 
       if (err) { return next(err); }
@@ -57,9 +59,9 @@ router.get('/logout', restrict, function(req, res, next) {
   res.json({success: 'logout sucessfull'});
 });
 
-router.post('/reset', function(req, res){
+router.post('/send-reset-token', function(req, res){
 
-  userService.sendResetUserToken(req.body.reset_email, function(err, user) {
+  userService.createResetUserToken(req.body.reset_email, function(err, user) {
     if (err) { return res.json({error: err}); }
 
     if(user){
@@ -77,7 +79,7 @@ router.post('/reset', function(req, res){
 
 });
 
-router.post('/updateprofile', restrict, function(req, res, next) {
+router.post('/update-profile', restrict, function(req, res, next) {
 
   userService.updateUserProfile(req.body.user, function(err, user) {
     if (err) { return res.json({error: err}); }
@@ -94,7 +96,7 @@ router.post('/updateprofile', restrict, function(req, res, next) {
 
 });
 
-router.post('/updatepassword', restrict, function(req, res, next) {
+router.post('/update-password', restrict, function(req, res, next) {
 
   userService.updateUserPassword(req.body.user, function(err, user) {
     if (err) { return res.json({error: err}); }
@@ -108,7 +110,7 @@ router.post('/updatepassword', restrict, function(req, res, next) {
 
 });
 
-router.post('/resetpassword', function(req, res, next) {
+router.post('/reset-password', function(req, res, next) {
 
   userService.resetPassword(req.body, function(err, user) {
     if (err) { return res.json({error: err}); }

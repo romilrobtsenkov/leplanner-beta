@@ -8,6 +8,59 @@ var ScenarioView = require('../models/scenario-view').ScenarioView;
 var Comment = require('../models/comment').Comment;
 var Follower = require('../models/follower').Follower;
 
+exports.findByEmail = function(email, next) {
+  User.findOne({email: email.toLowerCase()}, function(err, user) {
+    next(err, user);
+  });
+};
+
+exports.findById = function(id, next) {
+  User.findById(id, function(err, user) {
+    next(err, user);
+  });
+};
+
+exports.findByToken = function(token, next) {
+  User.findOne({resetPasswordToken: token}, function(err, user) {
+    next(err, user);
+  });
+};
+
+exports.bcryptCompare = function(candidate, hash, next) {
+  bcrypt.compare(candidate, hash, function(err, is_match) {
+    next(err, is_match);
+  });
+};
+
+exports.cryptoCreateToken = function(next) {
+  crypto.randomBytes(20, function(err, buf) {
+    next(err, buf.toString('hex'));
+  });
+};
+
+exports.bcryptCreatePassword = function(password, next) {
+  cryptobcrypt.hash(password, 10, function(err, hash) {
+    next(err, hash);
+  });
+};
+
+exports.updateUser = function(id, update, next){
+  var query = {"_id": id};
+  var options = {new: true};
+  User.findOneAndUpdate(query, update, options, function(err, user) {
+      next(err, user);
+  });
+};
+
+// find users / save new user
+
+// create comment service save new comment / get comments / update comment
+
+// create followings service get followers / get following / update / save new
+
+// -- create favorites service / save new favorite / findFavorite / update + add date removed
+
+
 exports.addUser = function(user, next) {
 
   //BETA
@@ -16,7 +69,6 @@ exports.addUser = function(user, next) {
   }else if(user.new_beta_code != config.beta_code){
     return next({id: 'wrong_beta', message: 'Wrong beta code!'});
   }
-
 
   // prevalidate user input before db, if html validation fails
   if(!user.new_first_name){ return next({id: 0, message: 'Please enter your first name'}); }
@@ -54,19 +106,6 @@ exports.addUser = function(user, next) {
       });
     });
 
-};
-
-exports.findByEmail = function(email, next) {
-  User.findOne({email: email.toLowerCase()}, function(err, user) {
-    //console.log(user);
-    next(err, user);
-  });
-};
-
-exports.findById = function(id, next) {
-  User.findById(id, function(err, user) {
-    next(err, user);
-  });
 };
 
 exports.updateUserProfile = function(user, next) {
@@ -181,7 +220,7 @@ exports.updateUserPassword = function(user, next) {
 
 };
 
-exports.sendResetUserToken = function(email, next) {
+exports.createResetUserToken = function(email, next) {
 
   if(email.match(/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/) === null){
     return next({id: 3, message: 'Please enter correct email'});
@@ -397,7 +436,7 @@ exports.addRemoveFollow = function(params, next){
         };
 
         new_follow_doc = new Follower(follow_doc);
-        new_follow_doc.save(function(err, favorite){
+        new_follow_doc.save(function(err, f){
           if(err){ return next(err); }
 
           Follower.count({follower: params.user._id}, function (err, count) {

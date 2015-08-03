@@ -23,70 +23,70 @@
     };
 
     function getWidgetScenarios(query) {
-      return $http.post('/api/scenarios/scenarios-widget-list',query)
+      return $http.post('/api/scenario/scenarios-widget-list',query)
         .then(function(response) {
           return response.data;
         });
     }
 
     function getDashScenarios(query) {
-      return $http.post('/api/scenarios/scenarios-dash-list',query)
+      return $http.post('/api/scenario/scenarios-dash-list',query)
         .then(function(response) {
           return response.data;
         });
     }
 
     function getUserScenarios(query) {
-      return $http.post('/api/scenarios/scenarios-user-list',query)
+      return $http.post('/api/scenario/scenarios-user-list',query)
         .then(function(response) {
           return response.data;
         });
     }
 
     function searchScenarios(query) {
-      return $http.post('/api/scenarios/search',query)
+      return $http.post('/api/scenario/search',query)
         .then(function(response) {
           return response.data;
         });
     }
 
     function getSingleScenario(params) {
-      return $http.post('/api/scenarios/single-scenario',params)
+      return $http.post('/api/scenario/single-scenario',params)
         .then(function(response) {
           return response.data;
         });
     }
 
     function addRemoveFavorite(params) {
-      return $http.post('/api/scenarios/add-remove-favorite',params)
+      return $http.post('/api/scenario/add-remove-favorite',params)
         .then(function(response) {
           return response.data;
         });
     }
 
     function createScenario(params) {
-      return $http.post('/api/scenarios/create',params)
+      return $http.post('/api/scenario/create',params)
         .then(function(response) {
           return response.data;
         });
     }
 
     function addComment(params) {
-      return $http.post('/api/scenarios/add-comment',params)
+      return $http.post('/api/scenario/add-comment',params)
         .then(function(response) {
           return response.data;
         });
     }
 
     function deleteComment(params) {
-      return $http.post('/api/scenarios/delete-comment',params)
+      return $http.post('/api/scenario/delete-comment',params)
         .then(function(response) {
           return response.data;
         });
     }
 
     function getComments(params) {
-      return $http.post('/api/scenarios/comments',params)
+      return $http.post('/api/scenario/comments',params)
         .then(function(response) {
           return response.data;
         });

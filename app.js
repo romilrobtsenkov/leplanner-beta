@@ -11,8 +11,8 @@ var MongoStore = connectMongo(expressSession);
 
 var config = require('./config/config');
 
-var users = require('./routes/users');
-var scenarios = require('./routes/scenarios');
+var user = require('./routes/user');
+var scenario = require('./routes/scenario');
 var upload = require('./routes/upload');
 var meta = require('./routes/meta');
 
@@ -49,8 +49,8 @@ app.use(multipart({
     uploadDir: config.profile_image_upload_temp_path
 }));
 
-app.use('/api/users', users);
-app.use('/api/scenarios', scenarios);
+app.use('/api/user', users);
+app.use('/api/scenario', scenarios);
 app.use('/api/upload', upload);
 app.use('/api/meta', meta);
 

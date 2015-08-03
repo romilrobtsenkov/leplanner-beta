@@ -13,7 +13,7 @@
 
       //console.log($rootScope.user);
       $scope.logout = function(){
-        userService.logOutUser()
+        userService.logoutUser()
           .then(function(data){
             console.log(data);
             $rootScope.user = undefined;

@@ -10,6 +10,7 @@
   function userRouteService($q, $rootScope, $location, userService) {
     return {
       checkUser: function(option) {
+
         var deferred = $q.defer();
         userService.getUser()
           .then(function(data){
@@ -21,6 +22,7 @@
             // check if user has changed
             if($rootScope.user._id != data._id){
               console.log('user changed');
+
               // rewrite with new user data
               $rootScope.user = data;
             }
@@ -43,6 +45,7 @@
             }
           });
           return deferred.promise;
+          
       }
     };
   }

@@ -9,6 +9,7 @@
     "node": "0.12.x"
   },
   "dependencies": {
+    "async": "^1.4.0",
     "bcrypt": "~0.8.0",
     "body-parser": "~1.10.1",
     "connect-mongo": "~0.5.3",
