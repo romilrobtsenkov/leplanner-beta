@@ -54,7 +54,7 @@
               }else{
                 for(var i = 0; i < data.followers.length; i++){
                   //console.log($rootScope.user._id +' == '+ data.followers[i]._id);
-                  if($rootScope.user._id == data.followers[i]._id){
+                  if($rootScope.user._id == data.followers[i].follower._id){
                     // following user
                     $scope.is_following = true;
                     break;

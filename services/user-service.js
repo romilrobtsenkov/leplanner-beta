@@ -8,14 +8,25 @@ var ScenarioView = require('../models/scenario-view').ScenarioView;
 var Comment = require('../models/comment').Comment;
 var Follower = require('../models/follower').Follower;
 
+//soon deleted - replaced by findOne
 exports.findByEmail = function(email, next) {
   User.findOne({email: email.toLowerCase()}, function(err, user) {
     next(err, user);
   });
 };
 
+//soon deleted - replaced by findOne
 exports.findById = function(id, next) {
   User.findById(id, function(err, user) {
+    next(err, user);
+  });
+};
+
+exports.findOne = function(q, next){
+  var query = User.findOne();
+  query.where(q.args);
+  if(q.select){ query.select(q.select); }
+  query.exec(function(err, user) {
     next(err, user);
   });
 };
@@ -39,223 +50,35 @@ exports.cryptoCreateToken = function(next) {
 };
 
 exports.bcryptCreatePassword = function(password, next) {
-  cryptobcrypt.hash(password, 10, function(err, hash) {
+  bcrypt.hash(password, 10, function(err, hash) {
     next(err, hash);
   });
 };
 
-exports.updateUser = function(id, update, next){
-  var query = {"_id": id};
-  var options = {new: true};
-  User.findOneAndUpdate(query, update, options, function(err, user) {
-      next(err, user);
+exports.saveNewUser = function(user, next) {
+
+  var newUser = new User({
+    first_name: user.new_first_name,
+    last_name: user.new_last_name,
+    organization: user.new_organization,
+    email: user.new_email.toLowerCase(),
+    password: user.hashedpassword
   });
-};
 
-// find users / save new user
-
-// create comment service save new comment / get comments / update comment
-
-// create followings service get followers / get following / update / save new
-
-// -- create favorites service / save new favorite / findFavorite / update + add date removed
-
-
-exports.addUser = function(user, next) {
-
-  //BETA
-  if(!user.new_beta_code){
-    return next({id: 'beta', message: 'Please enter required beta code!'});
-  }else if(user.new_beta_code != config.beta_code){
-    return next({id: 'wrong_beta', message: 'Wrong beta code!'});
-  }
-
-  // prevalidate user input before db, if html validation fails
-  if(!user.new_first_name){ return next({id: 0, message: 'Please enter your first name'}); }
-  if(!user.new_last_name){ return next({id: 1, message: 'Please enter your last name'}); }
-  if(!user.new_email){ return next({id: 2, message: 'Please enter your email'}); }
-  if(user.new_email.match(/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/) === null){
-    return next({id: 3, message: 'Please enter correct email'});
-  }
-  if(!user.new_password){ return next({id: 4, message: 'Please enter your password'}); }
-  if(user.new_password.length < 8){ return next({id: 5, message: 'Password has to be min 8 chars long'}); }
-
-  user.hashedpassword = user.new_password;
-
-    bcrypt.hash(user.new_password, 10, function(err, hash) {
-      if (err) { return next(err); }
-
-      user.hashedpassword = hash;
-      var newUser = new User({
-        first_name: user.new_first_name,
-        last_name: user.new_last_name,
-        organization: user.new_organization,
-        email: user.new_email.toLowerCase(),
-        password: user.hashedpassword
-      });
-
-      newUser.save(function(err) {
-        if (err) {
-          if(err.errors.email.message == 'That email is already in use'){
-            return next({id: 6, message: 'That email is already in use'});
-          }else{
-            return next(err);
-          }
-        }
-        next(null);
-      });
-    });
-
-};
-
-exports.updateUserProfile = function(user, next) {
-  // prevalidate user input before db, if html validation fails
-  if(!user.new_first_name){ return next({id: 0, message: 'Please enter your first name'}); }
-  if(!user.new_last_name){ return next({id: 1, message: 'Please enter your last name'}); }
-  if(!user.new_email){ return next({id: 2, message: 'Please enter your email'}); }
-  if(user.new_email.match(/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/) === null){
-    return next({id: 3, message: 'Please enter correct email'});
-  }
-
-  var update = {};
-  if(user.first_name != user.new_first_name){
-    update.first_name = user.new_first_name;
-  }
-  if(user.last_name != user.new_last_name){
-    update.last_name = user.new_last_name;
-  }
-  if(user.organization != user.new_organization){
-    update.organization = user.new_organization;
-  }
-
-  update.last_modified = new Date();
-
-  if(user.email != user.new_email){
-
-    if(!user.confirm_password){
-      return next({id: 7, message: 'Please enter password to confirm email change!'});
-    }
-
-    User.findOne({email: user.new_email}, function(err,user_with_same_email) {
-      if (err) { return next(err); }
-      if(user_with_same_email){
+  newUser.save(function(err) {
+    if (err) {
+      if(err.errors.email.message == 'That email is already in use'){
         return next({id: 6, message: 'That email is already in use'});
       }else{
-        update.email = user.new_email;
-        User.findOne({_id: user._id}, function(err,user_object) {
-          if (err) { return next(err); }
-
-            bcrypt.compare(user.confirm_password, user_object.password, function(err, same) {
-              if (err) { return next(err); }
-
-              if(same){
-                updateProfile(update);
-              }else{
-                return next({id: 10, message: 'Wrong password'});
-              }
-
-            });
-
-        });
+        return next(err);
       }
-    });
-  }else{
-    updateProfile(update);
-  }
-
-  function updateProfile(update){
-
-    var query = {"_id": user._id};
-    var options = {new: true};
-    User.findOneAndUpdate(query, update, options, function(err, user) {
-      if (err) { return next(err); }
-      if(user){
-        return next(null, user);
-      }
-    });
-  }
-
-};
-
-exports.updateUserPassword = function(user, next) {
-  // prevalidate user input before db, if html validation fails
-  if(!user.password || !user.new_password || !user.new_password_twice){ return next({id: 7, message: 'Please enter all fields'}); }
-  if(user.password.length < 8 || user.new_password.length < 8 || user.new_password_twice.length < 8){ return next({id: 5, message: 'Password has to be min 8 chars long'}); }
-  if(user.password == user.new_password){ return next({id: 8, message: 'New password has to be different from old one'}); }
-  if(user.new_password != user.new_password_twice){ return next({id: 9, message: 'New passwords dont match'}); }
-
-  User.findOne({_id: user._id}, function(err,user_object) {
-    if (err) { return next(err); }
-
-      bcrypt.compare(user.password, user_object.password, function(err, same) {
-        if (err) { return next(err); }
-
-        if(same){
-
-          bcrypt.hash(user.new_password, 10, function(err, hash) {
-            if (err) { return next(err); }
-
-            var update = {
-              password: hash,
-              last_modified: new Date()
-            };
-
-            var query = {"_id": user._id};
-            var options = {new: true};
-            User.findOneAndUpdate(query, update, options, function(err, user) {
-              if (err) { return next(err); }
-              if(user){
-                return next(null, user);
-              }
-            });
-          });
-
-        }else{
-          return next({id: 10, message: 'Wrong password'});
-        }
-
-      });
-
+    }
+    next(null);
   });
 
 };
 
-exports.createResetUserToken = function(email, next) {
-
-  if(email.match(/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/) === null){
-    return next({id: 3, message: 'Please enter correct email'});
-  }
-  User.findOne({email: email}, function(err,user) {
-
-    if (err) { return next(err); }
-    if (!user) { return next({id: 20, message: 'No user with that email'}); }
-
-    // replace with token later -http://sahatyalkabov.com/how-to-implement-password-reset-in-nodejs/
-    crypto.randomBytes(20, function(err, buf) {
-      if (err) { return next(err); }
-
-      var update = {
-        resetPasswordToken: buf.toString('hex'),
-        resetPasswordExpires : Date.now() + 3600000, // 1 hour
-      };
-      var query = {"_id": user._id};
-      var options = {new: true};
-      User.findOneAndUpdate(query, update, options, function(err, user) {
-        if (err) { return next(err); }
-
-        if(user){
-          return next(null, user);
-        }
-
-      });
-
-    });
-
-  });
-
-};
-
-exports.sendUserMail = function(user, next) {
+exports.sendPasswordResetMail = function(user, next) {
   //send email
   nodemailer.sendmail = true;
     var transporter = nodemailer.createTransport({
@@ -267,242 +90,167 @@ exports.sendUserMail = function(user, next) {
       subject: 'Password Reset',
       text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
         'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-        'http://http://node-authentication.eu/#/reset/' + user.resetPasswordToken + '\n\n' +
+        config.site_url + '/#/reset/' + user.resetPasswordToken + '\n\n' +
         'If you did not request this, please ignore this email and your password will remain unchanged.\n'
     };
 
     transporter.sendMail(mailOptions, function(err) {
       //console.log(err);
       if (err) { return next(err); }
-      return next(null, 'done');
+      return next(null, 'sent');
     });
 
 };
 
-exports.resetPassword = function(user, next) {
-
-  User.findOne({resetPasswordToken: user.token}, function(err,user_db) {
-    if (err) { return next(err); }
-    if(!user_db){
-      return next({id: 10, message: 'Request new token'});
-    }
-    if(user_db.resetPasswordExpires > Date.now()){
-
-      if(!user.new_password || !user.new_password_twice){ return next({id: 7, message: 'Please enter all fields'}); }
-      if(user.new_password.length < 8 || user.new_password_twice.length < 8){ return next({id: 5, message: 'Password has to be min 8 chars long'}); }
-      if(user.new_password != user.new_password_twice){ return next({id: 9, message: 'New passwords dont match'}); }
-
-      bcrypt.hash(user.new_password, 10, function(err, hash) {
-        if (err) { return next(err); }
-
-        var update = {
-          password: hash,
-          resetPasswordToken: undefined,
-          resetPasswordExpires: undefined,
-          last_modified: new Date()
-        };
-
-        var query = {"_id": user_db._id};
-        var options = {new: true};
-        User.findOneAndUpdate(query, update, options, function(err, user) {
-          if (err) { return next(err); }
-          if(user){
-            return next(null, user);
-          }
-        });
-      });
-
-    }else{
-      return next({id: 11, message: 'Token expired'});
-    }
-
+exports.updateUser = function(q, next){
+  var conditions = q.where;
+  var update = q.update;
+  var options = {new: true};
+  if(q.select){ options.select = q.select; }
+  var query = User.findOneAndUpdate(conditions, update, options);
+  query.exec(function(err, user) {
+    next(err, user);
   });
+};
+
+exports.validate = function(to_validate_array, next){
+
+  if(typeof to_validate_array == 'undefined' || to_validate_array.length === 0){
+    return next({error: 'Validation array undefined'});
+  }
+
+  var validation = {
+    userData: userData,
+    password: password,
+    email: email,
+    passwordUpdate: passwordUpdate,
+    passwordReset: passwordReset,
+    addRemoveFollow: addRemoveFollow
+  };
+
+  for(var i = 0; i < to_validate_array.length; i++){
+    var fn = to_validate_array[i].fn.toString();
+    var data = to_validate_array[i].data;
+    if(typeof validation[fn] != 'undefined'){
+      validation[fn](data);
+    }
+  }
+
+  // VALIDATION FUNCTIONS
+
+  function userData(user){
+
+    // prevalidate user input before db, if html validation fails
+    if(!user.new_first_name){ return next({id: 0, message: 'Please enter your first name'}); }
+    if(!user.new_last_name){ return next({id: 1, message: 'Please enter your last name'}); }
+    if(!user.new_email){ return next({id: 2, message: 'Please enter your email'}); }
+    if(user.new_email.match(/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/) === null){
+      return next({id: 3, message: 'Please enter correct email'});
+    }
+
+    next();
+  }
+
+  function password(user_password){
+    if(!user_password){ return next({id: 4, message: 'Please enter your password'}); }
+    if(user_password.length < 8){ return next({id: 5, message: 'Password has to be min 8 chars long'}); }
+
+    next();
+  }
+
+  function passwordUpdate(user){
+    if(!user.password || !user.new_password || !user.new_password_twice){ return next({id: 7, message: 'Please enter all fields'}); }
+    if(user.password.length < 8 || user.new_password.length < 8 || user.new_password_twice.length < 8){ return next({id: 5, message: 'Password has to be min 8 chars long'}); }
+    if(user.password == user.new_password){ return next({id: 8, message: 'New password has to be different from old one'}); }
+    if(user.new_password != user.new_password_twice){ return next({id: 9, message: 'New passwords dont match'}); }
+
+    next();
+  }
+
+  function passwordReset(user){
+    if(!user.new_password || !user.new_password_twice){ return next({id: 7, message: 'Please enter all fields'}); }
+    if(user.new_password.length < 8 || user.new_password_twice.length < 8){ return next({id: 5, message: 'Password has to be min 8 chars long'}); }
+    if(user.new_password != user.new_password_twice){ return next({id: 9, message: 'New passwords dont match'}); }
+
+    next();
+  }
+
+  function email(user_email){
+    if(user_email.match(/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/) === null){
+      return next({id: 3, message: 'Please enter correct email'});
+    }
+
+    next();
+  }
+
+  function addRemoveFollow(params) {
+    if(typeof params === 'undefined'){return next('no params sent');}
+    if(params.user._id == params.following._id){ return next("can not follow yourself");}
+    if(!params.user._id){return next("no user data sent");}
+    if(!params.following._id){return next("to follow/unfollow not sent");}
+
+    next();
+  }
 
 };
 
-exports.loadUserData = function(q, next) {
-
-    // update profile view count
-    var query = User.findOne();
-    query.where({"_id": q.user._id});
-    query.exec(function(err, profile) {
-      if (err) return next(err);
-      if(profile === null){
-        return next({id: 0, message: "no such profile found"});
-      }
-
-      var update = {profile_views: profile.profile_views+1};
-      var query = {"_id": profile._id};
-      var options = {new: true};
-      User.findOneAndUpdate(query, update, options, function(err, user) {
-        if (err) { return next(err); }
-
-        user.password = undefined;
-        user.email = undefined;
-        if(user.resetPasswordToken){user.resetPasswordToken = undefined;}
-        if(user.resetPasswordExpires){user.resetPasswordExpires = undefined;}
-
-        // get following and followers alphabetical order
-        var following_query = Follower.find();
-        args = {};
-        multiple_args = [];
-        multiple_and_args = [];
-        multiple_args.push({follower: user._id});
-        multiple_args.push({following: user._id});
-        multiple_and_args.push({ removed: null });
-        args.$or = multiple_args;
-        args.$and = multiple_and_args;
-        following_query.where(args);
-        following_query.populate('follower','first_name last_name image_thumb last_modified');
-        following_query.populate('following','first_name last_name image_thumb last_modified');
-        following_query.exec(function(err, follow_array) {
-          if (err) return next(err);
-          //console.log(follow_array.length);
-
-          var response = {};
-          response.profile = user;
-
-          // create separate arrays for followers and following
-          if(follow_array.length > 0){
-            for(var i = 0; i < follow_array.length; i++){
-
-              // could not compare to objects -> .toString() fixed
-              if(follow_array[i].follower._id.toString() == user._id.toString()){
-                // following
-                if(typeof response.following === 'undefined'){
-                  response.following = [];
-                }
-                response.following.push({
-                  _id: follow_array[i].following._id,
-                  first_name: follow_array[i].following.first_name,
-                  last_name: follow_array[i].following.last_name,
-                  image_thumb: follow_array[i].following.image_thumb,
-                  last_modified: follow_array[i].following.last_modified
-                });
-
-              }else if(follow_array[i].following._id.toString() == user._id.toString()){
-                // followers
-                if(typeof response.followers === 'undefined'){
-                  response.followers = [];
-                }
-                response.followers.push({
-                  _id: follow_array[i].follower._id,
-                  first_name: follow_array[i].follower.first_name,
-                  last_name: follow_array[i].follower.last_name,
-                  image_thumb: follow_array[i].follower.image_thumb,
-                  last_modified: follow_array[i].follower.last_modified
-                });
-
-              }
-
-            }
-          }
-
-          return next(null, response);
-        });
-
-      });
-
-    });
-
+exports.findFollowers = function(q, next){
+  var query = Follower.find();
+  query.where(q.args);
+  if(q.populated_fields){
+    for(var i = 0; i< q.populated_fields.length; i++){
+      query.populate(q.populated_fields[i].field, q.populated_fields[i].populate);
+    }
+  }
+  if(q.select){ query.select(q.select); }
+  query.exec(function(err, follower_array) {
+    next(err, follower_array);
+  });
 };
 
-exports.addRemoveFollow = function(params, next){
-
-  if(typeof params === 'undefined'){return next('no params sent');}
-  if(params.user._id == params.following._id){ return next("can not follow yourself");}
-  if(!params.user._id){return next("no user data sent");}
-  if(!params.following._id){return next("to follow/unfollow not sent");}
-
+exports.findOneFollower = function(q, next){
   var query = Follower.findOne();
-  var args = {};
-  var multiple_args = [];
-  multiple_args.push({follower: params.user._id});
-  multiple_args.push({following: params.following._id});
-  multiple_args.push({ removed: null });
-  args.$and = multiple_args;
-  query.where(args);
-  query.exec(function(err, follow_doc) {
-    if (err) return next(err);
-
-    if(typeof params.remove_follow === 'undefined'){
-
-      // follow
-      if(follow_doc === null){
-
-        follow_doc = {
-          follower: params.user._id,
-          following: params.following._id
-        };
-
-        new_follow_doc = new Follower(follow_doc);
-        new_follow_doc.save(function(err, f){
-          if(err){ return next(err); }
-
-          Follower.count({follower: params.user._id}, function (err, count) {
-            // update user following count
-            var update = {following_count: count};
-            var query = {"_id": params.user._id};
-            var options = {new: true};
-            User.findOneAndUpdate(query, update, options, function(err, user) {
-              if (err) { return next(err); }
-
-              // update other user followers count
-              Follower.count({following: params.following._id}, function (err, count) {
-                var update = {followers_count: count};
-                var query = {"_id": params.following._id};
-                var options = {new: true};
-                User.findOneAndUpdate(query, update, options, function(err, user) {
-                  if (err) { return next(err); }
-                  return next(null, {success: 'follow'});
-                });
-
-              });
-
-            });
-
-          });
-
-        });
-
-      }else{
-        //already following
-        return next(null, {success: 'follow'});
-      }
-
-    }else{
-
-      // unfollow
-      if(follow_doc === null){
-        // already not following
-        return next(null, {success: 'unfollow'});
-      }else{
-        // unfollow that user
-
-        follow_doc.removed = new Date();
-
-        follow_doc.save(function(err, a){
-          if (err) return next(err);
-
-          Follower.count({follower: params.user._id}, function (err, count) {
-            // update user following count
-            var update = {following_count: count};
-            var query = {"_id": params.user._id};
-            var options = {new: true};
-            User.findOneAndUpdate(query, update, options, function(err, user) {
-              if (err) { return next(err); }
-              return next(null, {success: 'unfollow'});
-            });
-
-          });
-
-        });
-      }
-    }
-
+  query.where(q.args);
+  if(q.select){ query.select(q.select); }
+  query.exec(function(err, follower) {
+    next(err, follower);
   });
-
 };
+
+exports.saveNewFollower = function(follower, next) {
+  var newFollower = new Follower(follower);
+  newFollower.save(function(err) {
+    if (err) { return next(err); }
+    next(null);
+  });
+};
+
+exports.updateFollower = function(q, next){
+  var conditions = q.where;
+  var update = q.update;
+  var options = {new: true};
+  if(q.select){ options.select = q.select; }
+  var query = Follower.findOneAndUpdate(conditions, update, options);
+  query.exec(function(err, follower) {
+    next(err, follower);
+  });
+};
+
+exports.countFollower = function(q, next){
+  Follower.count(q.args, function (err, count) {
+    next(err, count);
+  });
+};
+
+// find users / save new user
+
+// create comment service save new comment / get comments / update comment
+
+// create followings service get followers / get following / update / save new
+
+// -- create favorites service / save new favorite / findFavorite / update + add date removed
+
+//
 
 exports.getNotifications = function(req, next) {
 

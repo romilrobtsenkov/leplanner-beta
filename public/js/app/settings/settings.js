@@ -72,6 +72,7 @@
                       break;
                     default:
                       $scope.updateProfile_error = 'Unknown error';
+                      console.log(data.error);
                   }
                   $timeout(function() { $scope.updateProfile_error = null; }, 2000);
                 }

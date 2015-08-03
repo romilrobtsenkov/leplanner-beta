@@ -72,7 +72,7 @@
 
         userService.createUser(user)
           .then(function(data) {
-
+            console.log(data);
             if(data.user){
               //user id
               //console.log(data.user.id);

@@ -5,9 +5,9 @@
     .module('app')
     .controller('ResetController', ResetController);
 
-    ResetController.$inject = ['$scope','$location','$routeParams','userService'];
+    ResetController.$inject = ['$scope','$location','$rootScope','$routeParams','$timeout','userService'];
 
-    function ResetController($scope,$location,$routeParams,userService) {
+    function ResetController($scope,$location,$rootScope,$routeParams,$timeout,userService) {
 
       $rootScope.title = 'Password reset | Leplanner beta';
 
@@ -24,11 +24,7 @@
 
                 userService.resetPassword(user)
                   .then(function(data) {
-                    console.log(data);
-                    if(data.user){
-                      //user id
-                      console.log(data.user.id);
-                      $scope.reset_error = 'successfully changed';
+                    if(data.success){
                       $location.path('/login');
                     }
 
@@ -52,16 +48,19 @@
                         default:
                           $scope.reset_error = 'Unknown error';
                       }
+                      $timeout(function() { $scope.reset_error = null; }, 2000);
                     }
 
                 });
 
             }else{
-              $scope.updatePassword_error = 'New passwords dont match';
+              $scope.reset_error = 'New passwords dont match';
+              $timeout(function() { $scope.reset_error = null; }, 2000);
             }
 
         }else{
-          $scope.updatePassword_error = 'All fields are required';
+          $scope.reset_error = 'All fields are required';
+          $timeout(function() { $scope.reset_error = null; }, 2000);
         }
 
       };

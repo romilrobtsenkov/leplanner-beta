@@ -37,9 +37,9 @@
         <h3>Following</h3>
 
         <div class="row">
-          <div class="col-xs-3 col-md-3" ng-repeat="following in followings | limitTo:sidebox_quantity.followings">
-            <a href="/#/user/{{following._id}}" class="thumbnail" title="{{following.first_name}} {{following.last_name}}">
-              <img ng-src="./images/user/{{following.image_thumb}}?last_modified={{following.last_modified}}" alt="User">
+          <div class="col-xs-3 col-md-3" ng-repeat="f in followings | limitTo:sidebox_quantity.followings">
+            <a href="/#/user/{{f.following._id}}" class="thumbnail" title="{{f.following.first_name}} {{f.following.last_name}}">
+              <img ng-src="./images/user/{{f.following.image_thumb}}?last_modified={{f.following.last_modified}}" alt="User">
             </a>
           </div>
         </div>
@@ -53,9 +53,9 @@
         <h3>Followers</h3>
 
         <div class="row">
-          <div class="col-xs-3 col-md-3" ng-repeat="follower in followers | limitTo:sidebox_quantity.followers">
-            <a href="/#/user/{{follower._id}}" class="thumbnail" title="{{follower.first_name}} {{follower.last_name}}">
-              <img ng-src="./images/user/{{follower.image_thumb}}?last_modified={{follower.last_modified}}" alt="User">
+          <div class="col-xs-3 col-md-3" ng-repeat="f in followers | limitTo:sidebox_quantity.followers">
+            <a href="/#/user/{{f.follower._id}}" class="thumbnail" title="{{f.follower.first_name}} {{f.follower.last_name}}">
+              <img ng-src="./images/user/{{f.follower.image_thumb}}?last_modified={{f.follower.last_modified}}" alt="User">
             </a>
           </div>
         </div>

@@ -41,6 +41,8 @@
       return $http.post('/api/user/create', user)
         .then(function(response) {
           return response.data;
+        },function(response) {
+          return {error: {id: response.status, message: "Server errror"}};
         });
     }
 

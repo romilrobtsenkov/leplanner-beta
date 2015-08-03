@@ -17,8 +17,8 @@ var upload = require('./routes/upload');
 var meta = require('./routes/meta');
 
 var passportConfig = require('./auth/passport-config');
-var restrict = require('./auth/restrict');
 passportConfig();
+var restrict = require('./auth/restrict');
 
 mongoose.connect(config.db);
 
@@ -49,8 +49,8 @@ app.use(multipart({
     uploadDir: config.profile_image_upload_temp_path
 }));
 
-app.use('/api/user', users);
-app.use('/api/scenario', scenarios);
+app.use('/api/user', user);
+app.use('/api/scenario', scenario);
 app.use('/api/upload', upload);
 app.use('/api/meta', meta);
 
@@ -62,18 +62,14 @@ app.use(function(req, res, next) {
 });
 
 // error handlers
-/* app.use(function(err, req, res, next) {
-    console.log(err.message);
-    res.status(err.status || 500).send({error: err.message});
-});*/
-// production error handler
-// no stacktraces leaked to user
 app.use(function(err, req, res, next) {
     console.log(err.message);
-    res.status(err.status || 500);
-    res.render('error', {
+    res.status(err.status || 500).
+    json({
+        status: err.status || 500,
         message: err.message,
-        error: {}
+        error: err
+        //error: {}
     });
 });
 
