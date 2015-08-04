@@ -2,6 +2,11 @@ var express = require('express');
 var router = express.Router();
 var passport = require('passport');
 var userService = require('../services/user-service');
+var followerService = require('../services/follower-service');
+var validateService = require('../services/validate-service');
+var scenarioService = require('../services/scenario-service');
+var commentService = require('../services/comment-service');
+var scenarioViewService = require('../services/scenario-view-service');
 var config = require('../config/config');
 var restrict = require('../auth/restrict');
 var async = require('async');
@@ -14,6 +19,7 @@ async.waterfall([
   res.json(result);
 });
 
+q.args = { $and: [] };
 
 */
 
@@ -21,21 +27,21 @@ router.post('/create', function(req, res, next) {
 
   var user = req.body;
 
-  // Fix for auto logging in after new user save
+  // Fix for auto login after new user save
   req.body.email = req.body.new_email;
   req.body.password = req.body.new_password;
 
   async.waterfall([
     function(next){
 
-      userService.validate([{fn:'userData', data:user}], function(err){
+      validateService.validate([{fn:'userData', data:user}], function(err){
         if (err) { return next({error: err}); }
         next();
       });
     },
     function(next){
 
-      userService.validate([{fn:'password', data:user.new_password}], function(err){
+      validateService.validate([{fn:'password', data:user.new_password}], function(err){
         if (err) { return next({error: err}); }
         next();
       });
@@ -49,8 +55,15 @@ router.post('/create', function(req, res, next) {
     },
     function(hash, next){
 
-      user.hashedpassword = hash;
-      userService.saveNewUser(user, function(err) {
+      var new_user = {
+        first_name: user.new_first_name,
+        last_name: user.new_last_name,
+        organization: user.new_organization,
+        email: user.new_email.toLowerCase(),
+        password: hash
+      };
+
+      userService.saveNew(new_user, function(err) {
         if (err) { return next({error: err}); }
         next();
       });
@@ -80,9 +93,7 @@ router.post('/create', function(req, res, next) {
 
 router.post('/login', function(req, res, next) {
     //console.log(req.body);
-    if (req.body.remember_me) {
-      req.session.cookie.maxAge = config.cookieMaxAge;
-    }
+    if (req.body.remember_me) { req.session.cookie.maxAge = config.cookieMaxAge; }
 
     async.waterfall([
       function(next){
@@ -122,14 +133,16 @@ router.post('/send-reset-token', function(req, res){
   async.waterfall([
     function(next){
 
-      userService.validate([{fn:'email', data:user_email}], function(err){
+      validateService.validate([{fn:'email', data:user_email}], function(err){
         if (err) { return next({error: err}); }
         next();
       });
     },
     function(next){
+
       var q = {};
-      q.args = {"email": user_email};
+      q.args = {"email": user_email.toLowerCase()};
+
       userService.findOne(q, function(err, user){
         if (err) { return next({error: err}); }
         if (!user) { return next({error: {id: 20, message: 'No user with that email'}}); }
@@ -149,12 +162,12 @@ router.post('/send-reset-token', function(req, res){
         resetPasswordToken: token,
         resetPasswordExpires : Date.now() + 3600000, // 1 hour
       };
-
       var q = {};
       q.where = {"_id": user._id};
       q.update = update;
       q.select = "email resetPasswordToken";
-      userService.updateUser(q, function(err, user){
+
+      userService.update(q, function(err, user){
         if (err) { return next({error: err}); }
         next(null, user);
       });
@@ -181,7 +194,7 @@ router.post('/update-profile', restrict, function(req, res, next) {
   async.waterfall([
     function(next){
 
-      userService.validate([{fn:'userData', data:user}], function(err){
+      validateService.validate([{fn:'userData', data:user}], function(err){
         if (err) { return next({error: err}); }
         next();
       });
@@ -192,7 +205,8 @@ router.post('/update-profile', restrict, function(req, res, next) {
         if(!user.confirm_password){ return next({error: {id: 7, message: 'Please enter password to confirm email change!'}}); }
 
         var q = {};
-        q.args = {"email": user.new_email};
+        q.args = {"email": user.new_email.toLowerCase()};
+
         userService.findOne(q, function(err, user_with_same_email){
           if (err) { return next({error: err}); }
           if(user_with_same_email){ return next({error: {id: 6, message: 'That email is already in use'}}); }
@@ -207,7 +221,7 @@ router.post('/update-profile', restrict, function(req, res, next) {
     function(user, validate, next ){
       if(!validate){ return next(null, user, null); } //skip
 
-      userService.validate([{fn:'email', data:user.new_email}], function(err){
+      validateService.validate([{fn:'email', data:user.new_email}], function(err){
         if (err) { return next({error: err}); }
         return next(null, user, true);
       });
@@ -215,9 +229,7 @@ router.post('/update-profile', restrict, function(req, res, next) {
     function(user, get_user, next){
       if(!get_user){ return next(null, user, null, null); } //skip
 
-      var q = {};
-      q.args = {"_id": user._id};
-      userService.findOne(q, function(err, user_obj_from_db){
+      userService.findById(user._id, function(err, user_obj_from_db){
         if (err) { return next({error: err}); }
         if (!user_obj_from_db) { return next({error: {id: 21, message: 'No user with that id'}}); }
 
@@ -247,7 +259,8 @@ router.post('/update-profile', restrict, function(req, res, next) {
       q.where = {"_id": user._id};
       q.update = update;
       q.select = "-password -resetPasswordExpires -resetPasswordToken";
-      userService.updateUser(q, function(err, u_user){
+
+      userService.update(q, function(err, u_user){
         if (err) { return next({error: err}); }
         next(null, {user: u_user});
       });
@@ -266,16 +279,14 @@ router.post('/update-password', restrict, function(req, res, next) {
   async.waterfall([
     function(next){
 
-      userService.validate([{fn:'passwordUpdate', data:user}], function(err){
+      validateService.validate([{fn:'passwordUpdate', data:user}], function(err){
         if (err) { return next({error: err}); }
         next();
       });
     },
     function(next){
 
-      var q = {};
-      q.args = {"_id": user._id};
-      userService.findOne(q, function(err, user_obj_from_db){
+      userService.findById(user._id, function(err, user_obj_from_db){
         if (err) { return next({error: err}); }
         if (!user_obj_from_db) { return next({error: {id: 21, message: 'No user with that id'}}); }
         next(null, user_obj_from_db.password);
@@ -302,12 +313,12 @@ router.post('/update-password', restrict, function(req, res, next) {
         password: new_password,
         last_modified: new Date()
       };
-
       var q = {};
       q.where = {"_id": user._id};
       q.update = update;
       q.select = "_id";
-      userService.updateUser(q, function(err, u_user){
+
+      userService.update(q, function(err, u_user){
         if (err) { return next({error: err}); }
         next(null, {user: {id: u_user._id}});
       });
@@ -326,7 +337,10 @@ router.post('/reset-password', function(req, res, next) {
   async.waterfall([
     function(next){
 
-      userService.findByToken(user.token, function(err, user_from_db) {
+      var q = {};
+      q.args = {"resetPasswordToken": user.token};
+
+      userService.findOne(q, function(err, user_from_db) {
         if (err) { return next({error: err}); }
         if(!user_from_db){ return next({error: {id: 10, message: 'Request new token'}}); }
         next(null, user_from_db);
@@ -335,7 +349,8 @@ router.post('/reset-password', function(req, res, next) {
     function(user_from_db, next){
 
       if(user_from_db.resetPasswordExpires < Date.now()){ return next({error: {id: 11, message: 'Token expired'}}); }
-      userService.validate([{fn:'passwordReset', data:user}], function(err){
+
+      validateService.validate([{fn:'passwordReset', data:user}], function(err){
         if (err) { return next({error: err}); }
         next(null, user_from_db);
       });
@@ -357,7 +372,8 @@ router.post('/reset-password', function(req, res, next) {
       var q = {};
       q.where = {"_id": user_from_db._id};
       q.update = update;
-      userService.updateUser(q, function(err, u_user){
+
+      userService.update(q, function(err, u_user){
         if (err) { return next({error: err}); }
         next(null, {success: 'success'});
       });
@@ -376,9 +392,7 @@ router.post('/load-user-data', function(req, res, next) {
   async.waterfall([
     function(next){
 
-      var q = {};
-      q.args = {"_id": user_id};
-      userService.findOne(q, function(err, user) {
+      userService.findById(user_id, function(err, user) {
         if (err) { return next({error: err}); }
         if(user === null){ return next({id: 0, message: "no such profile found"}); }
         next(null, user);
@@ -390,7 +404,8 @@ router.post('/load-user-data', function(req, res, next) {
       q.where = {"_id": user._id};
       q.update = { profile_views: user.profile_views+1 };
       q.select = "-password -resetPasswordExpires -resetPasswordToken";
-      userService.updateUser(q, function(err, user){
+
+      userService.update(q, function(err, user){
         if (err) { return next({error: err}); }
         next(null, user);
       });
@@ -399,20 +414,19 @@ router.post('/load-user-data', function(req, res, next) {
 
       // find following
       var q = {};
-      q.args = {};
+      q.args = {
+        $and: [
+          {follower: user._id},
+          { removed: null }
+        ]
+      };
       q.populated_fields = [];
-
-      var multiple_args = [];
-      multiple_args.push({follower: user._id});
-      multiple_args.push({ removed: null });
-      q.args.$and = multiple_args;
-
       q.populated_fields.push({
         field: 'following',
         populate: 'first_name last_name image_thumb last_modified'
       });
 
-      userService.findFollowers(q, function(err, following){
+      followerService.find(q, function(err, following){
         if (err) { return next({error: err}); }
         next(null, user, following);
       });
@@ -421,20 +435,14 @@ router.post('/load-user-data', function(req, res, next) {
 
       // find followers
       var q = {};
-      q.args = {};
+      q.args = { $and: [{following: user._id}, { removed: null }] };
       q.populated_fields = [];
-
-      var multiple_args = [];
-      multiple_args.push({following: user._id});
-      multiple_args.push({ removed: null });
-      q.args.$and = multiple_args;
-
       q.populated_fields.push({
         field: 'follower',
         populate: 'first_name last_name image_thumb last_modified'
       });
 
-      userService.findFollowers(q, function(err, followers){
+      followerService.find(q, function(err, followers){
         if (err) { return next({error: err}); }
 
         var response = {};
@@ -460,7 +468,7 @@ router.post('/add-remove-follow/',restrict, function(req, res, next) {
   async.waterfall([
     function(next){
 
-      userService.validate([{fn:'addRemoveFollow', data:params}], function(err){
+      validateService.validate([{fn:'addRemoveFollow', data:params}], function(err){
         if (err) { return next({error: err}); }
         next();
       });
@@ -468,14 +476,10 @@ router.post('/add-remove-follow/',restrict, function(req, res, next) {
     function(next){
 
       var q = {};
-      q.args = {};
-      var multiple_args = [];
-      multiple_args.push({follower: params.user._id});
-      multiple_args.push({following: params.following._id});
-      multiple_args.push({ removed: null });
-      q.args.$and = multiple_args;
+      q.args = { $and: [{follower: params.user._id}, {following: params.following._id}, { removed: null }] };
       q.select = '_id';
-      userService.findOneFollower(q, function(err, follower_doc){
+
+      followerService.findOne(q, function(err, follower_doc){
         if (err) { return next({error: err}); }
         next(null, follower_doc);
       });
@@ -486,7 +490,8 @@ router.post('/add-remove-follow/',restrict, function(req, res, next) {
       if(typeof params.remove_follow === 'undefined'){
         if(follower_doc === null){
           new_follower_doc = { follower: params.user._id, following: params.following._id };
-          userService.saveNewFollower(new_follower_doc, function(err) {
+
+          followerService.saveNew(new_follower_doc, function(err) {
             if (err) { return next({error: err}); }
             next(null, {success: 'follow'});
           });
@@ -503,7 +508,8 @@ router.post('/add-remove-follow/',restrict, function(req, res, next) {
           q.where = {"_id": follower_doc._id};
           q.update = update;
           q.select = "_id";
-          userService.updateFollower(q, function(err){
+
+          followerService.update(q, function(err){
             if (err) { return next({error: err}); }
             next(null, {success: 'unfollow'});
           });
@@ -512,28 +518,34 @@ router.post('/add-remove-follow/',restrict, function(req, res, next) {
 
     },
     function(success, next){
+
       var q = {};
       q.args = {following: params.user._id, removed: null};
-      userService.countFollower(q, function(err, followers_count){
+
+      followerService.count(q, function(err, followers_count){
         if (err) { return next({error: err}); }
         var count = {followers_count: followers_count};
         next(null, success, count);
       });
     },
     function(success, count, next){
+
       var q = {};
       q.args = {follower: params.user._id, removed: null};
-      userService.countFollower(q, function(err, following_count){
+
+      followerService.count(q, function(err, following_count){
         if (err) { return next({error: err}); }
         count.following_count = following_count;
         next(null, success, count);
       });
     },
     function(success, count, next){
+
       var q = {};
       q.where = {"_id": params.user._id};
       q.update = { following_count: count.following_count, followers_count: count.followers_count };
-      userService.updateUser(q, function(err, user){
+
+      userService.update(q, function(err, user){
         if (err) { return next({error: err}); }
         next(null, success);
       });
@@ -545,18 +557,198 @@ router.post('/add-remove-follow/',restrict, function(req, res, next) {
 
 });
 
-router.post('/notifications/',restrict, function(req, res, next) {
-  userService.getNotifications(req.body, function(err, response) {
-    if (err) { return res.json({error: err}); }
-    return res.json(response);
+router.post('/list', restrict, function(req, res, next){
+
+  var user_id = req.user._id;
+
+  if(typeof req.limit != 'undefined'){
+    var limit = req.limit;
+  }
+
+  async.waterfall([
+    function(next){
+
+      var q = {};
+      q.args = {_id: {'$ne':user_id }};
+      q.select =  'first_name last_name organization image_thumb last_modified';
+      q.sort = {first_name: 1};
+
+      userService.find(q, function(err, users){
+        if (err) { return next({error: err}); }
+        next(null, users);
+      });
+    },
+    function(users, next){
+
+      var q = {};
+      q.args = { $and: [{follower: user_id}, { removed: null }] };
+      q.select = 'following';
+
+      followerService.find(q, function(err, following){
+        if (err) { return next({error: err}); }
+        next(null, users, following);
+      });
+
+    },
+    function(users, following, next){
+
+      // convert mongoose object to doc / otherise cannot edit
+      users = JSON.stringify(users);
+      users = JSON.parse(users);
+
+      // add following = "following" to users who are followed
+      if(following.length > 0){
+        for(var i = 0; i < users.length; i++){
+          for(var j = 0; j < following.length; j++){
+            if(users[i]._id == following[j].following ){
+              users[i].following = "following";
+            }
+          }
+        }
+        next(null, {users: users});
+
+      }else{
+        next(null, {users: users});
+      }
+    }
+  ], function (err, result) {
+    if(err){ res.json(err); }
+    res.json(result);
   });
+
 });
 
-router.post('/list', restrict, function(req, res, next){
-  userService.getUsersList(req.body, function(err, response) {
-    if (err) { return res.json({error: err}); }
-    return res.json(response);
+router.post('/notifications/',restrict , function(req, res, next) {
+
+  var user_id = req.user._id;
+
+  async.waterfall([
+    function(next){
+
+      var q = {};
+      q.args = { author: user_id, deleted: false, draft: false };
+      q.select = '_id';
+
+      scenarioService.find(q, function(err, scenarios){
+        if (err) { return next({error: err}); }
+        next(null, scenarios);
+      });
+    },
+    function(scenarios, next){
+
+      var list_of_scenario_ids = [];
+      for(var i = 0; i< scenarios.length; i++){
+        list_of_scenario_ids[i] = scenarios[i]._id.toString();
+      }
+      var q = {};
+      q.args = { $and: [{ deleted: false }, {scenario: { $in : list_of_scenario_ids }}] };
+      q.sort = {created: 1};
+      q.populated_fields = [];
+      q.populated_fields.push({
+        field: 'author',
+        populate: 'first_name last_name last_modified image_thumb'
+      });
+      q.populated_fields.push({
+        field: 'scenario',
+        populate: '_id name'
+      });
+
+      q.select = 'author scenario'; // NOT RETURNING IF MISSING
+      // try to print out commentService query select
+
+      commentService.find(q, function(err, comments){
+        if (err) { return next({error: err}); }
+        next(null, comments);
+      });
+    },
+    function(comments, next){
+
+      var list_of_commented_scenario_ids = [];
+      var k = 0; // for no duplicates
+      for(var i = 0; i< comments.length; i++){
+        if(list_of_commented_scenario_ids.indexOf(comments[i].scenario._id.toString()) == -1){
+          list_of_commented_scenario_ids[k] = comments[i].scenario._id.toString();
+          k++;
+        }
+      }
+
+      var q = {};
+      q.args = [
+        { $match: {scenario: { $in : list_of_commented_scenario_ids } }},
+        { $group: { _id: '$scenario', view: {$addToSet : {user: '$user', date: '$date'}}}},
+        { $sort: { date: -1 } }
+      ];
+
+      scenarioViewService.aggregate(q, function(err, scenario_views){
+        if (err) { return next({error: err}); }
+        next(null, comments, scenario_views);
+      });
+    },
+    function(comments, scenario_views, next){
+
+      var notifications = [];
+
+      //check if there are comments in user scenarios
+      for(var k = 0; k < comments.length; k++){
+        for(var i = 0; i < scenario_views.length; i++){
+          for(var j = 0; j < scenario_views[i].view.length; j++){
+
+            // if user viewed, check the latest comment date and compare with latest user view date
+            if( user_id != comments[k].author._id.toString() &&
+                scenario_views[i].view[j].user.toString() == user_id &&
+                scenario_views[i]._id.toString() == comments[k].scenario._id.toString()){
+
+              var notification = {
+                user: {
+                  _id: comments[k].author._id,
+                  first_name: comments[k].author.first_name,
+                  last_name: comments[k].author.last_name,
+                  last_modified: comments[k].author.last_modified,
+                  image_thumb: comments[k].author.image_thumb,
+                },
+                comment: {
+                  created: comments[k].created,
+                  scenario: {
+                    _id: comments[k].scenario._id,
+                    name: comments[k].scenario.name
+                  }
+                }
+              };
+
+              if(comments[k].created > scenario_views[i].view[j].date){
+                notification.new = true;
+              }
+
+              notifications.push(notification);
+
+              // add only one from view list
+              break;
+            }
+          }
+        }
+      }
+
+      //order by comment date
+      notifications = notifications.sort(notificationsSortFunction);
+      function notificationsSortFunction(a, b) {
+        if (a.comment.created === b.comment.created) { return 0;
+        } else {
+          return (a.comment.created > b.comment.created) ? -1 : 1;
+        }
+      }
+
+      if(typeof limit != 'undefined'){
+        notifications = notifications.slice(0, limit);
+      }
+
+      next(null, {notifications: notifications});
+
+    }
+  ], function (err, result) {
+    if(err){ res.json(err); }
+    res.json(result);
   });
+
 });
 
 router.get('/me', function(req, res){

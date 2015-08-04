@@ -101,18 +101,6 @@
             .then(function(data) {
 
               if(data.users){
-
-                if(data.following.length > 0){
-
-                  for(var i = 0; i < data.users.length; i++){
-                    for(var j = 0; j < data.following.length; j++){
-                      if(data.users[i]._id == data.following[j].following){
-                        data.users[i].following = "following";
-                      }
-                    }
-                  }
-                }
-
                 $scope.users_list = data.users;
                 $scope.loading_animation = false;
               }
