@@ -10,6 +10,7 @@ exports.find = function(q, next){
   }
   if(q.select){ query.select(q.select); }
   if(q.sort){ query.sort(q.sort); }
+  if(q.limit){ query.limit(q.limit); }
   query.exec(function(err, array) {
     next(err, array);
   });

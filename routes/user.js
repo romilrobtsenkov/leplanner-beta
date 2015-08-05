@@ -602,12 +602,10 @@ router.post('/list', restrict, function(req, res, next){
 
 router.post('/notifications/',restrict , function(req, res, next) {
 
-  var user_id = req.user._id;
+  var user_id = req.body.user._id;
 
   var q = {};
   q.args = { user: user_id, type: 'comment' };
-  q.select = '-type';
-  q.sort = { created: 1 };
   q.populated_fields = [];
   q.populated_fields.push({
     field: 'data.user',
@@ -617,6 +615,11 @@ router.post('/notifications/',restrict , function(req, res, next) {
     field: 'data.scenario',
     populate: 'name '
   });
+  q.select = '-type';
+  q.sort = { created: -1 };
+  if(typeof req.body.limit !== 'undefined'){
+    q.limit = req.body.limit;
+  }
 
   notificationService.find(q, function(err, notifications){
     if (err) { return res.json({error: err}); }

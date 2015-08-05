@@ -22,7 +22,9 @@
       }
 
       getDashboardData();
-      getNotifications(10);
+
+      var notification_limit = 20;
+      getNotifications(notification_limit);
 
       function getDashboardData(){
 
@@ -293,7 +295,7 @@
       };
 
       $scope.getLatestNotifications = function(){
-        getNotifications(10);
+        getNotifications(notification_limit);
       };
 
     } // DashboardController end
