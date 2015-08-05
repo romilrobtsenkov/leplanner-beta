@@ -1,15 +1,20 @@
 exports.validate = function(to_validate_array, next){
+
   if(typeof to_validate_array == 'undefined' || to_validate_array.length === 0){
     return next({error: 'Validation array undefined'});
   }
+
   var validation = {
     userData: userData,
     password: password,
     email: email,
     passwordUpdate: passwordUpdate,
     passwordReset: passwordReset,
-    addRemoveFollow: addRemoveFollow
+    addRemoveFollow: addRemoveFollow,
+    commentData: commentData,
+    deleteComment: deleteComment
   };
+  
   for(var i = 0; i < to_validate_array.length; i++){
     var fn = to_validate_array[i].fn.toString();
     var data = to_validate_array[i].data;
@@ -69,6 +74,23 @@ exports.validate = function(to_validate_array, next){
     if(params.user._id == params.following._id){ return next("can not follow yourself");}
     if(!params.user._id){return next("no user data sent");}
     if(!params.following._id){return next("to follow/unfollow not sent");}
+
+    next();
+  }
+
+  function commentData(params) {
+    if(!params.comment.text){ return next({id: 0, message: 'Comment can not be empty'}); }
+    if(!params.user._id){ return next({id: 1, message: 'User id missing'}); }
+    if(!params.scenario._id){ return next({id: 2, message: 'Scenario id missing'}); }
+    if(!params.author._id){ return next({id: 3, message: 'Scenario author id missing'}); }
+
+    next();
+  }
+
+  function deleteComment(params) {
+    if(!params.comment._id){ return next({id: 0, message: 'Comment id missing'}); }
+    if(!params.user._id){ return next({id: 1, message: 'User id missing'}); }
+    if(!params.scenario._id){ return next({id: 2, message: 'Scenario id missing'}); }
 
     next();
   }

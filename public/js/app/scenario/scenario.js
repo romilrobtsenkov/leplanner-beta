@@ -16,14 +16,19 @@
       }
 
       // single scenario details
-      var params = {};
-      params.scenario_id = $scope.scenario_id;
+      var params = {
+        scenario: {
+          _id: $scope.scenario_id
+        }
+      };
+
       if(typeof $rootScope.user !== 'undefined'){
-        params.user_id = $rootScope.user._id;
+        params.user = {
+          _id :$rootScope.user._id
+        };
       }
       scenarioService.getSingleScenario(params)
         .then(function(data) {
-          //console.log(data);
           if(data.scenario){
 
             $rootScope.title = data.scenario.name+' - '+data.scenario.author.first_name+' '+data.scenario.author.last_name+' | Leplanner beta';
@@ -66,7 +71,7 @@
           .then(function(data) {
             //console.log(data);
             if(data.comments){
-              console.log(data.comments);
+              //console.log(data.comments);
               if(data.comments.length > 0){
                 $scope.comments = data.comments;
               }
@@ -181,6 +186,9 @@
           },
           scenario: {
             _id: $scope.scenario_id
+          },
+          author: {
+            _id: $scope.scenario.author._id
           }
         };
 

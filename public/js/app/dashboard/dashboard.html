@@ -27,20 +27,20 @@
 
 
               <!-- SINGLE NOTIFICATION -->
-              <li ng-repeat="n in notifications" ng-class="n.new ? 'new' : 'old'" class="left clearfix">
+              <li ng-repeat="n in notifications" ng-class="!n.seen ? 'new' : 'old'" class="left clearfix">
                 <span class="notification-img pull-left">
-                  <img ng-src="./images/user/{{n.user.image_thumb}}?last_modified={{n.user.last_modified}}" alt="{{n.user.first_name}} {{n.user.last_name}}" class="img-circle" />
+                  <img ng-src="./images/user/{{n.data.user.image_thumb}}?last_modified={{n.data.user.last_modified}}" alt="{{n.data.user.first_name}} {{n.data.user.last_name}}" class="img-circle" />
                 </span>
                 <div class="notification-body clearfix">
                   <div class="header">
                     <p>
-                      <a href="/#/user/{{n.user._id}}"><strong class="primary-font">{{n.user.first_name}} {{n.user.last_name}}</strong></a><br>
+                      <a href="/#/user/{{n.data.user._id}}" title="{{n.data.user.first_name}} {{n.data.user.last_name}}">{{n.data.user.first_name}} {{n.data.user.last_name}}</a><br>
                       <small class="pull-left text-muted clearfix">
-                        <span class="glyphicon glyphicon-time"></span> {{n.comment.created | date:'dd.MM.yy HH:mm'}}
+                        <span class="glyphicon glyphicon-time"></span> {{n.created | date:'dd.MM.yy HH:mm'}}
                       </small>
                     </p>
                   </div>
-                  <p class="content-for-notification">Commented: "<a href="/#/scenario/{{n.comment.scenario._id}}">{{n.comment.scenario.name}}</a>"</p>
+                  <p class="content-for-notification">Commented: "<a href="/#/scenario/{{n.data.scenario._id}}">{{n.data.scenario.name}}</a>"</p>
                 </div>
               </li>
               <!-- SINGLE NOTIFICATION  END-->

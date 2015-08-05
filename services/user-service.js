@@ -40,6 +40,11 @@ exports.update = function(q, next){
   var options = {new: true};
   if(q.select){ options.select = q.select; }
   var query = User.findOneAndUpdate(conditions, update, options);
+  if(q.populated_fields){
+    for(var i = 0; i< q.populated_fields.length; i++){
+      query.populate(q.populated_fields[i].field, q.populated_fields[i].populate);
+    }
+  }
   query.exec(function(err, user) {
     next(err, user);
   });

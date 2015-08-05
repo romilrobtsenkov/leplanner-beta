@@ -3,8 +3,6 @@ var Scenario = require('../models/scenario').Scenario;
 var Comment = require('../models/comment').Comment;
 var Favorite = require('../models/favorite').Favorite;
 var Follower = require('../models/follower').Follower;
-var ScenarioView = require('../models/scenario-view').ScenarioView;
-
 
 exports.find = function(q, next){
   var query = Scenario.find();
@@ -15,7 +13,7 @@ exports.find = function(q, next){
     }
   }
   if(q.select){ query.select(q.select); }
-  if(q.sort){ query.select(q.sort); }
+  if(q.sort){ query.sort(q.sort); }
   query.exec(function(err, array) {
     next(err, array);
   });
@@ -36,6 +34,11 @@ exports.update = function(q, next){
   var options = {new: true};
   if(q.select){ options.select = q.select; }
   var query = Scenario.findOneAndUpdate(conditions, update, options);
+  if(q.populated_fields){
+    for(var i = 0; i< q.populated_fields.length; i++){
+      query.populate(q.populated_fields[i].field, q.populated_fields[i].populate);
+    }
+  }
   query.exec(function(err, scenario) {
     next(err, scenario);
   });
@@ -307,79 +310,6 @@ exports.searchScenarios = function(q, next) {
 
 };
 
-exports.getSingleScenario = function(params, next){
-
-  var query = Scenario.findOne();
-  query.where({_id: params.scenario_id});
-  query.populate('author', 'first_name last_name organization created image last_modified');
-  //query.limit(1);
-  query.exec(function(err, scenario) {
-    //console.log(err);
-    if (err) return next(err);
-
-    if(scenario === null){
-      return next({id: 0, message: "no such scenario found"});
-    }
-
-    scenario.view_count = scenario.view_count+1;
-    scenario.save(function(err, scenario){
-      if (err) return next(err);
-
-      var response = {};
-      response.is_favorite = false;
-      response.is_following = false;
-      response.scenario = scenario;
-
-      // if logged in user - check if following user & favorited scenario & extra log view separetly
-      if(typeof params.user_id !== 'undefined'){
-        var query = Favorite.findOne();
-        query.where({scenario: scenario._id, user: params.user_id});
-        query.exec(function(err, favorite) {
-          if (err) return next(err);
-            //console.log(favorite);
-            if(favorite !== null){
-              response.is_favorite = true;
-            }
-
-            var query = Follower.findOne();
-            var args = {};
-            var multiple_args = [];
-            multiple_args.push({follower: params.user_id});
-            multiple_args.push({following: scenario.author._id});
-            multiple_args.push({ removed: null });
-            args.$and = multiple_args;
-            query.where(args);
-            query.exec(function(err, following) {
-              if (err) return next(err);
-                //console.log(following);
-                if(following !== null){
-                  response.is_following = true;
-                }
-
-                // log scenario view separetly for future notifications
-                var view = {
-                  user: params.user_id,
-                  scenario: scenario._id
-                };
-                var new_view = new ScenarioView(view);
-                new_view.save(function(err, scenario){
-                  if (err) return next(err);
-                  return next(null, response);
-                });
-
-              });
-
-          });
-      }else{
-        return next(null, response);
-      }
-
-    });
-
-  });
-
-};
-
 exports.getUserScenarios = function(q, next){
 
   var query = Scenario.find();
@@ -510,124 +440,6 @@ exports.addRemoveFavorite = function(params, next){
 
   });
 
-};
-
-exports.getComments = function(params, next) {
-
-  var query = Comment.find();
-  query.where({scenario: params.scenario_id, deleted: false});
-  query.populate('author', 'first_name last_name image_thumb last_modified');
-  query.exec(function(err, comments) {
-    if (err) return next(err);
-    return next(null, {comments: comments});
-  });
-
-};
-
-
-exports.addComment = function(params, next) {
-  //console.log('scenario text '+ params.comment.text);
-  //console.log('user '+params.user._id);
-  if(!params.comment.text){ return next({id: 0, message: 'Comment can not be empty'}); }
-  if(!params.user._id){ return next({id: 1, message: 'User id missing'}); }
-  if(!params.scenario._id){ return next({id: 2, message: 'Scenario id missing'}); }
-
-  var comment = {
-    text: params.comment.text,
-    author: params.user._id,
-    scenario: params.scenario._id,
-  };
-
-  //console.log(JSON.stringify(comment));
-
-  // save comment
-  var new_comment = new Comment(comment);
-  new_comment.save(function(err){
-    if(err){ return next(err); }
-
-    // update comment count
-    var query = Scenario.findOne();
-    query.where({_id: params.scenario._id});
-    query.exec(function(err, scenario) {
-      if (err) return next(err);
-      scenario.comments_count = scenario.comments_count+1;
-      scenario.save(function(err, scenario){
-        if (err) return next(err);
-
-        // return all comments
-        var query = Comment.find();
-        query.where({scenario: params.scenario._id, deleted: false});
-        query.populate('author', 'first_name last_name image_thumb last_modified');
-        query.exec(function(err, comments) {
-          if (err) return next(err);
-          return next(null, {comments: comments});
-        });
-
-      });
-    });
-
-  });
-
-};
-
-exports.deleteComment = function(req, next) {
-  var params = req.body;
-
-  if(!params.comment._id){ return next({id: 0, message: 'Comment id missing'}); }
-  if(!params.user._id){ return next({id: 1, message: 'User id missing'}); }
-  if(!params.scenario._id){ return next({id: 2, message: 'Scenario id missing'}); }
-
-  //check if user has rights to delete the comment
-  s_query = Scenario.findOne();
-  s_query.where({_id: params.scenario._id, author: req.user._id});
-  s_query.exec(function(err, check) {
-
-    if(check === null){
-      // passport req user different from scenario author
-      return next({id: 3, message: 'no rights'});
-    }
-
-    // delete comment
-    var comment_query = Comment.findOne();
-    comment_query.where({_id: params.comment._id},{deleted: false});
-    comment_query.exec(function(err, comment) {
-
-      if(comment === null){
-        // no comment
-        return next({error: "no comment to remove"});
-      }else{
-        // delete that comment
-        comment.deleted = true;
-        comment.deleted_date = new Date();
-        comment.save(function(err, a){
-          if (err) return next(err);
-
-          // update comment count
-          var query = Scenario.findOne();
-          query.where({_id: params.scenario._id});
-          query.exec(function(err, scenario) {
-            if (err) return next(err);
-            scenario.comments_count = scenario.comments_count-1;
-            scenario.save(function(err, scenario){
-              if (err) return next(err);
-
-              // return all comments
-              var query = Comment.find();
-              query.where({scenario: params.scenario._id, deleted: false});
-              query.populate('author', 'first_name last_name image_thumb last_modified');
-              query.exec(function(err, comments) {
-                if (err) return next(err);
-                return next(null, {comments: comments});
-              });
-
-            });
-          });
-
-        });
-      }
-    });
-
-  });
 };
 
 exports.saveScenario = function(scenario, next) {

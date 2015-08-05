@@ -187,7 +187,6 @@
 
         userService.getNotifications(params)
           .then(function(data) {
-
             if(data.notifications){
               $scope.notifications = data.notifications;
               $scope.notifications_loading_animation = undefined;

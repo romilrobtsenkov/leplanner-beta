@@ -5,22 +5,16 @@ var userService = require('../services/user-service');
 var followerService = require('../services/follower-service');
 var validateService = require('../services/validate-service');
 var scenarioService = require('../services/scenario-service');
-var commentService = require('../services/comment-service');
-var scenarioViewService = require('../services/scenario-view-service');
+var notificationService = require('../services/notification-service');
 var config = require('../config/config');
 var restrict = require('../auth/restrict');
 var async = require('async');
 
 /* template
-async.waterfall([
-
-], function (err, result) {
+async.waterfall([], function (err, result) {
   if(err){ res.json(err); }
   res.json(result);
 });
-
-q.args = { $and: [] };
-
 */
 
 router.post('/create', function(req, res, next) {
@@ -392,7 +386,12 @@ router.post('/load-user-data', function(req, res, next) {
   async.waterfall([
     function(next){
 
-      userService.findById(user_id, function(err, user) {
+      var q = {};
+      q.where = {"_id": user_id};
+      q.update = { $inc: { profile_views: 1 }};
+      q.select = "-password -resetPasswordExpires -resetPasswordToken";
+
+      userService.update(q, function(err, user){
         if (err) { return next({error: err}); }
         if(user === null){ return next({id: 0, message: "no such profile found"}); }
         next(null, user);
@@ -400,26 +399,9 @@ router.post('/load-user-data', function(req, res, next) {
     },
     function(user, next){
 
-      var q = {};
-      q.where = {"_id": user._id};
-      q.update = { profile_views: user.profile_views+1 };
-      q.select = "-password -resetPasswordExpires -resetPasswordToken";
-
-      userService.update(q, function(err, user){
-        if (err) { return next({error: err}); }
-        next(null, user);
-      });
-    },
-    function(user, next){
-
       // find following
       var q = {};
-      q.args = {
-        $and: [
-          {follower: user._id},
-          { removed: null }
-        ]
-      };
+      q.args = {follower: user._id, removed: null };
       q.populated_fields = [];
       q.populated_fields.push({
         field: 'following',
@@ -435,7 +417,7 @@ router.post('/load-user-data', function(req, res, next) {
 
       // find followers
       var q = {};
-      q.args = { $and: [{following: user._id}, { removed: null }] };
+      q.args = { following: user._id, removed: null };
       q.populated_fields = [];
       q.populated_fields.push({
         field: 'follower',
@@ -476,7 +458,7 @@ router.post('/add-remove-follow/',restrict, function(req, res, next) {
     function(next){
 
       var q = {};
-      q.args = { $and: [{follower: params.user._id}, {following: params.following._id}, { removed: null }] };
+      q.args = { follower: params.user._id, following: params.following._id, removed: null };
       q.select = '_id';
 
       followerService.findOne(q, function(err, follower_doc){
@@ -581,7 +563,7 @@ router.post('/list', restrict, function(req, res, next){
     function(users, next){
 
       var q = {};
-      q.args = { $and: [{follower: user_id}, { removed: null }] };
+      q.args = { follower: user_id, removed: null };
       q.select = 'following';
 
       followerService.find(q, function(err, following){
@@ -622,131 +604,23 @@ router.post('/notifications/',restrict , function(req, res, next) {
 
   var user_id = req.user._id;
 
-  async.waterfall([
-    function(next){
+  var q = {};
+  q.args = { user: user_id, type: 'comment' };
+  q.select = '-type';
+  q.sort = { created: 1 };
+  q.populated_fields = [];
+  q.populated_fields.push({
+    field: 'data.user',
+    populate: 'first_name last_name last_modified image_thumb'
+  });
+  q.populated_fields.push({
+    field: 'data.scenario',
+    populate: 'name '
+  });
 
-      var q = {};
-      q.args = { author: user_id, deleted: false, draft: false };
-      q.select = '_id';
-
-      scenarioService.find(q, function(err, scenarios){
-        if (err) { return next({error: err}); }
-        next(null, scenarios);
-      });
-    },
-    function(scenarios, next){
-
-      var list_of_scenario_ids = [];
-      for(var i = 0; i< scenarios.length; i++){
-        list_of_scenario_ids[i] = scenarios[i]._id.toString();
-      }
-      var q = {};
-      q.args = { $and: [{ deleted: false }, {scenario: { $in : list_of_scenario_ids }}] };
-      q.sort = {created: 1};
-      q.populated_fields = [];
-      q.populated_fields.push({
-        field: 'author',
-        populate: 'first_name last_name last_modified image_thumb'
-      });
-      q.populated_fields.push({
-        field: 'scenario',
-        populate: '_id name'
-      });
-
-      q.select = 'author scenario'; // NOT RETURNING IF MISSING
-      // try to print out commentService query select
-
-      commentService.find(q, function(err, comments){
-        if (err) { return next({error: err}); }
-        next(null, comments);
-      });
-    },
-    function(comments, next){
-
-      var list_of_commented_scenario_ids = [];
-      var k = 0; // for no duplicates
-      for(var i = 0; i< comments.length; i++){
-        if(list_of_commented_scenario_ids.indexOf(comments[i].scenario._id.toString()) == -1){
-          list_of_commented_scenario_ids[k] = comments[i].scenario._id.toString();
-          k++;
-        }
-      }
-
-      var q = {};
-      q.args = [
-        { $match: {scenario: { $in : list_of_commented_scenario_ids } }},
-        { $group: { _id: '$scenario', view: {$addToSet : {user: '$user', date: '$date'}}}},
-        { $sort: { date: -1 } }
-      ];
-
-      scenarioViewService.aggregate(q, function(err, scenario_views){
-        if (err) { return next({error: err}); }
-        next(null, comments, scenario_views);
-      });
-    },
-    function(comments, scenario_views, next){
-
-      var notifications = [];
-
-      //check if there are comments in user scenarios
-      for(var k = 0; k < comments.length; k++){
-        for(var i = 0; i < scenario_views.length; i++){
-          for(var j = 0; j < scenario_views[i].view.length; j++){
-
-            // if user viewed, check the latest comment date and compare with latest user view date
-            if( user_id != comments[k].author._id.toString() &&
-                scenario_views[i].view[j].user.toString() == user_id &&
-                scenario_views[i]._id.toString() == comments[k].scenario._id.toString()){
-
-              var notification = {
-                user: {
-                  _id: comments[k].author._id,
-                  first_name: comments[k].author.first_name,
-                  last_name: comments[k].author.last_name,
-                  last_modified: comments[k].author.last_modified,
-                  image_thumb: comments[k].author.image_thumb,
-                },
-                comment: {
-                  created: comments[k].created,
-                  scenario: {
-                    _id: comments[k].scenario._id,
-                    name: comments[k].scenario.name
-                  }
-                }
-              };
-
-              if(comments[k].created > scenario_views[i].view[j].date){
-                notification.new = true;
-              }
-
-              notifications.push(notification);
-
-              // add only one from view list
-              break;
-            }
-          }
-        }
-      }
-
-      //order by comment date
-      notifications = notifications.sort(notificationsSortFunction);
-      function notificationsSortFunction(a, b) {
-        if (a.comment.created === b.comment.created) { return 0;
-        } else {
-          return (a.comment.created > b.comment.created) ? -1 : 1;
-        }
-      }
-
-      if(typeof limit != 'undefined'){
-        notifications = notifications.slice(0, limit);
-      }
-
-      next(null, {notifications: notifications});
-
-    }
-  ], function (err, result) {
-    if(err){ res.json(err); }
-    res.json(result);
+  notificationService.find(q, function(err, notifications){
+    if (err) { return res.json({error: err}); }
+    res.json({ notifications: notifications });
   });
 
 });

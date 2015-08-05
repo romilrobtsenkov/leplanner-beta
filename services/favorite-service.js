@@ -1,7 +1,7 @@
-var Follower = require('../models/follower').Follower;
+var Favorite = require('../models/favorite').Favorite;
 
 exports.find = function(q, next){
-  var query = Follower.find();
+  var query = Favorite.find();
   query.where(q.args);
   if(q.populated_fields){
     for(var i = 0; i< q.populated_fields.length; i++){
@@ -16,11 +16,11 @@ exports.find = function(q, next){
 };
 
 exports.findOne = function(q, next){
-  var query = Follower.findOne();
+  var query = Favorite.findOne();
   query.where(q.args);
   if(q.select){ query.select(q.select); }
-  query.exec(function(err, follower) {
-    next(err, follower);
+  query.exec(function(err, favorite) {
+    next(err, favorite);
   });
 };
 
@@ -29,27 +29,27 @@ exports.update = function(q, next){
   var update = q.update;
   var options = {new: true};
   if(q.select){ options.select = q.select; }
-  var query = Follower.findOneAndUpdate(conditions, update, options);
+  var query = Favorite.findOneAndUpdate(conditions, update, options);
   if(q.populated_fields){
     for(var i = 0; i< q.populated_fields.length; i++){
       query.populate(q.populated_fields[i].field, q.populated_fields[i].populate);
     }
   }
-  query.exec(function(err, follower) {
-    next(err, follower);
+  query.exec(function(err, favorite) {
+    next(err, favorite);
   });
 };
 
-exports.saveNew = function(follower, next) {
-  var newFollower = new Follower(follower);
-  newFollower.save(function(err) {
+exports.saveNew = function(favorite, next) {
+  var newFavorite = new Favorite(favorite);
+  newFavorite.save(function(err) {
     if (err) { return next(err); }
     next(null);
   });
 };
 
 exports.count = function(q, next){
-  Follower.count(q.args, function (err, count) {
+  Favorite.count(q.args, function (err, count) {
     next(err, count);
   });
 };
