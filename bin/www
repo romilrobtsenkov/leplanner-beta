@@ -2,7 +2,6 @@
 
 var config = require('../config/config');
 var app = require('../app');
-var debug = require('debug')('main');
 var http = require('http');
 
 var port = config.port;
@@ -35,5 +34,5 @@ function onError(error) {
 }
 
 function onListening() {
-  debug('Listening on port ' + server.address().port);
+  console.log('LePlanner beta process started');
 }
