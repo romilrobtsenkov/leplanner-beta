@@ -16,6 +16,300 @@ async.waterfall([], function (err, result) {
 });
 */
 
+router.post('/add-comment/',restrict, function(req, res, next) {
+
+  var params = req.body;
+
+  async.waterfall([
+    function(next){
+
+      validateService.validate([{fn:'commentData', data:params}], function(err){
+        if (err) { return next({error: err}); }
+        next();
+      });
+    },
+    function(next){
+
+      var new_comment = {
+        text: params.comment.text,
+        author: params.user._id,
+        scenario: params.scenario._id,
+      };
+
+      commentService.saveNew(new_comment, function(err, comment) {
+        if (err) { return next({error: err}); }
+        next(null, comment);
+      });
+    },
+    function(comment, next){
+
+      // No notification if scenario author comments own scenario
+      if(params.author._id == params.user._id){ return next(); }
+
+      new_notification = {
+        user: params.author._id,
+        type: "comment",
+        data: {
+          comment: comment._id,
+          user: params.user._id,
+          scenario: params.scenario._id,
+        }
+      };
+
+      notificationService.saveNew(new_notification, function(err) {
+        if (err) { return next({error: err}); }
+        next();
+      });
+    },
+    function(next){
+
+      var q = {};
+      q.args = { scenario: params.scenario._id, deleted: false };
+      q.populated_fields = [];
+      q.populated_fields.push({
+        field: 'author',
+        populate: 'first_name last_name last_modified image_thumb'
+      });
+
+      commentService.find(q, function(err, comments){
+        if (err) { return next({error: err}); }
+        next(null, comments);
+      });
+    },
+    function(comments, next){
+
+      var q = {};
+      q.where = { _id: params.scenario._id };
+      q.update = { comments_count: comments.length};
+
+      scenarioService.update(q, function(err){
+        if (err) { return next({error: err}); }
+        next(null, { comments: comments });
+      });
+    }
+  ], function (err, result) {
+    if(err){ res.json(err); }
+    res.json(result);
+  });
+
+});
+
+router.post('/add-remove-favorite/',restrict, function(req, res, next) {
+
+  var params = req.body;
+
+  async.waterfall([
+    function(next){
+
+      validateService.validate([{fn:'addRemoveFavorite', data:params}], function(err){
+        if (err) { return next({error: err}); }
+        next();
+      });
+    },
+    function(next){
+
+      var q = {};
+      q.args = { scenario: params.scenario_id, user: params.user._id, removed: null };
+      q.select = '_id';
+
+      favoriteService.findOne(q, function(err, favorite_doc){
+        if (err) { return next({error: err}); }
+        next(null, favorite_doc);
+      });
+    },
+    function(favorite_doc, next){
+
+      // add favorite
+      if(typeof params.remove === 'undefined'){
+        if(favorite_doc === null){
+          new_favorite_doc = { scenario: params.scenario_id, user: params.user._id };
+
+          favoriteService.saveNew(new_favorite_doc, function(err) {
+            if (err) { return next({error: err}); }
+            next(null, {success: 'add'});
+          });
+        }else{
+          next(null, {success: 'add'});
+        }
+      }else{
+        //remove favorite
+        if(favorite_doc === null){
+          next(null, {success: 'remove'});
+        }else{
+          var update = { removed : Date.now() };
+          var q = {};
+          q.where = {"_id": favorite_doc._id};
+          q.update = update;
+          q.select = "_id";
+
+          favoriteService.update(q, function(err){
+            if (err) { return next({error: err}); }
+            next(null, {success: 'remove'});
+          });
+        }
+      }
+
+    },
+    function(success, next){
+
+      var q = {};
+      q.args = {scenario: params.scenario_id, removed: null};
+
+      favoriteService.count(q, function(err, favorites_count){
+        if (err) { return next({error: err}); }
+        var count = {favorites_count: favorites_count};
+        next(null, success, count);
+      });
+    },
+    function(success, count, next){
+
+      var q = {};
+      q.where = {"_id": params.scenario_id};
+      q.update = { favorites_count: count.favorites_count };
+
+      scenarioService.update(q, function(err){
+        if (err) { return next({error: err}); }
+        next(null, success);
+      });
+    }
+  ], function (err, result) {
+    if(err){ res.json(err); }
+    res.json(result);
+  });
+
+});
+
+router.post('/comments/', function(req, res, next) {
+
+  var q = {};
+  q.args = { scenario: req.body.scenario_id, deleted: false };
+  q.populated_fields = [];
+  q.populated_fields.push({
+    field: 'author',
+    populate: 'first_name last_name last_modified image_thumb'
+  });
+
+  commentService.find(q, function(err, comments) {
+    if (err) { return res.json({error: err}); }
+    return res.json({ comments: comments });
+  });
+});
+
+router.post('/create/', restrict, function(req, res, next) {
+    return res.json({success: 'Saved successfully'});
+});
+
+router.post('/delete-comment/',restrict, function(req, res, next) {
+
+  var params = req.body;
+
+  async.waterfall([
+    function(next){
+
+      validateService.validate([{fn:'deleteComment', data:params}], function(err){
+        if (err) { return next({error: err}); }
+        next();
+      });
+    },
+    function(next){
+
+      //check if user has rights to delete the comment
+      var q = {};
+      q.args = { _id: params.scenario._id, author: req.user._id };
+
+      scenarioService.findOne(q, function(err, user){
+        if (err) { return next({error: err}); }
+        if(user === null){
+          // passport req user different from scenario author
+          return next({id: 3, message: 'no rights'});
+        }
+        next();
+      });
+    },
+    function(next){
+
+      var q = {};
+      q.where = { _id: params.comment._id, deleted: false};
+      q.update = {
+        deleted: true,
+        deleted_date: new Date()
+      };
+      q.select = '_id';
+
+      commentService.update(q, function(err, comment){
+        if (err) { return next({error: err}); }
+        if(comment === null){ return next({error: "no comment to remove"}); }
+        next();
+      });
+    },
+    function(next){
+
+      var q = {};
+      q.args = { scenario: params.scenario._id, deleted: false };
+      q.populated_fields = [];
+      q.populated_fields.push({
+        field: 'author',
+        populate: 'first_name last_name last_modified image_thumb'
+      });
+
+      commentService.find(q, function(err, comments){
+        if (err) { return next({error: err}); }
+        next(null, comments);
+      });
+    },
+    function(comments, next){
+
+      var q = {};
+      q.where = { _id: params.scenario._id };
+      q.update = { comments_count: comments.length};
+
+      scenarioService.update(q, function(err){
+        if (err) { return next({error: err}); }
+        next(null, { comments: comments });
+      });
+    }
+  ], function (err, result) {
+    if(err){ res.json(err); }
+    res.json(result);
+  });
+
+});
+
+router.post('/list/', function(req, res, next) {
+
+  var query = req.body;
+
+  async.waterfall([
+    function(next){
+
+      scenarioService.getSortOrder(query, function(err, sort){
+        if (err) { return next({error: err}); }
+        next(null, sort);
+      });
+    },
+    function(sort, next){
+
+      var q = {};
+      q.args = { author: query.user._id, draft: false, deleted: false};
+      var populated_fields = [];
+      populated_fields.push({
+        field: 'author',
+        populate: 'first_name last_name created'
+      });
+      q.sort = sort;
+
+      scenarioService.find(q, function(err, scenarios) {
+        if (err) { return next({error: err}); }
+        next(null, {scenarios: scenarios});
+      });
+    }
+  ], function (err, result) {
+    if(err){ res.json(err); }
+    res.json(result);
+  });
+
+});
+
 router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
 
   var query = req.body;
@@ -219,82 +513,6 @@ router.post('/search/', function(req, res, next) {
 
 });
 
-router.post('/widget-list/', function(req, res, next) {
-
-  var query = req.body;
-
-  async.waterfall([
-    function(next){
-
-      scenarioService.getSortOrder(query, function(err, sort){
-        if (err) { return next({error: err}); }
-        next(null, sort);
-      });
-    },
-    function(sort, next){
-
-      var q = {};
-      q.args = { draft: false, deleted: false};
-
-      // single scenario view widget, exclude scenario that is viewd and get same user scenarios
-      if(typeof query.exclude !== 'undefined'){ q.args._id = {'$ne': query.exclude }; }
-      if(typeof query.author !== 'undefined'){ q.args.auhtor = query.author; }
-
-      var populated_fields = [];
-      populated_fields.push({
-        field: 'author',
-        populate: 'first_name last_name created'
-      });
-      q.sort = sort;
-      q.limit = query.limit;
-
-      scenarioService.find(q, function(err, scenarios) {
-        if (err) { return next({error: err}); }
-        next(null, {scenarios: scenarios});
-      });
-    }
-  ], function (err, result) {
-    if(err){ res.json(err); }
-    res.json(result);
-  });
-
-});
-
-router.post('/list/', function(req, res, next) {
-
-  var query = req.body;
-
-  async.waterfall([
-    function(next){
-
-      scenarioService.getSortOrder(query, function(err, sort){
-        if (err) { return next({error: err}); }
-        next(null, sort);
-      });
-    },
-    function(sort, next){
-
-      var q = {};
-      q.args = { author: query.user._id, draft: false, deleted: false};
-      var populated_fields = [];
-      populated_fields.push({
-        field: 'author',
-        populate: 'first_name last_name created'
-      });
-      q.sort = sort;
-
-      scenarioService.find(q, function(err, scenarios) {
-        if (err) { return next({error: err}); }
-        next(null, {scenarios: scenarios});
-      });
-    }
-  ], function (err, result) {
-    if(err){ res.json(err); }
-    res.json(result);
-  });
-
-});
-
 router.post('/single-scenario/', function(req, res, next) {
 
   var params = req.body;
@@ -366,164 +584,38 @@ router.post('/single-scenario/', function(req, res, next) {
   });
 });
 
-router.post('/create/', restrict, function(req, res, next) {
-    return res.json({success: 'Saved successfully'});
-});
+router.post('/widget-list/', function(req, res, next) {
 
-router.post('/add-remove-favorite/',restrict, function(req, res, next) {
-
-  var params = req.body;
+  var query = req.body;
 
   async.waterfall([
     function(next){
 
-      validateService.validate([{fn:'addRemoveFavorite', data:params}], function(err){
+      scenarioService.getSortOrder(query, function(err, sort){
         if (err) { return next({error: err}); }
-        next();
+        next(null, sort);
       });
     },
-    function(next){
+    function(sort, next){
 
       var q = {};
-      q.args = { scenario: params.scenario_id, user: params.user._id, removed: null };
-      q.select = '_id';
+      q.args = { draft: false, deleted: false};
 
-      favoriteService.findOne(q, function(err, favorite_doc){
-        if (err) { return next({error: err}); }
-        next(null, favorite_doc);
-      });
-    },
-    function(favorite_doc, next){
+      // single scenario view widget, exclude scenario that is viewd and get same user scenarios
+      if(typeof query.exclude !== 'undefined'){ q.args._id = {'$ne': query.exclude }; }
+      if(typeof query.author !== 'undefined'){ q.args.auhtor = query.author; }
 
-      // add favorite
-      if(typeof params.remove === 'undefined'){
-        if(favorite_doc === null){
-          new_favorite_doc = { scenario: params.scenario_id, user: params.user._id };
-
-          favoriteService.saveNew(new_favorite_doc, function(err) {
-            if (err) { return next({error: err}); }
-            next(null, {success: 'add'});
-          });
-        }else{
-          next(null, {success: 'add'});
-        }
-      }else{
-        //remove favorite
-        if(favorite_doc === null){
-          next(null, {success: 'remove'});
-        }else{
-          var update = { removed : Date.now() };
-          var q = {};
-          q.where = {"_id": favorite_doc._id};
-          q.update = update;
-          q.select = "_id";
-
-          favoriteService.update(q, function(err){
-            if (err) { return next({error: err}); }
-            next(null, {success: 'remove'});
-          });
-        }
-      }
-
-    },
-    function(success, next){
-
-      var q = {};
-      q.args = {scenario: params.scenario_id, removed: null};
-
-      favoriteService.count(q, function(err, favorites_count){
-        if (err) { return next({error: err}); }
-        var count = {favorites_count: favorites_count};
-        next(null, success, count);
-      });
-    },
-    function(success, count, next){
-
-      var q = {};
-      q.where = {"_id": params.scenario_id};
-      q.update = { favorites_count: count.favorites_count };
-
-      scenarioService.update(q, function(err){
-        if (err) { return next({error: err}); }
-        next(null, success);
-      });
-    }
-  ], function (err, result) {
-    if(err){ res.json(err); }
-    res.json(result);
-  });
-
-});
-
-router.post('/add-comment/',restrict, function(req, res, next) {
-
-  var params = req.body;
-
-  async.waterfall([
-    function(next){
-
-      validateService.validate([{fn:'commentData', data:params}], function(err){
-        if (err) { return next({error: err}); }
-        next();
-      });
-    },
-    function(next){
-
-      var new_comment = {
-        text: params.comment.text,
-        author: params.user._id,
-        scenario: params.scenario._id,
-      };
-
-      commentService.saveNew(new_comment, function(err, comment) {
-        if (err) { return next({error: err}); }
-        next(null, comment);
-      });
-    },
-    function(comment, next){
-
-      // No notification if scenario author comments own scenario
-      if(params.author._id == params.user._id){ return next(); }
-
-      new_notification = {
-        user: params.author._id,
-        type: "comment",
-        data: {
-          comment: comment._id,
-          user: params.user._id,
-          scenario: params.scenario._id,
-        }
-      };
-
-      notificationService.saveNew(new_notification, function(err) {
-        if (err) { return next({error: err}); }
-        next();
-      });
-    },
-    function(next){
-
-      var q = {};
-      q.args = { scenario: params.scenario._id, deleted: false };
-      q.populated_fields = [];
-      q.populated_fields.push({
+      var populated_fields = [];
+      populated_fields.push({
         field: 'author',
-        populate: 'first_name last_name last_modified image_thumb'
+        populate: 'first_name last_name created'
       });
+      q.sort = sort;
+      q.limit = query.limit;
 
-      commentService.find(q, function(err, comments){
+      scenarioService.find(q, function(err, scenarios) {
         if (err) { return next({error: err}); }
-        next(null, comments);
-      });
-    },
-    function(comments, next){
-
-      var q = {};
-      q.where = { _id: params.scenario._id };
-      q.update = { comments_count: comments.length};
-
-      scenarioService.update(q, function(err){
-        if (err) { return next({error: err}); }
-        next(null, { comments: comments });
+        next(null, {scenarios: scenarios});
       });
     }
   ], function (err, result) {
@@ -531,98 +623,6 @@ router.post('/add-comment/',restrict, function(req, res, next) {
     res.json(result);
   });
 
-});
-
-router.post('/delete-comment/',restrict, function(req, res, next) {
-
-  var params = req.body;
-
-  async.waterfall([
-    function(next){
-
-      validateService.validate([{fn:'deleteComment', data:params}], function(err){
-        if (err) { return next({error: err}); }
-        next();
-      });
-    },
-    function(next){
-
-      //check if user has rights to delete the comment
-      var q = {};
-      q.args = { _id: params.scenario._id, author: req.user._id };
-
-      scenarioService.findOne(q, function(err, user){
-        if (err) { return next({error: err}); }
-        if(user === null){
-          // passport req user different from scenario author
-          return next({id: 3, message: 'no rights'});
-        }
-        next();
-      });
-    },
-    function(next){
-
-      var q = {};
-      q.where = { _id: params.comment._id, deleted: false};
-      q.update = {
-        deleted: true,
-        deleted_date: new Date()
-      };
-      q.select = '_id';
-
-      commentService.update(q, function(err, comment){
-        if (err) { return next({error: err}); }
-        if(comment === null){ return next({error: "no comment to remove"}); }
-        next();
-      });
-    },
-    function(next){
-
-      var q = {};
-      q.args = { scenario: params.scenario._id, deleted: false };
-      q.populated_fields = [];
-      q.populated_fields.push({
-        field: 'author',
-        populate: 'first_name last_name last_modified image_thumb'
-      });
-
-      commentService.find(q, function(err, comments){
-        if (err) { return next({error: err}); }
-        next(null, comments);
-      });
-    },
-    function(comments, next){
-
-      var q = {};
-      q.where = { _id: params.scenario._id };
-      q.update = { comments_count: comments.length};
-
-      scenarioService.update(q, function(err){
-        if (err) { return next({error: err}); }
-        next(null, { comments: comments });
-      });
-    }
-  ], function (err, result) {
-    if(err){ res.json(err); }
-    res.json(result);
-  });
-
-});
-
-router.post('/comments/', function(req, res, next) {
-
-  var q = {};
-  q.args = { scenario: req.body.scenario_id, deleted: false };
-  q.populated_fields = [];
-  q.populated_fields.push({
-    field: 'author',
-    populate: 'first_name last_name last_modified image_thumb'
-  });
-
-  commentService.find(q, function(err, comments) {
-    if (err) { return res.json({error: err}); }
-    return res.json({ comments: comments });
-  });
 });
 
 module.exports = router;
