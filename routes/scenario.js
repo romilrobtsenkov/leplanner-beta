@@ -291,8 +291,8 @@ router.post('/list/', function(req, res, next) {
 
       var q = {};
       q.args = { author: query.user._id, draft: false, deleted: false};
-      var populated_fields = [];
-      populated_fields.push({
+      q.populated_fields = [];
+      q.populated_fields.push({
         field: 'author',
         populate: 'first_name last_name created'
       });
@@ -351,8 +351,8 @@ router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
 
               var q = {};
               q.args = { author: { $in : list_of_following_ids }, draft: false, deleted: false};
-              var populated_fields = [];
-              populated_fields.push({
+              q.populated_fields = [];
+              q.populated_fields.push({
                 field: 'author',
                 populate: 'first_name last_name created'
               });
@@ -375,8 +375,8 @@ router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
 
           var q = {};
           q.args = { author: query.user._id, draft: true, deleted: false};
-          var populated_fields = [];
-          populated_fields.push({
+          q.populated_fields = [];
+          q.populated_fields.push({
             field: 'author',
             populate: 'first_name last_name created'
           });
@@ -393,8 +393,8 @@ router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
 
           var q = {};
           q.args = { author: query.user._id, draft: false, deleted: false};
-          var populated_fields = [];
-          populated_fields.push({
+          q.populated_fields = [];
+          q.populated_fields.push({
             field: 'author',
             populate: 'first_name last_name created'
           });
@@ -432,8 +432,8 @@ router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
 
                 var q = {};
                 q.args = { _id: { $in : list_of_scenario_ids }, draft: false, deleted: false};
-                var populated_fields = [];
-                populated_fields.push({
+                q.populated_fields = [];
+                q.populated_fields.push({
                   field: 'author',
                   populate: 'first_name last_name created'
                 });
@@ -494,8 +494,8 @@ router.post('/search/', function(req, res, next) {
         q.args.subject = { $in : query.subjects };
       }
 
-      var populated_fields = [];
-      populated_fields.push({
+      q.populated_fields = [];
+      q.populated_fields.push({
         field: 'author',
         populate: 'first_name last_name created'
       });
@@ -603,10 +603,10 @@ router.post('/widget-list/', function(req, res, next) {
 
       // single scenario view widget, exclude scenario that is viewd and get same user scenarios
       if(typeof query.exclude !== 'undefined'){ q.args._id = {'$ne': query.exclude }; }
-      if(typeof query.author !== 'undefined'){ q.args.auhtor = query.author; }
+      if(typeof query.author !== 'undefined'){ q.args.author = query.author; }
 
-      var populated_fields = [];
-      populated_fields.push({
+      q.populated_fields = [];
+      q.populated_fields.push({
         field: 'author',
         populate: 'first_name last_name created'
       });

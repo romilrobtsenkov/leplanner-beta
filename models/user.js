@@ -21,7 +21,9 @@ var userSchema = new Schema({
 
 //validation on first save
 userSchema.path('email').validate(function(value, next) {
-  userService.findByEmail(value, function(err, user) {
+  var q = {};
+  q.args = {"email": value};
+  userService.findOne(q, function(err, user) {
     if (err) { return next(false); }
     next(!user);
   });

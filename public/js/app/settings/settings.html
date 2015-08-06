@@ -4,7 +4,7 @@
 
         <div class="main-login">
             <h2>Profile picture</h2>
-            <img height='200px' width='200px' class="img-circle" style="height:200px;width:200px" ng-src="{{user.profile_image}}"/>
+            <img height='200px' width='200px' class="img-circle" style="height:200px;width:200px" ng-src="./images/user/{{user.image}}?last_modified={{user.last_modified}}"/>
             <div ng-if='upload_error' class="alert alert-danger" role="alert">{{upload_error}}</div>
             <div ng-if='upload_success' class="alert alert-success" role="alert">{{upload_success}}</div>
             <p>Accepts image file types .png / .jpg / .jpeg  - file size up to 1MB</p>

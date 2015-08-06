@@ -40,6 +40,7 @@ exports.find = function(q, next){
       query.populate(q.populated_fields[i].field, q.populated_fields[i].populate);
     }
   }
+  console.log(q.populated_fields);
   if(q.select){ query.select(q.select); }
   if(q.sort){ query.sort(q.sort); }
   if(q.limit){ query.limit(q.limit); }

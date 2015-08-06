@@ -156,7 +156,7 @@
 
         scenarioService.searchScenarios(q)
           .then(function(data) {
-            //console.log(data);
+            console.log(data);
             if(data.scenarios){
               $scope.scenarios = data.scenarios;
               if(typeof q != 'undefined'){
