@@ -25,7 +25,6 @@
       $scope.sidebox_quantity.followings = 8;
       $scope.sidebox_quantity.followers = 8;
 
-      getSingleUserScenarios();
       getUserData();
 
       function getUserData(){
@@ -40,11 +39,12 @@
           .then(function(data) {
 
             if(data.profile){
+
+              getSingleUserScenarios();
+
               //console.log(data);
               $scope.profile = data.profile;
-
               $rootScope.title = data.profile.first_name+' '+data.profile.last_name+' | Leplanner beta';
-
 
               //check if user is following
               if(typeof $rootScope.user === 'undefined'){
@@ -61,8 +61,6 @@
                   }
                 }
               }
-
-              //console.log(data.following);
 
               if(typeof data.following !== 'undefined'){
                 $scope.followings = data.following;
@@ -90,6 +88,57 @@
             }
 
         });
+      }
+
+      function getSingleUserScenarios(){
+
+        $scope.loading_animation = true;
+        $scope.no_scenarios = false;
+        $scope.scenarios = [];
+
+        var q = {};
+
+        q.user = {_id: $scope.get_profile_id};
+
+        if(typeof $rootScope.sort_tab.profile == 'undefined'){
+          $rootScope.sort_tab.profile = 'latest';
+        }
+
+        switch ($rootScope.sort_tab.profile) {
+          case 'latest':
+              q.order = 'latest';
+            break;
+            case 'popular':
+                q.order = 'popular';
+              break;
+            case 'favorited':
+                q.order = 'favorited';
+              break;
+            case 'commented':
+                q.order = 'commented';
+              break;
+          default:
+            q.order = 'latest';
+        }
+
+
+        scenarioService.getUserScenarios(q)
+          .then(function(data) {
+            //console.log(data);
+            if(data.scenarios){
+              if(data.scenarios.length === 0){
+                  $scope.no_scenarios = true;
+              }
+              $scope.scenarios = data.scenarios;
+
+              $scope.loading_animation = false;
+            }
+
+            if(data.error){
+              console.log(data.error);
+            }
+        });
+
       }
 
       $scope.addRemoveFollow = function(remove_follow){
@@ -133,57 +182,6 @@
             }
         });
       };
-
-      function getSingleUserScenarios(){
-
-        $scope.loading_animation = true;
-        $scope.no_scenarios = false;
-        $scope.scenarios = [];
-
-        var q = {};
-
-        q.user = {_id: $scope.get_profile_id};
-
-        if(typeof $rootScope.sort_tab.profile == 'undefined'){
-          $rootScope.sort_tab.profile = 'latest';
-        }else{
-          switch ($rootScope.sort_tab.profile) {
-            case 'latest':
-                q.order = 'latest';
-              break;
-              case 'popular':
-                  q.order = 'popular';
-                break;
-              case 'favorited':
-                  q.order = 'favorited';
-                break;
-              case 'commented':
-                  q.order = 'commented';
-                break;
-            default:
-              q.order = 'latest';
-          }
-        }
-
-        scenarioService.getUserScenarios(q)
-          .then(function(data) {
-            //console.log(data);
-            if(data.scenarios){
-              if(data.scenarios.length === 0){
-                  $scope.no_scenarios = true;
-              }
-              $scope.scenarios = data.scenarios;
-
-              $scope.loading_animation = false;
-            }
-
-            if(data.error){
-              console.log(data.error);
-            }
-        });
-
-
-      }
 
       $scope.isSortActive = function(tab){
         if(tab == $rootScope.sort_tab.profile){ return true; }

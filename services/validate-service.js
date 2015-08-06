@@ -12,9 +12,10 @@ exports.validate = function(to_validate_array, next){
     passwordReset: passwordReset,
     addRemoveFollow: addRemoveFollow,
     commentData: commentData,
-    deleteComment: deleteComment
+    deleteComment: deleteComment,
+    addRemoveFavorite: addRemoveFavorite,
   };
-  
+
   for(var i = 0; i < to_validate_array.length; i++){
     var fn = to_validate_array[i].fn.toString();
     var data = to_validate_array[i].data;
@@ -91,6 +92,13 @@ exports.validate = function(to_validate_array, next){
     if(!params.comment._id){ return next({id: 0, message: 'Comment id missing'}); }
     if(!params.user._id){ return next({id: 1, message: 'User id missing'}); }
     if(!params.scenario._id){ return next({id: 2, message: 'Scenario id missing'}); }
+
+    next();
+  }
+
+  function addRemoveFavorite(params){
+    if(!params.user._id){ return next({id: 1, message: 'User id missing'}); }
+    if(!params.scenario_id){ return next({id: 2, message: 'Scenario id missing'}); }
 
     next();
   }

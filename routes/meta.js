@@ -5,7 +5,7 @@ var metaService = require('../services/meta-service');
 router.get('/subjects/', function(req, res, next) {
   metaService.getSubjects(function(err, subjects) {
     if (err) { return res.json({error: err}); }
-    return res.json({subjects: subjects});
+    return res.json(subjects);
   });
 });
 

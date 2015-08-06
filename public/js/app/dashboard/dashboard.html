@@ -59,7 +59,7 @@
     <div class="col-sm-7 col-sm-pull-3 col-lg-pull-3 col-md-pull-3" style="height:100%; min-height: 100px;">
       <div class="dashboard-main-content">
 
-        <ul class="nav nav-tabs nav-tab-pop">
+        <ul ng-if="!isActiveDash('users') && !messages.no_drafts && !messages.no_published && !messages.no_favorites && !messages.no_following" class="nav nav-tabs nav-tab-pop">
   				<li ng-class="{active:isSortActive('latest')}">
   					<a href ng-click="updateSortList('latest')" title="Latest">Latest</a>
   				</li>

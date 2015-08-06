@@ -54,11 +54,16 @@
       });
 
       function getSidebarScenarios(){
-        var q= {order: 'popular', limit: 3, exclude: $scope.scenario._id};
+        var q= {order: 'popular', limit: 3, exclude: $scope.scenario._id, author: $scope.scenario.author._id};
         scenarioService.getWidgetScenarios(q)
           .then(function(data) {
             if(data.scenarios){
-              $scope.scenarios = data.scenarios;
+              if(data.scenarios.length > 0){
+                $scope.scenarios = data.scenarios;
+              }else{
+                $scope.no_popular_scenarios = true;
+              }
+
             }
             if(data.error){
               console.log(data.error);

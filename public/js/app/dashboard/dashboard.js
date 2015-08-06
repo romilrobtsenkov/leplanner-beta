@@ -33,7 +33,7 @@
         $scope.scenarios = [];
         $scope.users_list = [];
 
-        var q = {
+        var query = {
           order : 'latest',
           user: {
             _id: $rootScope.user._id
@@ -45,49 +45,49 @@
         }else{
           switch ($rootScope.sort_tab.dash) {
             case 'latest':
-                q.order = 'latest';
+                query.order = 'latest';
               break;
               case 'popular':
-                  q.order = 'popular';
+                  query.order = 'popular';
                 break;
               case 'favorited':
-                  q.order = 'favorited';
+                  query.order = 'favorited';
                 break;
               case 'commented':
-                  q.order = 'commented';
+                  query.order = 'commented';
                 break;
             default:
-              q.order = 'latest';
+              query.order = 'latest';
           }
         }
 
         if(typeof $rootScope.dash_active_tab == 'undefined'){
-          q.filter = 'feed';
+          query.page = 'feed';
         }else{
           switch ($rootScope.dash_active_tab) {
             case 'feed':
-                q.filter = 'feed';
+                query.page = 'feed';
               break;
             case 'drafts':
-                q.filter = 'drafts';
+                query.page = 'drafts';
               break;
             case 'published':
-                q.filter = 'published';
+                query.page = 'published';
               break;
             case 'favorites':
-                q.filter = 'favorites';
+                query.page = 'favorites';
               break;
             case 'users':
-                q.filter = 'users';
+                query.page = 'users';
               break;
             default:
-              q.filter = 'feed';
+              query.page = 'feed';
           }
         }
 
-        if(q.filter != 'users'){
+        if(query.page != 'users'){
 
-          getScenarios(q);
+          getScenarios(query);
 
         }else{
 
@@ -123,12 +123,12 @@
 
       }
 
-      function getScenarios(q){
-        scenarioService.getDashScenarios(q)
+      function getScenarios(query){
+        scenarioService.getDashScenarios(query)
           .then(function(data) {
             if(data.scenarios){
 
-              switch (q.filter) {
+              switch (query.page) {
                 case 'feed':
                   if(data.scenarios.length === 0){
                     $scope.messages.no_following = true;

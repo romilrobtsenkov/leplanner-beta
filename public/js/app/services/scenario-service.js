@@ -23,7 +23,7 @@
     };
 
     function getWidgetScenarios(query) {
-      return $http.post('/api/scenario/scenarios-widget-list',query)
+      return $http.post('/api/scenario/widget-list',query)
         .then(function(response) {
           return response.data;
         });
@@ -37,7 +37,7 @@
     }
 
     function getUserScenarios(query) {
-      return $http.post('/api/scenario/scenarios-user-list',query)
+      return $http.post('/api/scenario/list',query)
         .then(function(response) {
           return response.data;
         });

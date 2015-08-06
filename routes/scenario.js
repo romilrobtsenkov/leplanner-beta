@@ -9,6 +9,292 @@ var favoriteService = require('../services/favorite-service');
 var followerService = require('../services/follower-service');
 var async = require('async');
 
+/* template
+async.waterfall([], function (err, result) {
+  if(err){ res.json(err); }
+  res.json(result);
+});
+*/
+
+router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
+
+  var query = req.body;
+
+  async.waterfall([
+    function(next){
+
+      scenarioService.getSortOrder(query, function(err, sort){
+        if (err) { return next({error: err}); }
+        next(null, sort);
+      });
+    },
+    function(sort, next){
+
+      // default page to feed
+      if(typeof query.page == 'undefined'){ query.page = 'feed'; }
+
+      switch (query.page) {
+        case 'feed':
+
+          async.waterfall([
+            function(next){
+
+              var q = {};
+              q.args = {follower: query.user._id, removed: null};
+              q.select = 'following';
+
+              followerService.find(q, function(err, following){
+                if (err) { return next({error: err}); }
+                next(null, following);
+              });
+            },
+            function(following, next){
+
+              var list_of_following_ids = [];
+              for(var i = 0; i< following.length; i++){
+                list_of_following_ids[i] = following[i].following;
+              }
+
+              var q = {};
+              q.args = { author: { $in : list_of_following_ids }, draft: false, deleted: false};
+              var populated_fields = [];
+              populated_fields.push({
+                field: 'author',
+                populate: 'first_name last_name created'
+              });
+              q.sort = sort;
+
+              scenarioService.find(q, function(err, scenarios) {
+                if (err) { return next({error: err}); }
+                next(null, {scenarios: scenarios});
+              });
+
+            }
+          ], function (err, result) {
+            if(err){ next(err); }
+            next(null, result);
+          });
+
+          break;
+
+        case 'drafts':
+
+          var q = {};
+          q.args = { author: query.user._id, draft: true, deleted: false};
+          var populated_fields = [];
+          populated_fields.push({
+            field: 'author',
+            populate: 'first_name last_name created'
+          });
+          q.sort = sort;
+
+          scenarioService.find(q, function(err, scenarios) {
+            if (err) { return next({error: err}); }
+            next(null, {scenarios: scenarios});
+          });
+
+          break;
+
+        case 'published':
+
+          var q = {};
+          q.args = { author: query.user._id, draft: false, deleted: false};
+          var populated_fields = [];
+          populated_fields.push({
+            field: 'author',
+            populate: 'first_name last_name created'
+          });
+          q.sort = sort;
+
+          scenarioService.find(q, function(err, scenarios) {
+            if (err) { return next({error: err}); }
+            next(null, {scenarios: scenarios});
+          });
+
+          break;
+        case 'favorites':
+
+          async.waterfall([
+            function(next){
+
+              var q = {};
+              q.args = {user: query.user._id, removed: null};
+              q.select = 'scenario';
+
+              favoriteService.find(q, function(err, favorites){
+                if (err) { return next({error: err}); }
+                next(null, favorites);
+              });
+            },
+            function(favorites, next){
+
+              if(favorites.length > 0){
+                list_of_scenario_ids = [];
+
+                //create a list of scenario ids
+                for(var i = 0; i < favorites.length; i++){
+                  list_of_scenario_ids.push(favorites[i].scenario);
+                }
+
+                var q = {};
+                q.args = { _id: { $in : list_of_scenario_ids }, draft: false, deleted: false};
+                var populated_fields = [];
+                populated_fields.push({
+                  field: 'author',
+                  populate: 'first_name last_name created'
+                });
+                q.sort = sort;
+
+                scenarioService.find(q, function(err, scenarios) {
+                  if (err) { return next({error: err}); }
+                  next(null, {scenarios: scenarios});
+                });
+
+              }else{
+                return next(null, []);
+              }
+            }
+          ], function (err, result) {
+            if(err){ next(err); }
+            next(null, result);
+          });
+
+          break;
+
+        default:
+          return next(null, []);
+      }
+
+    }
+  ], function (err, result) {
+    if(err){ res.json(err); }
+    res.json(result);
+  });
+
+});
+
+router.post('/search/', function(req, res, next) {
+
+  var query = req.body;
+
+  async.waterfall([
+    function(next){
+
+      scenarioService.getSortOrder(query, function(err, sort){
+        if (err) { return next({error: err}); }
+        next(null, sort);
+      });
+    },
+    function(sort, next){
+
+      var q = {};
+      q.args = { draft: false, deleted: false };
+
+      // search word
+      if(typeof query.search_word !== 'undefined'){
+        q.args.$or = [ { name: { "$regex": query.search_word, "$options": "i" } }, { description: { "$regex": query.search_word, "$options": "i" } }];
+      }
+
+      // meta fields
+      if(typeof query.subjects !== 'undefined' && query.subjects.length > 0){
+        q.args.subject = { $in : query.subjects };
+      }
+
+      var populated_fields = [];
+      populated_fields.push({
+        field: 'author',
+        populate: 'first_name last_name created'
+      });
+      q.sort = sort;
+
+      scenarioService.find(q, function(err, scenarios) {
+        if (err) { return next({error: err}); }
+        next(null, {scenarios: scenarios});
+      });
+    }
+  ], function (err, result) {
+    if(err){ res.json(err); }
+    res.json(result);
+  });
+
+});
+
+router.post('/widget-list/', function(req, res, next) {
+
+  var query = req.body;
+
+  async.waterfall([
+    function(next){
+
+      scenarioService.getSortOrder(query, function(err, sort){
+        if (err) { return next({error: err}); }
+        next(null, sort);
+      });
+    },
+    function(sort, next){
+
+      var q = {};
+      q.args = { draft: false, deleted: false};
+
+      // single scenario view widget, exclude scenario that is viewd and get same user scenarios
+      if(typeof query.exclude !== 'undefined'){ q.args._id = {'$ne': query.exclude }; }
+      if(typeof query.author !== 'undefined'){ q.args.auhtor = query.author; }
+
+      var populated_fields = [];
+      populated_fields.push({
+        field: 'author',
+        populate: 'first_name last_name created'
+      });
+      q.sort = sort;
+      q.limit = query.limit;
+
+      scenarioService.find(q, function(err, scenarios) {
+        if (err) { return next({error: err}); }
+        next(null, {scenarios: scenarios});
+      });
+    }
+  ], function (err, result) {
+    if(err){ res.json(err); }
+    res.json(result);
+  });
+
+});
+
+router.post('/list/', function(req, res, next) {
+
+  var query = req.body;
+
+  async.waterfall([
+    function(next){
+
+      scenarioService.getSortOrder(query, function(err, sort){
+        if (err) { return next({error: err}); }
+        next(null, sort);
+      });
+    },
+    function(sort, next){
+
+      var q = {};
+      q.args = { author: query.user._id, draft: false, deleted: false};
+      var populated_fields = [];
+      populated_fields.push({
+        field: 'author',
+        populate: 'first_name last_name created'
+      });
+      q.sort = sort;
+
+      scenarioService.find(q, function(err, scenarios) {
+        if (err) { return next({error: err}); }
+        next(null, {scenarios: scenarios});
+      });
+    }
+  ], function (err, result) {
+    if(err){ res.json(err); }
+    res.json(result);
+  });
+
+});
+
 router.post('/single-scenario/', function(req, res, next) {
 
   var params = req.body;
@@ -70,7 +356,7 @@ router.post('/single-scenario/', function(req, res, next) {
 
       notificationService.updateMultiple(q, function(err, notifications){
         if (err) { return next({error: err}); }
-        console.log('modified notifications :'+notifications.nModified);
+        //console.log('modified notifications :'+notifications.nModified);
         next(null, response);
       });
     }
@@ -80,52 +366,93 @@ router.post('/single-scenario/', function(req, res, next) {
   });
 });
 
-// TODO
-router.post('/scenarios-widget-list/', function(req, res, next) {
-  scenarioService.getWidgetScenarios(req.body, function(err, scenarios) {
-    if (err) { return res.json({error: err}); }
-    return res.json({scenarios: scenarios});
-  });
-});
-
-// TODO
-router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
-  scenarioService.getDashScenarios(req.body, function(err, scenarios) {
-    if (err) { return res.json({error: err}); }
-    return res.json({scenarios: scenarios});
-  });
-});
-
-// TODO
-router.post('/scenarios-user-list/', function(req, res, next) {
-  scenarioService.getUserScenarios(req.body, function(err, scenarios) {
-    if (err) { return res.json({error: err}); }
-    return res.json({scenarios: scenarios});
-  });
-});
-
-// TODO
-router.post('/create/',restrict, function(req, res, next) {
-  scenarioService.saveScenario(req.body.scenario, function(err, success) {
-    if (err) { return res.json({error: err}); }
+router.post('/create/', restrict, function(req, res, next) {
     return res.json({success: 'Saved successfully'});
-  });
 });
 
-// TODO
-router.post('/search/', function(req, res, next) {
-  scenarioService.searchScenarios(req.body, function(err, scenarios) {
-    if (err) { return res.json({error: err}); }
-    return res.json({scenarios: scenarios});
-  });
-});
-
-// TODO
 router.post('/add-remove-favorite/',restrict, function(req, res, next) {
-  scenarioService.addRemoveFavorite(req.body, function(err, response) {
-    if (err) { return res.json({error: err}); }
-    return res.json(response);
+
+  var params = req.body;
+
+  async.waterfall([
+    function(next){
+
+      validateService.validate([{fn:'addRemoveFavorite', data:params}], function(err){
+        if (err) { return next({error: err}); }
+        next();
+      });
+    },
+    function(next){
+
+      var q = {};
+      q.args = { scenario: params.scenario_id, user: params.user._id, removed: null };
+      q.select = '_id';
+
+      favoriteService.findOne(q, function(err, favorite_doc){
+        if (err) { return next({error: err}); }
+        next(null, favorite_doc);
+      });
+    },
+    function(favorite_doc, next){
+
+      // add favorite
+      if(typeof params.remove === 'undefined'){
+        if(favorite_doc === null){
+          new_favorite_doc = { scenario: params.scenario_id, user: params.user._id };
+
+          favoriteService.saveNew(new_favorite_doc, function(err) {
+            if (err) { return next({error: err}); }
+            next(null, {success: 'add'});
+          });
+        }else{
+          next(null, {success: 'add'});
+        }
+      }else{
+        //remove favorite
+        if(favorite_doc === null){
+          next(null, {success: 'remove'});
+        }else{
+          var update = { removed : Date.now() };
+          var q = {};
+          q.where = {"_id": favorite_doc._id};
+          q.update = update;
+          q.select = "_id";
+
+          favoriteService.update(q, function(err){
+            if (err) { return next({error: err}); }
+            next(null, {success: 'remove'});
+          });
+        }
+      }
+
+    },
+    function(success, next){
+
+      var q = {};
+      q.args = {scenario: params.scenario_id, removed: null};
+
+      favoriteService.count(q, function(err, favorites_count){
+        if (err) { return next({error: err}); }
+        var count = {favorites_count: favorites_count};
+        next(null, success, count);
+      });
+    },
+    function(success, count, next){
+
+      var q = {};
+      q.where = {"_id": params.scenario_id};
+      q.update = { favorites_count: count.favorites_count };
+
+      scenarioService.update(q, function(err){
+        if (err) { return next({error: err}); }
+        next(null, success);
+      });
+    }
+  ], function (err, result) {
+    if(err){ res.json(err); }
+    res.json(result);
   });
+
 });
 
 router.post('/add-comment/',restrict, function(req, res, next) {

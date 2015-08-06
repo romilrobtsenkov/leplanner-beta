@@ -527,7 +527,7 @@ router.post('/add-remove-follow/',restrict, function(req, res, next) {
       q.where = {"_id": params.user._id};
       q.update = { following_count: count.following_count, followers_count: count.followers_count };
 
-      userService.update(q, function(err, user){
+      userService.update(q, function(err){
         if (err) { return next({error: err}); }
         next(null, success);
       });

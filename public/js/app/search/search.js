@@ -62,70 +62,47 @@
       function createDropDownMenus(){
         //  arrays to store selected multiple choices
         $scope.selected_subjects = [];
-        $scope.selected_methods = [];
-        $scope.selected_stages = [];
 
         $scope.subjectsSettings = {
-          externalIdProp: '',
           scrollableHeight: '400px',
           scrollable: true,
           enableSearch: true,
           smartButtonMaxItems: 3,
-          displayProp: 'label',
-          idProp: 'id',
-          buttonClasses: 'btn btn-default btn-fixed-width'
-        };
-        $scope.methodsSettings = {
+          displayProp: 'name',
+          idProp: '_id',
+          //externalIdProp: '_id',
           externalIdProp: '',
-          smartButtonMaxItems: 2,
-          displayProp: 'label',
-          idProp: 'id',
-          buttonClasses: 'btn btn-default btn-fixed-width'
+          buttonClasses: 'btn btn-default btn-fixed-width',
         };
-        $scope.stagesSettings = {
-          externalIdProp: '',
-          smartButtonMaxItems: 2,
-          displayProp: 'label',
-          idProp: 'id',
-          buttonClasses: 'btn btn-default btn-fixed-width'
-        };
-        $scope.subjectsText = {buttonDefaultText: 'Subject'};
-        $scope.methodsText = {buttonDefaultText: 'Method'};
-        $scope.stagesText = {buttonDefaultText: 'Stage'};
-        $scope.subjects = metaService.getSubjectJSONList();
-        $scope.methods = metaService.getMethodJSONList();
-        $scope.stages = metaService.getStageJSONList();
 
-        if(typeof $rootScope.searchParams !== 'undefined'){
+         metaService.getSubjectList()
+          .then(function(data) {
 
-          // Retrieve search from navigation
-          $scope.search_word = $rootScope.searchParams.search_word;
+            if(data.subjects){
 
-          for(var i = 0; i < $scope.subjects.length; i++){
-            for(var j = 0; j < $rootScope.searchParams.subjects.length; j++){
-              if($scope.subjects[i].label == $rootScope.searchParams.subjects[j]){
-                 $scope.selected_subjects.push($scope.subjects[i]);
+              $scope.subjects = data.subjects;
+
+              if(typeof $rootScope.searchParams !== 'undefined'){
+
+                // Retrieve search from navigation
+                $scope.search_word = $rootScope.searchParams.search_word;
+
+                for(var i = 0; i < $scope.subjects.length; i++){
+                  for(var j = 0; j < $rootScope.searchParams.subjects.length; j++){
+                    if($scope.subjects[i].name == $rootScope.searchParams.subjects[j]){
+                       $scope.selected_subjects.push($scope.subjects[i]);
+                    }
+                  }
+                }
+
               }
-            }
-          }
 
-          for(var k = 0; k < $scope.methods.length; k++){
-            for(var l = 0; l < $rootScope.searchParams.methods.length; l++){
-              if($scope.methods[k].label == $rootScope.searchParams.methods[l]){
-                 $scope.selected_methods.push($scope.methods[k]);
-              }
             }
-          }
 
-          for(var m = 0; m < $scope.stages.length; m++){
-            for(var n = 0; n < $rootScope.searchParams.stages.length; n++){
-              if($scope.stages[m].label == $rootScope.searchParams.stages[n]){
-                 $scope.selected_stages.push($scope.stages[m]);
-              }
+            if(data.error){
+              console.log(data.error);
             }
-          }
-
-        }
+        });
 
       }
 
@@ -142,24 +119,14 @@
 
         var subjects = [];
         var selected_subjects_labels = [];
-        var selected_methods_labels = [];
-        var selected_stages_labels = [];
 
         $scope.selected_subjects.forEach(function(element) {
-          selected_subjects_labels.push(element.label);
-        });
-        $scope.selected_methods.forEach(function(element) {
-          selected_methods_labels.push(element.label);
-        });
-        $scope.selected_stages.forEach(function(element) {
-          selected_stages_labels.push(element.label);
+          selected_subjects_labels.push(element.name);
         });
 
         var search_params = {
           search_word: $scope.search_word,
           subjects: selected_subjects_labels,
-          methods: selected_methods_labels,
-          stages: selected_stages_labels
         };
 
         //return search_params;

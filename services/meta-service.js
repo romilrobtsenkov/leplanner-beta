@@ -6,7 +6,7 @@ exports.getSubjects = function(next) {
     query.sort({name: 1});
     query.select('name');
     query.exec(function(err, subjects) {
-      return next(null,subjects);
+      return next(null, { subjects: subjects });
     });
 
 };

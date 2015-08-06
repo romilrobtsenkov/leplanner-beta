@@ -4,7 +4,8 @@ var Schema = mongoose.Schema;
 var favoriteSchema = new Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     scenario: { type: mongoose.Schema.Types.ObjectId, ref: 'Scenario' },
-    added: { type: Date, default: Date.now }
+    added: { type: Date, default: Date.now },
+    removed: { type: Date }
 });
 
 var Favorite = mongoose.model('Favorite', favoriteSchema);

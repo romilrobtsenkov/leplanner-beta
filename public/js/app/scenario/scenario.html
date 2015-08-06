@@ -175,10 +175,11 @@
 
       </div>
 
-      <!-- Similar scenarios -->
+      <!-- Popular scenarios -->
       <div class="similar-scenarios">
-        <h3>Popular scenarios</h3>
+        <h3>Other user scenarios</h3>
         <div class="row">
+          <p ng-if="no_popular_scenarios">You are lucky, this is the only one!</p>
           <div class="col-xs-6 col-sm-12" ng-repeat="scenario in scenarios">
             <div class="thumbnail thumbnail-first-page">
               <a href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">

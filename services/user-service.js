@@ -86,11 +86,11 @@ exports.bcryptCreatePassword = function(password, next) {
 exports.sendPasswordResetMail = function(user, next) {
   nodemailer.sendmail = true;
   var transporter = nodemailer.createTransport({
-    debug: true, //this!!!
+    debug: true
   });
   var mailOptions = {
     to: user.email,
-    from: 'romilr@tlu.ee',
+    from: config.email,
     subject: 'Password Reset',
     text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
       'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
