@@ -8,6 +8,7 @@ var passport = require('passport');
 var expressSession = require('express-session');
 var connectMongo = require('connect-mongo');
 var MongoStore = connectMongo(expressSession);
+var nodemailer = require('nodemailer');
 
 var config = require('./config/config');
 
@@ -24,8 +25,13 @@ mongoose.connect(config.db);
 
 var app = express();
 
-//app.use(logger('combined'));
-app.use(logger('dev'));
+
+if(app.get('env') == 'development'){
+  app.use(logger('dev'));
+}else{
+  app.use(logger('combined'));
+}
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -33,14 +39,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 var multipart = require('connect-multiparty');
 
 app.use(expressSession(
-    {
-        secret: config.secret,
-        saveUninitialized: false,
-        resave: false,
-        store: new MongoStore({
-           mongooseConnection: mongoose.connection
-        })
-    }
+  {
+    secret: config.secret,
+    saveUninitialized: false,
+    resave: false,
+    store: new MongoStore({
+       mongooseConnection: mongoose.connection
+    })
+  }
 ));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -63,15 +69,41 @@ app.use(function(req, res, next) {
 
 // error handlers
 app.use(function(err, req, res, next) {
-    console.log(err.message);
+    if(app.get('env') == 'development'){
+      console.log(err.message);
+    }else{
+      err = {};
+    }
+
     res.status(err.status || 500).
     json({
         status: err.status || 500,
         message: err.message,
         error: err
-        //error: {}
     });
 });
 
+// https://strongloop.com/strongblog/robust-node-applications-error-handling/
+if (app.get('env') === 'production') {
+  process.on('uncaughtException', function (err) {
+    console.error(err.stack);
+
+    var transport = nodemailer.createTransport({
+      debug: true
+    });
+
+    transport.sendMail({
+      from: config.email,
+      to: config.developer_email,
+      subject: '[LePlanner beta][uncaughtException] '+err.message,
+      text: err.stack
+    }, function (err) {
+       if (err) console.error(err);
+       console.log('Email sent to developer about error');
+       process.exit(1);
+    });
+
+  });
+}
 
 module.exports = app;
