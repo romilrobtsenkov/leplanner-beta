@@ -1,5 +1,11 @@
 var Follower = require('../models/follower').Follower;
 
+exports.count = function(q, next){
+  Follower.count(q.args, function (err, count) {
+    next(err, count);
+  });
+};
+
 exports.find = function(q, next){
   var query = Follower.find();
   query.where(q.args);
@@ -25,6 +31,14 @@ exports.findOne = function(q, next){
   });
 };
 
+exports.saveNew = function(follower, next) {
+  var newFollower = new Follower(follower);
+  newFollower.save(function(err) {
+    if (err) { return next(err); }
+    next(null);
+  });
+};
+
 exports.update = function(q, next){
   var conditions = q.where;
   var update = q.update;
@@ -38,19 +52,5 @@ exports.update = function(q, next){
   }
   query.exec(function(err, follower) {
     next(err, follower);
-  });
-};
-
-exports.saveNew = function(follower, next) {
-  var newFollower = new Follower(follower);
-  newFollower.save(function(err) {
-    if (err) { return next(err); }
-    next(null);
-  });
-};
-
-exports.count = function(q, next){
-  Follower.count(q.args, function (err, count) {
-    next(err, count);
   });
 };

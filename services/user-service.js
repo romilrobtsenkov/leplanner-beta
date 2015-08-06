@@ -4,6 +4,24 @@ var nodemailer = require('nodemailer');
 var config = require('../config/config');
 var User = require('../models/user').User;
 
+exports.bcryptCreatePassword = function(password, next) {
+  bcrypt.hash(password, 10, function(err, hash) {
+    next(err, hash);
+  });
+};
+
+exports.bcryptCompare = function(candidate, hash, next) {
+  bcrypt.compare(candidate, hash, function(err, is_match) {
+    next(err, is_match);
+  });
+};
+
+exports.cryptoCreateToken = function(next) {
+  crypto.randomBytes(20, function(err, buf) {
+    next(err, buf.toString('hex'));
+  });
+};
+
 exports.find = function(q, next){
   var query = User.find();
   query.where(q.args);
@@ -35,22 +53,6 @@ exports.findById = function(id, next) {
   });
 };
 
-exports.update = function(q, next){
-  var conditions = q.where;
-  var update = q.update;
-  var options = {new: true};
-  if(q.select){ options.select = q.select; }
-  var query = User.findOneAndUpdate(conditions, update, options);
-  if(q.populated_fields){
-    for(var i = 0; i< q.populated_fields.length; i++){
-      query.populate(q.populated_fields[i].field, q.populated_fields[i].populate);
-    }
-  }
-  query.exec(function(err, user) {
-    next(err, user);
-  });
-};
-
 exports.saveNew = function(new_user, next) {
   var newUser = new User(new_user);
   newUser.save(function(err) {
@@ -62,24 +64,6 @@ exports.saveNew = function(new_user, next) {
       }
     }
     next(null);
-  });
-};
-
-exports.bcryptCompare = function(candidate, hash, next) {
-  bcrypt.compare(candidate, hash, function(err, is_match) {
-    next(err, is_match);
-  });
-};
-
-exports.cryptoCreateToken = function(next) {
-  crypto.randomBytes(20, function(err, buf) {
-    next(err, buf.toString('hex'));
-  });
-};
-
-exports.bcryptCreatePassword = function(password, next) {
-  bcrypt.hash(password, 10, function(err, hash) {
-    next(err, hash);
   });
 };
 
@@ -102,5 +86,21 @@ exports.sendPasswordResetMail = function(user, next) {
     //console.log(err);
     if (err) { return next(err); }
     return next(null, 'sent');
+  });
+};
+
+exports.update = function(q, next){
+  var conditions = q.where;
+  var update = q.update;
+  var options = {new: true};
+  if(q.select){ options.select = q.select; }
+  var query = User.findOneAndUpdate(conditions, update, options);
+  if(q.populated_fields){
+    for(var i = 0; i< q.populated_fields.length; i++){
+      query.populate(q.populated_fields[i].field, q.populated_fields[i].populate);
+    }
+  }
+  query.exec(function(err, user) {
+    next(err, user);
   });
 };

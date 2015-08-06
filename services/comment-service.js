@@ -16,6 +16,13 @@ exports.find = function(q, next){
   });
 };
 
+exports.saveNew = function(comment, next) {
+  var newComment = new Comment(comment);
+  newComment.save(function(err, saved_comment) {
+    next(err, saved_comment);
+  });
+};
+
 exports.update = function(q, next){
   var conditions = q.where;
   var update = q.update;
@@ -29,12 +36,5 @@ exports.update = function(q, next){
   }
   query.exec(function(err, comment) {
     next(err, comment);
-  });
-};
-
-exports.saveNew = function(comment, next) {
-  var newComment = new Comment(comment);
-  newComment.save(function(err, saved_comment) {
-    next(err, saved_comment);
   });
 };

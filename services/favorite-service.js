@@ -1,5 +1,11 @@
 var Favorite = require('../models/favorite').Favorite;
 
+exports.count = function(q, next){
+  Favorite.count(q.args, function (err, count) {
+    next(err, count);
+  });
+};
+
 exports.find = function(q, next){
   var query = Favorite.find();
   query.where(q.args);
@@ -25,6 +31,14 @@ exports.findOne = function(q, next){
   });
 };
 
+exports.saveNew = function(favorite, next) {
+  var newFavorite = new Favorite(favorite);
+  newFavorite.save(function(err) {
+    if (err) { return next(err); }
+    next(null);
+  });
+};
+
 exports.update = function(q, next){
   var conditions = q.where;
   var update = q.update;
@@ -38,19 +52,5 @@ exports.update = function(q, next){
   }
   query.exec(function(err, favorite) {
     next(err, favorite);
-  });
-};
-
-exports.saveNew = function(favorite, next) {
-  var newFavorite = new Favorite(favorite);
-  newFavorite.save(function(err) {
-    if (err) { return next(err); }
-    next(null);
-  });
-};
-
-exports.count = function(q, next){
-  Favorite.count(q.args, function (err, count) {
-    next(err, count);
   });
 };
