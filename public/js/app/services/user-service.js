@@ -20,7 +20,7 @@
       resetPassword: resetPassword,
       sendResetUserToken: sendResetUserToken,
       updateUserPassword: updateUserPassword,
-      updateUserProfile: updateUserProfile,
+      updateUserProfile: updateUserProfile
     };
 
     function addRemoveFollow(query) {
