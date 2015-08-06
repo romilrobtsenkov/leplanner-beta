@@ -13,10 +13,10 @@
       createUser: createUser,
       getNotifications: getNotifications,
       getUser: getUser,
+      getUsersList: getUsersList,
       loadUserData: loadUserData,
       loginUser: loginUser,
       logoutUser: logoutUser,
-      getUsersList: getUsersList,
       resetPassword: resetPassword,
       sendResetUserToken: sendResetUserToken,
       updateUserPassword: updateUserPassword,
@@ -53,6 +53,13 @@
         });
     }
 
+    function getUsersList(user) {
+      return $http.post('/api/user/list', user)
+        .then(function(response) {
+          return response.data;
+        });
+    }
+
     function loadUserData(query) {
       return $http.post('/api/user/load-user-data', query)
         .then(function(response) {
@@ -69,13 +76,6 @@
 
     function logoutUser(user) {
       return $http.get('/api/user/logout')
-        .then(function(response) {
-          return response.data;
-        });
-    }
-
-    function getUsersList(user) {
-      return $http.post('/api/user/list', user)
         .then(function(response) {
           return response.data;
         });

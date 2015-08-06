@@ -21,6 +21,7 @@
         $rootScope.sort_tab.dash = 'latest';
       }
 
+      // INIT
       getDashboardData();
 
       var notification_limit = 20;
@@ -92,7 +93,6 @@
         }else{
 
           // get users list to follow/unfollow
-
           var params = {
               user: {
                 _id: $rootScope.user._id

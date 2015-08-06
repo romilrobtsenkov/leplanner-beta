@@ -14,14 +14,15 @@
       $scope.user = $rootScope.user;
       $scope.user.profile_image ="./images/user/"+$scope.user._id+".jpg";
 
+      // INIT
+      fillUpdateProfileForm($scope.user);
+
       function fillUpdateProfileForm() {
         $scope.user.new_first_name = $scope.user.first_name;
         $scope.user.new_last_name = $scope.user.last_name;
         $scope.user.new_email = $scope.user.email;
         $scope.user.new_organization = $scope.user.organization;
       }
-
-      fillUpdateProfileForm($scope.user);
 
       $scope.updateProfile = function(user){
 

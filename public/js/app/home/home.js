@@ -15,6 +15,7 @@
         $rootScope.home_active_sort_tab = 'latest';
       }
 
+      // INIT
       getScenarios();
       loadSubjects();
 

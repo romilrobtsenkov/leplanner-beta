@@ -4,7 +4,6 @@ var passport = require('passport');
 var userService = require('../services/user-service');
 var followerService = require('../services/follower-service');
 var validateService = require('../services/validate-service');
-var scenarioService = require('../services/scenario-service');
 var notificationService = require('../services/notification-service');
 var config = require('../config/config');
 var restrict = require('../auth/restrict');

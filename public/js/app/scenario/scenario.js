@@ -27,6 +27,8 @@
           _id :$rootScope.user._id
         };
       }
+
+      // INIT
       scenarioService.getSingleScenario(params)
         .then(function(data) {
           if(data.scenario){
@@ -293,5 +295,5 @@
         }
       };
 
-    }
+    } // ScenarioController end
 }());

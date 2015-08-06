@@ -31,32 +31,8 @@
 
       $scope.loading_animation = true;
 
+      // INIT
       createDropDownMenusAndInitialSearch();
-
-      $scope.search = function() {
-        $scope.search_page_nr = 1;
-        getSearchParamsAndSearch();
-      };
-
-      $scope.pageChanged = function(new_page_nr) {
-        $rootScope.search_page_nr = new_page_nr;
-        //console.log($scope.search_page_nr);
-      };
-
-      $scope.isSortActive = function(tab){
-        if(tab == $rootScope.sort_tab.search){ return true; }
-        return false;
-      };
-
-      $scope.updateSortList = function(tab){
-        if(tab == 'latest ' || tab == 'popular' || tab == 'favorited' || tab == 'commented'){
-          $rootScope.sort_tab.search = tab;
-          getSearchParamsAndSearch();
-        }else{
-          $rootScope.sort_tab.search = 'latest';
-          getSearchParamsAndSearch();
-        }
-      };
 
       function createDropDownMenusAndInitialSearch(){
         //  arrays to store selected multiple choices
@@ -81,9 +57,9 @@
 
               $scope.subjects = data.subjects;
 
+              // Retrieve search from navigating back to search
               if(typeof $rootScope.searchParams !== 'undefined'){
 
-                // Retrieve search from navigation
                 $scope.search_word = $rootScope.searchParams.search_word;
 
                 for(var i = 0; i < $scope.subjects.length; i++){
@@ -143,12 +119,12 @@
           subjects: selected_subjects_labels,
         };
 
+        // Save to rootScope to use when user navigates back
         $rootScope.searchParams = search_params;
-        $rootScope.search_page_nr = 1;
+
+        // Start search
         searchScenarios(search_params);
       }
-
-
 
       function searchScenarios(query){
 
@@ -200,5 +176,31 @@
 
       }
 
-    }
+      $scope.search = function() {
+        $scope.search_page_nr = 1;
+        $rootScope.search_page_nr = 1;
+        getSearchParamsAndSearch();
+      };
+
+      $scope.pageChanged = function(new_page_nr) {
+        $rootScope.search_page_nr = new_page_nr;
+        //console.log($scope.search_page_nr);
+      };
+
+      $scope.isSortActive = function(tab){
+        if(tab == $rootScope.sort_tab.search){ return true; }
+        return false;
+      };
+
+      $scope.updateSortList = function(tab){
+        if(tab == 'latest ' || tab == 'popular' || tab == 'favorited' || tab == 'commented'){
+          $rootScope.sort_tab.search = tab;
+          getSearchParamsAndSearch();
+        }else{
+          $rootScope.sort_tab.search = 'latest';
+          getSearchParamsAndSearch();
+        }
+      };
+
+    } // SearchController end
 }());

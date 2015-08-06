@@ -4,8 +4,6 @@
 
         <div class="main-login">
 
-          <!-- Creating a new account -->
-
             <h3>
               <span ng-if="!create_form && !reset_form">Log in</span>
               <a ng-click="deactivateCreateForm($event)" style="cursor:pointer" ng-if="create_form">Log in</a>
@@ -35,6 +33,7 @@
               </div>
             </form>
 
+            <!-- Send reset email-->
             <form ng-if='reset_form && !create_form' name="reset-user-form" id="reset-user-form" ng-submit="reset(user)">
               <div ng-if='reset_error' class="alert alert-danger" role="alert">{{reset_error}}</div>
               <div ng-if='success_alert' class="alert alert-success" role="alert">{{success_alert}}</div>
@@ -47,6 +46,7 @@
               </div>
             </form>
 
+            <!-- Create new account -->
             <form ng-if='create_form' name="create-user-form" id="create-user-form" ng-submit="create(user)">
               <div ng-if='create_error' class="alert alert-danger" role="alert">{{create_error}}</div>
               <div class="form-group">

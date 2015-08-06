@@ -25,6 +25,7 @@
       $scope.sidebox_quantity.followings = 8;
       $scope.sidebox_quantity.followers = 8;
 
+      // INIT
       getUserData();
 
       function getUserData(){
@@ -211,5 +212,5 @@
         }
       };
 
-    }
+    } // UserController end
 }());
