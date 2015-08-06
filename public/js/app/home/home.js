@@ -5,9 +5,9 @@
     .module('app')
     .controller('HomeController', HomeController);
 
-    HomeController.$inject = ['$scope','$rootScope','scenarioService','metaService'];
+    HomeController.$inject = ['$scope','$rootScope','$location','scenarioService','metaService'];
 
-    function HomeController($scope,$rootScope,scenarioService,metaService) {
+    function HomeController($scope,$rootScope,$location,scenarioService,metaService) {
 
       $rootScope.title = 'Leplanner beta';
 
@@ -84,6 +84,14 @@
           $rootScope.home_active_sort_tab = 'latest';
           getScenarios();
         }
+      };
+
+      $scope.searchSubject = function(subject_name, $event){
+        if(typeof $event !== 'undefined'){
+          $event.preventDefault();
+        }
+        $rootScope.search_subject = subject_name;
+        $location.path('/search');
       };
 
     }

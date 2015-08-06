@@ -64,7 +64,7 @@
           	<!-- show list of subjects -->
   <ul class="subjects">
     <li style="list-style: none" ng-repeat="subject in subjects"  class="col-xs-6 col-sm-4">
-      <a href="#/subject/{{subject._id}}" style="cursor: pointer">{{subject.name}}</a>
+      <a href ng-click="searchSubject(subject.name)" style="cursor: pointer">{{subject.name}}</a>
     </li>
   </ul>
 

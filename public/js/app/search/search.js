@@ -31,8 +31,7 @@
 
       $scope.loading_animation = true;
 
-      createDropDownMenus();
-      getSearchParamsAndSearch();
+      createDropDownMenusAndInitialSearch();
 
       $scope.search = function() {
         $scope.search_page_nr = 1;
@@ -59,7 +58,7 @@
         }
       };
 
-      function createDropDownMenus(){
+      function createDropDownMenusAndInitialSearch(){
         //  arrays to store selected multiple choices
         $scope.selected_subjects = [];
 
@@ -97,6 +96,9 @@
 
               }
 
+              // INITAL SEARCH
+              getSearchParamsAndSearch();
+
             }
 
             if(data.error){
@@ -120,6 +122,18 @@
         var subjects = [];
         var selected_subjects_labels = [];
 
+        // redirect from home page, search for subject only
+        if(typeof $rootScope.search_subject !== 'undefined'){
+          $scope.search_word = '';
+          $scope.selected_subjects = [];
+          for(var i = 0; i < $scope.subjects.length; i++){
+            if($scope.subjects[i].name == $rootScope.search_subject){
+              $scope.selected_subjects.push($scope.subjects[i]);
+            }
+          }
+          $rootScope.search_subject = undefined;
+        }
+
         $scope.selected_subjects.forEach(function(element) {
           selected_subjects_labels.push(element.name);
         });
@@ -129,8 +143,6 @@
           subjects: selected_subjects_labels,
         };
 
-        //return search_params;
-        //var search_params = getSearchParams();
         $rootScope.searchParams = search_params;
         $rootScope.search_page_nr = 1;
         searchScenarios(search_params);
