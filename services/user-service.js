@@ -69,9 +69,7 @@ exports.saveNew = function(new_user, next) {
 
 exports.sendPasswordResetMail = function(user, next) {
   nodemailer.sendmail = true;
-  var transporter = nodemailer.createTransport({
-    debug: true
-  });
+  var transporter = nodemailer.createTransport();
   var mailOptions = {
     to: user.email,
     from: config.email,

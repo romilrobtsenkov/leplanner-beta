@@ -88,9 +88,7 @@ if (app.get('env') === 'production') {
   process.on('uncaughtException', function (err) {
     console.error(err.stack);
 
-    var transport = nodemailer.createTransport({
-      debug: true
-    });
+    var transport = nodemailer.createTransport();
 
     transport.sendMail({
       from: config.email,
