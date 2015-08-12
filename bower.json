@@ -13,7 +13,8 @@
     "angular-resource": "~1.4.0",
     "angularjs-dropdown-multiselect": "~1.5.2",
     "angular-utils-pagination": "~0.8.3",
-    "ng-file-upload": "~5.0.9"
+    "ng-file-upload": "~5.0.9",
+    "angular-ui-sortable": "~0.13.4"
   },
   "resolutions": {
     "angular": "1.4.1"

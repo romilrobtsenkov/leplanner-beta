@@ -30,6 +30,10 @@ h6, .h6 {
   margin: 0;
 }
 
+.no-padding {
+  padding: 0;
+}
+
 .navbar-brand,
 .navbar-brand:hover {
   background-image: url(../images/logo.png);
@@ -782,4 +786,23 @@ p.content-for-notification {
 
 label {
   display: inline-block;
+}
+
+.activity-item {
+  background-color: #fff;
+}
+
+.activity-list-container {
+  margin-bottom: 30px;
+}
+
+.drag-selector {
+  cursor: move;
+  margin-left: 20px;
+}
+
+.drag-selector span {
+   font-size: 1.2em;
+   color: gray;
+   padding-top: 8px;
 }

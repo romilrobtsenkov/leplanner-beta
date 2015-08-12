@@ -1,6 +1,7 @@
 <!-- Main content container that is inserted to index.html-->
 <div class="container main-content">
   <h2>Create scenario</h2>
+  </br>
   <p ng-hide="user"><strong class="alert alert-warning" role="alert">Please <a href="/#/login">login</a> to add scenario</strong></p>
 
   <form ng-show="user" id="create-scenario" ng-submit="saveScenario(scenario)">
@@ -36,16 +37,6 @@
 
         <div class="row no-margin">
           <div class=" form-group">
-            <label for="stage"><strong>Stage: (required)</strong></label>
-            <select class="form-control" id="stage" ng-model="scenario.stage" name="stage" required>
-              <option value="" selected disabled>Choose stage</option>
-              <option ng-repeat="stage in stages" value="{{stage}}">{{stage}}</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="row no-margin">
-          <div class=" form-group">
             <label for="grade"><strong>Grade: (required)</strong></label>
             <input type="text" ng-model="scenario.grade" name="grade" id="grade" class="form-control" required/>
           </div>
@@ -60,20 +51,103 @@
 
       </div>
 
-      <div class="col-sm-8">
+      <div class="col-sm-7 col-sm-offset-1">
 
-        time and exersize fields list - auto populated
+
+        <div class="activity-list-container">
+          <h3>Before lesson</h3>
+          <input type="hidden" id="item-counter" name="item-counter" value="0">
+
+          <div ui-sortable ng-model="before_activity_list" class="activity-list">
+
+            <!-- one line of activity -->
+            <div ng-repeat="activity in before_activity_list track by $index" class="row form-group activity-item">
+              <div class="col-xs-1 no-padding">
+                <div class="drag-selector">
+                  <span class="glyphicon glyphicon-option-vertical"></span>
+                </div>
+              </div>
+              <div class="col-xs-8">
+                <input type="text" ng-model="before_activity_list[$index].name" name="activity-{{$index}}" id="item-0-activity" class="form-control" placeholder="Activity" required />
+              </div>
+              <div class="col-xs-2">
+                <input type="number" ng-model="before_activity_list[$index].duration" name="duration-{{$index}}" id="item-0-duration" class="form-control list-activity-duration" placeholder="min" required />
+              </div>
+              <div class="col-xs-1">
+                <button style="margin-top: 2px;" ng-click="removeActivity('before',$index)" class="btn btn-sm btn-default pull-left"><span class="glyphicon glyphicon-remove"></span></button>
+              </div>
+            </div>
+
+          </div>
+          <button ng-click="addNewActivityItem('before')" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-plus"></span></button>
+        </div>
+
+
+        <div class="activity-list-container">
+          <h3>Lesson activities</h3>
+          <input type="hidden" id="item-counter" name="item-counter" value="0">
+
+          <div ui-sortable ng-model="activity_list" class="activity-list">
+
+            <!-- one line of activity -->
+            <div ng-repeat="activity in activity_list track by $index" class="row form-group activity-item">
+              <div class="col-xs-1 no-padding">
+                <div class="drag-selector">
+                  <span class="glyphicon glyphicon-option-vertical"></span>
+                </div>
+              </div>
+              <div class="col-xs-8">
+                <input type="text" ng-model="activity_list[$index].name" name="activity-{{$index}}" id="item-0-activity" class="form-control" placeholder="Activity" required />
+              </div>
+              <div class="col-xs-2">
+                <input type="number" ng-model="activity_list[$index].duration" name="duration-{{$index}}" id="item-0-duration" class="form-control list-activity-duration" placeholder="min" required />
+              </div>
+              <div class="col-xs-1">
+                <button style="margin-top: 2px;" ng-click="removeActivity('lesson',$index)" class="btn btn-sm btn-default pull-left"><span class="glyphicon glyphicon-remove"></span></button>
+              </div>
+            </div>
+
+          </div>
+          <button ng-click="addNewActivityItem('lesson')" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-plus"></span></button>
+        </div>
+
+
+        <div class="activity-list-container">
+          <h3>After lesson</h3>
+          <input type="hidden" id="item-counter" name="item-counter" value="0">
+
+          <div ui-sortable ng-model="after_activity_list" class="activity-list">
+
+            <!-- one line of activity -->
+            <div ng-repeat="activity in after_activity_list track by $index" class="row form-group activity-item">
+              <div class="col-xs-1 no-padding">
+                <div class="drag-selector">
+                  <span class="glyphicon glyphicon-option-vertical"></span>
+                </div>
+              </div>
+              <div class="col-xs-8">
+                <input type="text" ng-model="after_activity_list[$index].name" name="activity-{{$index}}" id="item-0-activity" class="form-control" placeholder="Activity" required />
+              </div>
+              <div class="col-xs-2">
+                <input type="number" ng-model="after_activity_list[$index].duration" name="duration-{{$index}}" id="item-0-duration" class="form-control list-activity-duration" placeholder="min" required />
+              </div>
+              <div class="col-xs-1">
+                <button style="margin-top: 2px;" ng-click="removeActivity('after',$index)" class="btn btn-sm btn-default pull-left"><span class="glyphicon glyphicon-remove"></span></button>
+              </div>
+            </div>
+
+          </div>
+          <button ng-click="addNewActivityItem('after')" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-plus"></span></button>
+        </div>
+
 
       </div>
 
     </div>
 
-    <input type="submit" id="submit" value="Save & continue editing" class="btn btn-success" />
+    <button class="btn btn-success pull-right">Save & continue editing</button>
 
   </form>
-
-  <br />
-  <br />
 
   <!-- Success / Error messages -->
   <div style="width:400px" id="successMessage" ng-show="successMessage" class="alert alert-success" role="alert"><strong>Success!</strong> {{successMessage}}</div>

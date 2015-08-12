@@ -107,6 +107,8 @@
 
           <h3>Comments ({{scenario.comments_count}})</h3>
 
+          <p ng-if="!comments" class="loading-gif-animation"><img src="./images/loading.gif"></p>
+
           <!-- Comment -->
           <article ng-repeat="comment in comments" class="row comments-list">
           <div class="col-sm-2 col-xs-3">

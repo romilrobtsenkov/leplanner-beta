@@ -15,6 +15,12 @@
 
       function load(){
 
+        $scope.before_activity_list = [];
+        $scope.activity_list = [];
+        $scope.after_activity_list = [];
+
+        $scope.activity_list.push(createNewEmptyActivity());
+
         metaService.getSubjectList()
         .then(function(data) {
 
@@ -29,11 +35,6 @@
 
       }
 
-      $scope.languages = metaService.getLanguageList();
-      $scope.licenses = metaService.getLicenseList();
-      $scope.materials = metaService.getMaterialList();
-      $scope.methods = metaService.getMethodList();
-      $scope.stages = metaService.getStageList();
 
       $scope.saveScenario = function(scenario) {
 
@@ -60,16 +61,6 @@
                   console.log('saved');
                   $scope.successMessage = "Scenario has been submitted successfully";
                   $scope.errorMessage = null;
-
-                  scenario.name = null;
-                  scenario.subject = null;
-                  scenario.language = null;
-                  scenario.license = null;
-                  scenario.materialType = null;
-                  scenario.method = null;
-                  scenario.stage = null;
-                  scenario.description = null;
-
                 }
 
                 if(data.error){
@@ -87,6 +78,50 @@
                 }
 
             });
+        }
+      };
+
+      $scope.addNewActivityItem = function(type){
+
+        var new_activity = createNewEmptyActivity();
+
+        switch (type) {
+          case 'before':
+            $scope.before_activity_list.push(new_activity);
+            break;
+          case 'lesson':
+            $scope.activity_list.push(new_activity);
+            break;
+          case 'after':
+            $scope.after_activity_list.push(new_activity);
+            break;
+          default:
+          console.log('error');
+        }
+
+      };
+
+      function createNewEmptyActivity(){
+        return {
+          random: Math.random(), // fix for making empty list items different
+          name: '',
+          duration: ''
+        };
+      }
+
+      $scope.removeActivity = function(type, $index){
+        switch (type) {
+          case 'before':
+            $scope.before_activity_list.splice($index,1);
+            break;
+          case 'lesson':
+            $scope.activity_list.splice($index,1);
+            break;
+          case 'after':
+            $scope.after_activity_list.splice($index,1);
+            break;
+          default:
+          console.log('error');
         }
       };
 
