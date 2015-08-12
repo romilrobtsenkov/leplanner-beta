@@ -565,8 +565,9 @@ router.post('/single-scenario/', function(req, res, next) {
     },
     function(response, next){
 
-      // if author viewing if there are notifications - mark them as seen!
-      if(typeof params.user === 'undefined' && params.user._id !== response.scenario.author._id.toString()){ return next(null, response); }
+      // if author viewing if there are notifications - mark them as seen, else skip!
+      if(typeof params.user == 'undefined'){ return next(null, response); }
+      if(typeof params.user != 'undefined' && params.user._id !== response.scenario.author._id.toString()){ return next(null, response); }
 
       var q = {};
       q.where = { user: params.user._id, type: 'comment', 'data.scenario': response.scenario._id, seen: null };
