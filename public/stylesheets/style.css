@@ -788,17 +788,44 @@ label {
   display: inline-block;
 }
 
+.learining-outcomes-list-container {
+  margin-bottom: 30px;
+}
+
 .activity-item {
   background-color: #fff;
+  width: 100%;
+}
+
+.activity-item .multiselect-parent,
+.activity-item .multiselect-parent button {
+  width: 100%;
+  text-align: left;
+}
+
+.activity-item .multiselect-parent button .caret {
+  position: absolute;
+  right: 10px;
+  margin-top: 10px;
+}
+
+.activity-item .dropdown-menu>li>a span {
+    padding-left: 18px;
+}
+
+.activity-item .dropdown-menu>li>a span.glyphicon {
+    padding-left: 0px;
 }
 
 .activity-list-container {
+  margin-top: 30px;
   margin-bottom: 30px;
 }
 
 .drag-selector {
   cursor: move;
-  margin-left: 20px;
+  position: absolute;
+  right: 10px;
 }
 
 .drag-selector span {

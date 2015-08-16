@@ -195,10 +195,6 @@ router.post('/comments/', function(req, res, next) {
   });
 });
 
-router.post('/create/', restrict, function(req, res, next) {
-    return res.json({success: 'Saved successfully'});
-});
-
 router.post('/delete-comment/',restrict, function(req, res, next) {
 
   var params = req.body;
@@ -307,6 +303,53 @@ router.post('/list/', function(req, res, next) {
     if(err){ res.json(err); }
     res.json(result);
   });
+
+});
+
+router.post('/save/', restrict, function(req, res, next) {
+
+    var query = req.body;
+
+    async.waterfall([
+      function(next){
+
+        var new_scenario = query.scenario_data;
+
+        // validation !!!!
+        // - scenario
+        // - outcomes
+        // - activities
+
+        new_scenario.draft = true;
+        new_scenario.last_modified = new Date();
+
+        //console.log(new_scenario);
+
+        if(typeof new_scenario._id == 'undefined'){
+
+          // save new
+          scenarioService.saveNew(new_scenario, function(err, scenario){
+            if (err) { return next({error: err}); }
+            console.log('new save');
+            next(null, {scenario: { _id: scenario._id } } );
+          });
+        }else{
+
+          //update existing
+          var q = {};
+          q.where = { _id: new_scenario._id };
+          q.update = new_scenario;
+          scenarioService.update(q, function(err, scenario){
+            if (err) { return next({error: err}); }
+            console.log('updated _id: '+scenario._id);
+            next(null, {scenario: { _id: scenario._id } } );
+          });
+        }
+      }
+    ], function (err, result) {
+      if(err){ res.json(err); }
+      res.json(result);
+    });
 
 });
 

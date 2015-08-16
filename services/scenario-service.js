@@ -57,17 +57,11 @@ exports.findOne = function(q, next){
   });
 };
 
-exports.saveNew = function(new_user, next) {
-  var newUser = new User(new_user);
-  newUser.save(function(err) {
-    if (err) {
-      if(err.errors.email.message == 'That email is already in use'){
-        return next({id: 6, message: 'That email is already in use'});
-      }else{
-        return next(err);
-      }
-    }
-    next(null);
+exports.saveNew = function(new_scenario, next) {
+  var newScenario = new Scenario(new_scenario);
+  newScenario.save(function(err, scenario) {
+    if (err) { return next(err); }
+    next(null, scenario);
   });
 };
 

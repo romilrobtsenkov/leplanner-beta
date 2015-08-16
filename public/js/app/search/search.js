@@ -50,6 +50,8 @@
           buttonClasses: 'btn btn-default btn-fixed-width',
         };
 
+        $scope.subjectsText = {buttonDefaultText: 'Filter subjects'};
+
          metaService.getSubjectList()
           .then(function(data) {
 

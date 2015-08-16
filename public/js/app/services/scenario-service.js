@@ -11,7 +11,7 @@
     return {
       addComment: addComment,
       addRemoveFavorite: addRemoveFavorite,
-      createScenario: createScenario,
+      saveScenario: saveScenario,
       deleteComment: deleteComment,
       getComments: getComments,
       getDashScenarios: getDashScenarios,
@@ -30,13 +30,6 @@
 
     function addRemoveFavorite(params) {
       return $http.post('/api/scenario/add-remove-favorite',params)
-        .then(function(response) {
-          return response.data;
-        });
-    }
-
-    function createScenario(params) {
-      return $http.post('/api/scenario/create',params)
         .then(function(response) {
           return response.data;
         });
@@ -79,6 +72,13 @@
 
     function getWidgetScenarios(query) {
       return $http.post('/api/scenario/widget-list',query)
+        .then(function(response) {
+          return response.data;
+        });
+    }
+
+    function saveScenario(params) {
+      return $http.post('/api/scenario/save',params)
         .then(function(response) {
           return response.data;
         });

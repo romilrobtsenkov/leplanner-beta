@@ -10,6 +10,7 @@
   function metaServiceFactory($http) {
     return {
       getSubjectList: getSubjectList,
+      getcreateScenarioMeta: getcreateScenarioMeta
 
     };
 
@@ -19,6 +20,15 @@
           return response.data;
         });
     }
+
+    function getcreateScenarioMeta() {
+      return $http.get('/api/meta/create-new-scenario-meta')
+        .then(function(response) {
+          return response.data;
+        });
+    }
+
+
 
   }
 }());
