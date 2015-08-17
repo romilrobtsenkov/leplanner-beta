@@ -7,6 +7,7 @@ exports.validate = function(to_validate_array, next){
   var validation = {
     addRemoveFavorite: addRemoveFavorite,
     addRemoveFollow: addRemoveFollow,
+    createScenario: createScenario,
     commentData: commentData,
     deleteComment: deleteComment,
     email: email,
@@ -37,6 +38,14 @@ exports.validate = function(to_validate_array, next){
     if(params.user._id == params.following._id){ return next("can not follow yourself");}
     if(!params.user._id){return next("no user data sent");}
     if(!params.following._id){return next("to follow/unfollow not sent");}
+
+    next();
+  }
+
+  function createScenario(params) {
+    if(typeof params === 'undefined'){return next('no params sent');}
+    if(typeof params.scenario.name == 'undefined' || params.scenario.name === '' || params.scenario.name.length <= 2){ return next({id: 0, message: 'Scenario name has to be atleast 3 chars long!'});}
+    if(typeof params.scenario.description == 'undefined' || params.scenario.description === '' || params.scenario.description.length <= 2){ return next({id: 1, message: 'Scenario description has to be atleast 3 chars long!'});}
 
     next();
   }

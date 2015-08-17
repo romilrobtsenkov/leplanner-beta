@@ -6,7 +6,7 @@ var scenarioSchema = new Schema({
     subject: { type: mongoose.Schema.Types.ObjectId, ref: 'Subject'},
     grade: { type: Number },
     duration: { type: Number },
-    author: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+    author: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
     created: { type: Date, default: Date.now },
     students: { type: Number, default: 0 },
     description: { type: String },
@@ -24,7 +24,7 @@ var scenarioSchema = new Schema({
       },
       outcomes: [{
         _id: String,
-        type: String
+        name: String
       }]
     }],
     favorites_count: { type: Number, default: 0 },

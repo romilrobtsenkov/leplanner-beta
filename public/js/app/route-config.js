@@ -37,6 +37,24 @@
         }]
       }
     })
+    .when('/edit/:id', {
+      templateUrl: '/js/app/edit/edit.html',
+      controller: 'EditController',
+      resolve: {
+        data: ['userRouteService', function(userRouteService) {
+          return userRouteService.checkUser({ error_location: '/login'});
+        }]
+      }
+    })
+    .when('/edit-details/:id', {
+      templateUrl: '/js/app/edit-details/edit-details.html',
+      controller: 'EditDetailsController',
+      resolve: {
+        data: ['userRouteService', function(userRouteService) {
+          return userRouteService.checkUser({ error_location: '/login'});
+        }]
+      }
+    })
     .when('/login', {
       templateUrl: '/js/app/login/login.html',
       controller: 'LoginController',
@@ -91,6 +109,6 @@
         }]
       }
     });
-    
+
   }
 }());

@@ -88,13 +88,17 @@
   				<div class="row no-margin">
   					<a href="/#/subject/"><span class="dash-scenario-label pull-right label label-primary">{{scenario.subject}}</span></a>
   					<div class="col-sm-12">
-  						<h4><strong><a href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{scenario.name}}</a></strong></h4>
+  						<h4 ng-if="!scenario.draft" ><strong><a href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{scenario.name}}</a></strong></h4>
+  						<h4 ng-if="scenario.draft"><strong><a href="/#/edit-details/{{scenario._id}}" title="{{scenario.name}}">{{scenario.name}}</a></strong></h4>
   					</div>
   				</div>
 
   				<div class="row no-margin">
   					<div class="col-sm-4">
-  						<a href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}" class="thumbnail">
+  						<a ng-if="!scenario.draft" href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}" class="thumbnail">
+  							<img src="./images/thumbnail_200.png" alt="">
+  						</a>
+              <a ng-if="scenario.draft" href="/#/edit-details/{{scenario._id}}" title="{{scenario.name}}" class="thumbnail">
   							<img src="./images/thumbnail_200.png" alt="">
   						</a>
   					</div>
@@ -115,7 +119,8 @@
   								 </span>
   							</div>
   							<div class="col-xs-4">
-  							 <a class="btn btn-success btn-block btn-sm pull-right" href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">OPEN <span class="glyphicon glyphicon-chevron-right"></span></a>
+  							 <a ng-if="!scenario.draft" class="btn btn-success btn-block btn-sm pull-right" href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">OPEN <span class="glyphicon glyphicon-chevron-right"></span></a>
+  							 <a ng-if="scenario.draft" class="btn btn-success btn-block btn-sm pull-right" href="/#/edit-details/{{scenario._id}}" title="{{scenario.name}}">EDIT <span class="glyphicon glyphicon-chevron-right"></span></a>
   							</div>
   						</div>
   					</div>

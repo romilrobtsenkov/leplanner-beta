@@ -1,10 +1,12 @@
-<div class="container main-content" ng-if="!subjects">
+<div class="container main-content" ng-if="!scenario && !fully_loaded">
+  <div ng-if='errorMessage' class="alert alert-danger" role="alert">{{errorMessage}}</div>
   <p class="loading-gif-animation"><img src="./images/loading.gif"></p>
 </div>
-<div class="container main-content" ng-if="subjects">
-  <h2>Create scenario <span ng-if="saving" class="pull-right" style="font-size: 20px; color:gray;">saving...</span><span ng-if="!saving && saved" class="pull-right" style="font-size: 15px; color:gray;">all modifications saved</span></h2>
+<div class="container main-content" ng-if="scenario && fully_loaded">
+  <h2>Edit: <i>{{scenario.name}}</i> <span ng-if="saving" class="pull-right" style="font-size: 20px; color:gray;">saving...</span><span ng-if="!saving && saved" class="pull-right" style="font-size: 15px; color:gray;">all modifications saved</span></h2>
   </br>
-  <p ng-hide="user"><strong class="alert alert-warning" role="alert">Please <a href="/#/login">login</a> to add scenario</strong></p>
+
+  <div ng-if='errorMessage' class="alert alert-danger" role="alert">{{errorMessage}}</div>
 
   <div class="row no-margin">
 
@@ -13,8 +15,8 @@
 
       <div class="row no-margin">
         <div class=" form-group">
-          <label for="name"><strong>Name: (required)</strong></label>
-          <input type="text" ng-model="scenario.name" name="name" id="name" class="form-control" autofocus required/>
+          <label for="name"><strong>Name: </strong></label>
+          <input type="text" ng-model="scenario.name" name="name" id="name" class="form-control" required/>
         </div>
       </div>
 
@@ -27,7 +29,7 @@
 
       <div class="row no-margin">
         <div class=" form-group">
-          <label for="subject"><strong>Subject: (required)</strong></label>
+          <label for="subject"><strong>Subject: </strong></label>
           <select class="form-control" id="subject" ng-model="scenario.subject" name="subject" required>
             <option value="" selected disabled>Choose subject</option>
             <option ng-repeat="subject in subjects" value="{{subject._id}}">{{subject.name}}</option>
@@ -37,15 +39,15 @@
 
       <div class="row no-margin">
         <div class=" form-group">
-          <label for="grade"><strong>Grade: (required)</strong></label>
-          <input type="number" ng-model="scenario.grade" name="grade" id="grade" class="form-control" required/>
+          <label for="grade"><strong>Grade: </strong></label>
+          <input type="number" min="0" step="1" ng-model="scenario.grade" name="grade" id="grade" class="form-control" required/>
         </div>
       </div>
 
       <div class="row no-margin">
         <div class=" form-group">
-          <label for="duration"><strong>Duration (min): (required)</strong></label>
-          <input type="number" ng-model="scenario.duration" name="duration" id="duration" class="form-control" required/>
+          <label for="duration"><strong>Duration (min): </strong></label>
+          <input type="number" min="0" step="1" ng-model="scenario.duration" name="duration" id="duration" class="form-control" required/>
         </div>
       </div>
 
@@ -99,7 +101,6 @@
             </label>
           </div>
           <div class="col-xs-2 no-padding" style="padding-right:5px;">
-            <!-- TODO listen onItemSelect -->
             <div style="display: inline; width: 100%;" ng-dropdown-multiselect="" options="activity_organization" selected-model="activity_list[$index].activity_organization" extra-settings="activity_organizationSettings" translation-texts="activity_organizationText" ></div>
           </div>
           <div class="col-xs-2 no-padding" style="padding-right:10px;">
@@ -118,9 +119,5 @@
   </div>
 
   <button ng-click="saveScenario(scenario)" class="btn btn-success pull-right">Save & continue editing</button>
-
-  <!-- Success / Error messages -->
-  <div style="width:400px" id="successMessage" ng-show="successMessage" class="alert alert-success" role="alert"><strong>Success!</strong> {{successMessage}}</div>
-  <div style="width:400px" id="errorMessage" ng-show="errorMessage" class="alert alert-danger" role="alert"><strong>Error!</strong> {{errorMessage}}</div>
 
 </div>

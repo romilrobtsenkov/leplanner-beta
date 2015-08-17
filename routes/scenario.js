@@ -179,6 +179,38 @@ router.post('/add-remove-favorite/',restrict, function(req, res, next) {
 
 });
 
+router.post('/create/', restrict, function(req, res, next) {
+
+    var params = req.body;
+
+    async.waterfall([
+      function(next){
+
+        validateService.validate([{fn:'createScenario', data:params}], function(err){
+          if (err) { return next({error: err}); }
+          next();
+        });
+
+      },
+      function(next){
+
+        var new_scenario = params.scenario;
+        new_scenario.author = params.user._id;
+        new_scenario.draft = true;
+        new_scenario.last_modified = new Date();
+
+        scenarioService.saveNew(new_scenario, function(err, scenario){
+          if (err) { return next({error: err}); }
+          next(null, {scenario: { _id: scenario._id } } );
+        });
+      }
+    ], function (err, result) {
+      if(err){ res.json(err); }
+      res.json(result);
+    });
+
+});
+
 router.post('/comments/', function(req, res, next) {
 
   var q = {};
@@ -195,7 +227,7 @@ router.post('/comments/', function(req, res, next) {
   });
 });
 
-router.post('/delete-comment/',restrict, function(req, res, next) {
+router.post('/delete-comment/', restrict, function(req, res, next) {
 
   var params = req.body;
 
@@ -217,7 +249,7 @@ router.post('/delete-comment/',restrict, function(req, res, next) {
         if (err) { return next({error: err}); }
         if(user === null){
           // passport req user different from scenario author
-          return next({id: 3, message: 'no rights'});
+          return next({error: {id: 3, message: 'no rights'}});
         }
         next();
       });
@@ -271,6 +303,41 @@ router.post('/delete-comment/',restrict, function(req, res, next) {
 
 });
 
+router.post('/get-edit-data-single-scenario/', restrict, function(req, res, next) {
+
+  var params = req.body;
+
+  async.waterfall([
+    function(next){
+      var q = {};
+      q.args = { _id: params.scenario._id, author: req.user._id };
+
+      scenarioService.findOne(q, function(err, user){
+        if (err) { return next({error: err}); }
+        if(user === null){
+          console.log('no rights');
+          // passport req user different from scenario author
+          return next({error: {id: 3, message: 'no rights'}});
+        }
+        next();
+      });
+    },
+    function(next){
+      var q = {};
+      q.args = { _id: params.scenario._id };
+
+      scenarioService.findOne(q, function(err, scenario){
+        if (err) { return next({error: err}); }
+        if(scenario === null){ return next({error: {id: 0, message: 'no scenario found' }}); }
+        next(null, {scenario: scenario});
+      });
+    }
+  ], function (err, result) {
+    if(err){ res.json(err); }
+    res.json(result);
+  });
+});
+
 router.post('/list/', function(req, res, next) {
 
   var query = req.body;
@@ -308,43 +375,58 @@ router.post('/list/', function(req, res, next) {
 
 router.post('/save/', restrict, function(req, res, next) {
 
-    var query = req.body;
+    var params = req.body;
 
     async.waterfall([
       function(next){
+        //check author
+        var q = {};
+        q.args = { _id: params.scenario_data._id, author: req.user._id };
 
-        var new_scenario = query.scenario_data;
+        scenarioService.findOne(q, function(err, user){
+          if (err) { return next({error: err}); }
+          if(user === null){
+            console.log('no rights');
+            // passport req user different from scenario author
+            return next({error: {id: 3, message: 'no rights'}});
+          }
+          next();
+        });
+      },
+      function(next){
 
-        // validation !!!!
-        // - scenario
-        // - outcomes
-        // - activities
-
-        new_scenario.draft = true;
+        var new_scenario = params.scenario_data;
         new_scenario.last_modified = new Date();
 
-        //console.log(new_scenario);
+        //disallow in any way to change author
+        new_scenario.author = req.user._id;
 
-        if(typeof new_scenario._id == 'undefined'){
-
-          // save new
-          scenarioService.saveNew(new_scenario, function(err, scenario){
-            if (err) { return next({error: err}); }
-            console.log('new save');
-            next(null, {scenario: { _id: scenario._id } } );
-          });
-        }else{
-
-          //update existing
-          var q = {};
-          q.where = { _id: new_scenario._id };
-          q.update = new_scenario;
-          scenarioService.update(q, function(err, scenario){
-            if (err) { return next({error: err}); }
-            console.log('updated _id: '+scenario._id);
-            next(null, {scenario: { _id: scenario._id } } );
-          });
+        // fix only positive numbers in grade, duration
+        if(new_scenario.grade !== null){
+          new_scenario.grade = Math.abs(new_scenario.grade);
         }
+        if(new_scenario.duration !== null){
+          new_scenario.duration = Math.abs(new_scenario.duration);
+        }
+
+        for(var i = 0; i < new_scenario.activities.length; i++){
+          new_scenario.activities[i].duration = Math.abs(new_scenario.activities[i].duration);
+        }
+
+        console.log(new_scenario);
+
+        if(typeof new_scenario._id == 'undefined'){ return next ({error: {id: 0, message: "No scenario id" }}); }
+
+        //update existing
+        var q = {};
+        q.where = { _id: new_scenario._id };
+        q.update = new_scenario;
+        scenarioService.update(q, function(err, scenario){
+          if (err) { return next({error: err}); }
+          console.log('updated _id: '+scenario._id);
+          next(null, {scenario: { _id: scenario._id } } );
+        });
+
       }
     ], function (err, result) {
       if(err){ res.json(err); }

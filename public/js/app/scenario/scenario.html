@@ -1,10 +1,13 @@
 <div class="container main-content" ng-if="!scenario && !no_scenario">
   <p class="loading-gif-animation"><img src="./images/loading.gif"></p>
 </div>
-<div class="container main-content" ng-show="no_scenario">
+<div class="container main-content" ng-if="no_scenario">
   No such scenario found, check URL
 </div>
-<div class="container main-content" ng-if="scenario && !no_scenario">
+<div class="container main-content" ng-show="scenario.draft">
+  This scenario is a draft! <a class="print-button btn btn-primary" ng-if="user._id==scenario.author._id" href="/#/edit-details/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> Edit</a>
+</div>
+<div class="container main-content" ng-if="scenario && !no_scenario && !scenario.draft">
 
   <img class="full-scenario-image" src="./images/full_scenario.png" alt="Scenario">
 
@@ -38,7 +41,7 @@
             <span>| <span class="glyphicon glyphicon-heart"></span><span> {{scenario.favorites_count}}</span></span>
           </div>
           <div class="col-xs-3">
-            <!--<a class="print-button btn btn-sm pull-right" ng-if="user._id==scenario.author._id" href="/#/edit-scenario/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> Edit</a>-->
+            <a class="print-button btn btn-sm pull-right" ng-if="user._id==scenario.author._id" href="/#/edit-details/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> Edit</a>
           </div>
         </div>
 
