@@ -50,6 +50,8 @@
                 console.log('Loaded activities');
               }
 
+              console.log(data.scenario);
+
               $rootScope.title = 'Edit scenario: '+$scope.scenario.name+' details | Leplanner beta';
 
               loadDropdownData();
@@ -81,6 +83,9 @@
           $scope.activity_list.push(createNewEmptyActivity());
           console.log('added empty activity init');
         }
+
+        //publish/draft dropdown
+        $scope.publish_options = [{name: 'Draft', value: true},{name: 'Published', value: false}];
 
         metaService.getcreateScenarioMeta()
         .then(function(data) {
@@ -216,6 +221,35 @@
 
       $scope.removeActivity = function($index){
         $scope.activity_list.splice($index,1);
+      };
+
+      $scope.deleteScenario = function(){
+        var del = confirm("Do you really want to delete scenario '"+$scope.scenario.name+"', there is no turning back!");
+        if(del === true){
+
+          var params = {
+            user: {
+              _id: $rootScope.user._id
+            },
+            scenario: {
+              _id: $scope.scenario_id
+            }
+          };
+
+          scenarioService.deleteScenario(params)
+          .then(function(data) {
+
+            if(data.success){
+              console.log('deleted');
+              $location.path('/dashboard');
+            }
+
+            if(data.error){
+              console.log(data.error);
+              $scope.errorMessage = 'Please try reloading the page';
+            }
+          });
+        }
       };
 
       function userChangedScenario(){

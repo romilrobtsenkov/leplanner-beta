@@ -113,7 +113,7 @@
         }
 
         $scope.selected_subjects.forEach(function(element) {
-          selected_subjects_labels.push(element.name);
+          selected_subjects_labels.push(element._id);
         });
 
         var search_params = {
