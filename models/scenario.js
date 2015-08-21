@@ -27,6 +27,7 @@ var scenarioSchema = new Schema({
         name: String
       }]
     }],
+    activities_duration: { type: Number, default: 0 },
     favorites_count: { type: Number, default: 0 },
     comments_count: { type: Number, default: 0 },
     view_count: { type: Number, default: 0 },

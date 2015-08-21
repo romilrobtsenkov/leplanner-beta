@@ -383,17 +383,17 @@ router.post('/save/', restrict, function(req, res, next) {
         var q = {};
         q.args = { _id: params.scenario_data._id, author: req.user._id };
 
-        scenarioService.findOne(q, function(err, user){
+        scenarioService.findOne(q, function(err, latest_scenario){
           if (err) { return next({error: err}); }
-          if(user === null){
+          if(latest_scenario === null){
             console.log('no rights');
             // passport req user different from scenario author
             return next({error: {id: 3, message: 'no rights'}});
           }
-          next();
+          next(null, latest_scenario);
         });
       },
-      function(next){
+      function(latest_scenario, next){
 
         var new_scenario = params.scenario_data;
         new_scenario.last_modified = new Date();
@@ -409,8 +409,16 @@ router.post('/save/', restrict, function(req, res, next) {
           new_scenario.duration = Math.abs(new_scenario.duration);
         }
 
+        // reset to calculate again
+        new_scenario.activities_duration = 0;
+
         for(var i = 0; i < new_scenario.activities.length; i++){
+          if(typeof new_scenario.activities[i].duration == 'undefined'){
+            // fix if user left it empty
+            new_scenario.activities[i].duration = 0;
+          }
           new_scenario.activities[i].duration = Math.abs(new_scenario.activities[i].duration);
+          new_scenario.activities_duration += new_scenario.activities[i].duration;
         }
 
         console.log(new_scenario);
@@ -423,7 +431,7 @@ router.post('/save/', restrict, function(req, res, next) {
         q.update = new_scenario;
         scenarioService.update(q, function(err, scenario){
           if (err) { return next({error: err}); }
-          console.log('updated _id: '+scenario._id);
+          console.log(req.user.first_name+' updated scenario: '+scenario._id);
           next(null, {scenario: { _id: scenario._id } } );
         });
 

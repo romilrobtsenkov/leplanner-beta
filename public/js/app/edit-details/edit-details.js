@@ -130,6 +130,7 @@
           displayProp: 'name',
           showCheckAll: false,
           showUncheckAll: false,
+          closeOnSelect: true,
           idProp: '_id',
           externalIdProp: '',
           buttonClasses: 'btn btn-default',

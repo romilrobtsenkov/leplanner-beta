@@ -3,9 +3,14 @@
   <p class="loading-gif-animation"><img src="./images/loading.gif"></p>
 </div>
 <div class="container main-content" ng-if="scenario && fully_loaded">
-  <h2>{{scenario.name}} <span ng-if="saving" class="pull-right" style="font-size: 20px; color:gray;">saving...</span><span ng-if="!saving && saved" class="pull-right" style="font-size: 15px; color:gray;">all modifications saved</span></h2>
+  <h2>{{scenario.name}} <span ng-if="saving" class="pull-right" style="font-size: 20px; color:gray;">saving...</span><span ng-if="!saving && saved" class="pull-right" style="font-size: 15px; color:gray;">all modifications saved</span>
+    <a href="/#/edit-details/{{scenario._id}}" class="btn btn-default pull-right">Edit details</a>
+  </h2>
   </br>
 
-    // canvas here!
+  <scenarioeditcanvas></scenarioeditcanvas>
+
+  <button class="btn btn-success pull-right">Save</button>
+  <a href="/#/dashboard" style="margin-right: 10px;" class="btn btn-default pull-right">Cancel</a>
 
 </div>
