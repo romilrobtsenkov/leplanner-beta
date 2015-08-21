@@ -31,7 +31,6 @@
             position: 'absolute',
             top: 0,
             left: 0,
-            border: '1px solid gray'
           });
 
           angular.element(image).css({
@@ -57,6 +56,7 @@
             activities: null,
             activities_duration: null,
             activities_width: null,
+            enlarged_activity: null,
 
           	init: function(){
 
@@ -99,6 +99,10 @@
 
               //bg
               this.Draw.fillRect(this.ctx, 0, 0, LEPLANNER.WIDTH, LEPLANNER.HEIGHT, 'rgba(255,255,255,1)');
+
+              //bg-border
+              this.Draw.strokeRect(this.ctx, 0, 0, LEPLANNER.WIDTH, LEPLANNER.HEIGHT, 1, 'rgba(0,0,0,1)');
+
 
               //middle divider
               this.Draw.line(this.ctx, 0, this.HEIGHT/2, this.WIDTH, this.HEIGHT/2, 1, 'rgba(0,0,0,1)');
@@ -148,6 +152,7 @@
 
             this.indent = indent;
             this.start_time = start_time;
+            this._id = data._id;
           	this.name = data.name;
           	this.duration = data.duration;
             if(typeof data.in_class == 'undefined'){
@@ -162,20 +167,25 @@
             this.padding = 20;
             this.height = 40;
             // - 20 is to give padding from left side
-            var minute_constant = ((LEPLANNER.WIDTH-20-(($scope.scenario.activities.length+1)*this.padding))/LEPLANNER.activities_duration);
-            console.log(this.indent);
-            this.x = parseInt(20+(minute_constant * this.start_time) + (this.indent* this.padding));
+            var minute_constant = ((LEPLANNER.WIDTH-160-(($scope.scenario.activities.length+1)*this.padding))/LEPLANNER.activities_duration);
+            this.x = parseInt(80+(minute_constant * this.start_time) + (this.indent* this.padding));
             this.y = parseInt(LEPLANNER.HEIGHT/2-this.height/2);
             this.width = parseInt(minute_constant * this.duration);
+
+            //for enlarged drawing
+            this.enlarged_x = null;
+            this.enlarged_y = null;
+            this.enlarged_width = null;
+            this.enlarged_height = null;
 
           	this.Draw = function(){
 
               var class_color;
               if(this.in_class){
                 // green
-                class_color = 'rgba(201, 218,	184, 1)';
+                class_color = 'rgba(220,241,219, 1)';
               }else{
-                class_color = 'rgba(239, 200, 155, 1)';
+                class_color = 'rgba(248, 211, 212, 1)';
               }
               //draw box
               LEPLANNER.Draw.fillRect(LEPLANNER.ctx, this.x, this.y, this.width, this.height, class_color);
@@ -191,6 +201,64 @@
 
           	};
 
+            this.EnlargeOne = function(){
+
+              LEPLANNER.Draw.clear(LEPLANNER.temp_ctx);
+
+              var class_color;
+              if(this.in_class){
+                // green
+                class_color = 'rgba(220,241,219, 1)';
+              }else{
+                class_color = 'rgba(248, 211, 212, 1)';
+              }
+
+              var bigger = 40;
+
+              this.enlarged_x = this.x-bigger*2;
+              this.enlarged_y = this.y-bigger*1.5;
+              this.enlarged_width = this.width + bigger*4;
+              this.enlarged_height = this.height + bigger*3;
+
+              //draw box
+              LEPLANNER.Draw.fillRect(LEPLANNER.temp_ctx, this.enlarged_x, this.enlarged_y, this.enlarged_width, this.enlarged_height, class_color);
+              LEPLANNER.Draw.strokeRect(LEPLANNER.temp_ctx, this.enlarged_x, this.enlarged_y, this.enlarged_width, this.enlarged_height, 1, 'rgba(0,0,0,1)');
+
+              //write duration
+              var duration_font = 19;
+              LEPLANNER.Draw.text(LEPLANNER.temp_ctx, this.duration, this.enlarged_x+duration_font/4, this.enlarged_y+duration_font, duration_font, 'rgba(0,0,0,1)');
+
+              //write name in lines
+              var name_font = 25;
+              var words = this.name.split(' ');
+              var line = '';
+              var y = this.enlarged_y+name_font;
+              var lineHeight = name_font;
+              //75 fixing overflow
+              var maxWidth = this.enlarged_width-name_font-75;
+              for(var n = 0; n < words.length; n++) {
+                var testLine = line + words[n] + ' ';
+                var metrics = LEPLANNER.temp_ctx.measureText(testLine);
+                var testWidth = metrics.width;
+                if (testWidth > maxWidth && n > 0) {
+                  LEPLANNER.Draw.text(LEPLANNER.temp_ctx, line, this.enlarged_x+name_font+7, y, name_font, 'rgba(0,0,0,1)');
+                  line = words[n] + ' ';
+                  y += lineHeight;
+                }
+                else {
+                  line = testLine;
+                }
+              }
+              LEPLANNER.Draw.text(LEPLANNER.temp_ctx, line, this.enlarged_x+name_font+7, y, name_font, 'rgba(0,0,0,1)');
+
+              // draw add material buttons
+              LEPLANNER.Draw.addMaterialButton(LEPLANNER.temp_ctx, this.enlarged_x+this.enlarged_width/2, this.enlarged_y, 50, 'rgba(255,255,255,1)', false);
+              LEPLANNER.Draw.addMaterialButton(LEPLANNER.temp_ctx, this.enlarged_x+this.enlarged_width/2, this.enlarged_y+this.enlarged_height, 50, 'rgba(255,255,255,1)', true);
+
+
+              //LEPLANNER.Draw.activityName(LEPLANNER.temp_ctx, this.name, this.enlarged_width-name_font-7, this.enlarged_x+name_font+7, this.enlarged_y+name_font, name_font, 'rgba(0,0,0,1)');
+            };
+
           };
 
           LEPLANNER.checkIfHoveringActivity = function(){
@@ -199,15 +267,38 @@
             point.x = point.x*LEPLANNER.scale;
             point.y = point.y*LEPLANNER.scale;
 
+            var hovering = false;
 
             for(var i = 0; i < LEPLANNER.activities.length; i++){
               var a = LEPLANNER.activities[i];
               if ((point.x>=a.x)&(point.x<=a.x+a.width)&(point.y>=a.y)&(point.y<=a.y+a.height)){
-                console.log('hovering '+a.name);
 
-                // draw bigger box on temp canvas
+                if(LEPLANNER.enlarged_activity != a._id){
+                  LEPLANNER.activities[i].EnlargeOne();
+                  LEPLANNER.enlarged_activity = a._id;
+                }
+
+                hovering = true;
+
               }
+
+              if(LEPLANNER.enlarged_activity == a._id){
+                //check if hovering enlarged part
+
+                if ((point.x>=a.enlarged_x)&(point.x<=a.enlarged_x+a.enlarged_width)&(point.y>=a.enlarged_y)&(point.y<=a.enlarged_y+a.enlarged_height)){
+                  console.log('true');
+                  hovering = true;
+                }
+
+              }
+
             }
+
+            if(LEPLANNER.enlarged_activity !== null && hovering === false){
+              LEPLANNER.enlarged_activity = null;
+              LEPLANNER.Draw.clear(LEPLANNER.temp_ctx);
+            }
+
           };
 
           LEPLANNER.Draw = {
@@ -254,6 +345,47 @@
                 ctx.fill();
             },
 
+            addMaterialButton: function(ctx, x, y, r, fill_col, rotate) {
+                //ctx.fillStyle = fill_col;
+                var greenPart = ctx.createLinearGradient(x,y-30,x,y+30);
+
+                //bottom
+                if(rotate){
+                  greenPart = ctx.createLinearGradient(x,y+30,x,y-30);
+                }
+
+                greenPart.addColorStop(0, 'rgb(92,184,92)');
+                greenPart.addColorStop(1, 'rgb(65,150,65)');
+
+                var width = 50;
+                ctx.lineWidth = width;
+
+                // First we make a clipping region for the left half
+                ctx.save();
+                ctx.beginPath();
+                ctx.rect(x-width, y-width, 100+width, 100 + width*2);
+                ctx.clip();
+
+                // Then we draw the left half
+                ctx.strokeStyle = greenPart;
+                ctx.beginPath();
+                ctx.arc(x,y,25,Math.PI, 0, rotate);
+                ctx.stroke();
+
+                ctx.restore(); // restore clipping region to default
+
+
+                ctx.fillStyle = fill_col;
+                var font_size = 50;
+                ctx.font = font_size+'px Helvetica';
+                if(rotate){
+                  ctx.fillText('+', x-15, y+34);
+                }else{
+                  ctx.fillText('+', x-15, y-7);
+                }
+
+            },
+
             text: function(ctx, string, x, y, size, col) {
                 ctx.font = size+'px Helvetica';
                 ctx.fillStyle = col;
@@ -266,18 +398,13 @@
                 var text_width = ctx.measureText(string).width;
 
                 if(text_width > box_width){
-                  //delete chars that are too long for the box
-                  //console.log(string.length);
-                  //console.log(box_width);
-                  //console.log(text_width-(text_width-box_width));
+
                   var new_length = Math.floor((text_width-(text_width-box_width)) * (string.length) / text_width);
-                  //console.log(new_length);
-                  //console.log(string);
+
                   if((new_length-1) <= 0){
                     return;
                   }
                   string = string.slice(0, new_length-1);
-                  //console.log(string);
                 }
 
                 ctx.fillStyle = col;
