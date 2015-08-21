@@ -13,6 +13,7 @@
       addRemoveFavorite: addRemoveFavorite,
       createScenario: createScenario,
       deleteComment: deleteComment,
+      deleteScenario: deleteScenario,
       getComments: getComments,
       getDashScenarios: getDashScenarios,
       getEditDataSingleScenario: getEditDataSingleScenario,
@@ -46,6 +47,13 @@
 
     function deleteComment(params) {
       return $http.post('/api/scenario/delete-comment',params)
+        .then(function(response) {
+          return response.data;
+        });
+    }
+
+    function deleteScenario(params) {
+      return $http.post('/api/scenario/delete-scenario',params)
         .then(function(response) {
           return response.data;
         });

@@ -303,6 +303,48 @@ router.post('/delete-comment/', restrict, function(req, res, next) {
 
 });
 
+router.post('/delete-scenario/', restrict, function(req, res, next) {
+
+  var params = req.body;
+
+  async.waterfall([
+    function(next){
+
+      //check if user has rights to delete the comment
+      var q = {};
+      q.args = { _id: params.scenario._id, author: req.user._id };
+
+      scenarioService.findOne(q, function(err, scenario){
+        if (err) { return next({error: err}); }
+        if(scenario === null){
+          // passport req user different from scenario author
+          return next({error: {id: 3, message: 'no rights'}});
+        }
+        next();
+      });
+    },
+    function(next){
+
+      var q = {};
+      q.where = { _id: params.scenario._id, deleted: false};
+      q.update = {
+        deleted: true
+      };
+      q.select = '_id';
+
+      scenarioService.update(q, function(err, scenario){
+        if (err) { return next({error: err}); }
+        if(scenario === null){ return next({error: "no scenario to remove"}); }
+        next(null, {success: 'success'});
+      });
+    }
+  ], function (err, result) {
+    if(err){ res.json(err); }
+    res.json(result);
+  });
+
+});
+
 router.post('/get-edit-data-single-scenario/', restrict, function(req, res, next) {
 
   var params = req.body;
@@ -421,7 +463,7 @@ router.post('/save/', restrict, function(req, res, next) {
           new_scenario.activities_duration += new_scenario.activities[i].duration;
         }
 
-        console.log(new_scenario);
+        //console.log(new_scenario);
 
         if(typeof new_scenario._id == 'undefined'){ return next ({error: {id: 0, message: "No scenario id" }}); }
 
@@ -623,16 +665,23 @@ router.post('/search/', function(req, res, next) {
       }
 
       // meta fields
+
       if(typeof query.subjects !== 'undefined' && query.subjects.length > 0){
         q.args.subject = { $in : query.subjects };
       }
+
+      //console.log(q.args);
 
       q.populated_fields = [];
       q.populated_fields.push({
         field: 'author',
         populate: 'first_name last_name created'
       });
-      q.sort = sort;
+      /*q.populated_fields.push({
+        field: 'subject',
+        populate: 'name'
+      });
+      q.sort = sort;*/
 
       scenarioService.find(q, function(err, scenarios) {
         if (err) { return next({error: err}); }

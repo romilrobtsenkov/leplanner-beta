@@ -118,6 +118,19 @@
     </div>
   </div>
 
+  <div class="row no-margin">
+    <h3>Publish</h3>
+
+    <div class="row no-margin">
+      <div class=" form-group">
+        <select ng-if="scenario" style="width: 200px;  display: inline-block;" class="form-control" id="publish_option" ng-model="scenario.draft" ng-options="option.value as option.name for option in publish_options" name="publish_option" required>
+        </select>
+        <span> or   <a ng-click="deleteScenario()" href style="margin-right: 20px;">I want to delete my scenario </a></span>
+      </div>
+    </div>
+
+  </div>
+
   <button ng-click="saveScenario(scenario)" class="btn btn-success pull-right">Save & continue editing</button>
   <a href="/#/dashboard" style="margin-right: 10px;" class="btn btn-default pull-right">Cancel</a>
 
