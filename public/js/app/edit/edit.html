@@ -10,6 +10,48 @@
 
   <scenarioeditcanvas></scenarioeditcanvas>
 
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Add materials</h4>
+        </div>
+        <div class="modal-body">
+          <div ng-if='errorMessage' class="alert alert-danger" role="alert">{{errorMessage}}</div>
+
+
+
+          <div class="row no-margin">
+            name ++ muu
+            <div class="col-sm-4">
+              <div class=" form-group">
+                <label for="name"><strong>Involvment level: </strong></label>
+                <select type="text" ng-model="material.involvment" name="involvment" id="involvment" class="form-control" required/></select>
+              </div>
+            </div>
+
+            <div class="col-sm-4">
+              <div class=" form-group">
+                <label for="name"><strong>Display </strong></label>
+                select
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button class="btn btn-success pull-right">Add</button>
+        </div>
+      </div>
+
+    </div>
+
   <button class="btn btn-success pull-right">Save</button>
   <a href="/#/dashboard" style="margin-right: 10px;" class="btn btn-default pull-right">Cancel</a>
 

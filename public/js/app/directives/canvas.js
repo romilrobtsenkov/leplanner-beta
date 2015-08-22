@@ -13,6 +13,9 @@
         templateUrl: 'js/app/directives/canvas.html',
   			link: function postLink($scope, element, attrs) {
 
+          // favicon
+          //http://www.google.com/s2/favicons?domain=twitter.com
+
           var isTouch = !!('ontouchstart' in window);
           var point = {x: 0, y: 0};
 
@@ -37,11 +40,24 @@
             display: 'none',
           });
 
-
-
           element.find('div').append(temp_canvas);
           element.find('div').append(canvas);
           element.find('div').append(image);
+
+          //load organization images - one / pair / group
+          var activity_organization_images = [];
+          var one_icon_img = new Image();
+          one_icon_img.src = 'images/one.png';
+          activity_organization_images.push(one_icon_img);
+          var pair_icon_img = new Image();
+          pair_icon_img.src = 'images/pair.png';
+          activity_organization_images.push(pair_icon_img);
+          var group_icon_img = new Image();
+          group_icon_img.src = 'images/group.png';
+          activity_organization_images.push(group_icon_img);
+          // same icon for whole class
+          activity_organization_images.push(group_icon_img);
+
 
           var LEPLANNER = {
 
@@ -50,6 +66,7 @@
             scale: null,
           	canvas: null,
             temp_canvas: null,
+            temp_canvas_cursor_pointer: false,
             image: null,
           	ctx: null,
             temp_ctx: null,
@@ -57,6 +74,7 @@
             activities_duration: null,
             activities_width: null,
             enlarged_activity: null,
+            add_material_button_radius: 50,
 
           	init: function(){
 
@@ -143,7 +161,6 @@
                 start_time += $scope.scenario.activities[i-1].duration;
               }
 
-              console.log($scope.scenario.activities);
             }
 
           };
@@ -164,7 +181,7 @@
             this.outcomes = data.outcomes;
 
             //for drawing
-            this.padding = 20;
+            this.padding = 10;
             this.height = 40;
             // - 20 is to give padding from left side
             var minute_constant = ((LEPLANNER.WIDTH-160-(($scope.scenario.activities.length+1)*this.padding))/LEPLANNER.activities_duration);
@@ -195,9 +212,14 @@
               var duration_font = 19;
               LEPLANNER.Draw.text(LEPLANNER.ctx, this.duration, this.x+duration_font/4, this.y+duration_font, duration_font, 'rgba(0,0,0,1)');
 
+              //draw organizaticon - one / pair / group - if it fits to the box
+              if(this.width > 50){
+                LEPLANNER.Draw.organizationIcon(LEPLANNER.ctx, activity_organization_images[this.organization], this.x+this.width-32.5, this.y+this.height-32.5, 25);
+              }
+
               //write name
               var name_font = 25;
-              LEPLANNER.Draw.activityName(LEPLANNER.ctx, this.name, this.width-name_font-7, this.x+name_font+7, this.y+name_font, name_font, 'rgba(0,0,0,1)');
+              LEPLANNER.Draw.activityName(LEPLANNER.ctx, this.name, this.width-name_font-45, this.x+name_font+7, this.y+name_font+2, name_font, 'rgba(0,0,0,1)');
 
           	};
 
@@ -213,50 +235,84 @@
                 class_color = 'rgba(248, 211, 212, 1)';
               }
 
-              var bigger = 40;
+              this.enlarged_width = this.width + 160;
+              // min width
+              if(this.enlarged_width < 250){
+                this.enlarged_width = 250;
+              }
+              this.enlarged_height = this.height + 200;
 
-              this.enlarged_x = this.x-bigger*2;
-              this.enlarged_y = this.y-bigger*1.5;
-              this.enlarged_width = this.width + bigger*4;
-              this.enlarged_height = this.height + bigger*3;
+              this.enlarged_x = parseInt(this.x-((this.enlarged_width-this.width) / 2));
+              // fix outside of canvas
+              if(this.enlarged_x < 5){ this.enlarged_x = 5; }
+              if(this.enlarged_x+this.enlarged_width+5 > LEPLANNER.WIDTH){ this.enlarged_x = LEPLANNER.WIDTH-5-this.enlarged_width; }
+
+              this.enlarged_y = this.y-100;
 
               //draw box
               LEPLANNER.Draw.fillRect(LEPLANNER.temp_ctx, this.enlarged_x, this.enlarged_y, this.enlarged_width, this.enlarged_height, class_color);
               LEPLANNER.Draw.strokeRect(LEPLANNER.temp_ctx, this.enlarged_x, this.enlarged_y, this.enlarged_width, this.enlarged_height, 1, 'rgba(0,0,0,1)');
 
-              //write duration
-              var duration_font = 19;
-              LEPLANNER.Draw.text(LEPLANNER.temp_ctx, this.duration, this.enlarged_x+duration_font/4, this.enlarged_y+duration_font, duration_font, 'rgba(0,0,0,1)');
-
               //write name in lines
               var name_font = 25;
+              var max_line_count = 5;
+              var line_count = 0;
               var words = this.name.split(' ');
               var line = '';
-              var y = this.enlarged_y+name_font;
+              var y = this.enlarged_y+name_font+10;
               var lineHeight = name_font;
               //75 fixing overflow
-              var maxWidth = this.enlarged_width-name_font-75;
+              var maxWidth = this.enlarged_width-name_font-2;
               for(var n = 0; n < words.length; n++) {
                 var testLine = line + words[n] + ' ';
+                // fix measureText
+                LEPLANNER.temp_ctx.font = name_font+'px Helvetica';
                 var metrics = LEPLANNER.temp_ctx.measureText(testLine);
                 var testWidth = metrics.width;
-                if (testWidth > maxWidth && n > 0) {
-                  LEPLANNER.Draw.text(LEPLANNER.temp_ctx, line, this.enlarged_x+name_font+7, y, name_font, 'rgba(0,0,0,1)');
+                if (testWidth > maxWidth && line_count < max_line_count-1) {
+                  LEPLANNER.Draw.text(LEPLANNER.temp_ctx, line, this.enlarged_x+name_font-5, y, name_font, 'rgba(0,0,0,1)');
                   line = words[n] + ' ';
                   y += lineHeight;
+                  line_count++;
                 }
                 else {
                   line = testLine;
                 }
+
               }
-              LEPLANNER.Draw.text(LEPLANNER.temp_ctx, line, this.enlarged_x+name_font+7, y, name_font, 'rgba(0,0,0,1)');
+
+              //if last line too long add (...)
+              var text_width = LEPLANNER.temp_ctx.measureText(line).width;
+              // count chars to leave
+              if(text_width > maxWidth){
+                var new_length = Math.floor((text_width-(text_width-maxWidth)) * (line.length) / text_width);
+                // make also space for 3 ...
+                line = line.slice(0, new_length-4);
+                line += '...';
+              }
+
+              LEPLANNER.Draw.text(LEPLANNER.temp_ctx, line, this.enlarged_x+name_font-5, y, name_font, 'rgba(0,0,0,1)');
+
+              //write duration
+              var duration_font = 25;
+              LEPLANNER.Draw.text(LEPLANNER.temp_ctx, this.duration+' min', this.enlarged_x+duration_font-5, this.enlarged_y+this.enlarged_height-duration_font-40, duration_font, 'rgba(0,0,0,1)');
+
+              //draw organizaticon - one / pair / group
+              LEPLANNER.Draw.organizationIcon(LEPLANNER.temp_ctx, activity_organization_images[this.organization], this.enlarged_x+15, this.enlarged_y+this.enlarged_height-50, 30);
+              // + write out
+              var org_title = '';
+              for(var i = 0; i < $scope.activity_organization.length; i++){
+                if($scope.activity_organization[i]._id == this.organization){
+                  org_title = $scope.activity_organization[i].name;
+                }
+              }
+              LEPLANNER.Draw.text(LEPLANNER.temp_ctx, org_title, this.enlarged_x+55, this.enlarged_y+this.enlarged_height-duration_font, duration_font, 'rgba(0,0,0,1)');
+
 
               // draw add material buttons
-              LEPLANNER.Draw.addMaterialButton(LEPLANNER.temp_ctx, this.enlarged_x+this.enlarged_width/2, this.enlarged_y, 50, 'rgba(255,255,255,1)', false);
-              LEPLANNER.Draw.addMaterialButton(LEPLANNER.temp_ctx, this.enlarged_x+this.enlarged_width/2, this.enlarged_y+this.enlarged_height, 50, 'rgba(255,255,255,1)', true);
+              LEPLANNER.Draw.addMaterialButton(LEPLANNER.temp_ctx, this.enlarged_x+this.enlarged_width/2, this.enlarged_y, LEPLANNER.add_material_button_radius, 'rgba(255,255,255,1)', false);
+              LEPLANNER.Draw.addMaterialButton(LEPLANNER.temp_ctx, this.enlarged_x+this.enlarged_width/2, this.enlarged_y+this.enlarged_height, LEPLANNER.add_material_button_radius, 'rgba(255,255,255,1)', true);
 
-
-              //LEPLANNER.Draw.activityName(LEPLANNER.temp_ctx, this.name, this.enlarged_width-name_font-7, this.enlarged_x+name_font+7, this.enlarged_y+name_font, name_font, 'rgba(0,0,0,1)');
             };
 
           };
@@ -271,6 +327,7 @@
 
             for(var i = 0; i < LEPLANNER.activities.length; i++){
               var a = LEPLANNER.activities[i];
+
               if ((point.x>=a.x)&(point.x<=a.x+a.width)&(point.y>=a.y)&(point.y<=a.y+a.height)){
 
                 if(LEPLANNER.enlarged_activity != a._id){
@@ -286,8 +343,32 @@
                 //check if hovering enlarged part
 
                 if ((point.x>=a.enlarged_x)&(point.x<=a.enlarged_x+a.enlarged_width)&(point.y>=a.enlarged_y)&(point.y<=a.enlarged_y+a.enlarged_height)){
-                  console.log('true');
+                  //console.log('true');
                   hovering = true;
+                }
+
+                //check if hovering add material buttons
+                // LEPLANNER.add_material_button_radius
+                var x1 = point.x;
+                var x0 = a.enlarged_x+a.enlarged_width/2;
+                var y1 = point.y;
+                var y0 = a.enlarged_y;
+                var y2 = a.enlarged_y+a.enlarged_height;
+                var r = LEPLANNER.add_material_button_radius;
+                if(
+                  (Math.sqrt((x1-x0)*(x1-x0) + (y1-y0)*(y1-y0)) < r && y1 <= y0) ||
+                  (Math.sqrt((x1-x0)*(x1-x0) + (y1-y2)*(y1-y2)) < r && y1 >= y2)
+                ){
+                  if(LEPLANNER.temp_canvas_cursor_pointer === false){
+                    LEPLANNER.temp_canvas_cursor_pointer = true;
+                    LEPLANNER.cursorPointer(temp_canvas, true);
+                  }
+                  hovering = true;
+                }else{
+                  if(LEPLANNER.temp_canvas_cursor_pointer === true){
+                    LEPLANNER.temp_canvas_cursor_pointer = false;
+                    LEPLANNER.cursorPointer(temp_canvas, false);
+                  }
                 }
 
               }
@@ -297,6 +378,39 @@
             if(LEPLANNER.enlarged_activity !== null && hovering === false){
               LEPLANNER.enlarged_activity = null;
               LEPLANNER.Draw.clear(LEPLANNER.temp_ctx);
+            }
+
+          };
+
+          LEPLANNER.checkIfclickedAddMaterialButton = function(){
+            //fix 1920px canvas width
+            point.x = point.x*LEPLANNER.scale;
+            point.y = point.y*LEPLANNER.scale;
+
+            for(var i = 0; i < LEPLANNER.activities.length; i++){
+              var a = LEPLANNER.activities[i];
+
+              if(LEPLANNER.enlarged_activity == a._id){
+                //check if clicked add material buttons
+                var x1 = point.x;
+                var x0 = a.enlarged_x+a.enlarged_width/2;
+                var y1 = point.y;
+                var y0 = a.enlarged_y;
+                var y2 = a.enlarged_y+a.enlarged_height;
+                var r = LEPLANNER.add_material_button_radius;
+                if((Math.sqrt((x1-x0)*(x1-x0) + (y1-y0)*(y1-y0)) < r && y1 <= y0)){
+                  // clicked top button
+                  //console.log('clicked top button if id: '+a._id);
+                  $scope.openAddMaterialModal(a._id, true);
+                }
+                if(Math.sqrt((x1-x0)*(x1-x0) + (y1-y2)*(y1-y2)) < r && y1 >= y2){
+                  // clicked bottom button
+                  //console.log('clicked bottom button of id: '+a._id);
+                  $scope.openAddMaterialModal(a._id, false);
+                }
+
+              }
+
             }
 
           };
@@ -379,7 +493,7 @@
                 var font_size = 50;
                 ctx.font = font_size+'px Helvetica';
                 if(rotate){
-                  ctx.fillText('+', x-15, y+34);
+                  ctx.fillText('+', x-15, y+33);
                 }else{
                   ctx.fillText('+', x-15, y-7);
                 }
@@ -404,13 +518,28 @@
                   if((new_length-1) <= 0){
                     return;
                   }
-                  string = string.slice(0, new_length-1);
+                  string = string.slice(0, new_length);
                 }
 
                 ctx.fillStyle = col;
                 ctx.fillText(string, x, y);
-            }
+            },
 
+            organizationIcon: function(ctx, image, x, y, size) {
+              ctx.drawImage(image,x,y,size,size);
+            }
+          };
+
+          LEPLANNER.cursorPointer = function(canvas, pointer){
+            if(pointer === true){
+              angular.element(canvas).css({
+                cursor: 'pointer',
+              });
+            }else{
+              angular.element(canvas).css({
+                cursor: 'auto',
+              });
+            }
           };
 
           angular.element($window).ready(function() {
@@ -426,6 +555,12 @@
             //https://github.com/pwambach/angular-canvas-painter/blob/master/js/pwCanvas.js
             setPointFromEvent(point, e);
             LEPLANNER.checkIfHoveringActivity();
+          });
+
+          temp_canvas.addEventListener(P_END, function(e) {
+
+            setPointFromEvent(point, e);
+            LEPLANNER.checkIfclickedAddMaterialButton();
           });
 
           var getOffset = function( elem ) {

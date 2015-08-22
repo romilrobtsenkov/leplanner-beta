@@ -18,6 +18,29 @@
       $scope.outcomes_list = [];
       $scope.activity_list = [];
 
+      // 1 material only
+      /*
+        - name
+        - url
+        - involvment level
+
+        0 - vaatamine (kuulamine, lugemine)
+        1- märgendamine (annoteerimine, meeldimine)
+        2 - interaktsioon (enesekontrolli test)
+        3 - esitamine (ülesande esitamine)
+        4 - laiendamine (materjali lisamine olemasolevale)
+        5 - remiksimine (materjalile uue tähenduse andmine)
+        6 - loomine (uue materjali loomine)
+
+        - conveyor name
+        - conveyor url -> used to create link and get favicon
+        - display select menu nutitelefon / tahvelarvuti / arvuti / projektor / smartBoard / muu seade (lisa ise?)
+
+
+      */
+
+
+
       init();
 
       function init(){
@@ -91,6 +114,12 @@
         });
 
       }
+
+      $scope.openAddMaterialModal = function(activity_id, top){
+        console.log(activity_id + ' ' + top);
+
+        $('#myModal').modal();
+      };
 
     } //EditController end
 }());
