@@ -7,6 +7,7 @@ var notificationService = require('../services/notification-service');
 var validateService = require('../services/validate-service');
 var favoriteService = require('../services/favorite-service');
 var followerService = require('../services/follower-service');
+var materialService = require('../services/activity-material-service');
 var async = require('async');
 
 /* template
@@ -303,6 +304,65 @@ router.post('/delete-comment/', restrict, function(req, res, next) {
 
 });
 
+router.post('/delete-material/', restrict, function(req, res, next) {
+
+  var params = req.body;
+
+  async.waterfall([
+    function(next){
+      //check author
+      var q = {};
+      q.args = { _id: params.scenario._id, author: req.user._id };
+      q.select = "_id";
+
+      scenarioService.findOne(q, function(err, latest_scenario){
+        if (err) { return next({error: err}); }
+        if(latest_scenario === null){
+          console.log('no rights');
+          // passport req user different from scenario author
+          return next({error: {id: 3, message: 'no rights'}});
+        }
+        next(null);
+      });
+    },
+    function(next){
+      // check if there is such material
+      if(typeof params.material._id == 'undefined'){ return next({error: {id: 0, message: 'no material id provided'}}); }
+
+      var q = {};
+      q.args = { _id: params.material._id, deleted: false };
+      q.select = '_id';
+
+      materialService.findOne(q , function(err, material){
+        if (err) { return next({error: err}); }
+        if(material === null){ return next({error: {id: 1, message: 'no material exist' }});}
+        next(null, material);
+      });
+
+    },
+    function(material, next){
+      var q = {};
+      q.where = { _id: material._id };
+      q.update = {
+        deleted: true,
+        deleted_date: new Date()
+      };
+      q.select = '_id';
+
+      materialService.update(q, function(err, material){
+        if (err) { return next({error: err}); }
+        console.log('material '+material._id+' deleted');
+        next(null, { material: { _id: material._id} } );
+      });
+
+    }
+  ], function (err, result) {
+    if(err){ res.json(err); }
+    res.json(result);
+  });
+
+});
+
 router.post('/delete-scenario/', restrict, function(req, res, next) {
 
   var params = req.body;
@@ -371,7 +431,16 @@ router.post('/get-edit-data-single-scenario/', restrict, function(req, res, next
       scenarioService.findOne(q, function(err, scenario){
         if (err) { return next({error: err}); }
         if(scenario === null){ return next({error: {id: 0, message: 'no scenario found' }}); }
-        next(null, {scenario: scenario});
+        next(null, scenario);
+      });
+    },
+    function(scenario, next){
+      //get activity materials
+      var q = {};
+      q.args = { scenario: params.scenario._id, deleted: false };
+      materialService.find(q, function(err, materials){
+        if (err) { return next({error: err}); }
+        next(null, {scenario: scenario, materials: materials});
       });
     }
   ], function (err, result) {
@@ -476,6 +545,85 @@ router.post('/save/', restrict, function(req, res, next) {
           console.log(req.user.first_name+' updated scenario: '+scenario._id);
           next(null, {scenario: { _id: scenario._id } } );
         });
+
+      }
+    ], function (err, result) {
+      if(err){ res.json(err); }
+      res.json(result);
+    });
+
+});
+
+router.post('/save-material/', restrict, function(req, res, next) {
+
+    var params = req.body;
+
+    async.waterfall([
+      function(next){
+        validateService.validate([{fn:'activityMaterialData', data:params}], function(err){
+          if (err) { return next({error: err}); }
+          next();
+        });
+      },
+      function(next){
+        //check author
+        var q = {};
+        q.args = { _id: params.scenario._id, author: req.user._id };
+        q.select = "_id";
+
+        scenarioService.findOne(q, function(err, latest_scenario){
+          if (err) { return next({error: err}); }
+          if(latest_scenario === null){
+            console.log('no rights');
+            // passport req user different from scenario author
+            return next({error: {id: 3, message: 'no rights'}});
+          }
+          next(null);
+        });
+      },
+      function(next){
+        // check if that spot is empty for new Material
+
+        // if updating skip this step
+        if(typeof params.material._id != 'undefined'){ return next(); }
+
+        var q = {};
+        q.args = { scenario: params.scenario._id, activity_id: params.material.activity_id, position: params.material.position, deleted: false };
+        q.select = '_id';
+
+        materialService.findOne(q , function(err, material){
+          if (err) { return next({error: err}); }
+          if(material){ return next({error: {id: 20, message: 'material exists' }});}
+          next(null);
+        });
+
+      },
+      function(next){
+
+        if(typeof params.material._id != 'undefined'){
+            // update
+            //console.log('update '+params.material._id);
+            var q = {};
+            q.where = { _id: params.material._id };
+            q.update = params.material;
+            q.update.last_modified = new Date();
+            console.log(q.update);
+
+            materialService.update(q, function(err, material){
+              if (err) { return next({error: err}); }
+              next(null, { material: material } );
+            });
+        }else{
+          // save new
+          var new_material = params.material;
+          new_material.scenario = params.scenario._id;
+          new_material.last_modified = new Date();
+
+          materialService.saveNew(new_material, function(err, material){
+            if (err) { return next({error: err}); }
+            next(null, { material: material } );
+          });
+        }
 
       }
     ], function (err, result) {

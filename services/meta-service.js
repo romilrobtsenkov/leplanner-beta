@@ -8,7 +8,6 @@ exports.getSubjects = function(next) {
     query.exec(function(err, subjects) {
       return next(null, subjects);
     });
-
 };
 
 exports.getActivityOrganization = function(next) {
@@ -20,6 +19,26 @@ exports.getActivityOrganization = function(next) {
   ]);
 };
 
+exports.getInvolvementOptions = function(next) {
+  return next(null, [
+    { _id: 0, name: "0 - vaatamine (kuulamine, lugemine)" },
+    { _id: 1, name: "1 - märgendamine (annoteerimine, meeldimine)" },
+    { _id: 2, name: "2 - interaktsioon (enesekontrolli test)" },
+    { _id: 3, name: "3 - esitamine (ülesande esitamine)" },
+    { _id: 4, name: "4 - laiendamine (materjali lisamine olemasolevale)" },
+    { _id: 5, name: "5 - remiksimine (materjalile uue tähenduse andmine)" },
+    { _id: 6, name: "6 - loomine (uue materjali loomine)" }
+  ]);
+};
+
+exports.getDisplays = function(next) {
+  return next(null, [
+    { _id: 0, name: "Arvuti", icon: "pc.png" },
+    { _id: 1, name: "Nutitelefon", icon: "smartphone.png" },
+    { _id: 2, name: "Tahvelarvuti", icon: "tablet.png" },
+    { _id: 3, name: "Muu", icon: "other_display.png" }
+  ]);
+};
 
 
 /* exports.insertSubjects = function(next) {

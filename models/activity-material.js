@@ -2,11 +2,20 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var materialSchema = new Schema({
-    name: { type: String, required: true },
-    duration: { type: Number, required: true },
-    in_class: { type: Boolean, required: true },
-    organization: { type: String, required: true },
-    scenario: { type: mongoose.Schema.Types.ObjectId, ref: 'Scenario', required: true }
+    scenario: { type: mongoose.Schema.Types.ObjectId, ref: 'Scenario', required: true },
+    activity_id: { type: String, required: true },
+    position: { type: String, required: true },
+    material_name: { type: String },
+    material_url: { type: String },
+    involvement_level: { type: Number },
+    conveyor_name: { type: String },
+    conveyor_url: { type: String },
+    display_id: { type: Number },
+    other_display: { type: String },
+    created: { type: Date, default: Date.now },
+    deleted: { type: Boolean, required: true, default: false },
+    deleted_date: { type: Date },
+    last_modified: { type: Date }
 });
 
 var Material = mongoose.model('Material', materialSchema);

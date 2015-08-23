@@ -13,6 +13,8 @@
 
       $scope.createScenario = function(scenario){
 
+        $scope.saving_in_progress = true;
+
         if(typeof scenario.name == 'undefined' || scenario.name === '' || scenario.name.length <= 2){
           $scope.errorMessage = 'Scenario name has to be atleast 3 chars long!';
           $timeout(function() { $scope.errorMessage = null; }, 2000);
@@ -36,6 +38,9 @@
 
         scenarioService.createScenario(params)
           .then(function(data) {
+
+            $scope.saving_in_progress = undefined;
+
             if(data.scenario){
 
               $scope.errorMessage = null;

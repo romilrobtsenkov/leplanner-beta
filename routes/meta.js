@@ -10,7 +10,7 @@ router.get('/subjects/', function(req, res, next) {
   });
 });
 
-router.get('/create-new-scenario-meta/', function(req, res, next) {
+router.get('/get-scenario-meta/', function(req, res, next) {
 
   async.waterfall([
     function(next){
@@ -24,9 +24,26 @@ router.get('/create-new-scenario-meta/', function(req, res, next) {
 
       metaService.getActivityOrganization(function(err, activity_organization) {
         if (err) { return next({error: err}); }
+        next(null, subjects, activity_organization );
+      });
+    },
+    function(subjects, activity_organization, next){
+
+      metaService.getInvolvementOptions(function(err, involvement_options) {
+        if (err) { return next({error: err}); }
+        next(null, subjects, activity_organization, involvement_options );
+      });
+    },
+    function(subjects, activity_organization, involvement_options, next){
+
+      metaService.getDisplays(function(err, displays) {
+        if (err) { return next({error: err}); }
         next(null, {
           subjects: subjects,
-          activity_organization: activity_organization });
+          activity_organization: activity_organization,
+          involvement_options: involvement_options,
+          displays: displays
+         });
       });
     }
   ], function (err, result) {

@@ -1,0 +1,98 @@
+<!-- Modal -->
+<div class="modal" id="myModal" role="dialog" aria-labelledby="myModalLabel" ng-controller="ModalCtrl">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel"><i>{{whois_material}} material</i> - <strong>{{activity.name}}</strong></h4>
+        <p style="margin: 10px 0 0 0;"><img height="21px" width="21px" ng-src="{{activity.org_image.src}}"> {{activity.org_title}}
+          | {{activity.duration}} min |
+            <span ng-if="activity.in_class">tunnis (in-class)</span>
+            <span ng-if="!activity.in_class">kodutöö (off-class)</span>
+        </p>
+      </div>
+      <div class="modal-body">
+
+        <div ng-if='materialErrorMessage' class="alert alert-danger" role="alert">{{materialErrorMessage}}</div>
+
+        <div class="row no-margin">
+          <h4>Material</h4>
+          <div class="col-sm-5">
+
+            <div class=" form-group">
+              <label for="material_name"><strong>Name: </strong></label>
+              <input type="text" ng-model="material.material_name" name="material_name" id="material_name" class="form-control" placeholder="Name" required/>
+            </div>
+
+          </div>
+          <div class="col-sm-7">
+
+            <div class=" form-group">
+              <label for="material_url"><strong>URL:</strong></label>
+              <input type="text" ng-model="material.material_url" name="material_url" id="material_url" class="form-control" placeholder="URL" required/>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="row no-margin">
+          <h4>Involvement</h4>
+          <div class="col-sm-6">
+
+            <div class=" form-group">
+              <label for="involvement_level"><strong>Level: </strong></label>
+              <select class="form-control" id="involvement_level" ng-model="material.involvement_level" ng-options="option._id as option.name for option in involvement_options" name="involvement_level" required>
+              </select>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="row no-margin">
+          <h4>Conveyor</h4>
+          <div class="col-sm-5">
+
+            <div class=" form-group">
+              <label for="conveyor_name"><strong>Name: </strong></label>
+              <input type="text" ng-model="material.conveyor_name" name="conveyor_name" id="conveyor_name" class="form-control" placeholder="Name" required/>
+            </div>
+
+          </div>
+          <div class="col-sm-7">
+
+            <div class=" form-group">
+              <label for="conveyor_url"><strong>URL:</strong></label>
+              <input type="text" ng-model="material.conveyor_url" name="conveyor_url" id="conveyor_url" class="form-control" placeholder="URL" required/>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="row no-margin">
+          <h4>Display</h4>
+          <div class="col-sm-8">
+
+            <div class=" form-group">
+              <label for="display"><strong>Display: </strong></label>
+              <div ng-repeat="display in displays_list" class="radio">
+                <label>
+                  <input style="display: inline-block;" type="radio" name="optradio" ng-model="material.display_id" ng-value="display._id">{{display.name}}
+                  <input style="display: inline-block; width: 200px; margin-left: 10px;"  ng-if="material.display_id == display._id && display._id == displays_list.length-1" type="text" ng-model="material.other_display" name="other_display" id="other_display" class="form-control" placeholder="Other" required/>
+                </label>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <a ng-if="material._id" ng-disabled="saving_material" ng-click="deleteMaterial(material._id)" class="pull-left" style="margin-left:20px; cursor: pointer;">Delete material</a>
+        <span ng-if="deleting_material" style="margin-left: 10px;" class="pull-left"> deleting...</span>
+        <span ng-if="saving_material">saving...</span>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button ng-disabled="saving_material" ng-click="saveMaterial()" type="button" class="btn btn-success">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

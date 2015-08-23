@@ -5,6 +5,7 @@ exports.validate = function(to_validate_array, next){
   }
 
   var validation = {
+    activityMaterialData: activityMaterialData,
     addRemoveFavorite: addRemoveFavorite,
     addRemoveFollow: addRemoveFollow,
     createScenario: createScenario,
@@ -26,6 +27,19 @@ exports.validate = function(to_validate_array, next){
   }
 
   // VALIDATION FUNCTIONS
+  function activityMaterialData(params){
+    if(!params.material.material_name){ return next({id: 0, message: 'Material name can not be empty'}); }
+    if(!params.material.material_url){ return next({id: 1, message: 'Material url can not be empty'}); }
+    if(!params.material.conveyor_name){ return next({id: 2, message: 'Conveyor name can not be empty'}); }
+    if(!params.material.conveyor_url){ return next({id: 3, message: 'Conveyor url can not be empty'}); }
+    if(!params.material.display_id && params.material.display_id < 0 ){ return next({id: 4, message: 'Display can not be empty'}); }
+
+    if(!params.material.activity_id){ return next({id: 5, message: 'Activity id missing'}); }
+    if(!params.material.position){ return next({id: 6, message: 'Position missing'}); }
+
+    next();
+  }
+
   function addRemoveFavorite(params){
     if(!params.user._id){ return next({id: 1, message: 'User id missing'}); }
     if(!params.scenario_id){ return next({id: 2, message: 'Scenario id missing'}); }

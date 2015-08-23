@@ -13,6 +13,7 @@
       addRemoveFavorite: addRemoveFavorite,
       createScenario: createScenario,
       deleteComment: deleteComment,
+      deleteMaterial: deleteMaterial,
       deleteScenario: deleteScenario,
       getComments: getComments,
       getDashScenarios: getDashScenarios,
@@ -20,6 +21,7 @@
       getSingleScenario: getSingleScenario,
       getUserScenarios: getUserScenarios,
       getWidgetScenarios: getWidgetScenarios,
+      saveMaterial: saveMaterial,
       saveScenario: saveScenario,
       searchScenarios: searchScenarios
     };
@@ -47,6 +49,13 @@
 
     function deleteComment(params) {
       return $http.post('/api/scenario/delete-comment',params)
+        .then(function(response) {
+          return response.data;
+        });
+    }
+
+    function deleteMaterial(params) {
+      return $http.post('/api/scenario/delete-material',params)
         .then(function(response) {
           return response.data;
         });
@@ -96,6 +105,13 @@
 
     function getWidgetScenarios(query) {
       return $http.post('/api/scenario/widget-list',query)
+        .then(function(response) {
+          return response.data;
+        });
+    }
+
+    function saveMaterial(params) {
+      return $http.post('/api/scenario/save-material',params)
         .then(function(response) {
           return response.data;
         });

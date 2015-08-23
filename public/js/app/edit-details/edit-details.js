@@ -50,7 +50,7 @@
                 console.log('Loaded activities');
               }
 
-              console.log(data.scenario);
+              //console.log(data.scenario);
 
               $rootScope.title = 'Edit scenario: '+$scope.scenario.name+' details | Leplanner beta';
 
@@ -87,7 +87,7 @@
         //publish/draft dropdown
         $scope.publish_options = [{name: 'Draft', value: true},{name: 'Published', value: false}];
 
-        metaService.getcreateScenarioMeta()
+        metaService.getScenarioMeta()
         .then(function(data) {
 
           if(data.subjects && data.activity_organization){
@@ -274,6 +274,8 @@
 
       function saveScenarioData(forward) {
 
+        $scope.saving_in_progress = true;
+
         $scope.scenario.outcomes = $scope.outcomes_list;
         $scope.scenario.activities = $scope.activity_list;
 
@@ -292,6 +294,9 @@
 
         scenarioService.saveScenario(params)
           .then(function(data) {
+
+            //enable save button
+            $scope.saving_in_progress = undefined;
 
             if(data.scenario){
               console.log('saved scenario ');

@@ -17,29 +17,15 @@
 
       $scope.outcomes_list = [];
       $scope.activity_list = [];
+      $scope.materials = [];
+      $scope.involvement_options = [];
+      $scope.displays_lis = [];
 
-      // 1 material only
-      /*
-        - name
-        - url
-        - involvment level
+      $scope.whois_material = '';
+      $scope.activity = null;
 
-        0 - vaatamine (kuulamine, lugemine)
-        1- märgendamine (annoteerimine, meeldimine)
-        2 - interaktsioon (enesekontrolli test)
-        3 - esitamine (ülesande esitamine)
-        4 - laiendamine (materjali lisamine olemasolevale)
-        5 - remiksimine (materjalile uue tähenduse andmine)
-        6 - loomine (uue materjali loomine)
-
-        - conveyor name
-        - conveyor url -> used to create link and get favicon
-        - display select menu nutitelefon / tahvelarvuti / arvuti / projektor / smartBoard / muu seade (lisa ise?)
-
-
-      */
-
-
+      //for canvas - show/hide edit possibilities
+      $scope.allow_edit = true;
 
       init();
 
@@ -57,10 +43,11 @@
           scenarioService.getEditDataSingleScenario(params)
           .then(function(data) {
 
-            if(data.scenario){
+            if(data.scenario && data.materials){
               //console.log(data.scenario);
 
               $scope.scenario = data.scenario;
+              $rootScope.title = 'Edit scenario: '+$scope.scenario.name+' canvas';
               console.log('Loaded scenario');
 
               if(typeof data.scenario.outcomes !== 'undefined'){
@@ -72,9 +59,15 @@
                 $scope.activity_list = data.scenario.activities;
                 console.log('Loaded activities');
               }
+              if(typeof data.materials !== 'undefined'){
+                $scope.materials = data.materials;
+
+                updateActivityList();
+                //console.log($scope.activity_list);
+                console.log('Loaded materials');
+              }
 
               loadMetaData();
-
             }
 
             if(data.error){
@@ -93,13 +86,14 @@
 
       function loadMetaData(){
 
-
-        metaService.getcreateScenarioMeta()
+        metaService.getScenarioMeta()
         .then(function(data) {
 
-          if(data.subjects && data.activity_organization){
+          if(data.subjects && data.activity_organization && data.involvement_options && data.displays){
             $scope.subjects = data.subjects;
             $scope.activity_organization = data.activity_organization;
+            $scope.involvement_options = data.involvement_options;
+            $scope.displays_list = data.displays;
 
             $scope.fully_loaded = true;
 
@@ -115,11 +109,227 @@
 
       }
 
-      $scope.openAddMaterialModal = function(activity_id, top){
-        console.log(activity_id + ' ' + top);
+      $scope.openAddMaterialModal = function(a, top){
 
-        $('#myModal').modal();
+        $scope.activity = a;
+
+        $scope.whois_material = 'Student';
+        $scope.material_position = 'bottom';
+        if(top === true){
+          $scope.whois_material = 'Teacher';
+          $scope.material_position = 'top';
+        }
+        $scope.material = {};
+        $scope.material.involvement_level =  0;
+
+        $scope.manageModal('show');
       };
+
+      $scope.openEditMaterialModal = function(a, top, material){
+
+        $scope.activity = a;
+
+        $scope.whois_material = 'Student';
+        $scope.material_position = 'bottom';
+        if(top === true){
+          $scope.whois_material = 'Teacher';
+          $scope.material_position = 'top';
+        }
+        $scope.material = material;
+
+        $scope.manageModal('show');
+      };
+
+      // making possible to launch direcetive fn
+      $scope.setManageFunction = function(directiveFn) {
+        $scope.manageModal = directiveFn.theDirFn;
+      };
+      $scope.setReDrawFunction = function(directiveFn) {
+        $scope.reDraw = directiveFn.theDirFn;
+      };
+
+      $scope.deleteMaterial = function(id){
+
+        var del = confirm('Do you really want to delete this material?');
+
+        if(del !== true){ return; }
+
+        var params = {
+          user: {
+            _id: $rootScope.user._id
+          },
+          scenario: {
+            _id: $scope.scenario_id
+          },
+          material: {
+            _id: id
+          }
+        };
+
+        $scope.deleting_material = true;
+
+        scenarioService.deleteMaterial(params)
+        .then(function(data) {
+
+          // enable save button
+          $scope.deleting_material = undefined;
+
+          if(data.material){
+            console.log('deleted');
+            // replace updated material
+            updateMaterialList(data.material, 'delete');
+            $scope.manageModal('hide');
+          }
+
+          if(data.error){
+            console.log(data.error);
+            switch (data.error.id) {
+              case 100:
+                // user changed
+                $location.path('/');
+                break;
+              default:
+                $scope.materialErrorMessage = 'Unknown error';
+            }
+
+            $timeout(function() { $scope.materialErrorMessage = null; }, 2000);
+
+          }
+        });
+      };
+
+      $scope.saveMaterial = function(){
+
+        var action = 'update';
+        if(typeof $scope.material._id == 'undefined'){
+          action = 'new';
+        }
+
+        $scope.material.activity_id = $scope.activity._id;
+        $scope.material.position =$scope.material_position;
+
+        var params = {
+          user: {
+            _id: $rootScope.user._id
+          },
+          scenario: {
+            _id: $scope.scenario_id
+          },
+          material: $scope.material
+        };
+
+        $scope.saving_material = true;
+
+        scenarioService.saveMaterial(params)
+        .then(function(data) {
+
+          // enable save button
+          $scope.saving_material = undefined;
+
+          if(data.material){
+            console.log('saved');
+            // replace updated material
+            updateMaterialList(data.material, action);
+            $scope.manageModal('hide');
+          }
+
+          if(data.error){
+            console.log(data.error);
+            switch (data.error.id) {
+              case 100:
+                // user changed
+                $location.path('/');
+                break;
+              case 0:
+                $scope.materialErrorMessage = 'Material name can not be empty';
+                break;
+              case 1:
+                $scope.materialErrorMessage = 'Material url can not be empty';
+                break;
+              case 2:
+                $scope.materialErrorMessage = 'Conveyor name can not be empty';
+                break;
+              case 3:
+                $scope.materialErrorMessage = 'Conveyor url can not be empty';
+                break;
+              case 4:
+                $scope.materialErrorMessage = 'Display can not be empty';
+                break;
+              case 20:
+                $scope.materialErrorMessage = 'Material exists try reloading the page';
+                break;
+              default:
+                $scope.materialErrorMessage = 'Unknown error';
+            }
+
+            $timeout(function() { $scope.materialErrorMessage = null; }, 2000);
+
+          }
+        });
+      };
+
+      var updateMaterialList = function(new_material, action){
+
+        if(action == 'new'){
+          $scope.materials.push(new_material);
+          updateActivityList();
+          $scope.reDraw();
+          return;
+        }
+
+        if(action == 'delete'){
+          console.log(new_material._id);
+          console.log($scope.materials.length);
+          var index = null;
+          for(var i = 0; i < $scope.materials.length; i++){
+            if($scope.materials[i]._id == new_material._id){
+              index = i;
+              break;
+            }
+          }
+
+          $scope.materials.splice(index, 1);
+          updateActivityList();
+          $scope.reDraw();
+
+          console.log($scope.materials.length);
+
+        }
+
+
+        if(action == 'update'){
+          for(var i = 0; i < $scope.materials.length; i++){
+            if($scope.materials[i]._id == new_material._id){
+              $scope.materials[i] = new_material;
+              break;
+            }
+          }
+
+          updateActivityList();
+          $scope.reDraw();
+        }
+
+      };
+
+      var updateActivityList = function(){
+        // add material to relevant activities
+        for(var i = 0; i < $scope.activity_list.length; i++){
+
+          // empty materials
+          $scope.activity_list[i].materials = undefined;
+
+          for(var j = 0; j < $scope.materials.length; j++){
+            if($scope.activity_list[i]._id == $scope.materials[j].activity_id){
+              if(typeof $scope.activity_list[i].materials == 'undefined'){
+                $scope.activity_list[i].materials = [];
+              }
+              $scope.activity_list[i].materials.push($scope.materials[j]);
+            }
+          }
+        }
+
+      };
+
 
     } //EditController end
 }());

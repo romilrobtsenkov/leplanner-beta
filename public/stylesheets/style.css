@@ -853,3 +853,11 @@ label {
   text-align: left;
   vertical-align: middle;
 }
+
+.show {
+  display: block;
+}
+
+.hide {
+  display: none;
+}
