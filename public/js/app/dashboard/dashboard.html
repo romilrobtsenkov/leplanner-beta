@@ -120,7 +120,16 @@
   							</div>
   							<div class="col-xs-4">
   							 <a ng-if="!scenario.draft" class="btn btn-success btn-block btn-sm pull-right" href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">OPEN <span class="glyphicon glyphicon-chevron-right"></span></a>
-  							 <a ng-if="scenario.draft" class="btn btn-success btn-block btn-sm pull-right" href="/#/edit-details/{{scenario._id}}" title="{{scenario.name}}">EDIT <span class="glyphicon glyphicon-chevron-right"></span></a>
+                 <div ng-if="scenario.draft" class="btn-group" role="group">
+                  <button type="button" class="btn btn-success btn-block btn-sm pull-right dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    EDIT
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><a href="/#/edit-details/{{scenario._id}}" title="Edit {{scenario.name}}">Details</a></li>
+                    <li><a href="/#/edit/{{scenario._id}}" title="Edit {{scenario.name}}">Canvas</a></li>
+                  </ul>
+                </div>
   							</div>
   						</div>
   					</div>
