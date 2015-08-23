@@ -29,7 +29,7 @@
                   Remember me</label>
               </div>
               <div class="form-submit">
-                <input type="submit" class="btn btn-sm btn btn-primary" value="Log in" />
+                <input ng-disabled="login_in_process" type="submit" class="btn btn-sm btn btn-primary" value="Log in" />
               </div>
             </form>
 
@@ -42,7 +42,7 @@
                 <input type="text" class="form-control" id="reset_email" name="reset_email" ng-model="user.reset_email" required/>
               </div>
               <div class="form-submit">
-                <input class="btn btn-sm btn btn-primary" type="submit" value="Reset my password" />
+                <input ng-disabled="sending_in_progress" class="btn btn-sm btn btn-primary" type="submit" value="Reset my password" />
               </div>
             </form>
 
@@ -74,7 +74,7 @@
                 <input type="password" class="form-control" id="new_password" name="new_password" autocomplete="off" ng-model="user.new_password" required />
               </div>
               <div class="form-submit">
-                <input class="btn btn-sm btn btn-primary" type="submit" value="Create my account" />
+                <input ng-disabled="creating_in_progress" class="btn btn-sm btn btn-primary" type="submit" value="Create my account" />
               </div>
             </form>
 

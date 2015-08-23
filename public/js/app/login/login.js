@@ -35,8 +35,12 @@
 
       $scope.login = function(user){
 
+        $scope.login_in_process = true;
+
         userService.loginUser(user)
           .then(function(data) {
+
+            $scope.login_in_process = undefined;
 
             if(data.user){
               //user id
@@ -70,8 +74,13 @@
 
       $scope.create = function(user){
 
+        $scope.creating_in_progress = true;
+
         userService.createUser(user)
           .then(function(data) {
+
+            $scope.creating_in_progress = undefined;
+
             console.log(data);
             if(data.user){
               //user id
@@ -125,8 +134,13 @@
 
 
       $scope.reset = function(user){
+
+        $scope.sending_in_progress = true;
+
         userService.sendResetUserToken(user)
           .then(function(data) {
+
+            $scope.sending_in_progress = undefined;
 
             if(data.success){
               $scope.success_alert = 'Successfully reset email sent';

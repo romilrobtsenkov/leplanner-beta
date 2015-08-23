@@ -32,8 +32,12 @@
            $scope.user.new_organization != $scope.user.organization
           ){
 
+            $scope.updating_in_progress = true;
+
             userService.updateUserProfile({user: $scope.user})
               .then(function(data) {
+
+                $scope.updating_in_progress = undefined;
                 //console.log(data);
                 if(data.user){
                   $rootScope.user = data.user;
@@ -94,8 +98,13 @@
           ){
             if(user.new_password == user.new_password_twice){
 
+              $scope.updating_in_progress = true;
+
               userService.updateUserPassword({user: user})
                 .then(function(data) {
+
+                  $scope.updating_in_progress = undefined;
+
                   //console.log(data);
                   if(data.user){
                     $scope.updatePassword_success = 'Update successful';

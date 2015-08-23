@@ -100,7 +100,7 @@
               <textarea id="comment-text" name="comment-text" ng-model="comment.text" class="form-control" rows="5" placeholder="Write comment here"></textarea>
             </div>
             <div class="form-submit">
-              <button type="submit" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-share-alt"></span> ADD</button>
+              <button ng-disabled="adding_comment_in_progress" type="submit" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-share-alt"></span> ADD</button>
             </div>
           </form>
         </div>

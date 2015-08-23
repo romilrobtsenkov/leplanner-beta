@@ -37,7 +37,7 @@
                 <input type="password" class="form-control" id="confirm_password" name="confirm_password" ng-model="user.confirm_password"  />
               </div>
               <div class="form-submit">
-                <input type="submit" class="btn btn-sm btn btn-primary" value="Update" />
+                <input ng-disabled="updating_in_progress" type="submit" class="btn btn-sm btn btn-primary" value="Update" />
               </div>
             </form>
             <br>
@@ -58,7 +58,7 @@
                 <input type="password" class="form-control" id="password" name="password" ng-model="user.new_password_twice"  />
               </div>
               <div class="form-submit">
-                <input type="submit" class="btn btn-sm btn btn-primary" value="Update password" />
+                <input ng-disabled="updating_in_progress" type="submit" class="btn btn-sm btn btn-primary" value="Update password" />
               </div>
             </form>
 

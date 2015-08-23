@@ -142,16 +142,16 @@
               var legend_box = 20;
 
               this.Draw.fillRect(this.ctx, legend_x, legend_y, legend_box, legend_box, 'rgba(201, 218,	184, 1)');
-              this.Draw.text(this.ctx, 'tunnis (in-class)', legend_x + legend_box*2, legend_y+legend_box-2, legend_box, 'rgba(0,0,0,1)');
+              this.Draw.text(this.ctx, 'tunnis (in-class)', legend_x + legend_box*2-5, legend_y+legend_box-2, legend_box, 'rgba(0,0,0,1)');
               legend_x += 230;
 
               this.Draw.fillRect(this.ctx, legend_x, legend_y, legend_box, legend_box, 'rgba(239, 200, 155, 1)');
-              this.Draw.text(this.ctx, 'kodutöö (off-class)', legend_x + legend_box*2, legend_y+legend_box-2, legend_box, 'rgba(0,0,0,1)');
+              this.Draw.text(this.ctx, 'kodutöö (off-class)', legend_x + legend_box*2-5, legend_y+legend_box-2, legend_box, 'rgba(0,0,0,1)');
 
               // student/teacher
               //teacher up-top
               this.ctx.save();
-              this.ctx.translate(40, 408);
+              this.ctx.translate(50, 408);
               this.ctx.rotate(-Math.PI/2);
               this.Draw.text(this.ctx, 'õpetaja (teacher)', 0, 0, 30, 'rgba(0,0,0,1)');
               this.Draw.text(this.ctx, 'õpilane (student)', -500, 0, 30, 'rgba(0,0,0,1)');

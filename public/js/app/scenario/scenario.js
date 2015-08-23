@@ -184,6 +184,8 @@
           return;
         }
 
+        $scope.adding_comment_in_progress = true;
+
         var params = {
           comment: {
             text: comment.text
@@ -201,6 +203,9 @@
 
         scenarioService.addComment(params)
           .then(function(data) {
+
+            $scope.adding_comment_in_progress = undefined;
+
             if(data.comments){
               $scope.comments = data.comments;
               $scope.scenario.comments_count = data.comments.length;
