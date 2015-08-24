@@ -861,3 +861,42 @@ label {
 .hide {
   display: none;
 }
+
+@page { size: A4 landscape }
+
+@media print {
+
+  body {
+    margin: 25mm 25mm 25mm 25mm;
+    padding: 0;
+  }
+
+   #scenario-canvas-wrapper canvas {
+     display: none;
+   }
+
+   #scenario-canvas-wrapper img {
+     display: block !important;
+     position: fixed;
+     top: 25mm;
+     left: 25mm;
+     width: 240mm;
+   }
+
+   .scenario-page {
+     display:  none;
+   }
+
+   .footer .pull-left{
+      display: none;
+   }
+
+   .footer .pull-right{
+     display: none;
+     position: fixed;
+     bottom: 25mm;
+     right: 25mm;
+     margin-left: -70mm;
+    }
+
+}

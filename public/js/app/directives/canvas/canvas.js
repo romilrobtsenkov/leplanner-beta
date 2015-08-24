@@ -5,9 +5,9 @@
     .module('app')
     .directive('scenariocanvas', scenariocanvas);
 
-    scenariocanvas.$inject = ['$routeParams','$timeout','$window'];
+    scenariocanvas.$inject = ['$routeParams','$timeout','$window','$filter'];
 
-    function scenariocanvas ($routeParams,$timeout,$window) {
+    function scenariocanvas ($routeParams,$timeout,$window,$filter) {
       return {
   			restrict: 'E',
         templateUrl: 'js/app/directives/canvas/canvas.html',
@@ -158,6 +158,18 @@
               this.Draw.text(this.ctx, 'õpilane (student)', -500, 0, 30, 'rgba(0,0,0,1)');
               this.ctx.restore();
               //this.Draw.text(this.ctx, 'Student / Õpilane', legend_x + legend_box*2, legend_y+legend_box-2, 30, 'rgba(0,0,0,1)');
+
+              //scenario name and author and date edited
+              if(LEPLANNER.edit !== true){
+
+                this.ctx.font = '30px Helvetica';
+                var name_length = this.ctx.measureText($scope.scenario.name).width;
+
+                this.Draw.text(this.ctx, $scope.scenario.name, LEPLANNER.WIDTH/2-name_length/2,  40, 30, 'rgba(0,0,0,1)');
+                this.Draw.text(this.ctx, $scope.scenario.author.first_name+' '+$scope.scenario.author.last_name, 1595,  LEPLANNER.HEIGHT-30, 20, 'rgba(0,0,0,1)');
+                this.Draw.text(this.ctx, $filter('date')($scope.scenario.last_modified, 'dd.MM.yyyy HH:mm'), 1420,  LEPLANNER.HEIGHT-30, 20, 'rgba(0,0,0,1)');
+              }
+
 
 
 
