@@ -473,6 +473,10 @@ router.post('/list/', function(req, res, next) {
         field: 'author',
         populate: 'first_name last_name created'
       });
+      q.populated_fields.push({
+        field: 'subject',
+        populate: 'name'
+      });
       q.sort = sort;
 
       scenarioService.find(q, function(err, scenarios) {
@@ -750,6 +754,10 @@ router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
                 field: 'author',
                 populate: 'first_name last_name created'
               });
+              q.populated_fields.push({
+                field: 'subject',
+                populate: 'name'
+              });
               q.sort = sort;
 
               scenarioService.find(q, function(err, scenarios) {
@@ -774,6 +782,10 @@ router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
             field: 'author',
             populate: 'first_name last_name created'
           });
+          q.populated_fields.push({
+            field: 'subject',
+            populate: 'name'
+          });
           q.sort = sort;
 
           scenarioService.find(q, function(err, scenarios) {
@@ -791,6 +803,10 @@ router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
           q.populated_fields.push({
             field: 'author',
             populate: 'first_name last_name created'
+          });
+          q.populated_fields.push({
+            field: 'subject',
+            populate: 'name'
           });
           q.sort = sort;
 
@@ -830,6 +846,10 @@ router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
                 q.populated_fields.push({
                   field: 'author',
                   populate: 'first_name last_name created'
+                });
+                q.populated_fields.push({
+                  field: 'subject',
+                  populate: 'name'
                 });
                 q.sort = sort;
 
@@ -896,11 +916,11 @@ router.post('/search/', function(req, res, next) {
         field: 'author',
         populate: 'first_name last_name created'
       });
-      /*q.populated_fields.push({
+      q.populated_fields.push({
         field: 'subject',
         populate: 'name'
       });
-      q.sort = sort;*/
+      q.sort = sort;
 
       scenarioService.find(q, function(err, scenarios) {
         if (err) { return next({error: err}); }

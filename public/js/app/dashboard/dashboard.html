@@ -86,7 +86,7 @@
 
           <!-- SINGLE SCENARIO -->
   				<div class="row no-margin">
-  					<a href="/#/subject/"><span class="dash-scenario-label pull-right label label-primary">{{scenario.subject}}</span></a>
+  					<a><span class="dash-scenario-label pull-right label label-primary">{{scenario.subject.name}}</span></a>
   					<div class="col-sm-12">
   						<h4 ng-if="!scenario.draft" ><strong><a href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{scenario.name}}</a></strong></h4>
   						<h4 ng-if="scenario.draft"><strong><a href="/#/edit-details/{{scenario._id}}" title="{{scenario.name}}">{{scenario.name}}</a></strong></h4>
