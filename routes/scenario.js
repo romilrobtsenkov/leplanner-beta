@@ -1,4 +1,7 @@
 var express = require('express');
+var request = require('request');
+var fs = require('fs');
+var config = require('../config/config');
 var router = express.Router();
 var restrict = require('../auth/restrict');
 var scenarioService = require('../services/scenario-service');
@@ -600,14 +603,82 @@ router.post('/save-material/', restrict, function(req, res, next) {
       },
       function(next){
 
+        if(typeof params.material.conveyor_url == 'undefined'){ return next(); }
+        if(params.material.conveyor_url === ''){ return next(); }
+
+        var new_fav_url = config.fav_icons_path+'icon_'+params.material.conveyor_url+'.png';
+        var new_fav_url_escaped = config.fav_icons_path+'icon_'+escapeRegExp(params.material.conveyor_url)+'.png';
+
+        console.log(new_fav_url);
+
+        function escapeRegExp(str) {
+          return str.replace(/[.,-\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+        }
+
+
+        fs.exists(new_fav_url_escaped, function(exists) {
+          if (exists) {
+            console.log('exists');
+            fs.unlink(new_fav_url_escaped, function (err) {
+              if (err) return next(err);
+              console.log('deleted previous');
+              loadBase64Image(req.param('url'), function (image, prefix) {
+                fs.writeFile(new_fav_url_escaped, image, 'base64', function(err){
+                  if (err) { return next({error: err}); }
+                    console.log('Favicon saved.');
+                    next();
+                });
+              });
+            });
+          }else{
+            loadBase64Image(params.material.conveyor_url, function (image, prefix) {
+              fs.writeFile(new_fav_url_escaped, image, 'base64', function(err){
+                if (err) { return next({error: err}); }
+                  console.log('Favicon saved.');
+                  next();
+              });
+            });
+          }
+
+        });
+
+        var loadBase64Image = function (url, callback) {
+
+          // Make request to our image url
+          request({url: 'http://www.google.com/s2/favicons?domain='+url, encoding: 'base64'}, function (err, res, body) {
+              if (!err && res.statusCode == 200) {
+                  // So as encoding set to null then request body became Buffer object
+                  var base64prefix = 'data:' + res.headers['content-type'] + ';base64,', image = body;
+                  if (typeof callback == 'function') {
+                      callback(image, base64prefix);
+                  }
+              } else {
+                console.log(url);
+                  throw new Error('Can not download image');
+              }
+          });
+        };
+
+      },
+      function(next){
+
         if(typeof params.material._id != 'undefined'){
             // update
             //console.log('update '+params.material._id);
             var q = {};
             q.where = { _id: params.material._id };
             q.update = params.material;
+            if(typeof q.update.conveyor_name == 'undefined'){
+              q.update.conveyor_name = null;
+            }
+            if(typeof q.update.conveyor_url == 'undefined'){
+              q.update.conveyor_url = null;
+            }
+            if(typeof q.update.display_id == 'undefined'){
+              q.update.display_id = null;
+            }
             q.update.last_modified = new Date();
-            console.log(q.update);
+            //console.log(q.update);
 
             materialService.update(q, function(err, material){
               if (err) { return next({error: err}); }
