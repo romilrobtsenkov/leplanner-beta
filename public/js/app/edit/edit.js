@@ -19,7 +19,7 @@
       $scope.activity_list = [];
       $scope.materials = [];
       $scope.involvement_options = [];
-      $scope.displays_lis = [];
+      $scope.displays_list = [];
 
       $scope.whois_material = '';
       $scope.activity = null;
@@ -246,7 +246,7 @@
               case 1:
                 $scope.materialErrorMessage = 'Material url can not be empty';
                 break;
-              case 2:
+              /*case 2:
                 $scope.materialErrorMessage = 'Conveyor name can not be empty';
                 break;
               case 3:
@@ -254,7 +254,7 @@
                 break;
               case 4:
                 $scope.materialErrorMessage = 'Display can not be empty';
-                break;
+                break;*/
               case 20:
                 $scope.materialErrorMessage = 'Material exists try reloading the page';
                 break;

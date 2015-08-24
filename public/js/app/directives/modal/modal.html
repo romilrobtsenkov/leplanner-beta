@@ -73,7 +73,7 @@
           <div class="col-sm-8">
 
             <div class=" form-group">
-              <label for="display"><strong>Display: </strong></label>
+              <label for="display"><strong>Display: </strong> <a ng-click="material.display_id = undefined">clear selection</a></label>
               <div ng-repeat="display in displays_list" class="radio">
                 <label>
                   <input style="display: inline-block;" type="radio" name="optradio" ng-model="material.display_id" ng-value="display._id">{{display.name}}
