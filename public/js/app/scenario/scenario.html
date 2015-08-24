@@ -20,7 +20,7 @@
 
         <div class="row">
           <div class="col-xs-9">
-            <h2 class="pull-left" ><strong>{{scenario.name}}</strong></h2>
+            <h2 class="pull-left scnario-name" ><strong>{{scenario.name}}</strong></h2>
           </div>
           <div class="col-xs-3">
             <div ng-if="!is_favorite && user">
@@ -37,7 +37,7 @@
 
         <div class="row">
           <div class="col-xs-9">
-            <span class="glyphicon glyphicon-calendar"></span> <span> {{scenario.created | date:'dd.MM.yyyy HH:mm'}}</span> | <span class="glyphicon glyphicon-eye-open"></span> <span> {{scenario.view_count}}</span>
+            <span class="glyphicon glyphicon-calendar scnario-created"></span> <span> {{scenario.created | date:'dd.MM.yyyy HH:mm'}}</span> | <span class="glyphicon glyphicon-eye-open"></span> <span> {{scenario.view_count}}</span>
             <span>| <span class="glyphicon glyphicon-heart"></span><span> {{scenario.favorites_count}}</span></span>
           </div>
           <div class="col-xs-3">
