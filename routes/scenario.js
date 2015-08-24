@@ -979,6 +979,16 @@ router.post('/single-scenario/', function(req, res, next) {
         //console.log('modified notifications :'+notifications.nModified);
         next(null, response);
       });
+    },
+    function(response, next){
+      //get materials
+      var q = {};
+      q.args = { scenario: params.scenario._id, deleted: false };
+      materialService.find(q, function(err, materials){
+        if (err) { return next({error: err}); }
+        response.materials = materials;
+        next(null, response);
+      });
     }
   ], function (err, result) {
     if(err){ res.json(err); }

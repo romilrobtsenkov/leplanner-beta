@@ -7,9 +7,9 @@
 <div class="container main-content" ng-show="scenario.draft">
   This scenario is a draft! <a class="print-button btn btn-primary" ng-if="user._id==scenario.author._id" href="/#/edit-details/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> Edit</a>
 </div>
-<div class="container main-content" ng-if="scenario && !no_scenario && !scenario.draft">
+<div class="container main-content" ng-if="scenario && !no_scenario && !scenario.draft && fully_loaded">
 
-  <img class="full-scenario-image" src="./images/full_scenario.png" alt="Scenario">
+  <scenariocanvas></scenariocanvas>
 
   <br>
   <div class="row scenario-page">

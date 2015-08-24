@@ -5,15 +5,18 @@
     .module('app')
     .controller('ScenarioController', ScenarioController);
 
-    ScenarioController.$inject = ['$scope','$rootScope','$routeParams','$location','$timeout','scenarioService', 'userService'];
+    ScenarioController.$inject = ['$scope','$rootScope','$routeParams','$location','$timeout','scenarioService', 'userService','metaService'];
 
-    function ScenarioController($scope,$rootScope,$routeParams,$location,$timeout,scenarioService,userService) {
+    function ScenarioController($scope,$rootScope,$routeParams,$location,$timeout,scenarioService,userService,metaService) {
 
       if(typeof $routeParams.id !== 'undefined'){
         $scope.scenario_id = $routeParams.id;
       }else{
         $location.path('/');
       }
+
+      $scope.activity_list = [];
+      $scope.materials = [];
 
       // single scenario details
       var params = {
@@ -36,9 +39,18 @@
             $rootScope.title = data.scenario.name+' - '+data.scenario.author.first_name+' '+data.scenario.author.last_name+' | Leplanner beta';
 
             $scope.scenario = data.scenario;
+            $scope.activity_list = data.scenario.activities;
             $scope.is_favorite = data.is_favorite;
             $scope.is_following = data.is_following;
             //console.log(data.scenario);
+            if(typeof data.materials !== 'undefined'){
+              $scope.materials = data.materials;
+
+              updateActivityList();
+              //console.log($scope.activity_list);
+              //console.log('Loaded materials');
+            }
+            loadMetaData();
             getSidebarScenarios();
             getComments();
           }
@@ -54,6 +66,31 @@
             }
           }
       });
+
+      function loadMetaData(){
+
+        metaService.getScenarioMeta()
+        .then(function(data) {
+
+          if(data.subjects && data.activity_organization && data.involvement_options && data.displays){
+            $scope.subjects = data.subjects;
+            $scope.activity_organization = data.activity_organization;
+            $scope.involvement_options = data.involvement_options;
+            $scope.displays_list = data.displays;
+
+            $scope.fully_loaded = true;
+
+          }else{
+            $scope.errorMessage = 'Please try reloading the page';
+          }
+
+          if(data.error){
+            console.log(data.error);
+            $scope.errorMessage = 'Please try reloading the page';
+          }
+        });
+
+      }
 
       function getSidebarScenarios(){
         var q= {order: 'popular', limit: 3, exclude: $scope.scenario._id, author: $scope.scenario.author._id};
@@ -299,6 +336,26 @@
 
         }
       };
+
+      var updateActivityList = function(){
+        // add material to relevant activities
+        for(var i = 0; i < $scope.activity_list.length; i++){
+
+          // empty materials
+          $scope.activity_list[i].materials = undefined;
+
+          for(var j = 0; j < $scope.materials.length; j++){
+            if($scope.activity_list[i]._id == $scope.materials[j].activity_id){
+              if(typeof $scope.activity_list[i].materials == 'undefined'){
+                $scope.activity_list[i].materials = [];
+              }
+              $scope.activity_list[i].materials.push($scope.materials[j]);
+            }
+          }
+        }
+
+      };
+
 
     } // ScenarioController end
 }());

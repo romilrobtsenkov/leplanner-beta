@@ -1137,7 +1137,9 @@
 
 
           // !IMPORTANT enable redraw fn in controller
-          $scope.setReDrawFunction({theDirFn: LEPLANNER.reDraw});
+          if(LEPLANNER.edit === true){
+            $scope.setReDrawFunction({theDirFn: LEPLANNER.reDraw});
+          }
 
           var getOffset = function( elem ) {
             var offsetTop = 0;
