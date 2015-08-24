@@ -547,6 +547,7 @@ router.post('/save/', restrict, function(req, res, next) {
         var q = {};
         q.where = { _id: new_scenario._id };
         q.update = new_scenario;
+        q.update.last_modified = new Date();
         scenarioService.update(q, function(err, scenario){
           if (err) { return next({error: err}); }
           console.log(req.user.first_name+' updated scenario: '+scenario._id);
@@ -700,6 +701,19 @@ router.post('/save-material/', restrict, function(req, res, next) {
           });
         }
 
+      },
+      function(result, next){
+        //update last modified Date
+        var q = {};
+        q.where = { _id: params.scenario._id };
+        q.update = {
+          last_modified: new Date()
+        };
+        scenarioService.update(q, function(err, scenario){
+          if (err) { return next({error: err}); }
+          console.log(req.user.first_name+' updated scenario: '+scenario._id);
+          next(null, result );
+        });
       }
     ], function (err, result) {
       if(err){ res.json(err); }
