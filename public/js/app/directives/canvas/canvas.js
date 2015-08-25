@@ -142,11 +142,11 @@
               var legend_y = LEPLANNER.HEIGHT-50;
               var legend_box = 20;
 
-              this.Draw.fillRect(this.ctx, legend_x, legend_y, legend_box, legend_box, 'rgba(201, 218,	184, 1)');
+              this.Draw.fillRect(this.ctx, legend_x, legend_y, legend_box, legend_box, 'rgb(204, 255, 204)');
               this.Draw.text(this.ctx, 'tunnis (in-class)', legend_x + legend_box*2-5, legend_y+legend_box-2, legend_box, 'rgba(0,0,0,1)');
               legend_x += 230;
 
-              this.Draw.fillRect(this.ctx, legend_x, legend_y, legend_box, legend_box, 'rgba(239, 200, 155, 1)');
+              this.Draw.fillRect(this.ctx, legend_x, legend_y, legend_box, legend_box, 'rgb(255, 144, 144)');
               this.Draw.text(this.ctx, 'kodutöö (off-class)', legend_x + legend_box*2-5, legend_y+legend_box-2, legend_box, 'rgba(0,0,0,1)');
 
               // student/teacher

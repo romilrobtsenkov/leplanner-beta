@@ -878,9 +878,9 @@ label {
    #scenario-canvas-wrapper img {
      display: block !important;
      position: fixed;
-     top: 25mm;
-     left: 25mm;
-     width: 240mm;
+     top: 15mm;
+     left: 15mm;
+     width: 260mm;
    }
 
    .scenario-page {
