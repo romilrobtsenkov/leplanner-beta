@@ -446,8 +446,9 @@
 
               this.display_y = display_y;
               this.display_r = r*2;
+              //console.log(this.data.display_id);
 
-              if(this.data.display_id !== null || typeof this.data.display_id != 'undefined'){
+              if(this.data.display_id !== null && typeof this.data.display_id != 'undefined'){
 
                 LEPLANNER.Draw.display(LEPLANNER.ctx, this.x+r, display_y, r, 'rgba(0,0,0,1)', bottom);
 
@@ -488,7 +489,7 @@
                   // var conveyor_icon_hover_name = $scope.displays_list[this.data.display_id].name;
                   var conveyor_icon_size = 24;
                   var conveyor_icon = new Image();
-                  console.log(this.data.conveyor_url);
+                  //console.log(this.data.conveyor_url);
                   // google favicon fetcher
                   //fixing - Uncaught SecurityError: Failed to execute 'toDataURL' on 'HTMLCanvasElement': Tainted canvases may not be exported.
                   conveyor_icon.src = '/images/favs/icon_'+escapeRegExp(this.data.conveyor_url)+'.png';
@@ -843,13 +844,14 @@
 
               if (LEPLANNER.enlarged_activity === null && (point.x>=m.x)&(point.x<=m.x+m.width)&(point.y>=m.y)&(point.y<=m.y+m.height)){
                 //console.log('or here');
-
-                var url = m.data.material_url;
-                if(url.substring(0, 4) != "http") {
-                  url = 'http://'+url;
+                if(typeof m.data.material_url != 'undefined' && m.data.material_url !== null && m.data.material_url !== ''){
+                  var url = m.data.material_url;
+                  if(url.substring(0, 4) != "http") {
+                    url = 'http://'+url;
+                  }
+                  console.log('opening '+url);
+                  window.open(url,'_blank');
                 }
-                console.log('opening '+url);
-                window.open(url,'_blank');
               }
 
               // if hovering conveyor
@@ -859,12 +861,15 @@
                 (point.x>=m.x+m.width-m.display_r)&(point.x<=m.x+m.width)&(point.y>=m.y+m.height)&(point.y<=m.y+m.height+m.display_r) )
               ){
                 //console.log('here');
-                var c_url = m.data.conveyor_url;
-                if(c_url.substring(0, 4) != "http") {
-                  c_url = 'http://'+c_url;
+                if(typeof m.data.conveyor_url != 'undefined' && m.data.conveyor_url !== null && m.data.conveyor_url !== ''){
+
+                  var c_url = m.data.conveyor_url;
+                  if(c_url.substring(0, 4) != "http") {
+                    c_url = 'http://'+c_url;
+                  }
+                  console.log('opening '+c_url);
+                  window.open(c_url,'_blank');
                 }
-                console.log('opening '+c_url);
-                window.open(c_url,'_blank');
               }
 
 

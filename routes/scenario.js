@@ -682,6 +682,9 @@ router.post('/save-material/', restrict, function(req, res, next) {
             if(typeof q.update.display_id == 'undefined'){
               q.update.display_id = null;
             }
+            if(typeof q.update.material_url == 'undefined'){
+              q.update.material_url = null;
+            }
             q.update.last_modified = new Date();
             //console.log(q.update);
 
