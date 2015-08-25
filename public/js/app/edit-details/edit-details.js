@@ -15,6 +15,8 @@
         $location.path('/');
       }
 
+      $scope.selected_subject = null;
+
       $scope.outcomes_list = [];
       $scope.activity_list = [];
 
@@ -38,6 +40,7 @@
               //console.log(data.scenario);
 
               $scope.scenario = data.scenario;
+              $scope.selected_subject = data.scenario.subject;
               console.log('Loaded scenario');
 
               if(typeof data.scenario.outcomes !== 'undefined'){
@@ -282,6 +285,9 @@
         // allow empty, grade, duration
         if(typeof $scope.scenario.grade == 'undefined'){ $scope.scenario.grade = null; }
         if(typeof $scope.scenario.duration == 'undefined'){ $scope.scenario.duration = null; }
+
+        $scope.scenario.subject = $scope.selected_subject;
+        console.log($scope.scenario);
 
         var params = {
           user: {
