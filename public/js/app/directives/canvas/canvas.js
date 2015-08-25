@@ -267,9 +267,9 @@
               var class_color;
               if(this.in_class){
                 // green
-                class_color = 'rgba(220,241,219, 1)';
+                class_color = 'rgb(204, 255, 204)';
               }else{
-                class_color = 'rgba(248, 211, 212, 1)';
+                class_color = 'rgb(255, 144, 144)';
               }
               //draw box
               LEPLANNER.Draw.fillRect(LEPLANNER.ctx, this.x, this.y, this.width, this.height, class_color);
@@ -297,9 +297,9 @@
               var class_color;
               if(this.in_class){
                 // green
-                class_color = 'rgba(220,241,219, 1)';
+                class_color = 'rgb(204, 255, 204)';
               }else{
-                class_color = 'rgba(248, 211, 212, 1)';
+                class_color = 'rgb(255, 144, 144)';
               }
 
               this.enlarged_width = this.width + 250;
@@ -421,9 +421,9 @@
               var class_color;
               if(this.in_class){
                 // green
-                class_color = 'rgba(220,241,219, 1)';
+                class_color = 'rgb(204, 255, 204)';
               }else{
-                class_color = 'rgba(248, 211, 212, 1)';
+                class_color = 'rgb(255, 144, 144)';
               }
 
 
