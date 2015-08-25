@@ -447,7 +447,7 @@
               this.display_y = display_y;
               this.display_r = r*2;
 
-              if(this.data.display_id !== null){
+              if(this.data.display_id !== null || typeof this.data.display_id != 'undefined'){
 
                 LEPLANNER.Draw.display(LEPLANNER.ctx, this.x+r, display_y, r, 'rgba(0,0,0,1)', bottom);
 
@@ -456,27 +456,29 @@
                 // var display_icon_hover_name = $scope.displays_list[this.data.display_id].name;
                 var icon_size = 24;
                 var display_icon = new Image();
-                display_icon.src = 'images/'+$scope.displays_list[this.data.display_id].icon;
-                if(this.data.display_id == $scope.displays_list.length-1){
-                  this.display_name = this.data.other_display;
-                }else{
-                  this.display_name = $scope.displays_list[this.data.display_id].name;
-                }
-
-                var d_x = this.x;
-                display_icon.onload = function() {
-                  if(!too_small_for_icon) {
-                    if(bottom){
-                      LEPLANNER.Draw.imageIcon(LEPLANNER.ctx, display_icon, d_x+icon_size/2, display_y+5, icon_size);
-                    }else{
-                      LEPLANNER.Draw.imageIcon(LEPLANNER.ctx, display_icon, d_x+icon_size/2, display_y-icon_size-5, icon_size);
-                    }
+                if(typeof $scope.displays_list[this.data.display_id] != 'undefined'){
+                  display_icon.src = 'images/'+$scope.displays_list[this.data.display_id].icon;
+                  if(this.data.display_id == $scope.displays_list.length-1){
+                    this.display_name = this.data.other_display;
+                  }else{
+                    this.display_name = $scope.displays_list[this.data.display_id].name;
                   }
-                };
+
+                  var d_x = this.x;
+                  display_icon.onload = function() {
+                    if(!too_small_for_icon) {
+                      if(bottom){
+                        LEPLANNER.Draw.imageIcon(LEPLANNER.ctx, display_icon, d_x+icon_size/2, display_y+5, icon_size);
+                      }else{
+                        LEPLANNER.Draw.imageIcon(LEPLANNER.ctx, display_icon, d_x+icon_size/2, display_y-icon_size-5, icon_size);
+                      }
+                    }
+                  };
+                }
 
               }
 
-              if(this.data.conveyor_url !== null || this.data.conveyor_name !== null){
+              if(typeof this.data.conveyor_url != 'undefined' && (this.data.conveyor_url !== null || this.data.conveyor_name !== null)){
                 // draw conveyor
                 LEPLANNER.Draw.display(LEPLANNER.ctx, this.x+this.width-r, display_y, r, 'rgba(0,0,0,1)', bottom);
 
@@ -486,7 +488,7 @@
                   // var conveyor_icon_hover_name = $scope.displays_list[this.data.display_id].name;
                   var conveyor_icon_size = 24;
                   var conveyor_icon = new Image();
-
+                  console.log(this.data.conveyor_url);
                   // google favicon fetcher
                   //fixing - Uncaught SecurityError: Failed to execute 'toDataURL' on 'HTMLCanvasElement': Tainted canvases may not be exported.
                   conveyor_icon.src = '/images/favs/icon_'+escapeRegExp(this.data.conveyor_url)+'.png';
