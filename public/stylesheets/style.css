@@ -634,9 +634,9 @@ span.not-selected {
   margin-left: 5px;
 }
 
-::-webkit-scrollbar {
+/*::-webkit-scrollbar {
     display: none;
-}
+}*/
 
 .input-group.search {
   padding-bottom: 20px;
