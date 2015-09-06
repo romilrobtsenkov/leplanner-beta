@@ -504,6 +504,7 @@
                       }else{
                         LEPLANNER.Draw.imageIcon(LEPLANNER.ctx, conveyor_icon, x+width-conveyor_icon_size*1.5, display_y-conveyor_icon_size-5, conveyor_icon_size);
                       }
+                      LEPLANNER.updateImageUrl();
                     }
                   };
 
