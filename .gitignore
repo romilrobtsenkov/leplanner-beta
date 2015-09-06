@@ -3,4 +3,5 @@ config/
 public/bower/
 public/images/user/
 public/images/user-temp/
+public/images/favs/
 .DS_Store

@@ -609,12 +609,12 @@ router.post('/save-material/', restrict, function(req, res, next) {
       function(next){
 
         if(typeof params.material.conveyor_url == 'undefined'){ return next(); }
-        if(params.material.conveyor_url === ''){ return next(); }
+        if(params.material.conveyor_url === '' || typeof params.material.conveyor_url == 'undefined' || params.material.conveyor_url === null){ return next(); }
 
         var new_fav_url = config.fav_icons_path+'icon_'+params.material.conveyor_url+'.png';
         var new_fav_url_escaped = config.fav_icons_path+'icon_'+escapeRegExp(params.material.conveyor_url)+'.png';
 
-        console.log(new_fav_url);
+        //console.log(new_fav_url);
 
         function escapeRegExp(str) {
           return str.replace(/[.,-\/#!$%\^&\*;:{}=\-_`~()]/g,"");
@@ -623,14 +623,14 @@ router.post('/save-material/', restrict, function(req, res, next) {
 
         fs.exists(new_fav_url_escaped, function(exists) {
           if (exists) {
-            console.log('exists');
+            //console.log('exists');
             fs.unlink(new_fav_url_escaped, function (err) {
               if (err) return next(err);
-              console.log('deleted previous');
-              loadBase64Image(req.param('url'), function (image, prefix) {
+              //console.log('deleted previous');
+              loadBase64Image(params.material.conveyor_url, function (image, prefix) {
                 fs.writeFile(new_fav_url_escaped, image, 'base64', function(err){
                   if (err) { return next({error: err}); }
-                    console.log('Favicon saved.');
+                    //console.log('Favicon saved.');
                     next();
                 });
               });
@@ -639,7 +639,7 @@ router.post('/save-material/', restrict, function(req, res, next) {
             loadBase64Image(params.material.conveyor_url, function (image, prefix) {
               fs.writeFile(new_fav_url_escaped, image, 'base64', function(err){
                 if (err) { return next({error: err}); }
-                  console.log('Favicon saved.');
+                  //console.log('Favicon saved.');
                   next();
               });
             });
