@@ -15,14 +15,16 @@
 
         $scope.saving_in_progress = true;
 
-        if(typeof scenario.name == 'undefined' || scenario.name === '' || scenario.name.length <= 2){
+        if(!scenario || typeof scenario.name == 'undefined' || scenario.name === '' || scenario.name.length <= 2){
           $scope.errorMessage = 'Scenario name has to be atleast 3 chars long!';
+          $scope.saving_in_progress = undefined;
           $timeout(function() { $scope.errorMessage = null; }, 2000);
           return;
         }
 
         if(typeof scenario.description == 'undefined' || scenario.description === '' || scenario.description.length <= 2){
           $scope.errorMessage = 'Scenario description has to be atleast 3 chars long!';
+          $scope.saving_in_progress = undefined;
           $timeout(function() { $scope.errorMessage = null; }, 2000);
           return;
         }
