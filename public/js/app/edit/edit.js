@@ -298,9 +298,9 @@
 
 
         if(action == 'update'){
-          for(var i = 0; i < $scope.materials.length; i++){
-            if($scope.materials[i]._id == new_material._id){
-              $scope.materials[i] = new_material;
+          for(var j = 0; j < $scope.materials.length; j++){
+            if($scope.materials[j]._id == new_material._id){
+              $scope.materials[j] = new_material;
               break;
             }
           }
