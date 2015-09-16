@@ -814,7 +814,7 @@ router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
 
         case 'published':
 
-          var q = {};
+          q = {};
           q.args = { author: query.user._id, draft: false, deleted: false};
           q.populated_fields = [];
           q.populated_fields.push({
