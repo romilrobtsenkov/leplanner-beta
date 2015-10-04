@@ -4,6 +4,8 @@ var config = require('../config/config');
 var app = require('../app');
 var http = require('http');
 
+var log = require('../logger');
+
 var port = config.port;
 app.set('port', port);
 
@@ -34,5 +36,5 @@ function onError(error) {
 }
 
 function onListening() {
-  console.log('LePlanner beta process started');
+  log.info('LePlanner beta process started');
 }

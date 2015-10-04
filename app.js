@@ -1,6 +1,8 @@
 var express = require('express');
 var path = require('path');
-var logger = require('morgan');
+
+var log = require('./logger');
+
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
@@ -25,12 +27,7 @@ mongoose.connect(config.db);
 
 var app = express();
 
-
-if(app.get('env') == 'development'){
-  app.use(logger('dev'));
-}else{
-  app.use(logger('combined'));
-}
+app.use(log.middleWare());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -69,24 +66,20 @@ app.use(function(req, res, next) {
 
 // error handlers
 app.use(function(err, req, res, next) {
-    if(app.get('env') == 'development'){
-      console.log(err.message);
-    }else{
-      err = {};
-    }
-
+    log.error(err.message);
+    err = {};
     res.status(err.status || 500).
     json({
         status: err.status || 500,
-        message: err.message,
+        message: 'Unknown errror',
         error: err
     });
 });
 
 // https://strongloop.com/strongblog/robust-node-applications-error-handling/
-if (app.get('env') === 'production') {
-  process.on('uncaughtException', function (err) {
-    console.error(err.stack);
+if (config.errorMails) {
+    process.on('uncaughtException', function (err) {
+    log.error(err.stack);
 
     var transport = nodemailer.createTransport();
 
@@ -97,11 +90,16 @@ if (app.get('env') === 'production') {
       text: err.stack
     }, function (err) {
        if (err) console.error(err);
-       console.log('Email sent to developer about error');
+       log.warning('Email sent to developer about error');
        process.exit(1);
     });
 
   });
 }
+
+var memwatch = require('memwatch-next');
+memwatch.on('leak', function (info) {
+  log.warning('MEMORY LEAK DETECTED', info);
+});
 
 module.exports = app;
