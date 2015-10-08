@@ -876,7 +876,7 @@ router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
                 });
 
               }else{
-                return next(null, []);
+                return next(null, {scenarios: []});
               }
             }
           ], function (err, result) {
@@ -887,7 +887,7 @@ router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
           break;
 
         default:
-          return next(null, []);
+          return next(null, {scenarios: []});
       }
 
     }
