@@ -182,7 +182,7 @@ router.post('/create', function(req, res, next) {
 
 router.post('/list', restrict, function(req, res, next){
 
-  var user_id = req.user._id;
+  var user_id = req.session.user._id;
 
   if(typeof req.limit != 'undefined'){
     var limit = req.limit;
@@ -345,7 +345,7 @@ router.get('/me', function(req, res){
   if(!req.session.passport.user){
     return res.status(401).send({error: 'Unauthorized'});
   }else{
-    return res.json(req.user);
+    return res.json(req.session.user);
   }
 });
 

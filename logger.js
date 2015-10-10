@@ -65,7 +65,7 @@ module.exports = function (config) {
 			return function (req, res, next) {
 				var start = new Date();
 				onFinished(res, function (err) {
-					this.info(req.url, req.user && req.user._id || 'guest' , statusStyle(res.statusCode), (new Date() - start) + 'ms');
+					this.info(req.url, req.session.user && req.session.user._id || 'guest' , statusStyle(res.statusCode), (new Date() - start) + 'ms');
 				}.bind(this));
 				next();
 			}.bind(this);
