@@ -4,7 +4,7 @@ var Subject = require('../models/subject').Subject;
 exports.getSubjects = function(next) {
     var query = Subject.find();
     query.sort({name: 1});
-    query.select('name');
+    query.select('_id name');
     query.exec(function(err, subjects) {
       return next(null, subjects);
     });
@@ -12,31 +12,31 @@ exports.getSubjects = function(next) {
 
 exports.getActivityOrganization = function(next) {
   return next(null, [
-    { _id: 0, name: 'individuaalne', name_eng: 'individual task' },
-    { _id: 1, name: 'paaris', name_eng: 'peer task' },
-    { _id: 2, name: 'väikerühmas', name_eng: 'small group task' },
-    { _id: 3, name: 'terve klassiga', name_eng: 'whole class task' },
+    { _id: 0, name: 'individuaalne', name_eng: 'individual' },
+    { _id: 1, name: 'paaris', name_eng: 'pair' },
+    { _id: 2, name: 'väikerühmas', name_eng: 'small group' },
+    { _id: 3, name: 'terve klassiga', name_eng: 'whole class' },
   ]);
 };
 
 exports.getInvolvementOptions = function(next) {
   return next(null, [
-    { _id: 0, name: "0 - vaatamine (kuulamine, lugemine)" },
-    { _id: 1, name: "1 - märgendamine (annoteerimine, meeldimine)" },
-    { _id: 2, name: "2 - interaktsioon (enesekontrolli test)" },
-    { _id: 3, name: "3 - esitamine (ülesande esitamine)" },
-    { _id: 4, name: "4 - laiendamine (materjali lisamine olemasolevale)" },
-    { _id: 5, name: "5 - remiksimine (materjalile uue tähenduse andmine)" },
-    { _id: 6, name: "6 - loomine (uue materjali loomine)" }
+    { _id: 0, name: "0 - vaatamine (kuulamine, lugemine) / consuming (read, view, listen)" },
+    { _id: 1, name: "1 - märgendamine (annoteerimine, meeldimine) / annotating (like, tag, bookmark, comment)" },
+    { _id: 2, name: "2 - interaktsioon (enesekontrolli test) / interacting (select, drag-n-drop, enter the response, take self-test)" },
+    { _id: 3, name: "3 - esitamine (ülesande esitamine) / submitting (send response to teacher for feedback or assessment)" },
+    { _id: 4, name: "4 - laiendamine (materjali lisamine olemasolevale) / expanding (add videos, pages, files)" },
+    { _id: 5, name: "5 - remiksimine (materjalile uue tähenduse andmine) / remixing (change the content, replace some parts, add subtitles)" },
+    { _id: 6, name: "6 - loomine (uue materjali loomine) / creating (compose new content from scratch, re-use some pieces)" }
   ]);
 };
 
 exports.getDisplays = function(next) {
   return next(null, [
-    { _id: 0, name: "Arvuti", icon: "pc.png" },
-    { _id: 1, name: "Nutitelefon", icon: "smartphone.png" },
-    { _id: 2, name: "Tahvelarvuti", icon: "tablet.png" },
-    { _id: 3, name: "Muu", icon: "other_display.png" }
+    { _id: 0, name: "Arvuti (Computer)", icon: "pc.png" },
+    { _id: 1, name: "Nutitelefon (Smartphone)", icon: "smartphone.png" },
+    { _id: 2, name: "Tahvelarvuti (Tablet)", icon: "tablet.png" },
+    { _id: 3, name: "Muu (Other)", icon: "other_display.png" }
   ]);
 };
 
