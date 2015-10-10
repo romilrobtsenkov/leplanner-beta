@@ -14,6 +14,59 @@
   			link: function postLink($scope, element, attrs) {
           // favicon
           //http://www.google.com/s2/favicons?domain=twitter.com
+          var scroll = false;
+
+          var COLOR_IN_CLASS = 'rgb(204, 255, 204)';
+          var COLOR_OFF_CLASS = 'rgb(255, 144, 144)';
+
+          /*
+
+
+
+          //apple blue & yellow
+          var COLOR_IN_CLASS = 'rgb(90,200,250)';
+          var COLOR_OFF_CLASS = 'rgb(255,204,0)';
+
+          keep blue http://noseyparka.me.uk/2014/01/26/google-keep-pallete/
+          keep yellow
+          var COLOR_IN_CLASS = 'rgb(133,214,228)';
+          var COLOR_OFF_CLASS = 'rgb(241,241,78)';
+
+
+          blue green combo
+          var COLOR_IN_CLASS = 'rgb(204, 255, 204)';
+          var COLOR_OFF_CLASS = 'rgb(203, 239, 251)';
+          */
+
+          /*
+          yellow green combo
+          var COLOR_IN_CLASS = 'rgb(255, 255, 153)';
+          var COLOR_OFF_CLASS = 'rgb(204, 255, 204)';
+          */
+
+          /*
+          yellow blue combo
+          var COLOR_IN_CLASS = 'rgb(255, 255, 153)';
+          var COLOR_OFF_CLASS = 'rgb(203, 239, 251)';
+          */
+
+          /*
+          yellow oranz combo
+          var COLOR_IN_CLASS = 'rgb(255, 255, 153)';
+          var COLOR_OFF_CLASS = 'rgb(255, 204, 153)';
+          */
+
+          /*
+          blue oranz combo
+          var COLOR_IN_CLASS = 'rgb(255, 204, 153)';
+          var COLOR_OFF_CLASS = 'rgb(203, 239, 251)';
+          */
+
+          /*
+          blue combo
+          var COLOR_IN_CLASS = 'rgb(153, 204, 255)';
+          var COLOR_OFF_CLASS = 'rgb(203, 239, 251)';
+          */
 
           var isTouch = !!('ontouchstart' in window);
           var point = {x: 0, y: 0};
@@ -34,7 +87,6 @@
             top: 0,
             left: 0,
           });
-
           angular.element(image).css({
             display: 'none',
           });
@@ -46,13 +98,13 @@
           //load organization images - one / pair / group
           var activity_organization_images = [];
           var one_icon_img = new Image();
-          one_icon_img.src = 'images/one.png';
+          one_icon_img.src = 'http://leplanner-beta.eu/images/one.png';
           activity_organization_images.push(one_icon_img);
           var pair_icon_img = new Image();
-          pair_icon_img.src = 'images/pair.png';
+          pair_icon_img.src = 'http://leplanner-beta.eu/images/pair.png';
           activity_organization_images.push(pair_icon_img);
           var group_icon_img = new Image();
-          group_icon_img.src = 'images/group.png';
+          group_icon_img.src = 'http://leplanner-beta.eu/images/group.png';
           activity_organization_images.push(group_icon_img);
           // same icon for whole class
           activity_organization_images.push(group_icon_img);
@@ -79,6 +131,9 @@
             edit: false,
 
           	init: function(){
+              if(scroll === true){
+                this.WIDTH = 5000;
+              }
 
               this.canvas = canvas;
               this.temp_canvas = temp_canvas;
@@ -95,6 +150,9 @@
               this.resizeCanvas();
               this.Draw.clear(this.ctx);
               this.drawBaseLayer();
+
+              //fix icon rendering on page load
+              console.log(one_icon_img);
               this.drawActivitiesAndMaterials();
               this.updateImageUrl();
 
@@ -111,11 +169,28 @@
 
             resizeCanvas: function(){
               var canvas_wrapper = document.getElementById('scenario-canvas-wrapper');
-              var style = {
-                width: canvas_wrapper.offsetWidth
-              };
-              angular.element(canvas).css(style);
-              angular.element(temp_canvas).css(style);
+
+              var style;
+
+              if(scroll === true){
+                style = {
+                  width: this.WIDTH/1080*500,
+                  height: "500px"
+                };
+                console.log(style);
+                angular.element(canvas).css(style);
+                angular.element(temp_canvas).css(style);
+                angular.element(canvas_wrapper).css({
+                  overflowX: "scroll"
+                });
+              }else{
+                style = {
+                  width: canvas_wrapper.offsetWidth
+                };
+                angular.element(canvas).css(style);
+                angular.element(temp_canvas).css(style);
+
+              }
 
               //!important scale
               this.scale = this.WIDTH/style.width;
@@ -142,13 +217,13 @@
               var legend_y = LEPLANNER.HEIGHT-50;
               var legend_box = 20;
 
-              this.Draw.fillRect(this.ctx, legend_x, legend_y, legend_box, legend_box, 'rgb(204, 255, 204)');
-              this.Draw.text(this.ctx, 'tunnis (in-class)', legend_x + legend_box*2-5, legend_y+legend_box-2, legend_box, 'rgba(0,0,0,1)');
+              this.Draw.fillRect(this.ctx, legend_x, legend_y, legend_box, legend_box, COLOR_IN_CLASS);
+              this.Draw.text(this.ctx, 'tunnitegevus (in-class)', legend_x + legend_box*2-5, legend_y+legend_box-2, legend_box, 'rgba(0,0,0,1)');
               legend_x += 230;
-
-              this.Draw.fillRect(this.ctx, legend_x, legend_y, legend_box, legend_box, 'rgb(255, 144, 144)');
+              /*
+              this.Draw.fillRect(this.ctx, legend_x, legend_y, legend_box, legend_box, COLOR_OFF_CLASS);
               this.Draw.text(this.ctx, 'kodutöö (off-class)', legend_x + legend_box*2-5, legend_y+legend_box-2, legend_box, 'rgba(0,0,0,1)');
-
+              */
               // student/teacher
               //teacher up-top
               this.ctx.save();
@@ -267,9 +342,9 @@
               var class_color;
               if(this.in_class){
                 // green
-                class_color = 'rgb(204, 255, 204)';
+                class_color = COLOR_IN_CLASS;
               }else{
-                class_color = 'rgb(255, 144, 144)';
+                class_color = COLOR_OFF_CLASS;
               }
               //draw box
               LEPLANNER.Draw.fillRect(LEPLANNER.ctx, this.x, this.y, this.width, this.height, class_color);
@@ -297,9 +372,9 @@
               var class_color;
               if(this.in_class){
                 // green
-                class_color = 'rgb(204, 255, 204)';
+                class_color = COLOR_IN_CLASS;
               }else{
-                class_color = 'rgb(255, 144, 144)';
+                class_color = COLOR_OFF_CLASS;
               }
 
               this.enlarged_width = this.width + 250;
@@ -421,9 +496,9 @@
               var class_color;
               if(this.in_class){
                 // green
-                class_color = 'rgb(204, 255, 204)';
+                class_color = COLOR_IN_CLASS;
               }else{
-                class_color = 'rgb(255, 144, 144)';
+                class_color = COLOR_OFF_CLASS;
               }
 
 
@@ -1123,7 +1198,15 @@
             if(typeof $scope.allow_edit != 'undefined' && $scope.allow_edit === true){
               LEPLANNER.edit =true;
             }
-            LEPLANNER.init();
+            one_icon_img.onload = function() {
+              pair_icon_img.onload = function() {
+                group_icon_img.onload = function() {
+
+                  LEPLANNER.init();
+                };
+              };
+            };
+
           });
 
           angular.element($window).bind('resize', function () {
