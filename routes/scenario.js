@@ -430,6 +430,11 @@ router.post('/get-edit-data-single-scenario/', restrict, function(req, res, next
     function(next){
       var q = {};
       q.args = { _id: params.scenario._id };
+      q.populated_fields = [];
+      q.populated_fields.push({
+        field: 'subject',
+        populate: '_id name'
+      });
 
       scenarioService.findOne(q, function(err, scenario){
         if (err) { return next({error: err}); }
