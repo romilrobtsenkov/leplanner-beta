@@ -52,7 +52,7 @@ module.exports = function (config) {
 		if (!date) {
 			date = new Date();
 		}
-		return moment(date).format('YYYY-MM-DD H:ss:mm');
+		return moment(date).format('YYYY-MM-DD HH:mm:ss');
 	}
 
 	return {
