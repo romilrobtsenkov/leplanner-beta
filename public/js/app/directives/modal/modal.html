@@ -16,7 +16,7 @@
         <div ng-if='materialErrorMessage' class="alert alert-danger" role="alert">{{materialErrorMessage}}</div>
 
         <div class="row no-margin">
-          <h4>Material</h4>
+          <h4>Resource</h4>
           <div class="col-sm-5">
 
             <div class=" form-group">
@@ -87,7 +87,7 @@
 
       </div>
       <div class="modal-footer">
-        <a ng-if="material._id" ng-disabled="saving_material" ng-click="deleteMaterial(material._id)" class="pull-left" style="margin-left:20px; cursor: pointer;">Delete material</a>
+        <a ng-if="material._id" ng-disabled="saving_material" ng-click="deleteMaterial(material._id)" class="pull-left" style="margin-left:20px; cursor: pointer;">Delete resource</a>
         <span ng-if="deleting_material" style="margin-left: 10px;" class="pull-left"> deleting...</span>
         <span ng-if="saving_material">saving...</span>
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

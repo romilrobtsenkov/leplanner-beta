@@ -314,7 +314,7 @@
             this.org_title = '';
             for(var i = 0; i < $scope.activity_organization.length; i++){
               if($scope.activity_organization[i]._id == this.organization){
-                this.org_title = $scope.activity_organization[i].name;
+                this.org_title = $scope.activity_organization[i].name_eng;
               }
             }
             this.org_image = activity_organization_images[this.organization];
