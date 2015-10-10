@@ -152,7 +152,7 @@
               this.drawBaseLayer();
 
               //fix icon rendering on page load
-              console.log(one_icon_img);
+              //console.log(one_icon_img);
               this.drawActivitiesAndMaterials();
               this.updateImageUrl();
 
@@ -595,6 +595,10 @@
               //write material name
               var material_font = 23;
               var material_name_color = 'rgba(2,89,121,1)';
+              //if not link, change color to black;
+              if(!this.data.material_url){
+                material_name_color = 'rgba(0,0,0,1)';
+              }
               //LEPLANNER.Draw.materialName(LEPLANNER.ctx, this.data.material_name, this.width, this.x+material_font/4, this.y+material_font, material_font, 'rgba(0,0,0,1)');
 
               //console.log(max_line_count);
@@ -626,8 +630,9 @@
                       var new_line = line.slice(0, temp_length);
                       var new_line_width = LEPLANNER.ctx.measureText(new_line).width;
                       LEPLANNER.Draw.text(LEPLANNER.ctx, new_line, this.x+material_font-5, y, material_font, material_name_color);
-                      LEPLANNER.Draw.fillRect(LEPLANNER.ctx, this.x+material_font-5, y+3, new_line_width, 2, material_name_color);
-
+                      if(this.data.material_url){
+                        LEPLANNER.Draw.fillRect(LEPLANNER.ctx, this.x+material_font-5, y+3, new_line_width, 2, material_name_color);
+                      }
                       var left_from_line = line.slice(temp_length, line.length);
                       line = left_from_line;
                       y += lineHeight;
@@ -642,7 +647,9 @@
                     }
                     if(line_count < max_line_count && line !== ' '){
                       LEPLANNER.Draw.text(LEPLANNER.ctx, line, this.x+material_font-5, y, material_font, material_name_color);
-                      LEPLANNER.Draw.fillRect(LEPLANNER.ctx, this.x+material_font-5, y+3, test_width, 2, material_name_color);
+                      if(this.data.material_url){
+                        LEPLANNER.Draw.fillRect(LEPLANNER.ctx, this.x+material_font-5, y+3, test_width, 2, material_name_color);
+                      }
                       y += lineHeight;
                       line_count++;
                     }
@@ -673,8 +680,9 @@
                     this.needs_to_be_enlarged = true;
                   }
                   LEPLANNER.Draw.text(LEPLANNER.ctx, line, this.x+material_font-5, y, material_font, material_name_color);
-                  LEPLANNER.Draw.fillRect(LEPLANNER.ctx, this.x+material_font-5, y+3, text_width, 2, material_name_color);
-
+                  if(this.data.material_url){
+                    LEPLANNER.Draw.fillRect(LEPLANNER.ctx, this.x+material_font-5, y+3, text_width, 2, material_name_color);
+                  }
                 }
               }
 
