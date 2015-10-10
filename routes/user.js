@@ -182,7 +182,7 @@ router.post('/create', function(req, res, next) {
 
 router.post('/list', restrict, function(req, res, next){
 
-  var user_id = req.user._id;
+  var user_id = req.session.passport.user._id;
 
   if(typeof req.limit != 'undefined'){
     var limit = req.limit;

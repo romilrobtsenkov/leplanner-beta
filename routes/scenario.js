@@ -247,7 +247,7 @@ router.post('/delete-comment/', restrict, function(req, res, next) {
 
       //check if user has rights to delete the comment
       var q = {};
-      q.args = { _id: params.scenario._id, author: req.user._id };
+      q.args = { _id: params.scenario._id, author: req.session.passport.user._id };
 
       scenarioService.findOne(q, function(err, user){
         if (err) { return next({error: err}); }
@@ -315,7 +315,7 @@ router.post('/delete-material/', restrict, function(req, res, next) {
     function(next){
       //check author
       var q = {};
-      q.args = { _id: params.scenario._id, author: req.user._id };
+      q.args = { _id: params.scenario._id, author: req.session.passport.user._id };
       q.select = "_id";
 
       scenarioService.findOne(q, function(err, latest_scenario){
@@ -375,7 +375,7 @@ router.post('/delete-scenario/', restrict, function(req, res, next) {
 
       //check if user has rights to delete the comment
       var q = {};
-      q.args = { _id: params.scenario._id, author: req.user._id };
+      q.args = { _id: params.scenario._id, author: req.session.passport.user._id };
 
       scenarioService.findOne(q, function(err, scenario){
         if (err) { return next({error: err}); }
@@ -415,7 +415,7 @@ router.post('/get-edit-data-single-scenario/', restrict, function(req, res, next
   async.waterfall([
     function(next){
       var q = {};
-      q.args = { _id: params.scenario._id, author: req.user._id };
+      q.args = { _id: params.scenario._id, author: req.session.passport.user._id };
 
       scenarioService.findOne(q, function(err, user){
         if (err) { return next({error: err}); }
@@ -504,7 +504,7 @@ router.post('/save/', restrict, function(req, res, next) {
       function(next){
         //check author
         var q = {};
-        q.args = { _id: params.scenario_data._id, author: req.user._id };
+        q.args = { _id: params.scenario_data._id, author: req.session.passport.user._id };
 
         scenarioService.findOne(q, function(err, latest_scenario){
           if (err) { return next({error: err}); }
@@ -522,7 +522,7 @@ router.post('/save/', restrict, function(req, res, next) {
         new_scenario.last_modified = new Date();
 
         //disallow in any way to change author
-        new_scenario.author = req.user._id;
+        new_scenario.author = req.session.passport.user._id;
 
         // fix only positive numbers in grade, duration
         if(new_scenario.grade !== null){
@@ -555,7 +555,7 @@ router.post('/save/', restrict, function(req, res, next) {
         q.update.last_modified = new Date();
         scenarioService.update(q, function(err, scenario){
           if (err) { return next({error: err}); }
-          console.log(req.user.first_name+' updated scenario: '+scenario._id);
+          //console.log(req.user.first_name+' updated scenario: '+scenario._id);
           next(null, {scenario: { _id: scenario._id } } );
         });
 
@@ -581,7 +581,7 @@ router.post('/save-material/', restrict, function(req, res, next) {
       function(next){
         //check author
         var q = {};
-        q.args = { _id: params.scenario._id, author: req.user._id };
+        q.args = { _id: params.scenario._id, author: req.session.passport.user._id };
         q.select = "_id";
 
         scenarioService.findOne(q, function(err, latest_scenario){
@@ -719,7 +719,7 @@ router.post('/save-material/', restrict, function(req, res, next) {
         };
         scenarioService.update(q, function(err, scenario){
           if (err) { return next({error: err}); }
-          console.log(req.user.first_name+' updated scenario: '+scenario._id);
+          //console.log(req.user.first_name+' updated scenario: '+scenario._id);
           next(null, result );
         });
       }
