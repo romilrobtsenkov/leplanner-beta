@@ -87,7 +87,7 @@
 
       </div>
       <div class="modal-footer">
-        <a ng-if="material._id" ng-disabled="saving_material" ng-click="deleteMaterial(material._id)" class="pull-left" style="margin-left:20px; cursor: pointer;">Delete resource</a>
+        <a ng-if="material._id" ng-disabled="saving_material" ng-click="deleteMaterial(material._id)" class="pull-left delete-link" style="margin-left:20px; cursor: pointer;">Delete resource</a>
         <span ng-if="deleting_material" style="margin-left: 10px;" class="pull-left"> deleting...</span>
         <span ng-if="saving_material">saving...</span>
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

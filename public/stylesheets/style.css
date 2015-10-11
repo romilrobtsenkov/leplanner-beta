@@ -862,6 +862,10 @@ label {
   display: none;
 }
 
+a.delete-link {
+  color: red;
+}
+
 @page { size: A4 landscape }
 
 @media print {

@@ -127,7 +127,7 @@
       <div class=" form-group">
         <select ng-if="scenario" style="width: 200px;  display: inline-block;" class="form-control" id="publish_option" ng-model="scenario.draft" ng-options="option.value as option.name for option in publish_options" name="publish_option" required>
         </select>
-        <span> or   <a ng-click="deleteScenario()" href style="margin-right: 20px;">I want to delete my scenario </a></span>
+        <span> or   <a class="delete-link" ng-click="deleteScenario()" href style="margin-right: 20px;">I want to delete my scenario </a></span>
       </div>
     </div>
 
