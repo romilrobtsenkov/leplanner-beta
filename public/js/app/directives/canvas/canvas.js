@@ -98,13 +98,13 @@
           //load organization images - one / pair / group
           var activity_organization_images = [];
           var one_icon_img = new Image();
-          one_icon_img.src = 'http://leplanner-beta.eu/images/one.png';
+          one_icon_img.src = './images/one.png';
           activity_organization_images.push(one_icon_img);
           var pair_icon_img = new Image();
-          pair_icon_img.src = 'http://leplanner-beta.eu/images/pair.png';
+          pair_icon_img.src = './images/pair.png';
           activity_organization_images.push(pair_icon_img);
           var group_icon_img = new Image();
-          group_icon_img.src = 'http://leplanner-beta.eu/images/group.png';
+          group_icon_img.src = './images/group.png';
           activity_organization_images.push(group_icon_img);
           // same icon for whole class
           activity_organization_images.push(group_icon_img);
