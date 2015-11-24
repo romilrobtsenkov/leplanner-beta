@@ -6,7 +6,7 @@
   * configure it to share `/api` route to node server port
 * install npm packages
 * install bower packages
-* create config/config.js
+* create `config/config.js`
 ```javascript
 var config = {};
 
@@ -26,14 +26,16 @@ config.errorMails = true; // email developer on critical error
 
 config.log = {
 	level: 7,
-	appName: 'lePlanner'
+	appName: 'LePlanner'
 };
 
 module.exports = config;
 ```
 
 ## Run from console
-```node bin/www```
+```
+node bin/www
+```
 PS! use [pm2](http://pm2.keymetrics.io) for better control  
 
 # License
