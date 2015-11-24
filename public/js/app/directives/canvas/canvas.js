@@ -1206,14 +1206,14 @@
             if(typeof $scope.allow_edit != 'undefined' && $scope.allow_edit === true){
               LEPLANNER.edit =true;
             }
-            one_icon_img.onload = function() {
-              pair_icon_img.onload = function() {
-                group_icon_img.onload = function() {
+            //one_icon_img.onload = function() {
+              //pair_icon_img.onload = function() {
+                //group_icon_img.onload = function() {
 
                   LEPLANNER.init();
-                };
-              };
-            };
+                //};
+              //};
+            //};
 
           });
 
