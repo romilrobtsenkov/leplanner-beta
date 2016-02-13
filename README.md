@@ -2,12 +2,29 @@
 
 ## Setup
 * install [nginx](http://nginx.org)
-  * configure it to share `/public` folder for domain
-  * configure it to share `/api` route to node server port
+* configure nginx to to share `/public` folder for domain and to share `/api` route to node server port
+```
+# example.config
+server {
+  listen 80;
+  server_name exampledomain.com;
+  index index.html index.html;
+
+  location / {
+    root  /leplanner-beta/public;
+    autoindex off;
+  }
+
+  location /api {
+    proxy_pass http://localhost:3000;
+  }
+}
+```
 * install npm packages
 * install bower packages
 * create `config/config.js`
 ```javascript
+//congig.js
 var config = {};
 
 config.port = 3000; //port, default 3000
