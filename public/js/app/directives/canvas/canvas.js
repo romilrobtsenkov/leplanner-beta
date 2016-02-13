@@ -20,8 +20,13 @@
           var COLOR_OFF_CLASS = 'rgb(255, 144, 144)';
 
           /*
-
-
+		  
+		   var COLOR_IN_CLASS = 'rgb(112,207,250)';
+          var COLOR_OFF_CLASS = 'rgb(255,249,115)';
+		  
+		  uued 254
+		  245 
+		  52
 
           //apple blue & yellow
           var COLOR_IN_CLASS = 'rgb(90,200,250)';
@@ -219,11 +224,11 @@
 
               this.Draw.fillRect(this.ctx, legend_x, legend_y, legend_box, legend_box, COLOR_IN_CLASS);
               this.Draw.text(this.ctx, 'tunnitegevus (in-class)', legend_x + legend_box*2-5, legend_y+legend_box-2, legend_box, 'rgba(0,0,0,1)');
-              legend_x += 230;
-              /*
+              legend_x += 280;
+              
               this.Draw.fillRect(this.ctx, legend_x, legend_y, legend_box, legend_box, COLOR_OFF_CLASS);
-              this.Draw.text(this.ctx, 'kodutöö (off-class)', legend_x + legend_box*2-5, legend_y+legend_box-2, legend_box, 'rgba(0,0,0,1)');
-              */
+              this.Draw.text(this.ctx, 'muu (off-class)', legend_x + legend_box*2-5, legend_y+legend_box-2, legend_box, 'rgba(0,0,0,1)');
+              
               // student/teacher
               //teacher up-top
               this.ctx.save();
@@ -594,7 +599,8 @@
 
               //write material name
               var material_font = 23;
-              var material_name_color = 'rgba(2,89,121,1)';
+              //var material_name_color = 'rgba(2,89,121,1)';
+              var material_name_color = 'rgba(0,0,0,1)';
               //if not link, change color to black;
               if(!this.data.material_url){
                 material_name_color = 'rgba(0,0,0,1)';

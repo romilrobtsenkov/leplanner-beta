@@ -10,6 +10,7 @@
     function LoginController($scope,$rootScope,$location,$timeout,userService) {
 
       $rootScope.title = ' Login | Leplanner beta';
+      
 
       $scope.activateCreateForm = function($event){
         $event.preventDefault();
@@ -36,7 +37,7 @@
       $scope.login = function(user){
 
         $scope.login_in_process = true;
-
+		user.new_beta_code = 'tallinnaülikool';
         userService.loginUser(user)
           .then(function(data) {
 
