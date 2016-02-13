@@ -17,6 +17,6 @@
     "angular-ui-sortable": "~0.13.4"
   },
   "resolutions": {
-    "angular": "1.4.1"
+    "angular": "1.4.9"
   }
 }
