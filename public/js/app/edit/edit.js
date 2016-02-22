@@ -37,7 +37,7 @@
             }
           };
 
-          requestService.post('/api/scenario/get-edit-data-single-scenario', params)
+          requestService.post('/scenario/get-edit-data-single-scenario', params)
           .then(function(data) {
 
             if(data.scenario && data.materials){
@@ -83,7 +83,7 @@
 
       function loadMetaData(){
 
-        requestService.get('/api/meta/get-scenario-meta')
+        requestService.get('/meta/get-scenario-meta')
         .then(function(data) {
 
           if(data.subjects && data.activity_organization && data.involvement_options && data.displays){
@@ -165,7 +165,7 @@
 
         $scope.deleting_material = true;
 
-        requestService.post('/api/scenario/delete-material', params)
+        requestService.post('/scenario/delete-material', params)
         .then(function(data) {
 
           // enable save button
@@ -217,7 +217,7 @@
 
         $scope.saving_material = true;
 
-        requestService.post('/api/scenario/save-material', params)
+        requestService.post('/scenario/save-material', params)
         .then(function(data) {
 
           // enable save button

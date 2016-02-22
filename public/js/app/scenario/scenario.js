@@ -29,7 +29,7 @@
       }
 
       // INIT
-      requestService.post('/api/scenario/single-scenario', params)
+      requestService.post('/scenario/single-scenario', params)
         .then(function(data) {
           if(data.scenario){
 
@@ -66,7 +66,7 @@
 
       function loadMetaData(){
 
-        requestService.get('/api/meta/get-scenario-meta')
+        requestService.get('/meta/get-scenario-meta')
         .then(function(data) {
 
           if(data.subjects && data.activity_organization && data.involvement_options && data.displays){
@@ -91,7 +91,7 @@
 
       function getSidebarScenarios(){
         var q= {order: 'popular', limit: 3, exclude: $scope.scenario._id, author: $scope.scenario.author._id};
-        requestService.post('/api/scenario/widget-list', q)
+        requestService.post('/scenario/widget-list', q)
           .then(function(data) {
             if(data.scenarios){
               if(data.scenarios.length > 0){
@@ -108,7 +108,7 @@
       }
 
       function getComments(){
-        requestService.post('/api/scenario/comments', {scenario_id: $scope.scenario._id})
+        requestService.post('/scenario/comments', {scenario_id: $scope.scenario._id})
           .then(function(data) {
             //console.log(data);
             if(data.comments){
@@ -136,7 +136,7 @@
           params.remove = true;
         }
 
-        requestService.post('/api/scenario/add-remove-favorite', params)
+        requestService.post('/scenario/add-remove-favorite', params)
           .then(function(data) {
 
             if(data.success){
@@ -179,7 +179,7 @@
           params.remove_follow = true;
         }
 
-        requestService.post('/api/user/add-remove-follow', params)
+        requestService.post('/user/add-remove-follow', params)
           .then(function(data) {
 
             if(data.success){
@@ -235,7 +235,7 @@
           }
         };
 
-        requestService.post('/api/scenario/add-comment', params)
+        requestService.post('/scenario/add-comment', params)
           .then(function(data) {
 
             $scope.adding_comment_in_progress = undefined;
@@ -294,7 +294,7 @@
             }
           };
 
-          requestService.post('/api/scenario/delete-comment', params)
+          requestService.post('/scenario/delete-comment', params)
             .then(function(data) {
               if(data.comments){
 

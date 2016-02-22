@@ -96,7 +96,7 @@
               }
           };
 
-          requestService.post('/api/user/list', params)
+          requestService.post('/user/list', params)
             .then(function(data) {
 
               if(data.users){
@@ -121,7 +121,7 @@
       }
 
       function getScenarios(query){
-        requestService.post('/api/scenario/scenarios-dash-list', query)
+        requestService.post('/scenario/scenarios-dash-list', query)
           .then(function(data) {
             if(data.scenarios){
 
@@ -184,7 +184,7 @@
           params.limit = limit;
         }
 
-        requestService.post('/api/user/notifications', params)
+        requestService.post('/user/notifications', params)
           .then(function(data) {
             if(data.notifications){
               $scope.notifications = data.notifications;
@@ -252,7 +252,7 @@
           params.remove_follow = true;
         }
 
-        requestService.post('/api/user/add-remove-follow', params)
+        requestService.post('/user/add-remove-follow', params)
           .then(function(data) {
 
             if(data.success){

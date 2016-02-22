@@ -41,7 +41,7 @@
           }
         }
 
-        requestService.post('/api/scenario/widget-list', q)
+        requestService.post('/scenario/widget-list', q)
           .then(function(data) {
             //console.log(data);
             if(data.scenarios){
@@ -56,7 +56,7 @@
       }
 
       function loadSubjects(){
-        requestService.get('/api/meta/subjects')
+        requestService.get('/meta/subjects')
         .then(function(data) {
 
           if(data.subjects){

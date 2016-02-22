@@ -33,7 +33,7 @@
           }
         };
 
-        requestService.post('/api/user/load-user-data', request)
+        requestService.post('/user/load-user-data', request)
           .then(function(data) {
 
             if(data.profile){
@@ -120,7 +120,7 @@
         }
 
 
-        requestService.post('/api/scenario/list', q)
+        requestService.post('/scenario/list', q)
           .then(function(data) {
             //console.log(data);
             if(data.scenarios){
@@ -154,7 +154,7 @@
           params.remove_follow = true;
         }
 
-        requestService.post('/api/user/add-remove-follow', params)
+        requestService.post('/user/add-remove-follow', params)
           .then(function(data) {
 
             if(data.success){

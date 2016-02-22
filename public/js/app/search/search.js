@@ -49,7 +49,7 @@
 
         $scope.subjectsText = {buttonDefaultText: 'Filter subjects'};
 
-         requestService.get('/api/meta/subjects')
+         requestService.get('/meta/subjects')
           .then(function(data) {
 
             if(data.subjects){
@@ -153,7 +153,7 @@
           }
         }
 
-        requestService.post('/api/scenario/search', q)
+        requestService.post('/scenario/search', q)
           .then(function(data) {
             //console.log(data);
             if(data.scenarios){

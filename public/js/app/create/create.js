@@ -35,7 +35,7 @@
 
         $scope.saving = true;
 
-        requestService.post('/api/scenario/create', params)
+        requestService.post('/scenario/create', params)
           .then(function(data) {
 
             $scope.saving_in_progress = undefined;

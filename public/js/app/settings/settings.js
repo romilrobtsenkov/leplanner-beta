@@ -31,7 +31,7 @@
 
             $scope.updating_in_progress = true;
 
-            requestService.post('/api/user/update-profile', {user: $scope.user})
+            requestService.post('/user/update-profile', {user: $scope.user})
               .then(function(data) {
 
                 $scope.updating_in_progress = undefined;
@@ -97,7 +97,7 @@
 
               $scope.updating_in_progress = true;
 
-              requestService.post('/api/user/update-password', {user: user})
+              requestService.post('/user/update-password', {user: user})
                 .then(function(data) {
 
                   $scope.updating_in_progress = undefined;

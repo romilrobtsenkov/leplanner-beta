@@ -19,7 +19,7 @@
                 // Save new password
                 user.token = $routeParams.token;
 
-                requestService.post('/api/user/reset-password', user)
+                requestService.post('/user/reset-password', user)
                   .then(function(data) {
                     if(data.success){
                       $location.path('/login');

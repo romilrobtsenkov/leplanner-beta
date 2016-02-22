@@ -10,7 +10,7 @@
 
       //console.log($rootScope.user);
       $scope.logout = function(){
-        requestService.get('/api/user/logout')
+        requestService.get('/user/logout')
           .then(function(data){
             console.log(data);
             $rootScope.user = undefined;

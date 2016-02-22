@@ -3,7 +3,8 @@
 
     angular
     .module('app')
-    .factory('requestService', ['$http', '/api', function($http, API_BASE) {
+    .factory('requestService', ['$http', function($http) {
+        var API_BASE = '/api';
         return {
             get: function(request) {
                 return $http.get(API_BASE + request)

@@ -30,7 +30,7 @@
             }
           };
 
-          requestService.post('/api/scenario/get-edit-data-single-scenario', params)
+          requestService.post('/scenario/get-edit-data-single-scenario', params)
           .then(function(data) {
 
             if(data.scenario){
@@ -91,7 +91,7 @@
         //publish/draft dropdown
         $scope.publish_options = [{name: 'Draft', value: true},{name: 'Published', value: false}];
 
-        requestService.get('/api/meta/get-scenario-meta')
+        requestService.get('/meta/get-scenario-meta')
         .then(function(data) {
 
           if(data.subjects && data.activity_organization){
@@ -240,7 +240,7 @@
             }
           };
 
-          requestService.post('/api/scenario/delete-scenario', params)
+          requestService.post('/scenario/delete-scenario', params)
           .then(function(data) {
 
             if(data.success){
@@ -299,7 +299,7 @@
 
         $scope.saving = true;
 
-        requestService.post('/api/scenario/save', params)
+        requestService.post('/scenario/save', params)
           .then(function(data) {
 
             //enable save button
