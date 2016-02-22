@@ -4,13 +4,18 @@ var fs = require('fs');
 var config = require('../config/config');
 var router = express.Router();
 var restrict = require('../auth/restrict');
-var scenarioService = require('../services/scenario-service');
-var commentService = require('../services/comment-service');
-var notificationService = require('../services/notification-service');
+
+var mongoService = require('../services/mongo-service');
 var validateService = require('../services/validate-service');
-var favoriteService = require('../services/favorite-service');
-var followerService = require('../services/follower-service');
-var materialService = require('../services/activity-material-service');
+var scenarioService = require('../services/scenario-service');
+
+var Scenario = require('../models/scenario').Scenario;
+var Comment = require('../models/comment').Comment;
+var Notification = require('../models/notification').Notification;
+var Favorite = require('../models/favorite').Favorite;
+var Follower = require('../models/follower').Follower;
+var Material = require('../models/activity-material').Material;
+
 var async = require('async');
 
 /* template
@@ -40,7 +45,7 @@ router.post('/add-comment/',restrict, function(req, res, next) {
         scenario: params.scenario._id,
       };
 
-      commentService.saveNew(new_comment, function(err, comment) {
+      mongoService.saveNew(new_comment, Comment, function(err, comment) {
         if (err) { return next({error: err}); }
         next(null, comment);
       });
@@ -60,7 +65,7 @@ router.post('/add-comment/',restrict, function(req, res, next) {
         }
       };
 
-      notificationService.saveNew(new_notification, function(err) {
+      mongoService.saveNew(new_notification, Notification, function(err) {
         if (err) { return next({error: err}); }
         next();
       });
@@ -75,7 +80,7 @@ router.post('/add-comment/',restrict, function(req, res, next) {
         populate: 'first_name last_name last_modified image_thumb'
       });
 
-      commentService.find(q, function(err, comments){
+      mongoService.find(q, Comment, function(err, comments){
         if (err) { return next({error: err}); }
         next(null, comments);
       });
@@ -86,7 +91,7 @@ router.post('/add-comment/',restrict, function(req, res, next) {
       q.where = { _id: params.scenario._id };
       q.update = { comments_count: comments.length};
 
-      scenarioService.update(q, function(err){
+      mongoService.update(q, Scenario, function(err){
         if (err) { return next({error: err}); }
         next(null, { comments: comments });
       });
@@ -116,7 +121,7 @@ router.post('/add-remove-favorite/',restrict, function(req, res, next) {
       q.args = { scenario: params.scenario_id, user: params.user._id, removed: null };
       q.select = '_id';
 
-      favoriteService.findOne(q, function(err, favorite_doc){
+      mongoService.findOne(q, Favorite, function(err, favorite_doc){
         if (err) { return next({error: err}); }
         next(null, favorite_doc);
       });
@@ -128,7 +133,7 @@ router.post('/add-remove-favorite/',restrict, function(req, res, next) {
         if(favorite_doc === null){
           new_favorite_doc = { scenario: params.scenario_id, user: params.user._id };
 
-          favoriteService.saveNew(new_favorite_doc, function(err) {
+          mongoService.saveNew(new_favorite_doc, Favorite, function(err) {
             if (err) { return next({error: err}); }
             next(null, {success: 'add'});
           });
@@ -146,7 +151,7 @@ router.post('/add-remove-favorite/',restrict, function(req, res, next) {
           q.update = update;
           q.select = "_id";
 
-          favoriteService.update(q, function(err){
+          mongoService.update(q, Favorite, function(err){
             if (err) { return next({error: err}); }
             next(null, {success: 'remove'});
           });
@@ -159,7 +164,7 @@ router.post('/add-remove-favorite/',restrict, function(req, res, next) {
       var q = {};
       q.args = {scenario: params.scenario_id, removed: null};
 
-      favoriteService.count(q, function(err, favorites_count){
+      mongoService.count(q, Favorite, function(err, favorites_count){
         if (err) { return next({error: err}); }
         var count = {favorites_count: favorites_count};
         next(null, success, count);
@@ -171,7 +176,7 @@ router.post('/add-remove-favorite/',restrict, function(req, res, next) {
       q.where = {"_id": params.scenario_id};
       q.update = { favorites_count: count.favorites_count };
 
-      scenarioService.update(q, function(err){
+      mongoService.update(q, Scenario, function(err){
         if (err) { return next({error: err}); }
         next(null, success);
       });
@@ -203,7 +208,7 @@ router.post('/create/', restrict, function(req, res, next) {
         new_scenario.draft = true;
         new_scenario.last_modified = new Date();
 
-        scenarioService.saveNew(new_scenario, function(err, scenario){
+        mongoService.saveNew(new_scenario, Scenario, function(err, scenario){
           if (err) { return next({error: err}); }
           next(null, {scenario: { _id: scenario._id } } );
         });
@@ -225,7 +230,7 @@ router.post('/comments/', function(req, res, next) {
     populate: 'first_name last_name last_modified image_thumb'
   });
 
-  commentService.find(q, function(err, comments) {
+  mongoService.find(q, Comment, function(err, comments) {
     if (err) { return res.json({error: err}); }
     return res.json({ comments: comments });
   });
@@ -249,7 +254,7 @@ router.post('/delete-comment/', restrict, function(req, res, next) {
       var q = {};
       q.args = { _id: params.scenario._id, author: req.user._id };
 
-      scenarioService.findOne(q, function(err, user){
+      mongoService.findOne(q, Scenario, function(err, user){
         if (err) { return next({error: err}); }
         if(user === null){
           // passport req user different from scenario author
@@ -268,7 +273,7 @@ router.post('/delete-comment/', restrict, function(req, res, next) {
       };
       q.select = '_id';
 
-      commentService.update(q, function(err, comment){
+      mongoService.update(q, Comment, function(err, comment){
         if (err) { return next({error: err}); }
         if(comment === null){ return next({error: "no comment to remove"}); }
         next();
@@ -284,7 +289,7 @@ router.post('/delete-comment/', restrict, function(req, res, next) {
         populate: 'first_name last_name last_modified image_thumb'
       });
 
-      commentService.find(q, function(err, comments){
+      mongoService.find(q, Comment, function(err, comments){
         if (err) { return next({error: err}); }
         next(null, comments);
       });
@@ -295,7 +300,7 @@ router.post('/delete-comment/', restrict, function(req, res, next) {
       q.where = { _id: params.scenario._id };
       q.update = { comments_count: comments.length};
 
-      scenarioService.update(q, function(err){
+      mongoService.update(q, Scenario, function(err){
         if (err) { return next({error: err}); }
         next(null, { comments: comments });
       });
@@ -318,7 +323,7 @@ router.post('/delete-material/', restrict, function(req, res, next) {
       q.args = { _id: params.scenario._id, author: req.user._id };
       q.select = "_id";
 
-      scenarioService.findOne(q, function(err, latest_scenario){
+      mongoService.findOne(q, Scenario, function(err, latest_scenario){
         if (err) { return next({error: err}); }
         if(latest_scenario === null){
           console.log('no rights');
@@ -336,7 +341,7 @@ router.post('/delete-material/', restrict, function(req, res, next) {
       q.args = { _id: params.material._id, deleted: false };
       q.select = '_id';
 
-      materialService.findOne(q , function(err, material){
+      mongoService.findOne(q, Material, function(err, material){
         if (err) { return next({error: err}); }
         if(material === null){ return next({error: {id: 1, message: 'no material exist' }});}
         next(null, material);
@@ -352,7 +357,7 @@ router.post('/delete-material/', restrict, function(req, res, next) {
       };
       q.select = '_id';
 
-      materialService.update(q, function(err, material){
+      mongoService.update(q, Material, function(err, material){
         if (err) { return next({error: err}); }
         console.log('material '+material._id+' deleted');
         next(null, { material: { _id: material._id} } );
@@ -377,7 +382,7 @@ router.post('/delete-scenario/', restrict, function(req, res, next) {
       var q = {};
       q.args = { _id: params.scenario._id, author: req.user._id };
 
-      scenarioService.findOne(q, function(err, scenario){
+      mongoService.findOne(q, Scenario, function(err, scenario){
         if (err) { return next({error: err}); }
         if(scenario === null){
           // passport req user different from scenario author
@@ -395,7 +400,7 @@ router.post('/delete-scenario/', restrict, function(req, res, next) {
       };
       q.select = '_id';
 
-      scenarioService.update(q, function(err, scenario){
+      mongoService.update(q, Scenario, function(err, scenario){
         if (err) { return next({error: err}); }
         if(scenario === null){ return next({error: "no scenario to remove"}); }
         next(null, {success: 'success'});
@@ -417,7 +422,7 @@ router.post('/get-edit-data-single-scenario/', restrict, function(req, res, next
       var q = {};
       q.args = { _id: params.scenario._id, author: req.user._id };
 
-      scenarioService.findOne(q, function(err, user){
+      mongoService.findOne(q, Scenario, function(err, user){
         if (err) { return next({error: err}); }
         if(user === null){
           console.log('no rights');
@@ -436,7 +441,7 @@ router.post('/get-edit-data-single-scenario/', restrict, function(req, res, next
         populate: '_id name'
       });
 
-      scenarioService.findOne(q, function(err, scenario){
+      mongoService.findOne(q, Scenario, function(err, scenario){
         if (err) { return next({error: err}); }
         if(scenario === null){ return next({error: {id: 0, message: 'no scenario found' }}); }
         next(null, scenario);
@@ -446,7 +451,7 @@ router.post('/get-edit-data-single-scenario/', restrict, function(req, res, next
       //get activity materials
       var q = {};
       q.args = { scenario: params.scenario._id, deleted: false };
-      materialService.find(q, function(err, materials){
+      mongoService.find(q, Material, function(err, materials){
         if (err) { return next({error: err}); }
         next(null, {scenario: scenario, materials: materials});
       });
@@ -484,7 +489,7 @@ router.post('/list/', function(req, res, next) {
       });
       q.sort = sort;
 
-      scenarioService.find(q, function(err, scenarios) {
+      mongoService.find(q, Scenario, function(err, scenarios) {
         if (err) { return next({error: err}); }
         next(null, {scenarios: scenarios});
       });
@@ -506,7 +511,7 @@ router.post('/save/', restrict, function(req, res, next) {
         var q = {};
         q.args = { _id: params.scenario_data._id, author: req.user._id };
 
-        scenarioService.findOne(q, function(err, latest_scenario){
+        mongoService.findOne(q, Scenario, function(err, latest_scenario){
           if (err) { return next({error: err}); }
           if(latest_scenario === null){
             console.log('no rights');
@@ -553,7 +558,7 @@ router.post('/save/', restrict, function(req, res, next) {
         q.where = { _id: new_scenario._id };
         q.update = new_scenario;
         q.update.last_modified = new Date();
-        scenarioService.update(q, function(err, scenario){
+        mongoService.update(q, Scenario, function(err, scenario){
           if (err) { return next({error: err}); }
           console.log(req.user.first_name+' updated scenario: '+scenario._id);
           next(null, {scenario: { _id: scenario._id } } );
@@ -584,7 +589,7 @@ router.post('/save-material/', restrict, function(req, res, next) {
         q.args = { _id: params.scenario._id, author: req.user._id };
         q.select = "_id";
 
-        scenarioService.findOne(q, function(err, latest_scenario){
+        mongoService.findOne(q, Scenario, function(err, latest_scenario){
           if (err) { return next({error: err}); }
           if(latest_scenario === null){
             console.log('no rights');
@@ -604,7 +609,7 @@ router.post('/save-material/', restrict, function(req, res, next) {
         q.args = { scenario: params.scenario._id, activity_id: params.material.activity_id, position: params.material.position, deleted: false };
         q.select = '_id';
 
-        materialService.findOne(q , function(err, material){
+        mongoService.findOne(q, Material, function(err, material){
           if (err) { return next({error: err}); }
           if(material){ return next({error: {id: 20, message: 'material exists' }});}
           next(null);
@@ -693,7 +698,7 @@ router.post('/save-material/', restrict, function(req, res, next) {
             q.update.last_modified = new Date();
             //console.log(q.update);
 
-            materialService.update(q, function(err, material){
+            mongoService.update(q, Material, function(err, material){
               if (err) { return next({error: err}); }
               next(null, { material: material } );
             });
@@ -703,7 +708,7 @@ router.post('/save-material/', restrict, function(req, res, next) {
           new_material.scenario = params.scenario._id;
           new_material.last_modified = new Date();
 
-          materialService.saveNew(new_material, function(err, material){
+          mongoService.saveNew(new_material, Material, function(err, material){
             if (err) { return next({error: err}); }
             next(null, { material: material } );
           });
@@ -717,7 +722,7 @@ router.post('/save-material/', restrict, function(req, res, next) {
         q.update = {
           last_modified: new Date()
         };
-        scenarioService.update(q, function(err, scenario){
+        mongoService.update(q, Scenario, function(err, scenario){
           if (err) { return next({error: err}); }
           console.log(req.user.first_name+' updated scenario: '+scenario._id);
           next(null, result );
@@ -757,7 +762,7 @@ router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
               q.args = {follower: query.user._id, removed: null};
               q.select = 'following';
 
-              followerService.find(q, function(err, following){
+              mongoService.find(q, Follower, function(err, following){
                 if (err) { return next({error: err}); }
                 next(null, following);
               });
@@ -782,7 +787,7 @@ router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
               });
               q.sort = sort;
 
-              scenarioService.find(q, function(err, scenarios) {
+              mongoService.find(q, Scenario, function(err, scenarios) {
                 if (err) { return next({error: err}); }
                 next(null, {scenarios: scenarios});
               });
@@ -810,7 +815,7 @@ router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
           });
           q.sort = sort;
 
-          scenarioService.find(q, function(err, scenarios) {
+          mongoService.find(q, Scenario, function(err, scenarios) {
             if (err) { return next({error: err}); }
             next(null, {scenarios: scenarios});
           });
@@ -832,7 +837,7 @@ router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
           });
           q.sort = sort;
 
-          scenarioService.find(q, function(err, scenarios) {
+          mongoService.find(q, Scenario, function(err, scenarios) {
             if (err) { return next({error: err}); }
             next(null, {scenarios: scenarios});
           });
@@ -847,7 +852,7 @@ router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
               q.args = {user: query.user._id, removed: null};
               q.select = 'scenario';
 
-              favoriteService.find(q, function(err, favorites){
+              mongoService.find(q, Favorite, function(err, favorites){
                 if (err) { return next({error: err}); }
                 next(null, favorites);
               });
@@ -875,7 +880,7 @@ router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
                 });
                 q.sort = sort;
 
-                scenarioService.find(q, function(err, scenarios) {
+                mongoService.find(q, Scenario, function(err, scenarios) {
                   if (err) { return next({error: err}); }
                   next(null, {scenarios: scenarios});
                 });
@@ -944,7 +949,7 @@ router.post('/search/', function(req, res, next) {
       });
       q.sort = sort;
 
-      scenarioService.find(q, function(err, scenarios) {
+      mongoService.find(q, Scenario, function(err, scenarios) {
         if (err) { return next({error: err}); }
         next(null, {scenarios: scenarios});
       });
@@ -972,7 +977,7 @@ router.post('/single-scenario/', function(req, res, next) {
       });
       q.update = { $inc: { view_count: 1 } };
 
-      scenarioService.update(q, function(err, scenario){
+      mongoService.update(q, Scenario, function(err, scenario){
         if (err) { return next({error: err}); }
         var response = {
           scenario: scenario,
@@ -988,7 +993,7 @@ router.post('/single-scenario/', function(req, res, next) {
       var q = {};
       q.args = { scenario: response.scenario._id, user: params.user._id };
 
-      favoriteService.findOne(q, function(err, favorite){
+      mongoService.findOne(q, Favorite, function(err, favorite){
         if (err) { return next({error: err}); }
         if(favorite !== null){ response.is_favorite = true; }
         next(null, response);
@@ -1000,7 +1005,7 @@ router.post('/single-scenario/', function(req, res, next) {
       var q = {};
       q.args = { follower: params.user._id, following: response.scenario.author._id, removed: null };
 
-      followerService.findOne(q, function(err, following){
+      mongoService.findOne(q, Favorite, function(err, following){
         if (err) { return next({error: err}); }
         if(following !== null){ response.is_following = true; }
         next(null, response);
@@ -1016,7 +1021,7 @@ router.post('/single-scenario/', function(req, res, next) {
       q.where = { user: params.user._id, type: 'comment', 'data.scenario': response.scenario._id, seen: null };
       q.update = { seen: new Date() };
 
-      notificationService.updateMultiple(q, function(err, notifications){
+      mongoService.updateMultiple(q, Notification, function(err, notifications){
         if (err) { return next({error: err}); }
         //console.log('modified notifications :'+notifications.nModified);
         next(null, response);
@@ -1026,7 +1031,7 @@ router.post('/single-scenario/', function(req, res, next) {
       //get materials
       var q = {};
       q.args = { scenario: params.scenario._id, deleted: false };
-      materialService.find(q, function(err, materials){
+      mongoService.find(q, Material, function(err, materials){
         if (err) { return next({error: err}); }
         response.materials = materials;
         next(null, response);
@@ -1067,7 +1072,7 @@ router.post('/widget-list/', function(req, res, next) {
       q.sort = sort;
       q.limit = query.limit;
 
-      scenarioService.find(q, function(err, scenarios) {
+      mongoService.find(q, Scenario, function(err, scenarios) {
         if (err) { return next({error: err}); }
         next(null, {scenarios: scenarios});
       });

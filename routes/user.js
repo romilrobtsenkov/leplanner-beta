@@ -1,10 +1,14 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
+
+var mongoService = require('../services/mongo-service');
 var userService = require('../services/user-service');
-var followerService = require('../services/follower-service');
-var validateService = require('../services/validate-service');
-var notificationService = require('../services/notification-service');
+
+var Follower = require('../models/follower').Follower;
+var User = require('../models/user').User;
+var Notification = require('../models/notification').Notification;
+
 var config = require('../config/config');
 var restrict = require('../auth/restrict');
 var async = require('async');
@@ -34,7 +38,7 @@ router.post('/add-remove-follow/',restrict, function(req, res, next) {
       q.args = { follower: params.user._id, following: params.following._id, removed: null };
       q.select = '_id';
 
-      followerService.findOne(q, function(err, follower_doc){
+      mongoService.findOne(q, Follower, function(err, follower_doc){
         if (err) { return next({error: err}); }
         next(null, follower_doc);
       });
@@ -46,7 +50,7 @@ router.post('/add-remove-follow/',restrict, function(req, res, next) {
         if(follower_doc === null){
           new_follower_doc = { follower: params.user._id, following: params.following._id };
 
-          followerService.saveNew(new_follower_doc, function(err) {
+          mongoService.saveNew(new_follower_doc, Follower, function(err) {
             if (err) { return next({error: err}); }
             next(null, {success: 'follow'});
           });
@@ -64,7 +68,7 @@ router.post('/add-remove-follow/',restrict, function(req, res, next) {
           q.update = update;
           q.select = "_id";
 
-          followerService.update(q, function(err){
+          mongoService.update(q, Follower, function(err){
             if (err) { return next({error: err}); }
             next(null, {success: 'unfollow'});
           });
@@ -77,7 +81,7 @@ router.post('/add-remove-follow/',restrict, function(req, res, next) {
       var q = {};
       q.args = {following: params.user._id, removed: null};
 
-      followerService.count(q, function(err, followers_count){
+      mongoService.count(q, Follower, function(err, followers_count){
         if (err) { return next({error: err}); }
         var count = {followers_count: followers_count};
         next(null, success, count);
@@ -88,7 +92,7 @@ router.post('/add-remove-follow/',restrict, function(req, res, next) {
       var q = {};
       q.args = {follower: params.user._id, removed: null};
 
-      followerService.count(q, function(err, following_count){
+      mongoService.count(q, Follower, function(err, following_count){
         if (err) { return next({error: err}); }
         count.following_count = following_count;
         next(null, success, count);
@@ -100,7 +104,7 @@ router.post('/add-remove-follow/',restrict, function(req, res, next) {
       q.where = {"_id": params.user._id};
       q.update = { following_count: count.following_count, followers_count: count.followers_count };
 
-      userService.update(q, function(err){
+      mongoService.update(q, User, function(err){
         if (err) { return next({error: err}); }
         next(null, success);
       });
@@ -152,7 +156,7 @@ router.post('/create', function(req, res, next) {
         password: hash
       };
 
-      userService.saveNew(new_user, function(err) {
+      mongoService.saveNew(new_user, User, function(err) {
         if (err) { return next({error: err}); }
         next();
       });
@@ -196,7 +200,7 @@ router.post('/list', restrict, function(req, res, next){
       q.select =  'first_name last_name organization image_thumb last_modified';
       q.sort = {first_name: 1};
 
-      userService.find(q, function(err, users){
+      mongoService.find(q, User, function(err, users){
         if (err) { return next({error: err}); }
         next(null, users);
       });
@@ -207,7 +211,7 @@ router.post('/list', restrict, function(req, res, next){
       q.args = { follower: user_id, removed: null };
       q.select = 'following';
 
-      followerService.find(q, function(err, following){
+      mongoService.find(q, Follower, function(err, following){
         if (err) { return next({error: err}); }
         next(null, users, following);
       });
@@ -253,7 +257,7 @@ router.post('/load-user-data', function(req, res, next) {
       q.update = { $inc: { profile_views: 1 }};
       q.select = "-password -resetPasswordExpires -resetPasswordToken";
 
-      userService.update(q, function(err, user){
+      mongoService.update(q, User, function(err, user){
         if (err) { return next({error: err}); }
         if(user === null){ return next({id: 0, message: "no such profile found"}); }
         next(null, user);
@@ -270,7 +274,7 @@ router.post('/load-user-data', function(req, res, next) {
         populate: 'first_name last_name image_thumb last_modified'
       });
 
-      followerService.find(q, function(err, following){
+      mongoService.find(q, Follower, function(err, following){
         if (err) { return next({error: err}); }
         next(null, user, following);
       });
@@ -286,7 +290,7 @@ router.post('/load-user-data', function(req, res, next) {
         populate: 'first_name last_name image_thumb last_modified'
       });
 
-      followerService.find(q, function(err, followers){
+      mongoService.find(q, Follower, function(err, followers){
         if (err) { return next({error: err}); }
 
         var response = {};
@@ -370,7 +374,7 @@ router.post('/notifications/',restrict , function(req, res, next) {
     q.limit = req.body.limit;
   }
 
-  notificationService.find(q, function(err, notifications){
+  mongoService.find(q, Notification, function(err, notifications){
     if (err) { return res.json({error: err}); }
     res.json({ notifications: notifications });
   });
@@ -387,7 +391,7 @@ router.post('/reset-password', function(req, res, next) {
       var q = {};
       q.args = {"resetPasswordToken": user.token};
 
-      userService.findOne(q, function(err, user_from_db) {
+      mongoService.findOne(q, User, function(err, user_from_db) {
         if (err) { return next({error: err}); }
         if(!user_from_db){ return next({error: {id: 10, message: 'Request new token'}}); }
         next(null, user_from_db);
@@ -420,7 +424,7 @@ router.post('/reset-password', function(req, res, next) {
       q.where = {"_id": user_from_db._id};
       q.update = update;
 
-      userService.update(q, function(err, u_user){
+      mongoService.update(q, User, function(err, u_user){
         if (err) { return next({error: err}); }
         next(null, {success: 'success'});
       });
@@ -449,7 +453,7 @@ router.post('/send-reset-token', function(req, res){
       var q = {};
       q.args = {"email": user_email.toLowerCase()};
 
-      userService.findOne(q, function(err, user){
+      mongoService.findOne(q, User, function(err, user){
         if (err) { return next({error: err}); }
         if (!user) { return next({error: {id: 20, message: 'No user with that email'}}); }
         next(null, user);
@@ -473,7 +477,7 @@ router.post('/send-reset-token', function(req, res){
       q.update = update;
       q.select = "email resetPasswordToken";
 
-      userService.update(q, function(err, user){
+      mongoService.update(q, User, function(err, user){
         if (err) { return next({error: err}); }
         next(null, user);
       });
@@ -507,7 +511,7 @@ router.post('/update-password', restrict, function(req, res, next) {
     },
     function(next){
 
-      userService.findById(user._id, function(err, user_obj_from_db){
+      mongoService.findById(user._id, User, function(err, user_obj_from_db){
         if (err) { return next({error: err}); }
         if (!user_obj_from_db) { return next({error: {id: 21, message: 'No user with that id'}}); }
         next(null, user_obj_from_db.password);
@@ -539,7 +543,7 @@ router.post('/update-password', restrict, function(req, res, next) {
       q.update = update;
       q.select = "_id";
 
-      userService.update(q, function(err, u_user){
+      mongoService.update(q, User, function(err, u_user){
         if (err) { return next({error: err}); }
         next(null, {user: {id: u_user._id}});
       });
@@ -571,7 +575,7 @@ router.post('/update-profile', restrict, function(req, res, next) {
         var q = {};
         q.args = {"email": user.new_email.toLowerCase()};
 
-        userService.findOne(q, function(err, user_with_same_email){
+        mongoService.findOne(q, User, function(err, user_with_same_email){
           if (err) { return next({error: err}); }
           if(user_with_same_email){ return next({error: {id: 6, message: 'That email is already in use'}}); }
           // true to get user and check password
@@ -593,7 +597,7 @@ router.post('/update-profile', restrict, function(req, res, next) {
     function(user, get_user, next){
       if(!get_user){ return next(null, user, null, null); } //skip
 
-      userService.findById(user._id, function(err, user_obj_from_db){
+      mongoService.findById(user._id, User, function(err, user_obj_from_db){
         if (err) { return next({error: err}); }
         if (!user_obj_from_db) { return next({error: {id: 21, message: 'No user with that id'}}); }
 
@@ -624,7 +628,7 @@ router.post('/update-profile', restrict, function(req, res, next) {
       q.update = update;
       q.select = "-password -resetPasswordExpires -resetPasswordToken";
 
-      userService.update(q, function(err, u_user){
+      mongoService.update(q, User, function(err, u_user){
         if (err) { return next({error: err}); }
         next(null, {user: u_user});
       });
