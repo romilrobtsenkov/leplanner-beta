@@ -3,7 +3,7 @@
 
   angular
     .module('app')
-    .factory('userRouteService', userRouteService, ['$q', '$rootScope', '$location', 'requestService',
+    .factory('userAuthService', userAuthService, ['$q', '$rootScope', '$location', 'requestService',
   function($q, $rootScope, $location, requestService) {
     return {
       checkUser: function(option) {

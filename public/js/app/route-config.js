@@ -11,8 +11,8 @@
       templateUrl: '/js/app/home/home.html',
       controller: 'HomeController',
       resolve: {
-        data: ['userRouteService', function(userRouteService) {
-          return userRouteService.checkUser();
+        data: ['userAuthService', function(userAuthService) {
+          return userAuthService.checkUser();
         }]
       }
     })
@@ -20,8 +20,8 @@
       templateUrl: '/js/app/create/create.html',
       controller: 'CreateController',
       resolve: {
-        data: ['userRouteService', function(userRouteService) {
-          return userRouteService.checkUser({ error_location: '/login'});
+        data: ['userAuthService', function(userAuthService) {
+          return userAuthService.checkUser({ error_location: '/login'});
         }]
       }
     })
@@ -29,8 +29,8 @@
       templateUrl: '/js/app/dashboard/dashboard.html',
       controller: 'DashboardController',
       resolve: {
-        data: ['userRouteService', function(userRouteService) {
-          return userRouteService.checkUser({ error_location: '/login'});
+        data: ['userAuthService', function(userAuthService) {
+          return userAuthService.checkUser({ error_location: '/login'});
         }]
       }
     })
@@ -38,8 +38,8 @@
       templateUrl: '/js/app/edit/edit.html',
       controller: 'EditController',
       resolve: {
-        data: ['userRouteService', function(userRouteService) {
-          return userRouteService.checkUser({ error_location: '/login'});
+        data: ['userAuthService', function(userAuthService) {
+          return userAuthService.checkUser({ error_location: '/login'});
         }]
       }
     })
@@ -47,8 +47,8 @@
       templateUrl: '/js/app/edit-details/edit-details.html',
       controller: 'EditDetailsController',
       resolve: {
-        data: ['userRouteService', function(userRouteService) {
-          return userRouteService.checkUser({ error_location: '/login'});
+        data: ['userAuthService', function(userAuthService) {
+          return userAuthService.checkUser({ error_location: '/login'});
         }]
       }
     })
@@ -56,8 +56,8 @@
       templateUrl: '/js/app/login/login.html',
       controller: 'LoginController',
       resolve: {
-        data: ['userRouteService', function(userRouteService) {
-          return userRouteService.checkUser({ success_location: '/dashboard'});
+        data: ['userAuthService', function(userAuthService) {
+          return userAuthService.checkUser({ success_location: '/dashboard'});
         }]
       }
     })
@@ -65,8 +65,8 @@
       templateUrl: '/js/app/reset/reset.html',
       controller: 'ResetController',
       resolve: {
-        data: ['userRouteService', function(userRouteService) {
-          return userRouteService.checkUser();
+        data: ['userAuthService', function(userAuthService) {
+          return userAuthService.checkUser();
         }]
       }
     })
@@ -74,8 +74,8 @@
       templateUrl: '/js/app/scenario/scenario.html',
       controller: 'ScenarioController',
       resolve: {
-        data: ['userRouteService', function(userRouteService) {
-          return userRouteService.checkUser();
+        data: ['userAuthService', function(userAuthService) {
+          return userAuthService.checkUser();
         }]
       }
     })
@@ -83,8 +83,8 @@
       templateUrl: '/js/app/search/search.html',
       controller: 'SearchController',
       resolve: {
-        data: ['userRouteService', function(userRouteService) {
-          return userRouteService.checkUser();
+        data: ['userAuthService', function(userAuthService) {
+          return userAuthService.checkUser();
         }]
       }
     })
@@ -92,8 +92,8 @@
       templateUrl: '/js/app/settings/settings.html',
       controller: 'SettingsController',
       resolve: {
-        data: ['userRouteService', function(userRouteService) {
-          return userRouteService.checkUser({ error_location: '/login'});
+        data: ['userAuthService', function(userAuthService) {
+          return userAuthService.checkUser({ error_location: '/login'});
         }]
       }
     })
@@ -101,8 +101,8 @@
       templateUrl: '/js/app/user/user.html',
       controller: 'UserController',
       resolve: {
-        data: ['userRouteService', function(userRouteService) {
-          return userRouteService.checkUser();
+        data: ['userAuthService', function(userAuthService) {
+          return userAuthService.checkUser();
         }]
       }
     });
