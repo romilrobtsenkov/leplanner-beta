@@ -3,8 +3,8 @@
 
   angular
     .module('app')
-    .controller('ScenarioController', ['$scope','$rootScope','$routeParams','$location','$timeout','scenarioService', 'userService','metaService',
-    function($scope,$rootScope,$routeParams,$location,$timeout,scenarioService,userService,metaService) {
+    .controller('ScenarioController', ['$scope','$rootScope','$routeParams','$location','$timeout','requestService',
+    function($scope,$rootScope,$routeParams,$location,$timeout,requestService) {
 
       if(typeof $routeParams.id !== 'undefined'){
         $scope.scenario_id = $routeParams.id;
@@ -29,7 +29,7 @@
       }
 
       // INIT
-      scenarioService.getSingleScenario(params)
+      requestService.post('/api/scenario/single-scenario', params)
         .then(function(data) {
           if(data.scenario){
 
@@ -66,7 +66,7 @@
 
       function loadMetaData(){
 
-        metaService.getScenarioMeta()
+        requestService.get('/api/meta/get-scenario-meta')
         .then(function(data) {
 
           if(data.subjects && data.activity_organization && data.involvement_options && data.displays){
@@ -91,7 +91,7 @@
 
       function getSidebarScenarios(){
         var q= {order: 'popular', limit: 3, exclude: $scope.scenario._id, author: $scope.scenario.author._id};
-        scenarioService.getWidgetScenarios(q)
+        requestService.post('/api/scenario/widget-list', q)
           .then(function(data) {
             if(data.scenarios){
               if(data.scenarios.length > 0){
@@ -108,7 +108,7 @@
       }
 
       function getComments(){
-        scenarioService.getComments({scenario_id: $scope.scenario._id})
+        requestService.post('/api/scenario/comments', {scenario_id: $scope.scenario._id})
           .then(function(data) {
             //console.log(data);
             if(data.comments){
@@ -136,7 +136,7 @@
           params.remove = true;
         }
 
-        scenarioService.addRemoveFavorite(params)
+        requestService.post('/api/scenario/add-remove-favorite', params)
           .then(function(data) {
 
             if(data.success){
@@ -179,7 +179,7 @@
           params.remove_follow = true;
         }
 
-        userService.addRemoveFollow(params)
+        requestService.post('/api/user/add-remove-follow', params)
           .then(function(data) {
 
             if(data.success){
@@ -235,7 +235,7 @@
           }
         };
 
-        scenarioService.addComment(params)
+        requestService.post('/api/scenario/add-comment', params)
           .then(function(data) {
 
             $scope.adding_comment_in_progress = undefined;
@@ -294,7 +294,7 @@
             }
           };
 
-          scenarioService.deleteComment(params)
+          requestService.post('/api/scenario/delete-comment', params)
             .then(function(data) {
               if(data.comments){
 

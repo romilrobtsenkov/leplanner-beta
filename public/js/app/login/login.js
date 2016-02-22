@@ -3,8 +3,8 @@
 
   angular
     .module('app')
-    .controller('LoginController', ['$scope','$rootScope','$location','$timeout','userService',
-    function($scope,$rootScope,$location,$timeout,userService) {
+    .controller('LoginController', ['$scope','$rootScope','$location','$timeout','requestService',
+    function($scope,$rootScope,$location,$timeout,requestService) {
 
       $rootScope.title = ' Login | Leplanner beta';
 
@@ -35,7 +35,7 @@
 
         $scope.login_in_process = true;
 		user.new_beta_code = 'tallinnaülikool';
-        userService.loginUser(user)
+        requestService.post('/api/user/login', {email: user.email, password: user.password, remember_me: user.remember_me})
           .then(function(data) {
 
             $scope.login_in_process = undefined;
@@ -74,7 +74,7 @@
 
         $scope.creating_in_progress = true;
 
-        userService.createUser(user)
+        requestService.post('/api/user/create', user)
           .then(function(data) {
 
             $scope.creating_in_progress = undefined;
@@ -135,7 +135,7 @@
 
         $scope.sending_in_progress = true;
 
-        userService.sendResetUserToken(user)
+        requestService.post('/api/user/send-reset-token', user)
           .then(function(data) {
 
             $scope.sending_in_progress = undefined;

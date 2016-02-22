@@ -3,8 +3,8 @@
 
   angular
     .module('app')
-    .controller('SearchController', ['$scope','$rootScope','scenarioService', 'metaService',
-    function($scope,$rootScope,scenarioService,metaService) {
+    .controller('SearchController', ['$scope','$rootScope','requestService',
+    function($scope,$rootScope,requestService) {
 
       $rootScope.title = 'Search | Leplanner beta';
 
@@ -49,7 +49,7 @@
 
         $scope.subjectsText = {buttonDefaultText: 'Filter subjects'};
 
-         metaService.getSubjectList()
+         requestService.get('/api/meta/subjects')
           .then(function(data) {
 
             if(data.subjects){
@@ -153,7 +153,7 @@
           }
         }
 
-        scenarioService.searchScenarios(q)
+        requestService.post('/api/scenario/search', q)
           .then(function(data) {
             //console.log(data);
             if(data.scenarios){

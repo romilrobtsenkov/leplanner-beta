@@ -3,8 +3,8 @@
 
   angular
     .module('app')
-    .controller('UserController', ['$scope','$rootScope','$routeParams','userService','scenarioService',
-    function($scope,$rootScope,$routeParams,userService,scenarioService) {
+    .controller('UserController', ['$scope','$rootScope','$routeParams','requestService',
+    function($scope,$rootScope,$routeParams,requestService) {
 
       if(typeof $routeParams.id !== 'undefined'){
         $scope.get_profile_id = $routeParams.id;
@@ -33,7 +33,7 @@
           }
         };
 
-        userService.loadUserData(request)
+        requestService.post('/api/user/load-user-data', request)
           .then(function(data) {
 
             if(data.profile){
@@ -120,7 +120,7 @@
         }
 
 
-        scenarioService.getUserScenarios(q)
+        requestService.post('/api/scenario/list', q)
           .then(function(data) {
             //console.log(data);
             if(data.scenarios){
@@ -154,7 +154,7 @@
           params.remove_follow = true;
         }
 
-        userService.addRemoveFollow(params)
+        requestService.post('/api/user/add-remove-follow', params)
           .then(function(data) {
 
             if(data.success){

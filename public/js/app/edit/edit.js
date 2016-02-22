@@ -3,8 +3,8 @@
 
   angular
     .module('app')
-    .controller('EditController', ['$scope','$rootScope','$timeout','$routeParams','$location','scenarioService','metaService',
-    function($scope,$rootScope,$timeout,$routeParams,$location,scenarioService,metaService) {
+    .controller('EditController', ['$scope','$rootScope','$timeout','$routeParams','$location','requestService',
+    function($scope,$rootScope,$timeout,$routeParams,$location,requestService) {
 
       if(typeof $routeParams.id !== 'undefined'){
         $scope.scenario_id = $routeParams.id;
@@ -37,7 +37,7 @@
             }
           };
 
-          scenarioService.getEditDataSingleScenario(params)
+          requestService.post('/api/scenario/get-edit-data-single-scenario', params)
           .then(function(data) {
 
             if(data.scenario && data.materials){
@@ -83,7 +83,7 @@
 
       function loadMetaData(){
 
-        metaService.getScenarioMeta()
+        requestService.get('/api/meta/get-scenario-meta')
         .then(function(data) {
 
           if(data.subjects && data.activity_organization && data.involvement_options && data.displays){
@@ -165,7 +165,7 @@
 
         $scope.deleting_material = true;
 
-        scenarioService.deleteMaterial(params)
+        requestService.post('/api/scenario/delete-material', params)
         .then(function(data) {
 
           // enable save button
@@ -217,7 +217,7 @@
 
         $scope.saving_material = true;
 
-        scenarioService.saveMaterial(params)
+        requestService.post('/api/scenario/save-material', params)
         .then(function(data) {
 
           // enable save button

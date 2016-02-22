@@ -3,8 +3,8 @@
 
   angular
     .module('app')
-    .controller('CreateController', ['$scope','$rootScope','$timeout','$location','scenarioService','metaService',
-    function($scope,$rootScope,$timeout,$location,scenarioService,metaService) {
+    .controller('CreateController', ['$scope','$rootScope','$timeout','$location','requestService',
+    function($scope,$rootScope,$timeout,$location,requestService) {
 
       $rootScope.title = 'Create new scenario | Leplanner beta';
 
@@ -35,7 +35,7 @@
 
         $scope.saving = true;
 
-        scenarioService.createScenario(params)
+        requestService.post('/api/scenario/create', params)
           .then(function(data) {
 
             $scope.saving_in_progress = undefined;

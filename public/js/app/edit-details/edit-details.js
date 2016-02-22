@@ -3,8 +3,8 @@
 
   angular
     .module('app')
-    .controller('EditDetailsController', ['$scope','$rootScope','$timeout','$routeParams','$location','scenarioService','metaService',
-    function($scope,$rootScope,$timeout,$routeParams,$location,scenarioService,metaService) {
+    .controller('EditDetailsController', ['$scope','$rootScope','$timeout','$routeParams','$location','requestService',
+    function($scope,$rootScope,$timeout,$routeParams,$location,requestService) {
 
       if(typeof $routeParams.id !== 'undefined'){
         $scope.scenario_id = $routeParams.id;
@@ -30,7 +30,7 @@
             }
           };
 
-          scenarioService.getEditDataSingleScenario(params)
+          requestService.post('/api/scenario/get-edit-data-single-scenario', params)
           .then(function(data) {
 
             if(data.scenario){
@@ -91,7 +91,7 @@
         //publish/draft dropdown
         $scope.publish_options = [{name: 'Draft', value: true},{name: 'Published', value: false}];
 
-        metaService.getScenarioMeta()
+        requestService.get('/api/meta/get-scenario-meta')
         .then(function(data) {
 
           if(data.subjects && data.activity_organization){
@@ -240,7 +240,7 @@
             }
           };
 
-          scenarioService.deleteScenario(params)
+          requestService.post('/api/scenario/delete-scenario', params)
           .then(function(data) {
 
             if(data.success){
@@ -299,7 +299,7 @@
 
         $scope.saving = true;
 
-        scenarioService.saveScenario(params)
+        requestService.post('/api/scenario/save', params)
           .then(function(data) {
 
             //enable save button

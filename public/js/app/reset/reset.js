@@ -3,8 +3,8 @@
 
   angular
     .module('app')
-    .controller('ResetController', ['$scope','$location','$rootScope','$routeParams','$timeout','userService',
-    function($scope,$location,$rootScope,$routeParams,$timeout,userService) {
+    .controller('ResetController', ['$scope','$location','$rootScope','$routeParams','$timeout','requestService',
+    function($scope,$location,$rootScope,$routeParams,$timeout,requestService) {
 
       $rootScope.title = 'Password reset | Leplanner beta';
 
@@ -19,7 +19,7 @@
                 // Save new password
                 user.token = $routeParams.token;
 
-                userService.resetPassword(user)
+                requestService.post('/api/user/reset-password', user)
                   .then(function(data) {
                     if(data.success){
                       $location.path('/login');

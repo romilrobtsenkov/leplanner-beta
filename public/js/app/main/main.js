@@ -3,14 +3,14 @@
 
   angular
     .module('app')
-    .controller('MainController', ['$scope','$rootScope','$location','userService',
-    function($scope,$rootScope,$location,userService) {
+    .controller('MainController', ['$scope','$rootScope','$location','requestService',
+    function($scope,$rootScope,$location,requestService) {
 
       $rootScope.title = 'Leplanner beta';
 
       //console.log($rootScope.user);
       $scope.logout = function(){
-        userService.logoutUser()
+        requestService.get('/api/user/logout')
           .then(function(data){
             console.log(data);
             $rootScope.user = undefined;

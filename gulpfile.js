@@ -46,10 +46,8 @@ gulp.task('build-js', function() {
       'public/js/app/dashboard/dashboard.js',
       'public/js/app/search/search.js',
       'public/js/app/modal/modal.js',
-      'public/js/app/services/user-service.js',
+      'public/js/app/services/requestService.js',
       'public/js/app/services/user-route-service.js',
-      'public/js/app/services/scenario-service.js',
-      'public/js/app/services/meta-service.js',
       'public/js/app/directives/canvas/canvas.js',
       'public/js/app/directives/modal/modal.js',
     ])

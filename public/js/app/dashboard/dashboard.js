@@ -3,8 +3,8 @@
 
   angular
     .module('app')
-    .controller('DashboardController', ['$scope','$rootScope','scenarioService', 'userService', 'metaService',
-    function ($scope,$rootScope,scenarioService,userService,metaService) {
+    .controller('DashboardController', ['$scope','$rootScope','requestService',
+    function ($scope,$rootScope,requestService) {
 
       $rootScope.title = $rootScope.user.first_name+' '+$rootScope.user.last_name+' dashboard | Leplanner beta';
 
@@ -96,7 +96,7 @@
               }
           };
 
-          userService.getUsersList(params)
+          requestService.post('/api/user/list', params)
             .then(function(data) {
 
               if(data.users){
@@ -121,7 +121,7 @@
       }
 
       function getScenarios(query){
-        scenarioService.getDashScenarios(query)
+        requestService.post('/api/scenario/scenarios-dash-list', query)
           .then(function(data) {
             if(data.scenarios){
 
@@ -184,7 +184,7 @@
           params.limit = limit;
         }
 
-        userService.getNotifications(params)
+        requestService.post('/api/user/notifications', params)
           .then(function(data) {
             if(data.notifications){
               $scope.notifications = data.notifications;
@@ -252,7 +252,7 @@
           params.remove_follow = true;
         }
 
-        userService.addRemoveFollow(params)
+        requestService.post('/api/user/add-remove-follow', params)
           .then(function(data) {
 
             if(data.success){

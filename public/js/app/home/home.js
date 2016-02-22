@@ -3,8 +3,8 @@
 
   angular
     .module('app')
-    .controller('HomeController', ['$scope','$rootScope','$location','scenarioService','metaService',
-    function($scope,$rootScope,$location,scenarioService,metaService) {
+    .controller('HomeController', ['$scope','$rootScope','$location','requestService',
+    function($scope,$rootScope,$location,requestService) {
 
       $rootScope.title = 'Leplanner beta';
 
@@ -41,7 +41,7 @@
           }
         }
 
-        scenarioService.getWidgetScenarios(q)
+        requestService.post('/api/scenario/widget-list', q)
           .then(function(data) {
             //console.log(data);
             if(data.scenarios){
@@ -56,7 +56,7 @@
       }
 
       function loadSubjects(){
-        metaService.getSubjectList()
+        requestService.get('/api/meta/subjects')
         .then(function(data) {
 
           if(data.subjects){

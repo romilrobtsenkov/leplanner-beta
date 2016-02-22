@@ -3,8 +3,8 @@
 
   angular
     .module('app')
-    .controller('SettingsController', ['$scope','$rootScope','$location','$timeout','userService','Upload',
-    function($scope,$rootScope,$location,$timeout,userService,Upload) {
+    .controller('SettingsController', ['$scope','$rootScope','$location','$timeout','requestService','Upload',
+    function($scope,$rootScope,$location,$timeout,requestService,Upload) {
 
       $rootScope.title = 'Settings | Leplanner beta';
 
@@ -31,7 +31,7 @@
 
             $scope.updating_in_progress = true;
 
-            userService.updateUserProfile({user: $scope.user})
+            requestService.post('/api/user/update-profile', {user: $scope.user})
               .then(function(data) {
 
                 $scope.updating_in_progress = undefined;
@@ -97,7 +97,7 @@
 
               $scope.updating_in_progress = true;
 
-              userService.updateUserPassword({user: user})
+              requestService.post('/api/user/update-password', {user: user})
                 .then(function(data) {
 
                   $scope.updating_in_progress = undefined;

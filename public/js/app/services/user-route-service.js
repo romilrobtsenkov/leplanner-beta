@@ -3,13 +3,13 @@
 
   angular
     .module('app')
-    .factory('userRouteService', userRouteService, ['$q', '$rootScope', '$location', 'userService',
-  function($q, $rootScope, $location, userService) {
+    .factory('userRouteService', userRouteService, ['$q', '$rootScope', '$location', 'requestService',
+  function($q, $rootScope, $location, requestService) {
     return {
       checkUser: function(option) {
 
         var deferred = $q.defer();
-        userService.getUser()
+        requestService.get('/api/user/me')
           .then(function(data){
             if(!$rootScope.user){
                //console.log('rootscope null, saved to rootscope');
