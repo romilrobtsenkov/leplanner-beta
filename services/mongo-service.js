@@ -20,7 +20,7 @@ exports.find = function(q, Collection, next){
     });
 };
 
-exports.findById = function(id, Collection, ext) {
+exports.findById = function(id, Collection, next) {
     Collection.findById(id, function(err, entry) {
         next(err, entry);
     });
