@@ -3,11 +3,8 @@
 
   angular
     .module('app')
-    .controller('ResetController', ResetController);
-
-    ResetController.$inject = ['$scope','$location','$rootScope','$routeParams','$timeout','userService'];
-
-    function ResetController($scope,$location,$rootScope,$routeParams,$timeout,userService) {
+    .controller('ResetController', ['$scope','$location','$rootScope','$routeParams','$timeout','userService',
+    function($scope,$location,$rootScope,$routeParams,$timeout,userService) {
 
       $rootScope.title = 'Password reset | Leplanner beta';
 
@@ -65,5 +62,5 @@
 
       };
 
-    } // ResetController end
+  }]); // ResetController end
 }());

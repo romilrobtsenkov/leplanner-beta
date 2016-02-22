@@ -3,11 +3,8 @@
 
   angular
     .module('app')
-    .config(config);
-
-  config.$inject = ['$routeProvider','$locationProvider','$resourceProvider'];
-
-  function config($routeProvider,$locationProvider,$resourceProvider) {
+    .config(['$routeProvider','$locationProvider','$resourceProvider',
+  function($routeProvider,$locationProvider,$resourceProvider) {
 
     $routeProvider
     .when('/', {
@@ -110,5 +107,5 @@
       }
     });
 
-  }
+  }]);
 }());

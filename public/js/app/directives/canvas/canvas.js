@@ -3,11 +3,8 @@
 
   angular
     .module('app')
-    .directive('scenariocanvas', scenariocanvas);
-
-    scenariocanvas.$inject = ['$routeParams','$timeout','$window','$filter'];
-
-    function scenariocanvas ($routeParams,$timeout,$window,$filter) {
+    .directive('scenariocanvas', ['$routeParams','$timeout','$window','$filter',
+    function($routeParams,$timeout,$window,$filter) {
       return {
   			restrict: 'E',
         templateUrl: 'js/app/directives/canvas/canvas.html',
@@ -20,12 +17,12 @@
           var COLOR_OFF_CLASS = 'rgb(255, 144, 144)';
 
           /*
-		  
+
 		   var COLOR_IN_CLASS = 'rgb(112,207,250)';
           var COLOR_OFF_CLASS = 'rgb(255,249,115)';
-		  
+
 		  uued 254
-		  245 
+		  245
 		  52
 
           //apple blue & yellow
@@ -225,10 +222,10 @@
               this.Draw.fillRect(this.ctx, legend_x, legend_y, legend_box, legend_box, COLOR_IN_CLASS);
               this.Draw.text(this.ctx, 'tunnitegevus (in-class)', legend_x + legend_box*2-5, legend_y+legend_box-2, legend_box, 'rgba(0,0,0,1)');
               legend_x += 280;
-              
+
               this.Draw.fillRect(this.ctx, legend_x, legend_y, legend_box, legend_box, COLOR_OFF_CLASS);
               this.Draw.text(this.ctx, 'muu (off-class)', legend_x + legend_box*2-5, legend_y+legend_box-2, legend_box, 'rgba(0,0,0,1)');
-              
+
               // student/teacher
               //teacher up-top
               this.ctx.save();
@@ -1287,6 +1284,6 @@
   			}
   		};
 
-    }
+    }]);
 
 }());

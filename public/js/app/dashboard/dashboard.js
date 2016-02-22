@@ -3,11 +3,8 @@
 
   angular
     .module('app')
-    .controller('DashboardController', DashboardController);
-
-    DashboardController.$inject = ['$scope','$rootScope','scenarioService', 'userService', 'metaService'];
-
-    function DashboardController($scope,$rootScope,scenarioService,userService,metaService) {
+    .controller('DashboardController', ['$scope','$rootScope','scenarioService', 'userService', 'metaService',
+    function ($scope,$rootScope,scenarioService,userService,metaService) {
 
       $rootScope.title = $rootScope.user.first_name+' '+$rootScope.user.last_name+' dashboard | Leplanner beta';
 
@@ -298,5 +295,5 @@
         getNotifications(notification_limit);
       };
 
-    } // DashboardController end
+  }]); // DashboardController end
 }());

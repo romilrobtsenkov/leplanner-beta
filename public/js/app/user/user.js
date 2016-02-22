@@ -3,11 +3,8 @@
 
   angular
     .module('app')
-    .controller('UserController', UserController);
-
-    UserController.$inject = ['$scope','$rootScope','$routeParams','userService','scenarioService'];
-
-    function UserController($scope,$rootScope,$routeParams,userService,scenarioService) {
+    .controller('UserController', ['$scope','$rootScope','$routeParams','userService','scenarioService',
+    function($scope,$rootScope,$routeParams,userService,scenarioService) {
 
       if(typeof $routeParams.id !== 'undefined'){
         $scope.get_profile_id = $routeParams.id;
@@ -212,5 +209,5 @@
         }
       };
 
-    } // UserController end
+  }]); // UserController end
 }());

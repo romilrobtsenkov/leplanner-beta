@@ -3,11 +3,8 @@
 
   angular
     .module('app')
-    .controller('ModalCtrl', ModalCtrl);
-
-    ModalCtrl.$inject = ['$scope'];
-
-    function ModalCtrl($scope) {
+    .controller('ModalCtrl', ['$scope',
+    function($scope) {
        this.setModel = function(data) {
           $scope.$apply( function() {
              $scope = data;
@@ -15,5 +12,5 @@
        };
        $scope.setModel = this.setModel;
 
-    } // ModalCtrl end
+   }]); // ModalCtrl end
 }());

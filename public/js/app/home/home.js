@@ -3,11 +3,8 @@
 
   angular
     .module('app')
-    .controller('HomeController', HomeController);
-
-    HomeController.$inject = ['$scope','$rootScope','$location','scenarioService','metaService'];
-
-    function HomeController($scope,$rootScope,$location,scenarioService,metaService) {
+    .controller('HomeController', ['$scope','$rootScope','$location','scenarioService','metaService',
+    function($scope,$rootScope,$location,scenarioService,metaService) {
 
       $rootScope.title = 'Leplanner beta';
 
@@ -95,5 +92,5 @@
         $location.path('/search');
       };
 
-    }
+  }]);
 }());

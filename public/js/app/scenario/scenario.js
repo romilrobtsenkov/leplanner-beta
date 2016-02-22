@@ -3,11 +3,8 @@
 
   angular
     .module('app')
-    .controller('ScenarioController', ScenarioController);
-
-    ScenarioController.$inject = ['$scope','$rootScope','$routeParams','$location','$timeout','scenarioService', 'userService','metaService'];
-
-    function ScenarioController($scope,$rootScope,$routeParams,$location,$timeout,scenarioService,userService,metaService) {
+    .controller('ScenarioController', ['$scope','$rootScope','$routeParams','$location','$timeout','scenarioService', 'userService','metaService',
+    function($scope,$rootScope,$routeParams,$location,$timeout,scenarioService,userService,metaService) {
 
       if(typeof $routeParams.id !== 'undefined'){
         $scope.scenario_id = $routeParams.id;
@@ -357,5 +354,5 @@
       };
 
 
-    } // ScenarioController end
+  }]); // ScenarioController end
 }());

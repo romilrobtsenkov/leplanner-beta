@@ -3,11 +3,8 @@
 
   angular
     .module('app')
-    .controller('CreateController', CreateController);
-
-    CreateController.$inject = ['$scope','$rootScope','$timeout','$location','scenarioService','metaService'];
-
-    function CreateController($scope,$rootScope,$timeout,$location,scenarioService,metaService) {
+    .controller('CreateController', ['$scope','$rootScope','$timeout','$location','scenarioService','metaService',
+    function($scope,$rootScope,$timeout,$location,scenarioService,metaService) {
 
       $rootScope.title = 'Create new scenario | Leplanner beta';
 
@@ -76,5 +73,5 @@
 
       };
 
-    } // CreateController
+  }]); // CreateController
 }());

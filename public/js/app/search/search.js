@@ -3,11 +3,8 @@
 
   angular
     .module('app')
-    .controller('SearchController', SearchController);
-
-    SearchController.$inject = ['$scope','$rootScope','scenarioService', 'metaService'];
-
-    function SearchController($scope,$rootScope,scenarioService,metaService) {
+    .controller('SearchController', ['$scope','$rootScope','scenarioService', 'metaService',
+    function($scope,$rootScope,scenarioService,metaService) {
 
       $rootScope.title = 'Search | Leplanner beta';
 
@@ -204,5 +201,5 @@
         }
       };
 
-    } // SearchController end
+  }]); // SearchController end
 }());

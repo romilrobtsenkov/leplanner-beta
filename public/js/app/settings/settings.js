@@ -3,11 +3,8 @@
 
   angular
     .module('app')
-    .controller('SettingsController', SettingsController);
-
-    SettingsController.$inject = ['$scope','$rootScope','$location','$timeout','userService','Upload'];
-
-    function SettingsController($scope,$rootScope,$location,$timeout,userService,Upload) {
+    .controller('SettingsController', ['$scope','$rootScope','$location','$timeout','userService','Upload',
+    function($scope,$rootScope,$location,$timeout,userService,Upload) {
 
       $rootScope.title = 'Settings | Leplanner beta';
 
@@ -222,5 +219,5 @@
         }
       };
 
-    } // SettingsController end
+  }]); // SettingsController end
 }());

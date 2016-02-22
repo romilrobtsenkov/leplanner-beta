@@ -3,11 +3,8 @@
 
   angular
     .module('app')
-    .directive('editcanvasmodal', editcanvasmodal);
-
-    editcanvasmodal.$inject = ['$timeout'];
-
-    function editcanvasmodal ($timeout) {
+    .directive('editcanvasmodal', ['$timeout',
+    function($timeout) {
       return {
   			restrict: 'E',
         templateUrl: 'js/app/directives/modal/modal.html',
@@ -27,6 +24,6 @@
         },
 
       };
-    }
+  }]);
 
 }());

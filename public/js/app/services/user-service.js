@@ -3,11 +3,8 @@
 
   angular
     .module('app')
-    .factory('userService', userServiceFactory);
-
-  userServiceFactory.$inject = ['$http'];
-
-  function userServiceFactory($http) {
+    .factory('userService', ['$http',
+    function($http) {
     return {
       addRemoveFollow: addRemoveFollow,
       createUser: createUser,
@@ -109,5 +106,5 @@
         });
     }
 
-  }
+  }]);
 }());

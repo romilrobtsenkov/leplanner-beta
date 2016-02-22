@@ -3,11 +3,8 @@
 
   angular
     .module('app')
-    .controller('EditDetailsController', EditDetailsController);
-
-    EditDetailsController.$inject = ['$scope','$rootScope','$timeout','$routeParams','$location','scenarioService','metaService'];
-
-    function EditDetailsController($scope,$rootScope,$timeout,$routeParams,$location,scenarioService,metaService) {
+    .controller('EditDetailsController', ['$scope','$rootScope','$timeout','$routeParams','$location','scenarioService','metaService',
+    function($scope,$rootScope,$timeout,$routeParams,$location,scenarioService,metaService) {
 
       if(typeof $routeParams.id !== 'undefined'){
         $scope.scenario_id = $routeParams.id;
@@ -363,5 +360,5 @@
         if($scope.timer){ $timeout.cancel($scope.timer); }
       });
 
-    } //editDetailsController end
+  }]); //editDetailsController end
 }());

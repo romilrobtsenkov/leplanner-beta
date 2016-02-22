@@ -3,11 +3,8 @@
 
   angular
     .module('app')
-    .factory('userRouteService', userRouteService);
-
-  userRouteService.$inject = ['$q', '$rootScope', '$location', 'userService'];
-
-  function userRouteService($q, $rootScope, $location, userService) {
+    .factory('userRouteService', userRouteService, ['$q', '$rootScope', '$location', 'userService',
+  function($q, $rootScope, $location, userService) {
     return {
       checkUser: function(option) {
 
@@ -45,9 +42,10 @@
             }
           });
           return deferred.promise;
-          
+
       }
     };
-  }
+
+  }]);
 
 }());

@@ -3,14 +3,11 @@
 
   angular
     .module('app')
-    .controller('LoginController', LoginController);
-
-    LoginController.$inject = ['$scope','$rootScope','$location','$timeout','userService'];
-
-    function LoginController($scope,$rootScope,$location,$timeout,userService) {
+    .controller('LoginController', ['$scope','$rootScope','$location','$timeout','userService',
+    function($scope,$rootScope,$location,$timeout,userService) {
 
       $rootScope.title = ' Login | Leplanner beta';
-      
+
 
       $scope.activateCreateForm = function($event){
         $event.preventDefault();
@@ -167,5 +164,5 @@
         });
       };
 
-    } // LoginController end
+  }]); // LoginController end
 }());

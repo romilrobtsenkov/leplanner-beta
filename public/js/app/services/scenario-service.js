@@ -3,11 +3,7 @@
 
   angular
     .module('app')
-    .factory('scenarioService', scenarioServiceFactory);
-
-  scenarioServiceFactory.$inject = ['$http'];
-
-  function scenarioServiceFactory($http) {
+    .factory('scenarioService', ['$http', function($http) {
     return {
       addComment: addComment,
       addRemoveFavorite: addRemoveFavorite,
@@ -131,5 +127,5 @@
         });
     }
 
-  }
+  }]);
 }());
