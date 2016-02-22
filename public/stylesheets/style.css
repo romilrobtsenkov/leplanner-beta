@@ -866,6 +866,17 @@ a.delete-link {
   color: red;
 }
 
+#scenario-edit-canvas-tmp {
+    position:absolute;
+    top:0;
+    left:0;
+}
+
+#scenario-edit-canvas-image {
+    display:none;
+}
+
+
 @page { size: A4 landscape }
 
 @media print {
