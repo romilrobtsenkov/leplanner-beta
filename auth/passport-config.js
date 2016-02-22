@@ -3,13 +3,17 @@ module.exports = function() {
   var passport = require('passport');
   var bcrypt = require('bcrypt');
   var passportLocal = require('passport-local');
-  var userService = require('../services/user-service');
+
+  var mongoService = require('../services/mongo-service');
+
+  var User = require('../models/user').User;
+
 
   passport.use(new passportLocal.Strategy({usernameField: 'email'}, function(email, password, next) {
 
     var q = {};
     q.args = {"email": email.toLowerCase()};
-    userService.findOne(q, function(err, user) {
+    mongoService.findOne(q, User, function(err, user) {
       if (err) { return next(err); }
       if (!user) { return next(null, null,{ message: {id: 10, message: 'Wrong credentials'}}); }
 
@@ -32,7 +36,7 @@ module.exports = function() {
 
   passport.deserializeUser(function(id, next) {
     //console.log('deserializeUser');
-    userService.findById(id, function(err, user) {
+    mongoService.findById(id, User, function(err, user) {
       if(typeof user !== 'undefined' && user !== null){
         user.password = undefined;
         if(user.resetPasswordExpires){user.resetPasswordExpires = undefined;}
