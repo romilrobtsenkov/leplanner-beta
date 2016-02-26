@@ -10,7 +10,7 @@
         templateUrl: 'js/app/directives/timeline/timeline.html',
         link: function postLink($scope, element, attrs) {
 
-            console.log('here');
+            //console.log('here');
             var Planner = function(options){
 
                 //singleton
@@ -22,19 +22,17 @@
                 this.config = Planner.config;
                 if(options && options.edit){ this.config.edit = true; }
 
-                this.Draw = Planner.Draw;
-                this.Activity = Planner.Activity;
-
                 //vars
                 this.timeline = this.WIDTH = this.HEIGHT = null;
                 this.activities = [];
                 this.activities_duration = null;
                 this.activity_images = [];
+                this.timeouts = []; //animation timeouts
 
-                this.timeouts = [];
+                //resize delay var
+                this.resizeDelay = null;
 
                 this.init();
-
             };
 
             Planner.config = {
@@ -75,8 +73,10 @@
                     this.activities_duration = $scope.scenario.activities_duration;
 
                     this.resize();
-                    //listen with delay
-                    window.addEventListener("resize", this.resize.bind(this));
+                    this.clearTimeline();
+                    this.initActivities();
+
+                    window.addEventListener("resize", this.timelineResizeDelay.bind(this));
 
                 },
                 resize: function(){
@@ -95,42 +95,46 @@
                     this.WIDTH = width-border_fix;
                     this.HEIGHT = height;
 
-                    console.log('resize w:' + width + ' h:' + height );
-
-                    //reDraw? ONLY IF WIDTH CHANGED
-                    this.reDraw();
+                    //console.log('resize w:' + width + ' h:' + height );
                 },
-                reDraw: function(){
-                    //In fututer should just reposition elements instead of drawing again
-
+                timelineResizeDelay: function(){
+                    clearTimeout(this.resizeDelay);
+                    this.resizeDelay = setTimeout(this.timelineResize.bind(this), 200);
+                },
+                timelineResize: function(){
                     //clear animation timeouts
                     for (var i=0; i<this.timeouts.length; i++) {
                       clearTimeout(this.timeouts[i]);
                     }
 
-                    this.Draw.clear(this.timeline);
-                    this.drawBaseLayer();
-                    this.initMaterials();
+                    this.resize();
+
+                    //TODO check if width cahnged in the future
+
+                    this.rePositionTimeline();
+                },
+                rePositionTimeline: function(){
+                    for(var i = 0; i < this.activities.length; i++){
+                        //UPDATE STYLE
+                        this.activities[i].updateActivitystyle();
+                    }
                 },
                 drawBaseLayer: function(){
 
                     // legend
                     var spaceFromBottom = 25;
                     var box_dim = 11;
-                    this.Draw.legend(this.config.legendInClass, 0+15, this.HEIGHT-spaceFromBottom, box_dim, box_dim, this.config.ColorInClass, this.timeline);
-                    this.Draw.legend(this.config.legendOffClass, 160, this.HEIGHT-spaceFromBottom, box_dim, box_dim, this.config.ColorOffClass, this.timeline);
+                    this.Drawlegend(this.config.legendInClass, 0+15, this.HEIGHT-spaceFromBottom, box_dim, box_dim, this.config.ColorInClass, this.timeline);
+                    this.Drawlegend(this.config.legendOffClass, 160, this.HEIGHT-spaceFromBottom, box_dim, box_dim, this.config.ColorOffClass, this.timeline);
 
                     //line
-                    this.Draw.line(this.WIDTH, this.HEIGHT, 1, 'rgb(0,0,0)', this.timeline);
+                    this.DrawLine(this.WIDTH, this.HEIGHT, 1, 'rgb(0,0,0)', this.timeline);
 
                 },
-                drawMaterials: function(){
-
-                },
-                initMaterials: function(){
-
-                    if($scope.activity_list.length === 0 ||
-                      ($scope.activity_list.length === 1 && $scope.activity_list[0].duration === 0)){
+                initActivities: function(){
+                    console.log('loading activities');
+                    if(getScopeList().length === 0 ||
+                      (getScopeList().length === 1 && getScopeList()[0].duration === 0)){
                       alert('please add more acitivty');
                       //TODO write to timeline
                       return;
@@ -139,28 +143,20 @@
                     var start_time = 0;
                     console.log('drawing');
                     this.activities = [];
-                    for(var i = 0; i < $scope.activity_list.length; i++){
-                      //alert($scope.activity_list.length);
-                      var Activity = new this.Activity(i, start_time, $scope.activity_list[i], this);
+                    for(var i = 0; i < getScopeList().length; i++){
+                      //alert(getScopeList().length);
+                      var Activity = new Planner.Activity(i, start_time, getScopeList()[i], Planner.instance_);
                       this.activities.push(Activity);
 
-                      start_time += $scope.activity_list[i].duration;
+                      start_time += getScopeList()[i].duration;
 
                     }
 
-                }
-            };
-
-            Planner.Draw = {
-                clear: function(timeline){
-                    console.error(timeline);
-                    timeline.innerHTML = '';
-                    while(timeline.firstChild){
-                        timeline.removeChild(timeline.firstChild);
-                    }
-                    console.log(timeline);
                 },
-                legend: function(text, x, y, box_w, box_h, color, timeline){
+                clearTimeline: function(){
+                    this.timeline.innerHTML = '';
+                },
+                Drawlegend: function(text, x, y, box_w, box_h, color, timeline){
 
                     var style = {
                         top: y + 'px',
@@ -182,7 +178,7 @@
                     var textEl = createElementWithStyle('div','.legend-text', textStyle, text);
                     timeline.appendChild(textEl);
                 },
-                line: function(width, height, thickness, color, timeline){
+                DrawLine: function(width, height, thickness, color, timeline){
                     var style = {
                         top: height/2 + 'px',
                         left: 0 + 'px',
@@ -197,26 +193,28 @@
 
             Planner.Activity = function(index, start_time, data, Planner){
 
-                this.el = null;
-
+                //INCOMING
                 this.index = index;
                 this.start = start_time;
+                this.Planner = Planner;
 
+                //ELEMENTS
                 this.timeline = Planner.timeline;
                 this.activites_wrapper = null;
                 this.activity_wrapper = null;
+                this.element = null;
+                this.text_span = null;
 
+                //MAIN DATA
                 this._id = data._id;
               	this.name = data.name;
               	this.duration = data.duration;
                 this.materials = data.materials;
-
                 if(typeof data.in_class == 'undefined'){
                   this.in_class = false;
                 }else{
                   this.in_class = true;
                 }
-
                 this.class_color = null;
                 this.material_class_color = null;
                 if(this.in_class){
@@ -226,7 +224,7 @@
                   this.class_color = Planner.config.ColorOffClass;
                   this.material_class_color = Planner.config.ColorMaterialOffClass;
                 }
-
+                this.materialElements = [];
                 this.organization = data.activity_organization._id;
                 this.org_title = '';
                 for(var i = 0; i < $scope.activity_organization.length; i++){
@@ -234,260 +232,341 @@
                     this.org_title = $scope.activity_organization[i][Planner.config.org_language];
                   }
                 }
-                this.org_image = Planner.activity_images[this.organization]; //img element
+                this.org_image = this.Planner.activity_images[this.organization].cloneNode(); //img element
+                this.conveyor_icon_size = this.display_icon_size = 12;
+                this.duration_mark = 'min'; //can be changed if needed
 
-                this.planner_width = Planner.WIDTH;
-                this.planner_height = Planner.HEIGHT;
+                // EXTRA
+                this.x = this.height = this.y = this.width = this.minute_constant = this.material_height = null;
 
-                var padding = 5;
+                //CALCULAT NECCESERT VARIABLES
+                this.calculateVariables();
 
-                //minut in px
-                var minute_constant = ((this.planner_width-(($scope.activity_list.length+1)*padding))/Planner.activities_duration);
-
-                this.x = parseInt((minute_constant * this.start) + ((this.index+1)* padding));
-                this.height = 20;
-                this.y = parseInt(this.planner_height/2-this.height/2);
-                this.width = parseInt(minute_constant * this.duration);
-
-                //var s = this.index * 1000;
-                //console.log(s);
                 var timeout_delay = 40; //ms
-                Planner.timeouts.push(setTimeout(this.draw.bind(this), timeout_delay*index));
-                this.Planner = Planner;
+                this.Planner.timeouts.push(setTimeout(this.createActivity.bind(this), timeout_delay*index));
             };
 
             Planner.Activity.prototype = {
+                calculateVariables: function(){
 
-                draw: function(){
-                    //alert(this.index);
+                    var padding = 5; //between activities
+
+                    this.minute_constant = ((this.Planner.WIDTH-((getScopeList().length+1)*padding))/this.Planner.activities_duration); // min in px
+                    this.x = parseInt((this.minute_constant * this.start) + ((this.index+1)* padding));
+                    this.height = 20;
+                    this.y = parseInt(this.Planner.HEIGHT/2-this.height/2);
+                    this.width = parseInt(this.minute_constant * this.duration);
+
+                    this.material_height = Math.round(this.Planner.WIDTH / 39); //39 is just some constant
+
+                },
+                createActivity: function(){
+
+                    //STRUCTURE
                     // #activities-wrapper
                     //      .single-activity-wrapper
                     //          .activity-container
-                    //              span with content title
+                    //              span.activity-text-container
                     //              img.activity-org-icon
 
-
+                    // ALL ACTIVITIES WRAPPER
                     this.activities_wrapper = document.querySelector('#activities-wrapper');
                     if(!this.activities_wrapper){
-                        this.activities_wrapper = document.createElement('div');
-                        this.activities_wrapper.id = 'activities-wrapper';
+                        this.activities_wrapper = createElementWithStyle('div','#activities-wrapper');
                         this.timeline.appendChild(this.activities_wrapper);
                     }
 
-                    var wrapper = document.createElement('div');
-                    wrapper.className = 'single-activity-wrapper';
+                    // ELEMENT
+                    var style = this.getActivityStyle();
+                    var el = createElementWithStyle('div','.activity-container', style, null, {attribute: 'data-id', value: this._id});
 
-                    var style = {
+                    // TEXT & DURATION
+                    var span_style = this.getSpanStyle();
+                    this.text_span = createElementWithStyle('span','.activity-text-container', span_style);
+                    var text = document.createTextNode(this.name);
+                    this.duration_span = createElementWithStyle('span','.activity-duration-container');
+                    this.duration_min_span = createElementWithStyle('span','.activity-duration-min-container');
+                    var duration = document.createTextNode(this.duration);
+                    this.duration_span.appendChild(duration);
+                    this.duration_min_span.appendChild(document.createTextNode(this.duration_mark));
+                    this.duration_span.appendChild(this.duration_min_span);
+                    this.text_span.appendChild(this.duration_span);
+                    this.text_span.appendChild(text);
+                    el.appendChild(this.text_span);
+
+                    // ORG ICON
+                    var org_icon_style = this.getOrgIconStyle();
+                    this.org_image.className = 'activity-org-icon';
+                    this.org_image.alt = this.org_title;
+                    setElementStyle(this.org_image, org_icon_style);
+                    el.appendChild(this.org_image);
+
+                    //ORG ICON TEXT
+                    var org_title = document.createTextNode(this.org_title);
+                    this.org_title_span = createElementWithStyle('span','.activity-org-title');
+                    this.org_title_span.appendChild(org_title);
+                    el.appendChild(this.org_title_span);
+
+                    // APPEND ELEMENT
+                    this.activities_wrapper.appendChild(el);
+                    this.element = el;
+
+                    // CREATE MATERIALS
+                    this.Planner.timeouts.push(setTimeout(this.drawMaterials.bind(this), 300));
+                    this.bindEvents();
+                },
+                getActivityStyle: function(){
+                    return {
                         top: this.y + 'px',
                         left: this.x + 'px',
                         width: this.width + 'px',
                         height: this.height + 'px',
                         backgroundColor: this.class_color
                     };
-                    var el = createElementWithStyle('div','.activity-container', style, null, {attribute: 'data-id', value: this._id});
-
-
-                    var text = document.createTextNode(this.name);
-                    var span = document.createElement('span');
-                    span.appendChild(text);
-                    el.appendChild(span);
-                    //add visible text if width > 20
+                },
+                getSpanStyle: function(){
+                    var style = {};
+                    // hide text if width less than
                     if(this.width < 30){
-                        span.style.display = 'none';
+                        style.display = 'none';
+                    }else{
+                        style.display = 'block';
                     }
-
-                    //add icon
-                    this.org_image.className = 'activity-org-icon';
-                    this.org_image.alt = this.org_title;
-                    //cloning element
-                    var img_clone = this.org_image.cloneNode();
-                    el.appendChild(img_clone);
-                    //console.log(this.org_image);
-                    //add visible icon if width > 10
+                    return style;
+                },
+                getOrgIconStyle: function(){
+                    var style = {};
+                    // hide text if width less than
                     if(this.width < 20){
-                        img_clone.style.display = 'none';
+                        style.display = 'none';
+                    }else{
+                        style.display = 'block';
                     }
+                    return style;
+                },
+                updateActivitystyle: function(){
+                    //UPDATE vars
+                    this.calculateVariables();
 
-                    wrapper.appendChild(el);
-                    this.activities_wrapper.appendChild(wrapper);
+                    // ELEMENT
+                    var style = this.getActivityStyle();
+                    setElementStyle(this.element, style);
 
-                    this.el = el;
-                    this.Planner.timeouts.push(setTimeout(this.drawMaterials.bind(this), 300));
-                    //this.drawMaterials();
-                    this.bindEvents();
+                    // TEXT
+                    var span_style = this.getSpanStyle();
+                    setElementStyle(this.text_span, span_style);
 
+                    // ORG ICON
+                    var org_icon_style = this.getOrgIconStyle();
+                    setElementStyle(this.org_image, org_icon_style);
 
+                    this.updateMaterials();
                 },
                 bindEvents: function(el){
-                    this.el.addEventListener('click', function(e){
-                        console.log(e);
-                        alert(e.target.dataset.id);
-                    });
-
-                    this.el.addEventListener('mouseover', this.hover.bind(this), true);
-
-                    this.el.addEventListener('mouseout', this.unHover.bind(this), true);
-
+                    this.element.addEventListener('mouseover', this.hover.bind(this), true);
+                    this.element.addEventListener('mouseout', this.unHover.bind(this), true);
                 },
                 hover: function(e){
-                    this.el.className += ' activity-container-hover';
-
+                    this.element.className += ' activity-container-hover';
                     var expanded_width = 200;
-
+                    //check which way to expand, and is expandable
                     if(this.width < expanded_width){
-
-                        this.el.style.width = expanded_width + 'px';
-
+                        this.element.style.width = expanded_width + 'px';
                         if(this.x < expanded_width/2){
                             //expand righy
                             //DO NOTHING WITH ADJUSTMENT
-                            //console.log('right');
-
-                        }else if(this.x + expanded_width > this.planner_width) {
+                        }else if(this.x + expanded_width > this.Planner.WIDTH) {
                             //expand left
-                            this.el.style.left = this.x - (expanded_width - this.width) + 'px';
-                            //console.log('left');
+                            this.element.style.left = this.x - (expanded_width - this.width) + 'px';
                         }else{
                             // expand middle
-                            this.el.style.left = this.x - ((expanded_width - this.width)/2) + 'px';
-                            //console.log('middle');
+                            this.element.style.left = this.x - ((expanded_width - this.width)/2) + 'px';
                         }
-
                     }
-
-                    //console.log(this.el);
-
-                    //console.log('hovering ' + e.target.dataset.id);
-
                 },
                 unHover: function(e){
-                    this.el.className = this.el.className.replace(' activity-container-hover', '');
-                    this.el.style.left = this.x  + 'px';
-                    this.el.style.width = this.width  + 'px';
-
-                    //console.log('hovering end ' + e.target.dataset.id);
+                    this.element.className = this.element.className.replace(' activity-container-hover', '');
+                    this.element.style.left = this.x  + 'px';
+                    this.element.style.width = this.width  + 'px';
                 },
                 drawMaterials: function(){
-
-                    var material_height = Math.round(this.planner_width / 39); //39 is just some constant
-                    //for now maximum two
-
+                    // IF there ARE ANY
                     if(this.materials && this.materials.length > 0){
+
+                        //FOR every material
                         for(var i = 0; i < this.materials.length; i++){
 
+                            // .material-wrapper top/bottom
+                            //      .material-container bottom
+                            //          a > text
+                            //      a.conveyor-container top/bottom
+                            //          img.conveyor-icon
+                            //      .display-container bottom
+                            //          img.display-icon
+
                             var material = this.materials[i];
-                            //console.log(material);
-                            /*involvment_level;
-                            material_name;
-                            position;*/
-                            var m_height = 16 + (material_height * material.involvement_level);
-                            var m_top = this.y + this.height;
-                            if(material.position === 'top'){
-                                m_top -=  this.height + m_height;
-                            }
 
-                            var wrapper_style = {
-                                top: m_top + 'px',
-                                left: this.x + 'px', //parent left
-                                width: this.width + 'px', //parent width
-                                height: m_height + 'px',
-                            };
+                            // WRAPPER ELEMENT
+                            var wrapper_style = this.getMateriaMainStyle(material);
+                            var material_wrapper = createElementWithStyle('div','.material-wrapper '+material.position, wrapper_style);
 
-                            var style = {
-                                backgroundColor: this.material_class_color
-                            };
-                            //var wrapper_style = style;
-                            wrapper_style.backgroundColor = 'transparent';
-                            var m_wrapper = createElementWithStyle('div','.material-wrapper '+material.position, wrapper_style);
-                            var m_el = createElementWithStyle('div','.material-container '+material.position, style, null);
+                            // MATERIAL ITSELF
+                            var m_el = createElementWithStyle('div','.material-container '+material.position, {backgroundColor: this.material_class_color});
                             m_el.title = material.material_name; // title for tooltip
 
-                            var name_el;
+                            // MATERIAL MAIN TEXT
+                            var text_el = null;
                             var text = document.createTextNode(material.material_name);
 
-                            // add text or if possible link
+                            // IF DIGITAL MATERIAL ADD LINK
                             if(material.material_url){
-                                name_el = document.createElement('a');
-                                name_el.href = material.material_url;
-                                name_el.target = '_blank';
-                                name_el.appendChild(text);
+                                text_el = document.createElement('a');
+                                text_el.href = material.material_url;
+                                text_el.target = '_blank';
+                                text_el.appendChild(text);
                             }else{
-                                //also color gray backgroundColor
-                                name_el = text;
+                                // no link
+                                text_el = text;
                             }
-                            m_el.appendChild(name_el);
+                            m_el.appendChild(text_el);
 
-                            m_wrapper.appendChild(m_el);
-                            this.activities_wrapper.appendChild(m_wrapper);
+                            // APPEND MATERIAL
+                            material_wrapper.appendChild(m_el);
+                            this.activities_wrapper.appendChild(material_wrapper);
 
+                            //CONVEYOR
+                            var conveyor = null;
                             if(material.conveyor_url){
 
-                                var conveyor_top = m_top;
-                                // draw conveyor
-                                var conveyor_icon_size = 12;
+                                // ICON IMAGE
                                 var conveyor_icon = new Image();
                                 conveyor_icon.className = 'conveyor-icon';
                                 conveyor_icon.src = '/images/favs/icon_'+escapeRegExp(material.conveyor_url)+'.png';
-                                conveyor_icon.style.width = conveyor_icon_size + 'px';
-                                if(material.position === 'bottom'){
-                                    conveyor_top = m_height;
-                                }else{
-                                    conveyor_top = -conveyor_icon_size -8; //a href line height 4px
-                                }
+                                conveyor_icon.style.width = this.conveyor_icon_size + 'px';
 
-                                style = {
-                                    left: this.width - conveyor_icon_size - 8  + 'px',
-                                    top: conveyor_top + 'px'
-                                };
-                                var a = createElementWithStyle('a','.conveyor-container '+material.position, style);
-                                a.href = material.conveyor_url;
-                                a.target = '_blank';
-                                a.title = material.conveyor_name;
-                                a.appendChild(conveyor_icon);
+                                var conveyor_style = this.getConveyorStyle(material, wrapper_style);
 
-                                m_wrapper.appendChild(a);
+                                // LINK TO CONVEYOR
+                                conveyor = createElementWithStyle('a','.conveyor-container '+material.position, conveyor_style);
+                                conveyor.href = material.conveyor_url;
+                                conveyor.target = '_blank';
+                                conveyor.title = material.conveyor_name;
+                                conveyor.appendChild(conveyor_icon);
 
-                                /*
-                                    if does not fit then some other solution
-                                */
-
+                                //APPEND CONVEYOR
+                                material_wrapper.appendChild(conveyor);
                             }
 
-                            //draw organization
+                            // DISPLAY
+                            var display = null;
                             if(material.display_id){
 
-                                var display_top = m_top;
-                                // draw conveyor
-                                var display_icon_size = 12;
+                                // DISPLAY IMAGE
                                 var display_icon = new Image();
                                 display_icon.className = 'display-icon';
                                 display_icon.src = 'images/'+$scope.displays_list[material.display_id].icon;
-                                display_icon.style.width = display_icon_size + 'px';
-                                if(material.position === 'bottom'){
-                                    display_top = m_height;
-                                }else{
-                                    display_top = -display_icon_size -8; //a href line height 4px
-                                }
+                                display_icon.style.width = this.display_icon_size + 'px';
 
-                                style = {
-                                    left: 0 + 'px',
-                                    top: display_top + 'px'
-                                };
-                                var d = createElementWithStyle('div','.display-container '+material.position, style);
+                                var display_style = this.getDisplayStyle(material, wrapper_style);
+
+                                // DISPLAY CONTAINER DIV
+                                display = createElementWithStyle('div','.display-container '+material.position, display_style);
                                 if(material.display_id == $scope.displays_list.length-1){
-                                  d.title = material.other_display;
+                                    //other display, user wrote name
+                                    display.title = material.other_display;
                                 }else{
-                                  d.title = $scope.displays_list[material.display_id].name;
+                                    display.title = $scope.displays_list[material.display_id].name;
                                 }
-                                d.appendChild(display_icon);
+                                display.appendChild(display_icon);
 
-                                m_wrapper.appendChild(d);
+                                //APPEND DISPLAY
+                                material_wrapper.appendChild(display);
+                            }
 
+                            // FOR UPDATING STYlES LATER
+                            this.materialElements.push({
+                                material: material,
+                                element: material_wrapper,
+                                conveyor: conveyor,
+                                display: display
+                            });
+
+                        } //for end
+                    } // if there are nay end
+                },
+                getMateriaMainStyle: function(material){
+                    var m_height = 16 + (this.material_height * material.involvement_level);
+                    var m_top = this.y + this.height;
+                    if(material.position === 'top'){
+                        m_top -=  this.height + m_height;
+                    }
+
+                    return {
+                        top: m_top + 'px',
+                        left: this.x + 'px', //parent left
+                        width: this.width + 'px', //parent width
+                        height: m_height + 'px',
+                        backgroundColo: 'transparent',
+                    };
+                },
+                getConveyorStyle: function(material, material_style){
+                    var conveyor_top = null;
+                    if(material.position === 'top'){
+                        conveyor_top = -this.conveyor_icon_size -8;
+                    }else{
+                        conveyor_top = material_style.height.replace('px','');
+                    }
+
+                    /* TODO IF there is no room, hide */
+
+                    return {
+                        left: this.width - this.conveyor_icon_size - 8  + 'px',
+                        top: conveyor_top + 'px'
+                    };
+                },
+                getDisplayStyle: function(material, material_style){
+                    var display_top = null;
+                    if(material.position === 'top'){
+                        display_top = -this.conveyor_icon_size -8;
+                    }else{
+                        display_top = material_style.height.replace('px','');
+                    }
+
+                    return {
+                        left: 0 + 'px',
+                        top: display_top + 'px'
+                    };
+                },
+                updateMaterials: function(){
+                    //if there are any
+                    if(this.materialElements.length > 0){
+
+                        for(var i = 0; i < this.materialElements.length; i++){
+
+                            var material = this.materialElements[i].material;
+                            var material_element = this.materialElements[i].element;
+                            var conveyor = this.materialElements[i].conveyor;
+                            var display = this.materialElements[i].display;
+
+                            //MATERIAL
+                            var material_style = this.getMateriaMainStyle(material);
+                            setElementStyle(material_element, material_style);
+
+                            //CONVEYOR
+                            if(conveyor){
+                                var conveyor_style = this.getConveyorStyle(material, material_style);
+                                setElementStyle(conveyor, conveyor_style);
+                            }
+
+                            //CONVEYOR
+                            if(display){
+                                var display_style = this.getDisplayStyle(material, material_style);
+                                setElementStyle(display, display_style);
                             }
 
                         }
-                    }
 
+                    }
                 }
             };
 
@@ -502,9 +581,7 @@
                     el.id = selector.slice(1);
                 }
                 if(style){
-                    for (var property in style){
-                        el.style[property] = style[property];
-                    }
+                    setElementStyle(el, style);
                 }
                 if(text){
                     el.appendChild(document.createTextNode(text));
@@ -516,18 +593,26 @@
 
                 return el;
             };
+            var setElementStyle = function(el, style){
+                if(style){
+                    for (var property in style){
+                        el.style[property] = style[property];
+                    }
+                }
+            };
             var escapeRegExp = function(str) {
-              return str.replace(/[.,-\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+                return str.replace(/[.,-\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+            };
+
+            var getScopeList = function(){
+                return $scope.activity_list;
             };
 
             angular.element($window).ready(function() {
-
+                console.log('ready');
                 var edit = false;
                 if($scope.allow_edit){ edit = true; }
-
                 var newPlanner = new Planner({options: {edit: edit}});
-
-
             });
 
         }//link end

@@ -885,6 +885,7 @@ a.delete-link {
 .timeline-line,
 .activity-container,
 .activity-org-icon,
+.activity-org-title,
 .material-container,
 .material-wrapper,
 .conveyor-container,
@@ -892,8 +893,12 @@ a.delete-link {
     position: absolute;
 }
 
+.legend-text {
+    font-size: 11px;
+    line-height: 1;
+}
+
 .activity-container {
-    //display: none;
     font-size: 11px;
     z-index: 1;
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
@@ -911,12 +916,12 @@ a.delete-link {
     text-overflow: ellipsis;
     word-wrap: break-word;
     z-index: 5;
+
+    transition: all 0.2s ease-in-out;
 }
 
 .material-wrapper.bottom,
 .conveyor-container.bottom {
-    //padding-top: 13px;
-
     -webkit-animation: bottomAnimation 0.4s;  /* Chrome, Safari, Opera */
     -webkit-animation-fill-mode: forwards;  /* Chrome, Safari, Opera */
     -webkit-animation-timing-function: ease-in; /* Chrome, Safari, Opera */
@@ -931,9 +936,6 @@ a.delete-link {
 
 .material-wrapper.top,
 .conveyor-container.top {
-    //padding-bottom: 13px;
-
-
     -webkit-animation: topAnimation 0.4s;  /* Chrome, Safari, Opera */
     -webkit-animation-fill-mode: forwards;  /* Chrome, Safari, Opera */
     -webkit-animation-timing-function: ease-in; /* Chrome, Safari, Opera */
@@ -949,7 +951,6 @@ a.delete-link {
 
 .conveyor-container {
     display: block;
-    //box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }
 
 .activity-container-hover {
@@ -958,7 +959,7 @@ a.delete-link {
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
     z-index: 10;
 }
-.activity-container span {
+.activity-container span.activity-text-container {
     position: absolute;
     top: 4px;
     left: 4px;
@@ -976,7 +977,7 @@ a.delete-link {
 
 }
 
-.activity-container-hover span {
+.activity-container-hover span.activity-text-container {
     word-wrap: break-word;
     white-space: normal; /* does not work ie and edge */
     padding-right: 4px;
@@ -985,17 +986,30 @@ a.delete-link {
     border-bottom: 22px solid transparent;
 }
 
-.activity-container-hover span,
+.activity-container-hover span.activity-text-container,
 .activity-container-hover img.activity-org-icon {
     display: block !important;
 }
 
-/* IMPORTANT REMOVES HOVERING JS Child bug */
-.activity-container * {
-     pointer-events: none;
+.activity-duration-container {
+    font-size: 11px;
+    padding-right: 3px;
 }
 
+.activity-container-hover .activity-duration-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
 
+.activity-duration-min-container {
+    display: none;
+}
+
+.activity-container-hover .activity-duration-min-container {
+    display: inline-block;
+    padding-left: 3px;
+}
 
 .activity-org-icon {
     height: 13px;
@@ -1003,6 +1017,20 @@ a.delete-link {
     bottom: 4px;
 }
 
+.activity-container-hover .activity-org-icon {
+    left: 4px;
+    right: 0;
+}
+
+.activity-org-title {
+    display: none;
+}
+
+.activity-container-hover .activity-org-title {
+    display: block;
+    left: 20px;
+    bottom: 3px;
+}
 
 .conveyor-container,
 .display-container {
@@ -1024,26 +1052,15 @@ a.delete-link {
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-
 }
+
 .conveyor-container.top ,
 .display-container.top {
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-
 }
-
-
-/*
-
-ANIMATION
-
-*/
-
-
 .activity-container {
-
     -webkit-animation: leftAnimation 0.4s;  /* Chrome, Safari, Opera */
     -webkit-animation-fill-mode: forwards;  /* Chrome, Safari, Opera */
     -webkit-animation-timing-function: ease-in; /* Chrome, Safari, Opera */
@@ -1052,6 +1069,7 @@ ANIMATION
     animation-timing-function: ease-in;
 }
 
+/* ANIMATION */
 @-webkit-keyframes leftAnimation {
 	from {
 		//opacity: 0;
@@ -1102,12 +1120,6 @@ ANIMATION
 	}
 
 }
-
-.legend-text {
-    font-size: 11px;
-    line-height: 1;
-}
-
 
 @page { size: A4 landscape }
 
