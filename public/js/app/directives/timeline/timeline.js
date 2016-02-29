@@ -20,7 +20,7 @@
                 Planner.instance_ = this;
 
                 this.config = Planner.config;
-                if(options && options.edit){ this.config.edit = true; }
+                if(options && options.edit){ this.config.allow_edit = true; }
 
                 //vars
                 this.timeline = this.WIDTH = this.HEIGHT = null;
@@ -48,7 +48,9 @@
                 aboveAxisLegend: 'õpetaja (teacher)',
                 belowAxisLegend: 'õpilane (student)',
                 defaultFontSize: 12,
-                org_language: 'name_eng'
+                org_language: 'name_eng',
+                edit: 'edit',
+                add: 'add'
             };
 
             Planner.prototype = {
@@ -149,7 +151,7 @@
                     this.activities = [];
                     for(var i = 0; i < getScopeList().length; i++){
                       //alert(getScopeList().length);
-                      var Activity = new Planner.Activity(i, start_time, getScopeList()[i], Planner.instance_);
+                      var Activity = new Planner.Activity(i, start_time, getScopeList()[i]);
                       this.activities.push(Activity);
 
                       start_time += getScopeList()[i].duration;
@@ -197,15 +199,14 @@
                 }
             };
 
-            Planner.Activity = function(index, start_time, data, Planner){
+            Planner.Activity = function(index, start_time, data){
 
                 //INCOMING
                 this.index = index;
                 this.start = start_time;
-                this.Planner = Planner;
 
                 //ELEMENTS
-                this.timeline = Planner.timeline;
+                this.timeline = Planner.instance_.timeline;
                 this.activites_wrapper = null;
                 this.activity_wrapper = null;
                 this.element = null;
@@ -224,21 +225,21 @@
                 this.class_color = null;
                 this.material_class_color = null;
                 if(this.in_class){
-                  this.class_color = Planner.config.ColorInClass;
-                  this.material_class_color = Planner.config.ColorMaterialInClass;
+                  this.class_color = Planner.instance_.config.ColorInClass;
+                  this.material_class_color = Planner.instance_.config.ColorMaterialInClass;
                 }else{
-                  this.class_color = Planner.config.ColorOffClass;
-                  this.material_class_color = Planner.config.ColorMaterialOffClass;
+                  this.class_color = Planner.instance_.config.ColorOffClass;
+                  this.material_class_color = Planner.instance_.config.ColorMaterialOffClass;
                 }
                 this.materialElements = [];
                 this.organization = data.activity_organization._id;
                 this.org_title = '';
                 for(var i = 0; i < $scope.activity_organization.length; i++){
                   if($scope.activity_organization[i]._id == this.organization){
-                    this.org_title = $scope.activity_organization[i][Planner.config.org_language];
+                    this.org_title = $scope.activity_organization[i][Planner.instance_.config.org_language];
                   }
                 }
-                this.org_image = this.Planner.activity_images[this.organization].cloneNode(); //img element
+                this.org_image = Planner.instance_.activity_images[this.organization].cloneNode(); //img element
                 this.conveyor_icon_size = this.display_icon_size = 12;
                 this.duration_mark = 'min'; //can be changed if needed
 
@@ -249,7 +250,7 @@
                 this.calculateVariables();
 
                 var timeout_delay = 40; //ms
-                this.Planner.timeouts.push(setTimeout(this.createActivity.bind(this), timeout_delay*index));
+                Planner.instance_.timeouts.push(setTimeout(this.createActivity.bind(this), timeout_delay*index));
             };
 
             Planner.Activity.prototype = {
@@ -257,13 +258,13 @@
 
                     var padding = 5; //between activities
 
-                    this.minute_constant = ((this.Planner.WIDTH-((getScopeList().length+1)*padding))/this.Planner.activities_duration); // min in px
+                    this.minute_constant = ((Planner.instance_.WIDTH-((getScopeList().length+1)*padding))/Planner.instance_.activities_duration); // min in px
                     this.x = parseInt((this.minute_constant * this.start) + ((this.index+1)* padding));
                     this.height = 20;
-                    this.y = parseInt(this.Planner.HEIGHT/2-this.height/2);
+                    this.y = parseInt(Planner.instance_.HEIGHT/2-this.height/2);
                     this.width = parseInt(this.minute_constant * this.duration);
 
-                    this.material_height = Math.round(this.Planner.WIDTH / 39); //39 is just some constant
+                    this.material_height = Math.round(Planner.instance_.WIDTH / 30); //30 is just some constant, used in level * this
 
                 },
                 createActivity: function(){
@@ -318,7 +319,7 @@
                     this.element = el;
 
                     // CREATE MATERIALS
-                    this.Planner.timeouts.push(setTimeout(this.drawMaterials.bind(this), 300));
+                    Planner.instance_.timeouts.push(setTimeout(this.drawMaterials.bind(this), 300));
                     this.bindEvents();
                 },
                 getActivityStyle: function(){
@@ -381,7 +382,7 @@
                         if(this.x < expanded_width/2){
                             //expand righy
                             //DO NOTHING WITH ADJUSTMENT
-                        }else if(this.x + expanded_width > this.Planner.WIDTH) {
+                        }else if(this.x + expanded_width > Planner.instance_.WIDTH) {
                             //expand left
                             this.element.style.left = this.x - (expanded_width - this.width) + 'px';
                         }else{
@@ -396,6 +397,11 @@
                     this.element.style.width = this.width  + 'px';
                 },
                 drawMaterials: function(){
+
+                    //rember to draw add new links if there is no material
+                    var has_top = false;
+                    var has_bottom = false;
+
                     // IF there ARE ANY
                     if(this.materials && this.materials.length > 0){
 
@@ -489,6 +495,24 @@
                                 material_wrapper.appendChild(display);
                             }
 
+                            //EDIT LINK IF IN EDIT MODE
+                            if(Planner.instance_.config.allow_edit){
+                                console.log(Planner.instance_.config);
+                                var edit_overflow = createElementWithStyle('a','.material-edit '+material.position, {backgroundColor: 'rgba(0,0,0,0.2)'});
+                                edit_overflow.title = 'Edit'; // title for tooltip
+                                var edit_text = document.createTextNode('Edit');
+                                var edit_text_span = document.createElement('span');
+                                edit_text_span.appendChild(edit_text);
+                                edit_overflow.appendChild(edit_text_span);
+                                material_wrapper.appendChild(edit_overflow);
+                            }
+
+                            if(material.position === 'top'){
+                                has_top = true;
+                            }else if (material.position === 'bottom') {
+                                has_bottom = true;
+                            }
+
                             // FOR UPDATING STYlES LATER
                             this.materialElements.push({
                                 material: material,
@@ -499,9 +523,28 @@
 
                         } //for end
                     } // if there are nay end
+
+                    //ADD NEW LINKS IF IN EDIT MODE
+                    if(Planner.instance_.config.allow_edit && (!has_top || !has_bottom)){
+                        //for every empty space
+                        if(!has_top){
+                            var top_style = this.getAddNewButtonStyle('top');
+                            var button_t_wrapper = createElementWithStyle('div','.new-material-button top', top_style);
+                            this.activities_wrapper.appendChild(button_t_wrapper);
+                        }
+
+                        if(!has_bottom){
+                            var bottom_style = this.getAddNewButtonStyle('bottom');
+                            var button_b_wrapper = createElementWithStyle('div','.new-material-button bottom', bottom_style);
+                            this.activities_wrapper.appendChild(button_b_wrapper);
+                        }
+
+
+                    }
+
                 },
                 getMateriaMainStyle: function(material){
-                    var m_height = 16 + (this.material_height * material.involvement_level);
+                    var m_height = 30 + (this.material_height * material.involvement_level);
                     var m_top = this.y + this.height;
                     if(material.position === 'top'){
                         m_top -=  this.height + m_height;
@@ -512,7 +555,7 @@
                         left: this.x + 'px', //parent left
                         width: this.width + 'px', //parent width
                         height: m_height + 'px',
-                        backgroundColo: 'transparent',
+                        backgroundColor: 'transparent',
                     };
                 },
                 getConveyorStyle: function(material, material_style){
@@ -541,6 +584,22 @@
                     return {
                         left: 0 + 'px',
                         top: display_top + 'px'
+                    };
+                },
+                getAddNewButtonStyle: function(position){
+
+                    var height = 30;
+                    var top = this.y + this.height;
+                    if(position === 'top'){
+                        top -=  this.height + height;
+                    }
+
+                    return {
+                        top: top + 'px',
+                        left: this.x + 'px', //parent left
+                        width: this.width + 'px', //parent width
+                        height: height + 'px',
+                        backgroundColor: this.material_class_color,
                     };
                 },
                 updateMaterials: function(){
@@ -617,8 +676,8 @@
             angular.element($window).ready(function() {
                 console.log('ready');
                 var edit = false;
-                if($scope.allow_edit){ edit = true; }
-                var newPlanner = new Planner({options: {edit: edit}});
+                if($scope.allow_edit){ edit = true;}
+                var newPlanner = new Planner({edit: edit});
             });
 
         }//link end

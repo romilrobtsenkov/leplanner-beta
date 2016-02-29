@@ -889,7 +889,9 @@ a.delete-link {
 .material-container,
 .material-wrapper,
 .conveyor-container,
-.display-container {
+.display-container,
+.material-edit,
+.new-material-button {
     position: absolute;
 }
 
@@ -955,7 +957,7 @@ a.delete-link {
 
 .activity-container-hover {
     height: 100px !important;
-    margin-top: -30px;
+    margin-top: -40px;
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
     z-index: 10;
 }
@@ -1119,6 +1121,32 @@ a.delete-link {
         transform-origin: bottom;
 	}
 
+}
+
+.material-edit {
+    height: 100%;
+    width: 100%;
+    z-index: 6;
+    cursor: pointer;
+    font-size: 13px;
+    color: #fff;
+    text-align: center;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+    overflow: hidden;
+}
+
+.material-edit span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -11px;
+    margin-top: -9px;
+}
+
+.material-edit:hover {
+    background-color: rgba(0,0,0,0.5) !important;
+    color: #fff;
+    text-decoration: none;
 }
 
 @page { size: A4 landscape }
