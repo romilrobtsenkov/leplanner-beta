@@ -74,6 +74,7 @@
 
                     this.resize();
                     this.clearTimeline();
+                    this.drawBaseLayer();
                     this.initActivities();
 
                     window.addEventListener("resize", this.timelineResizeDelay.bind(this));
@@ -94,7 +95,6 @@
                     var border_fix = 2;
                     this.WIDTH = width-border_fix;
                     this.HEIGHT = height;
-
                     //console.log('resize w:' + width + ' h:' + height );
                 },
                 timelineResizeDelay: function(){
@@ -102,7 +102,7 @@
                     this.resizeDelay = setTimeout(this.timelineResize.bind(this), 200);
                 },
                 timelineResize: function(){
-                    //clear animation timeouts
+                    //clear animation timeouts ?
                     for (var i=0; i<this.timeouts.length; i++) {
                       clearTimeout(this.timeouts[i]);
                     }
@@ -112,6 +112,7 @@
                     //TODO check if width cahnged in the future
 
                     this.rePositionTimeline();
+                    this.rePositionBaseLayer();
                 },
                 rePositionTimeline: function(){
                     for(var i = 0; i < this.activities.length; i++){
@@ -119,13 +120,16 @@
                         this.activities[i].updateActivitystyle();
                     }
                 },
+                rePositionBaseLayer: function(){
+
+                },
                 drawBaseLayer: function(){
 
                     // legend
-                    var spaceFromBottom = 25;
+                    var spaceFromBottom = 15;
                     var box_dim = 11;
-                    this.Drawlegend(this.config.legendInClass, 0+15, this.HEIGHT-spaceFromBottom, box_dim, box_dim, this.config.ColorInClass, this.timeline);
-                    this.Drawlegend(this.config.legendOffClass, 160, this.HEIGHT-spaceFromBottom, box_dim, box_dim, this.config.ColorOffClass, this.timeline);
+                    this.Drawlegend(this.config.legendInClass, 0+15, spaceFromBottom, box_dim, box_dim, this.config.ColorInClass, this.timeline);
+                    this.Drawlegend(this.config.legendOffClass, 160, spaceFromBottom, box_dim, box_dim, this.config.ColorOffClass, this.timeline);
 
                     //line
                     this.DrawLine(this.WIDTH, this.HEIGHT, 1, 'rgb(0,0,0)', this.timeline);
@@ -159,7 +163,7 @@
                 Drawlegend: function(text, x, y, box_w, box_h, color, timeline){
 
                     var style = {
-                        top: y + 'px',
+                        bottom: y + 'px',
                         left: x + 'px',
                         width: box_w + 'px',
                         height: box_h + 'px',
@@ -171,7 +175,7 @@
 
                     var textPadding = 17;
                     var textStyle = {
-                        top: y + 'px',
+                        bottom: y + 'px',
                         left: x + textPadding + 'px'
                     };
                     style.left = x + textPadding + 'px';
@@ -180,9 +184,11 @@
                 },
                 DrawLine: function(width, height, thickness, color, timeline){
                     var style = {
-                        top: height/2 + 'px',
+                        //top: height/2 + 'px',
+                        top: '50%',
                         left: 0 + 'px',
-                        width: width + 'px',
+                        //width: width + 'px',
+                        width: '100%',
                         height: thickness + 'px',
                         backgroundColor: color
                     };
