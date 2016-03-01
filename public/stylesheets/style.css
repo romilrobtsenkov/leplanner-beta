@@ -891,6 +891,7 @@ a.delete-link {
 .conveyor-container,
 .display-container,
 .material-edit,
+.new-add,
 .new-material-button {
     position: absolute;
 }
@@ -1123,7 +1124,8 @@ a.delete-link {
 
 }
 
-.material-edit {
+.material-edit,
+.new-add {
     height: 100%;
     width: 100%;
     z-index: 6;
@@ -1135,15 +1137,20 @@ a.delete-link {
     overflow: hidden;
 }
 
-.material-edit span {
+.material-edit span,
+.new-add span {
     position: absolute;
     top: 50%;
     left: 50%;
     margin-left: -11px;
     margin-top: -9px;
 }
+.new-add span {
+    margin-left: -12px;
+}
 
-.material-edit:hover {
+.material-edit:hover,
+.new-add:hover {
     background-color: rgba(0,0,0,0.5) !important;
     color: #fff;
     text-decoration: none;

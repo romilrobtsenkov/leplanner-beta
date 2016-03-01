@@ -43,6 +43,8 @@
                 ColorOffClass: 'rgb(255,249,115)',
                 ColorMaterialInClass: 'rgb(144,220, 255)',
                 ColorMaterialOffClass: 'rgb(255,251,170)',
+                ColorAddNewButtonInClass: 'rgb(144,220, 255)',
+                ColorAddNewButtonOffClass: 'rgb(255,251,170)',
                 legendInClass: 'tunnitegevus (in-class)',
                 legendOffClass: 'muu (off-class)',
                 aboveAxisLegend: 'õpetaja (teacher)',
@@ -222,14 +224,14 @@
                 }else{
                   this.in_class = true;
                 }
-                this.class_color = null;
-                this.material_class_color = null;
                 if(this.in_class){
                   this.class_color = Planner.instance_.config.ColorInClass;
                   this.material_class_color = Planner.instance_.config.ColorMaterialInClass;
+                  this.add_new_button_color =  Planner.instance_.config.ColorAddNewButtonInClass;
                 }else{
                   this.class_color = Planner.instance_.config.ColorOffClass;
                   this.material_class_color = Planner.instance_.config.ColorMaterialOffClass;
+                  this.add_new_button_color =  Planner.instance_.config.ColorAddNewButtonOffClass;
                 }
                 this.materialElements = [];
                 this.organization = data.activity_organization._id;
@@ -497,7 +499,6 @@
 
                             //EDIT LINK IF IN EDIT MODE
                             if(Planner.instance_.config.allow_edit){
-                                console.log(Planner.instance_.config);
                                 var edit_overflow = createElementWithStyle('a','.material-edit '+material.position, {backgroundColor: 'rgba(0,0,0,0.2)'});
                                 edit_overflow.title = 'Edit'; // title for tooltip
                                 var edit_text = document.createTextNode('Edit');
@@ -529,19 +530,29 @@
                         //for every empty space
                         if(!has_top){
                             var top_style = this.getAddNewButtonStyle('top');
-                            var button_t_wrapper = createElementWithStyle('div','.new-material-button top', top_style);
-                            this.activities_wrapper.appendChild(button_t_wrapper);
+                            var top_overflow = this.createAddButtonOverflow(top_style, 'top');
+                            this.activities_wrapper.appendChild(top_overflow);
                         }
 
                         if(!has_bottom){
                             var bottom_style = this.getAddNewButtonStyle('bottom');
-                            var button_b_wrapper = createElementWithStyle('div','.new-material-button bottom', bottom_style);
-                            this.activities_wrapper.appendChild(button_b_wrapper);
+                            var bottom_overflow = this.createAddButtonOverflow(bottom_style, 'bottom');
+                            this.activities_wrapper.appendChild(bottom_overflow);
                         }
-
-
                     }
 
+                },
+                createAddButtonOverflow: function(style, pos){
+                    var button_wrapper = createElementWithStyle('div','.new-material-button '+pos, style);
+                    var button_overflow = createElementWithStyle('a','.new-add '+pos, {backgroundColor: 'rgba(0,0,0,0.2)'});
+                    button_overflow.title = 'Add'; // title for tooltip
+                    var add_text = document.createTextNode('Add');
+                    var add_text_span = document.createElement('span');
+                    add_text_span.appendChild(add_text);
+                    button_overflow.appendChild(add_text_span);
+                    button_wrapper.appendChild(button_overflow);
+
+                    return button_wrapper;
                 },
                 getMateriaMainStyle: function(material){
                     var m_height = 30 + (this.material_height * material.involvement_level);
@@ -588,18 +599,19 @@
                 },
                 getAddNewButtonStyle: function(position){
 
-                    var height = 30;
+                    var height = 25;
                     var top = this.y + this.height;
                     if(position === 'top'){
                         top -=  this.height + height;
                     }
+                    console.log(this.add_new_button_color);
 
                     return {
                         top: top + 'px',
                         left: this.x + 'px', //parent left
                         width: this.width + 'px', //parent width
                         height: height + 'px',
-                        backgroundColor: this.material_class_color,
+                        backgroundColor: this.add_new_button_color,
                     };
                 },
                 updateMaterials: function(){
