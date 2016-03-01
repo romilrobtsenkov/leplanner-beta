@@ -50,8 +50,8 @@
                 belowAxisLegend: 'õpilane (student)',
                 defaultFontSize: 12,
                 org_language: 'name_eng',
-                edit: 'edit',
-                add: 'add'
+                edit: 'Edit',
+                add: 'Add'
             };
 
             Planner.prototype = {
@@ -536,8 +536,8 @@
                                 //EDIT LINK IF IN EDIT MODE
                                 if(Planner.instance_.config.allow_edit){
                                     var edit_overflow = createElementWithStyle('a','.material-edit '+material.position, {backgroundColor: 'rgba(0,0,0,0.2)'});
-                                    edit_overflow.title = 'Edit'; // title for tooltip
-                                    var edit_text = document.createTextNode('Edit');
+                                    edit_overflow.title = Planner.instance_.config.edit; // title for tooltip
+                                    var edit_text = document.createTextNode(Planner.instance_.config.edit);
                                     var edit_text_span = document.createElement('span');
                                     edit_text_span.appendChild(edit_text);
                                     edit_overflow.appendChild(edit_text_span);
@@ -587,7 +587,10 @@
                     if(Planner.instance_.config.allow_edit){
                         //for every empty space
                         var activity = this;
-                        if(!this.has_top_material && !this.addNewButtonExists('top', activity._id)){
+                        var top_button = this.addNewButtonExists('top', activity._id);
+                        var bottom_button = this.addNewButtonExists('bottom', activity._id);
+
+                        if(!this.has_top_material && !top_button){
                             //console.log('created new top');
                             var top_style = this.getAddNewButtonStyle('top');
                             var top_overflow = this.createAddButtonOverflow(top_style, 'top', activity._id);
@@ -598,13 +601,13 @@
 
                             });
 
-                        }else if(this.has_top_material && this.addNewButtonExists('top', activity._id)){
+                        }else if(this.has_top_material && top_button){
                             // remove, is unneccesery
-                            this.activities_wrapper.removeChild(this.addNewButtonExists('top', activity._id));
+                            this.activities_wrapper.removeChild(top_button);
                             //console.log('should remove');
                         }
 
-                        if(!this.has_bottom_material && !this.addNewButtonExists('bottom', activity._id)){
+                        if(!this.has_bottom_material && !bottom_button){
                             //console.log('created new bottom');
                             var bottom_style = this.getAddNewButtonStyle('bottom');
                             var bottom_overflow = this.createAddButtonOverflow(bottom_style, 'bottom', activity._id);
@@ -615,9 +618,9 @@
 
                             });
 
-                        }else if(this.has_bottom_material && this.addNewButtonExists('bottom', activity._id)){
+                        }else if(this.has_bottom_material && bottom_button){
                             // remove, is unneccesery
-                            this.activities_wrapper.removeChild(this.addNewButtonExists('bottom', activity._id));
+                            this.activities_wrapper.removeChild(bottom_button);
                             //console.log('should remove bottom');
                         }
                     }
@@ -633,8 +636,8 @@
                     //console.log(activity_id);
                     var button_wrapper = createElementWithStyle('div','.new-material-button '+pos, style, null, {attribute: 'data-id', value: activity_id});
                     var button_overflow = createElementWithStyle('a','.new-add '+pos, {backgroundColor: 'rgba(0,0,0,0.2)'});
-                    button_overflow.title = 'Add'; // title for tooltip
-                    var add_text = document.createTextNode('Add');
+                    button_overflow.title = Planner.instance_.config.add; // title for tooltip
+                    var add_text = document.createTextNode(Planner.instance_.config.add);
                     var add_text_span = document.createElement('span');
                     add_text_span.appendChild(add_text);
                     button_overflow.appendChild(add_text_span);
@@ -730,6 +733,29 @@
                         }
 
                     }
+
+                    //update add new button position
+                    if(Planner.instance_.config.allow_edit){
+                        //for every empty space
+                        var activity = this;
+                        var button_top = this.addNewButtonExists('top', activity._id);
+                        var button_bottom = this.addNewButtonExists('bottom', activity._id);
+
+                        if(button_top){
+                            //console.log('created new top');
+                            var top_style = this.getAddNewButtonStyle('top');
+                            setElementStyle(button_top, top_style);
+
+                        }
+
+                        if(button_bottom){
+                            //console.log('created new bottom');
+                            var bottom_style = this.getAddNewButtonStyle('bottom');
+                            setElementStyle(button_bottom, bottom_style);
+
+                        }
+                    }
+
                 }
             };
 
