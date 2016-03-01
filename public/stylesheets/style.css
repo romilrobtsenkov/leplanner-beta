@@ -924,6 +924,7 @@ a.delete-link {
 }
 
 .material-wrapper.bottom,
+.new-material-button.bottom,
 .conveyor-container.bottom {
     -webkit-animation: bottomAnimation 0.4s;  /* Chrome, Safari, Opera */
     -webkit-animation-fill-mode: forwards;  /* Chrome, Safari, Opera */
@@ -938,6 +939,7 @@ a.delete-link {
 }
 
 .material-wrapper.top,
+.new-material-button.top,
 .conveyor-container.top {
     -webkit-animation: topAnimation 0.4s;  /* Chrome, Safari, Opera */
     -webkit-animation-fill-mode: forwards;  /* Chrome, Safari, Opera */
@@ -972,7 +974,7 @@ a.delete-link {
     text-overflow: ellipsis;
     line-height: 1.2;
     cursor: pointer;
-    z-index: 20;
+    z-index: 30;
     border-right: 23px solid transparent;
 
     white-space: nowrap; /* does not work ie and edge */
@@ -1135,6 +1137,10 @@ a.delete-link {
     text-align: center;
     text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
     overflow: hidden;
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+  user-select: none;
 }
 
 .material-edit span,
@@ -1144,7 +1150,11 @@ a.delete-link {
     left: 50%;
     margin-left: -11px;
     margin-top: -9px;
-}
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+      -moz-user-select: none;     /* Firefox all */
+      -ms-user-select: none;      /* IE 10+ */
+      user-select: none;
+ }
 .new-add span {
     margin-left: -12px;
 }

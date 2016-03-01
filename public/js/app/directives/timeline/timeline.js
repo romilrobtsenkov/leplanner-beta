@@ -10,7 +10,6 @@
         templateUrl: 'js/app/directives/timeline/timeline.html',
         link: function postLink($scope, element, attrs) {
 
-            //console.log('here');
             var Planner = function(options){
 
                 //singleton
@@ -116,16 +115,12 @@
                     //TODO check if width cahnged in the future
 
                     this.rePositionTimeline();
-                    this.rePositionBaseLayer();
                 },
                 rePositionTimeline: function(){
                     for(var i = 0; i < this.activities.length; i++){
                         //UPDATE STYLE
                         this.activities[i].updateActivitystyle();
                     }
-                },
-                rePositionBaseLayer: function(){
-
                 },
                 drawBaseLayer: function(){
 
@@ -141,8 +136,11 @@
                 },
                 initActivities: function(){
                     console.log('loading activities');
-                    if(getScopeList().length === 0 ||
-                      (getScopeList().length === 1 && getScopeList()[0].duration === 0)){
+
+                    var ScopeList = getScopeList();
+
+                    if(ScopeList.length === 0 ||
+                      (ScopeList.length === 1 && ScopeList[0].duration === 0)){
                       alert('please add more acitivty');
                       //TODO write to timeline
                       return;
@@ -151,12 +149,12 @@
                     var start_time = 0;
                     console.log('drawing');
                     this.activities = [];
-                    for(var i = 0; i < getScopeList().length; i++){
+                    for(var i = 0; i < ScopeList.length; i++){
                       //alert(getScopeList().length);
-                      var Activity = new Planner.Activity(i, start_time, getScopeList()[i]);
+                      var Activity = new Planner.Activity(i, start_time, ScopeList[i]);
                       this.activities.push(Activity);
 
-                      start_time += getScopeList()[i].duration;
+                      start_time += ScopeList[i].duration;
 
                     }
 
@@ -198,6 +196,45 @@
                     };
                     var el = createElementWithStyle('div','.timeline-line', style);
                     timeline.appendChild(el);
+                },
+                reDrawMaterial: function(todo, material_id){
+
+                    for(var i = 0; i < Planner.instance_.activities.length; i++){
+                        //update materials from scope for each activity
+                        Planner.instance_.activities[i].materials = getScopeList()[i].materials;
+
+                        if(todo === "delete" || todo === "update"){
+                            for(var k = 0; k < Planner.instance_.activities[i].materialElements.length; k++){
+                                //update materials from scope for each activity
+                                if(Planner.instance_.activities[i].materialElements[k].material._id == material_id){
+
+
+                                    if(Planner.instance_.activities[i].materialElements[k].material.position === 'top'){
+                                        Planner.instance_.activities[i].has_top_material = false;
+                                    }else{
+                                        Planner.instance_.activities[i].has_top_material = false;
+                                    }
+
+                                    Planner.instance_.activities[i].materialElements.splice(k, 1);
+                                    //console.log('deleted material from timeline');
+
+                                    //delete from DOM
+                                    document.querySelector('#activities-wrapper').removeChild(document.querySelector('div.material-wrapper[data-id="'+material_id+'"]'));
+
+                                }
+                            }
+                        }
+
+                        if(todo === "new" || todo === "update"){
+                            //draw new materials, skip if exists
+                            Planner.instance_.activities[i].drawMaterials();
+                        }else if (todo === "delete") {
+                            //Add add-new button
+                            Planner.instance_.activities[i].updateAddNewButtons();
+                        }
+
+                    }//for end
+
                 }
             };
 
@@ -219,6 +256,8 @@
               	this.name = data.name;
               	this.duration = data.duration;
                 this.materials = data.materials;
+                this.has_top_material = false;
+                this.has_bottom_material = false;
                 if(typeof data.in_class == 'undefined'){
                   this.in_class = false;
                 }else{
@@ -400,10 +439,6 @@
                 },
                 drawMaterials: function(){
 
-                    //rember to draw add new links if there is no material
-                    var has_top = false;
-                    var has_bottom = false;
-
                     // IF there ARE ANY
                     if(this.materials && this.materials.length > 0){
 
@@ -420,130 +455,183 @@
 
                             var material = this.materials[i];
 
-                            // WRAPPER ELEMENT
-                            var wrapper_style = this.getMateriaMainStyle(material);
-                            var material_wrapper = createElementWithStyle('div','.material-wrapper '+material.position, wrapper_style);
+                            if(!this.materialExists(material)){
+                                //console.log('new');
+                                // WRAPPER ELEMENT
+                                var wrapper_style = this.getMateriaMainStyle(material);
+                                var material_wrapper = createElementWithStyle('div','.material-wrapper '+material.position, wrapper_style, null, {attribute: 'data-id', value: material._id});
 
-                            // MATERIAL ITSELF
-                            var m_el = createElementWithStyle('div','.material-container '+material.position, {backgroundColor: this.material_class_color});
-                            m_el.title = material.material_name; // title for tooltip
+                                // MATERIAL ITSELF
+                                var m_el = createElementWithStyle('div','.material-container '+material.position, {backgroundColor: this.material_class_color});
+                                m_el.title = material.material_name; // title for tooltip
 
-                            // MATERIAL MAIN TEXT
-                            var text_el = null;
-                            var text = document.createTextNode(material.material_name);
+                                // MATERIAL MAIN TEXT
+                                var text_el = null;
+                                var text = document.createTextNode(material.material_name);
 
-                            // IF DIGITAL MATERIAL ADD LINK
-                            if(material.material_url){
-                                text_el = document.createElement('a');
-                                text_el.href = material.material_url;
-                                text_el.target = '_blank';
-                                text_el.appendChild(text);
-                            }else{
-                                // no link
-                                text_el = text;
-                            }
-                            m_el.appendChild(text_el);
-
-                            // APPEND MATERIAL
-                            material_wrapper.appendChild(m_el);
-                            this.activities_wrapper.appendChild(material_wrapper);
-
-                            //CONVEYOR
-                            var conveyor = null;
-                            if(material.conveyor_url){
-
-                                // ICON IMAGE
-                                var conveyor_icon = new Image();
-                                conveyor_icon.className = 'conveyor-icon';
-                                conveyor_icon.src = '/images/favs/icon_'+escapeRegExp(material.conveyor_url)+'.png';
-                                conveyor_icon.style.width = this.conveyor_icon_size + 'px';
-
-                                var conveyor_style = this.getConveyorStyle(material, wrapper_style);
-
-                                // LINK TO CONVEYOR
-                                conveyor = createElementWithStyle('a','.conveyor-container '+material.position, conveyor_style);
-                                conveyor.href = material.conveyor_url;
-                                conveyor.target = '_blank';
-                                conveyor.title = material.conveyor_name;
-                                conveyor.appendChild(conveyor_icon);
-
-                                //APPEND CONVEYOR
-                                material_wrapper.appendChild(conveyor);
-                            }
-
-                            // DISPLAY
-                            var display = null;
-                            if(material.display_id){
-
-                                // DISPLAY IMAGE
-                                var display_icon = new Image();
-                                display_icon.className = 'display-icon';
-                                display_icon.src = 'images/'+$scope.displays_list[material.display_id].icon;
-                                display_icon.style.width = this.display_icon_size + 'px';
-
-                                var display_style = this.getDisplayStyle(material, wrapper_style);
-
-                                // DISPLAY CONTAINER DIV
-                                display = createElementWithStyle('div','.display-container '+material.position, display_style);
-                                if(material.display_id == $scope.displays_list.length-1){
-                                    //other display, user wrote name
-                                    display.title = material.other_display;
+                                // IF DIGITAL MATERIAL ADD LINK
+                                if(material.material_url){
+                                    text_el = document.createElement('a');
+                                    text_el.href = material.material_url;
+                                    text_el.target = '_blank';
+                                    text_el.appendChild(text);
                                 }else{
-                                    display.title = $scope.displays_list[material.display_id].name;
+                                    // no link
+                                    text_el = text;
                                 }
-                                display.appendChild(display_icon);
+                                m_el.appendChild(text_el);
 
-                                //APPEND DISPLAY
-                                material_wrapper.appendChild(display);
-                            }
+                                // APPEND MATERIAL
+                                material_wrapper.appendChild(m_el);
+                                this.activities_wrapper.appendChild(material_wrapper);
 
-                            //EDIT LINK IF IN EDIT MODE
-                            if(Planner.instance_.config.allow_edit){
-                                var edit_overflow = createElementWithStyle('a','.material-edit '+material.position, {backgroundColor: 'rgba(0,0,0,0.2)'});
-                                edit_overflow.title = 'Edit'; // title for tooltip
-                                var edit_text = document.createTextNode('Edit');
-                                var edit_text_span = document.createElement('span');
-                                edit_text_span.appendChild(edit_text);
-                                edit_overflow.appendChild(edit_text_span);
-                                material_wrapper.appendChild(edit_overflow);
-                            }
+                                //CONVEYOR
+                                var conveyor = null;
+                                if(material.conveyor_url){
 
-                            if(material.position === 'top'){
-                                has_top = true;
-                            }else if (material.position === 'bottom') {
-                                has_bottom = true;
-                            }
+                                    // ICON IMAGE
+                                    var conveyor_icon = new Image();
+                                    conveyor_icon.className = 'conveyor-icon';
+                                    conveyor_icon.src = '/images/favs/icon_'+escapeRegExp(material.conveyor_url)+'.png';
+                                    conveyor_icon.style.width = this.conveyor_icon_size + 'px';
 
-                            // FOR UPDATING STYlES LATER
-                            this.materialElements.push({
-                                material: material,
-                                element: material_wrapper,
-                                conveyor: conveyor,
-                                display: display
-                            });
+                                    var conveyor_style = this.getConveyorStyle(material, wrapper_style);
+
+                                    // LINK TO CONVEYOR
+                                    conveyor = createElementWithStyle('a','.conveyor-container '+material.position, conveyor_style);
+                                    conveyor.href = material.conveyor_url;
+                                    conveyor.target = '_blank';
+                                    conveyor.title = material.conveyor_name;
+                                    conveyor.appendChild(conveyor_icon);
+
+                                    //APPEND CONVEYOR
+                                    material_wrapper.appendChild(conveyor);
+                                }
+
+                                // DISPLAY
+                                var display = null;
+                                if(material.display_id !== null && typeof material.display_id !== 'undefined'){
+                                    // DISPLAY IMAGE
+                                    var display_icon = new Image();
+                                    display_icon.className = 'display-icon';
+                                    display_icon.src = 'images/'+$scope.displays_list[material.display_id].icon;
+                                    display_icon.style.width = this.display_icon_size + 'px';
+
+                                    var display_style = this.getDisplayStyle(material, wrapper_style);
+
+                                    // DISPLAY CONTAINER DIV
+                                    display = createElementWithStyle('div','.display-container '+material.position, display_style);
+                                    if(material.display_id == $scope.displays_list.length-1){
+                                        //other display, user wrote name
+                                        display.title = material.other_display;
+                                    }else{
+                                        display.title = $scope.displays_list[material.display_id].name;
+                                    }
+                                    display.appendChild(display_icon);
+
+                                    //APPEND DISPLAY
+                                    material_wrapper.appendChild(display);
+                                }
+
+                                //EDIT LINK IF IN EDIT MODE
+                                if(Planner.instance_.config.allow_edit){
+                                    var edit_overflow = createElementWithStyle('a','.material-edit '+material.position, {backgroundColor: 'rgba(0,0,0,0.2)'});
+                                    edit_overflow.title = 'Edit'; // title for tooltip
+                                    var edit_text = document.createTextNode('Edit');
+                                    var edit_text_span = document.createElement('span');
+                                    edit_text_span.appendChild(edit_text);
+                                    edit_overflow.appendChild(edit_text_span);
+                                    material_wrapper.appendChild(edit_overflow);
+
+                                    this.bindOpenModal(edit_overflow, material.position, i);
+                                }
+
+                                if(material.position === 'top'){
+                                    this.has_top_material = true;
+                                }else if (material.position === 'bottom') {
+                                    this.has_bottom_material = true;
+                                }
+
+                                // FOR UPDATING STYlES LATER
+                                this.materialElements.push({
+                                    material: material,
+                                    element: material_wrapper,
+                                    conveyor: conveyor,
+                                    display: display
+                                });
+
+                            } // exists end
 
                         } //for end
-                    } // if there are nay end
+                    } // if there are any end
 
-                    //ADD NEW LINKS IF IN EDIT MODE
-                    if(Planner.instance_.config.allow_edit && (!has_top || !has_bottom)){
-                        //for every empty space
-                        if(!has_top){
-                            var top_style = this.getAddNewButtonStyle('top');
-                            var top_overflow = this.createAddButtonOverflow(top_style, 'top');
-                            this.activities_wrapper.appendChild(top_overflow);
-                        }
+                    this.updateAddNewButtons();
 
-                        if(!has_bottom){
-                            var bottom_style = this.getAddNewButtonStyle('bottom');
-                            var bottom_overflow = this.createAddButtonOverflow(bottom_style, 'bottom');
-                            this.activities_wrapper.appendChild(bottom_overflow);
+                },
+                materialExists: function(material){
+                    for(var i = 0; i < this.materialElements.length; i++){
+                        if(this.materialElements[i].material._id === material._id){
+                            //console.log('exists');
+                            return true;
                         }
                     }
 
+                    return false;
                 },
-                createAddButtonOverflow: function(style, pos){
-                    var button_wrapper = createElementWithStyle('div','.new-material-button '+pos, style);
+                addNewButtonExists: function(class_name, activity_id){
+                    return document.querySelector('div.new-material-button.'+class_name+'[data-id="'+activity_id+'"]');
+                },
+
+                updateAddNewButtons: function(){
+                    //ADD NEW LINKS IF IN EDIT MODE
+                    if(Planner.instance_.config.allow_edit){
+                        //for every empty space
+                        var activity = this;
+                        if(!this.has_top_material && !this.addNewButtonExists('top', activity._id)){
+                            //console.log('created new top');
+                            var top_style = this.getAddNewButtonStyle('top');
+                            var top_overflow = this.createAddButtonOverflow(top_style, 'top', activity._id);
+                            this.activities_wrapper.appendChild(top_overflow);
+                            top_overflow.addEventListener('click', function(){
+                                //console.log('click top');
+                                $scope.openAddMaterialModal(activity, 'top');
+
+                            });
+
+                        }else if(this.has_top_material && this.addNewButtonExists('top', activity._id)){
+                            // remove, is unneccesery
+                            this.activities_wrapper.removeChild(this.addNewButtonExists('top', activity._id));
+                            //console.log('should remove');
+                        }
+
+                        if(!this.has_bottom_material && !this.addNewButtonExists('bottom', activity._id)){
+                            //console.log('created new bottom');
+                            var bottom_style = this.getAddNewButtonStyle('bottom');
+                            var bottom_overflow = this.createAddButtonOverflow(bottom_style, 'bottom', activity._id);
+                            this.activities_wrapper.appendChild(bottom_overflow);
+                            bottom_overflow.addEventListener('click', function(){
+                                //console.log('click bottom');
+                                $scope.openAddMaterialModal(activity, 'bottom');
+
+                            });
+
+                        }else if(this.has_bottom_material && this.addNewButtonExists('bottom', activity._id)){
+                            // remove, is unneccesery
+                            this.activities_wrapper.removeChild(this.addNewButtonExists('bottom', activity._id));
+                            //console.log('should remove bottom');
+                        }
+                    }
+                },
+                bindOpenModal: function(element, pos, i){
+                    var activity = this;
+                    element.addEventListener('click', function(){
+                        //console.log('edit click' + i);
+                        $scope.openEditMaterialModal(activity, pos, activity.materials[i]);
+                    });
+                },
+                createAddButtonOverflow: function(style, pos, activity_id){
+                    //console.log(activity_id);
+                    var button_wrapper = createElementWithStyle('div','.new-material-button '+pos, style, null, {attribute: 'data-id', value: activity_id});
                     var button_overflow = createElementWithStyle('a','.new-add '+pos, {backgroundColor: 'rgba(0,0,0,0.2)'});
                     button_overflow.title = 'Add'; // title for tooltip
                     var add_text = document.createTextNode('Add');
@@ -604,8 +692,6 @@
                     if(position === 'top'){
                         top -=  this.height + height;
                     }
-                    console.log(this.add_new_button_color);
-
                     return {
                         top: top + 'px',
                         left: this.x + 'px', //parent left
@@ -690,6 +776,11 @@
                 var edit = false;
                 if($scope.allow_edit){ edit = true;}
                 var newPlanner = new Planner({edit: edit});
+
+                // !IMPORTANT enable redraw fn in controller
+                if(edit === true){
+                  $scope.setreDrawMaterialFunction({theDirFn: Planner.instance_.reDrawMaterial});
+                }
             });
 
         }//link end

@@ -106,13 +106,13 @@
 
       }
 
-      $scope.openAddMaterialModal = function(a, top){
+      $scope.openAddMaterialModal = function(a, pos){
 
         $scope.activity = a;
 
         $scope.whois_material = 'Student';
         $scope.material_position = 'bottom';
-        if(top === true){
+        if(pos === 'top'){
           $scope.whois_material = 'Teacher';
           $scope.material_position = 'top';
         }
@@ -122,13 +122,13 @@
         $scope.manageModal('show');
       };
 
-      $scope.openEditMaterialModal = function(a, top, material){
+      $scope.openEditMaterialModal = function(a, pos, material){
 
         $scope.activity = a;
 
         $scope.whois_material = 'Student';
         $scope.material_position = 'bottom';
-        if(top === true){
+        if(pos === 'top'){
           $scope.whois_material = 'Teacher';
           $scope.material_position = 'top';
         }
@@ -141,8 +141,8 @@
       $scope.setManageFunction = function(directiveFn) {
         $scope.manageModal = directiveFn.theDirFn;
       };
-      $scope.setReDrawFunction = function(directiveFn) {
-        $scope.reDraw = directiveFn.theDirFn;
+      $scope.setreDrawMaterialFunction = function(directiveFn) {
+        $scope.reDrawMaterial = directiveFn.theDirFn;
       };
 
       $scope.deleteMaterial = function(id){
@@ -270,7 +270,7 @@
         if(action == 'new'){
           $scope.materials.push(new_material);
           updateActivityList();
-          $scope.reDraw();
+          $scope.reDrawMaterial('new');
           return;
         }
 
@@ -287,7 +287,7 @@
 
           $scope.materials.splice(index, 1);
           updateActivityList();
-          $scope.reDraw();
+          $scope.reDrawMaterial('delete', new_material._id);
 
           console.log($scope.materials.length);
 
@@ -303,7 +303,7 @@
           }
 
           updateActivityList();
-          $scope.reDraw();
+          $scope.reDrawMaterial('update', new_material._id);
         }
 
       };
