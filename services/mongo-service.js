@@ -39,9 +39,9 @@ exports.saveNew = function(newEntry, Collection, next) {
     var newCollection = new Collection(newEntry);
     newCollection.save(function(err, entry) {
         //handle user saving error
-        if(err.errors.email.message == 'That email is already in use'){
+        if(err && err.errors && err.errors.email && err.errors.email.message == 'That email is already in use'){
             return next({id: 6, message: 'That email is already in use'});
-        }else{
+        }else if(err){
             return next(err);
         }
         next(err, entry);
