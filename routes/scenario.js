@@ -944,7 +944,7 @@ router.post('/search/', function(req, res, next) {
         populate: 'first_name last_name created'
       });
       q.populated_fields.push({
-        field: 'subject',
+        field: 'subjects',
         populate: 'name'
       });
       q.sort = sort;

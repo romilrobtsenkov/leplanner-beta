@@ -390,6 +390,11 @@ span.not-selected {
     font-size: 13px;
 }
 
+.single_scenario_item p.description {
+    max-height: 90px;
+    overflow: hidden;
+}
+
 .single_scenario_item {
     padding-bottom: 10px;
 }

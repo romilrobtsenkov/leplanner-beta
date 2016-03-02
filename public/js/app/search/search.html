@@ -64,7 +64,7 @@
 
 				<!-- SINGLE SCENARIO -->
 				<div class="row no-margin">
-					<a><span class="dash-scenario-label pull-right label label-primary">{{scenario.subject.name}}</span></a>
+					<a ng-repeat="subject in scenario.subjects"><span class="dash-scenario-label pull-right label label-primary">{{subject.name}}</span></a>
 					<div class="col-sm-12">
 						<h4><strong><a href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{scenario.name}}</a></strong></h4>
 					</div>
@@ -84,7 +84,7 @@
 							<span>| <span class="glyphicon glyphicon-heart"></span><span> {{scenario.favorites_count}}</span></span>
 							<span>| <span class="glyphicon glyphicon-comment"></span><span> {{scenario.comments_count}}</span></span>
 						</p>
-						<p>{{scenario.description}}</p>
+						<p class="description">{{scenario.description}}</p>
 						<div class="row open-button">
 							<div class="col-xs-8">
 								<span class="labels">
