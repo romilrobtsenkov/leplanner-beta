@@ -30,6 +30,11 @@ exports.findOne = function(q, Collection, next){
     var query = Collection.findOne();
     query.where(q.args);
     if(q.select){ query.select(q.select); }
+    if(q.populated_fields){
+        for(var i = 0; i< q.populated_fields.length; i++){
+            query.populate(q.populated_fields[i].field, q.populated_fields[i].populate);
+        }
+    }
     query.exec(function(err, entry) {
         next(err, entry);
     });
