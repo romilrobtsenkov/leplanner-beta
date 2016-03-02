@@ -48,7 +48,7 @@ gulp.task('build-js', function() {
       'public/js/app/modal/modal.js',
       'public/js/app/services/requestService.js',
       'public/js/app/services/userAuthService.js',
-      'public/js/app/directives/canvas/canvas.js',
+      'public/js/app/directives/timeline/timeline.js',
       'public/js/app/directives/modal/modal.js',
     ])
     .pipe(sourcemaps.init())
