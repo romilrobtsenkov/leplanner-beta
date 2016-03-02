@@ -40,9 +40,9 @@
                 timelineWrapperId: '#scenario-timeline-wrapper',
                 ColorInClass: 'rgb(112,207,250)',
                 ColorOffClass: 'rgb(255,249,115)',
-                ColorMaterialInClass: 'rgb(144,220, 255)',
+                ColorMaterialInClass: 'rgb(144,220,255)',
                 ColorMaterialOffClass: 'rgb(255,251,170)',
-                ColorAddNewButtonInClass: 'rgb(144,220, 255)',
+                ColorAddNewButtonInClass: 'rgb(144,220,255)',
                 ColorAddNewButtonOffClass: 'rgb(255,251,170)',
                 legendInClass: 'tunnitegevus (in-class)',
                 legendOffClass: 'muu (off-class)',
@@ -131,7 +131,7 @@
                     this.Drawlegend(this.config.legendOffClass, 160, spaceFromBottom, box_dim, box_dim, this.config.ColorOffClass, this.timeline);
 
                     //line
-                    this.DrawLine(this.WIDTH, this.HEIGHT, 1, 'rgb(0,0,0)', this.timeline);
+                    this.DrawLine(this.WIDTH, this.HEIGHT, 1, 'lightgray', this.timeline);
 
                 },
                 initActivities: function(){
@@ -169,10 +169,11 @@
                         left: x + 'px',
                         width: box_w + 'px',
                         height: box_h + 'px',
-                        backgroundColor: color
                     };
 
                     var el = createElementWithStyle('div','.legend', style);
+                    el.setAttribute('style', el.getAttribute('style') +' background-color:'+ color +' !important;');
+
                     timeline.appendChild(el);
 
                     var textPadding = 17;
@@ -209,14 +210,14 @@
                                 if(Planner.instance_.activities[i].materialElements[k].material._id == material_id){
 
 
-                                    if(Planner.instance_.activities[i].materialElements[k].material.position === 'top'){
+                                    if(Planner.instance_.activities[i].materialElements[k].material.position == 'top'){
                                         Planner.instance_.activities[i].has_top_material = false;
                                     }else{
-                                        Planner.instance_.activities[i].has_top_material = false;
+                                        Planner.instance_.activities[i].has_bottom_material = false;
                                     }
 
                                     Planner.instance_.activities[i].materialElements.splice(k, 1);
-                                    //console.log('deleted material from timeline');
+                                    console.log('deleted material from timeline');
 
                                     //delete from DOM
                                     document.querySelector('#activities-wrapper').removeChild(document.querySelector('div.material-wrapper[data-id="'+material_id+'"]'));
@@ -234,6 +235,16 @@
                         }
 
                     }//for end
+
+                },
+                findMaterial: function(id){
+                    for(var i = 0; i < Planner.instance_.activities.length; i++){
+                        for(var k = 0; k < Planner.instance_.activities[i].materialElements.length; k++){
+                            if(Planner.instance_.activities[i].materialElements[k].material._id == id){
+                                return Planner.instance_.activities[i].materialElements[k].material;
+                            }
+                        }
+                    }
 
                 }
             };
@@ -305,7 +316,7 @@
                     this.y = parseInt(Planner.instance_.HEIGHT/2-this.height/2);
                     this.width = parseInt(this.minute_constant * this.duration);
 
-                    this.material_height = Math.round(Planner.instance_.WIDTH / 30); //30 is just some constant, used in level * this
+                    this.material_height = Math.round(Planner.instance_.WIDTH / 45); //30 is just some constant, used in level * this
 
                 },
                 createActivity: function(){
@@ -327,6 +338,8 @@
                     // ELEMENT
                     var style = this.getActivityStyle();
                     var el = createElementWithStyle('div','.activity-container', style, null, {attribute: 'data-id', value: this._id});
+                    //for printing
+                    el.setAttribute('style', el.getAttribute('style') +' background-color:'+ this.class_color +' !important;');
 
                     // TEXT & DURATION
                     var span_style = this.getSpanStyle();
@@ -368,8 +381,7 @@
                         top: this.y + 'px',
                         left: this.x + 'px',
                         width: this.width + 'px',
-                        height: this.height + 'px',
-                        backgroundColor: this.class_color
+                        height: this.height + 'px'
                     };
                 },
                 getSpanStyle: function(){
@@ -462,8 +474,10 @@
                                 var material_wrapper = createElementWithStyle('div','.material-wrapper '+material.position, wrapper_style, null, {attribute: 'data-id', value: material._id});
 
                                 // MATERIAL ITSELF
-                                var m_el = createElementWithStyle('div','.material-container '+material.position, {backgroundColor: this.material_class_color});
+                                var m_el = createElementWithStyle('div','.material-container '+material.position);
                                 m_el.title = material.material_name; // title for tooltip
+                                //for print, there needs to be !important
+                                m_el.setAttribute('style', 'background-color:'+ this.material_class_color +' !important;');
 
                                 // MATERIAL MAIN TEXT
                                 var text_el = null;
@@ -543,7 +557,7 @@
                                     edit_overflow.appendChild(edit_text_span);
                                     material_wrapper.appendChild(edit_overflow);
 
-                                    this.bindOpenModal(edit_overflow, material.position, i);
+                                    this.bindOpenModal(edit_overflow, material.position, material._id);
                                 }
 
                                 if(material.position === 'top'){
@@ -625,11 +639,11 @@
                         }
                     }
                 },
-                bindOpenModal: function(element, pos, i){
+                bindOpenModal: function(element, pos, id){
                     var activity = this;
                     element.addEventListener('click', function(){
                         //console.log('edit click' + i);
-                        $scope.openEditMaterialModal(activity, pos, activity.materials[i]);
+                        $scope.openEditMaterialModal(activity, pos, Planner.instance_.findMaterial(id));
                     });
                 },
                 createAddButtonOverflow: function(style, pos, activity_id){
@@ -646,7 +660,7 @@
                     return button_wrapper;
                 },
                 getMateriaMainStyle: function(material){
-                    var m_height = 30 + (this.material_height * material.involvement_level);
+                    var m_height = 29 + (this.material_height * material.involvement_level);
                     var m_top = this.y + this.height;
                     if(material.position === 'top'){
                         m_top -=  this.height + m_height;
