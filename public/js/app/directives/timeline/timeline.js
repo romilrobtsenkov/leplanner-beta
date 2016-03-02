@@ -28,6 +28,9 @@
                 this.activity_images = [];
                 this.timeouts = []; //animation timeouts
 
+                this.zoom = false;
+                this.activity_min_px_for_zoom = 50;
+
                 //resize delay var
                 this.resizeDelay = null;
 
@@ -82,23 +85,58 @@
 
                     window.addEventListener("resize", this.timelineResizeDelay.bind(this));
 
+                    //ZOOM
+                    window.addEventListener("keypress", this.keyPressed.bind(this));
+                    this.timeline.addEventListener("dblclick", this.dblClickEvent.bind(this));
+
                 },
                 resize: function(){
+                    var border_fix = 2;
 
                     // wrapper
                     var timeline_wrapper = document.querySelector(this.config.scenarioWrapperId);
-                    var width = timeline_wrapper.offsetWidth;
+                    var width = timeline_wrapper.offsetWidth - border_fix;
                     var height = Math.round(timeline_wrapper.offsetWidth * (9/16));
+                    this.zoom_start_width = width;
+
+                    if(this.zoom){
+                        //box minimum width when zoomed in
+                        var min_width = 100;
+                        width = (min_width / this.activity_min_px_for_zoom) * width;
+                        //width = 3000;
+                    }
 
                     //do the defaults
                     this.timeline.style.width = width + 'px';
                     this.timeline.style.height  = height + 'px';
 
                     //update constants
-                    var border_fix = 2;
                     this.WIDTH = width-border_fix;
                     this.HEIGHT = height;
                     //console.log('resize w:' + width + ' h:' + height );
+                },
+                keyPressed: function(evt){
+                    var charCode = evt.which || evt.keyCode;
+                    var charStr = String.fromCharCode(charCode);
+                    //console.log(charStr.toLowerCase());
+                    if(charStr.toLowerCase() === 'z'){
+                        this.zoomEvent();
+                    }
+                },
+                dblClickEvent: function(evt){
+                    this.zoomEvent();
+                    var el = document.querySelector(this.config.scenarioWrapperId);
+                    var constant = this.WIDTH / (this.zoom_start_width);
+                    //console.log(this.WIDTH + ' ' + constant * evt.offsetX);
+                    el.scrollLeft = constant * evt.offsetX;
+                },
+                zoomEvent: function(){
+                    if(this.zoom){
+                        this.zoom = false;
+                    }else{
+                        this.zoom = true;
+                    }
+                    this.timelineResize();
                 },
                 timelineResizeDelay: function(){
                     clearTimeout(this.resizeDelay);
@@ -316,7 +354,11 @@
                     this.y = parseInt(Planner.instance_.HEIGHT/2-this.height/2);
                     this.width = parseInt(this.minute_constant * this.duration);
 
-                    this.material_height = Math.round(Planner.instance_.WIDTH / 45); //30 is just some constant, used in level * this
+                    if(this.width < Planner.instance_.activity_min_px_for_zoom){
+                        Planner.instance_.activity_min_px_for_zoom = this.width;
+                    }
+
+                    this.material_height = Math.round(Planner.instance_.HEIGHT*Planner.instance_.HEIGHT  / 10000); //30 is just some constant, used in level * this
 
                 },
                 createActivity: function(){

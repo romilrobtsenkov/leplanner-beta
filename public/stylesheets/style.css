@@ -899,6 +899,8 @@ a.delete-link {
 
 #scenario-wrapper {
     border: 1px solid lightgray;
+    overflow: scroll;
+    -webkit-overflow-scrolling: touch;
 }
 
 .legend,
