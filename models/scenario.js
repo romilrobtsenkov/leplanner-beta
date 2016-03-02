@@ -3,7 +3,8 @@ var Schema = mongoose.Schema;
 
 var scenarioSchema = new Schema({
     name: { type: String },
-    subject: { type: mongoose.Schema.Types.ObjectId, ref: 'Subject'},
+    //subject: { type: mongoose.Schema.Types.ObjectId, ref: 'Subject'},
+    subjects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Subject'}],
     grade: { type: Number },
     duration: { type: Number },
     author: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
