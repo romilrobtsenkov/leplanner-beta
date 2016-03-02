@@ -30,7 +30,8 @@
       <div class="row no-margin">
         <div class=" form-group">
           <label for="subject"><strong>Subject: </strong></label>
-          <select class="form-control" id="subject" ng-model="scenario.subject" ng-options="subject._id as subject.name for subject in subjects" name="subject" required>
+          <div id="subject" ng-dropdown-multiselect="" options="subjects_list" selected-model="selected_subjects" extra-settings="subjectsSettings" translation-texts="subjectsText"></div>
+          <!--<select class="form-control" id="subject" ng-model="scenario.subject" ng-options="subject._id as subject.name for subject in subjects" name="subject" required>-->
           <!-- option.value as option.name for option in
           <select class="form-control" id="subject" ng-model="selected_subject" name="subject" required>
             <option value="" selected disabled>Choose subject</option>

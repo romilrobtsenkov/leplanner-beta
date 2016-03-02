@@ -437,8 +437,8 @@ router.post('/get-edit-data-single-scenario/', restrict, function(req, res, next
       q.args = { _id: params.scenario._id };
       q.populated_fields = [];
       q.populated_fields.push({
-        field: 'subject',
-        populate: '_id name'
+        field: 'subjects',
+        populate: 'name'
       });
 
       mongoService.findOne(q, Scenario, function(err, scenario){

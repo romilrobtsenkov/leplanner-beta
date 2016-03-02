@@ -386,6 +386,21 @@ span.not-selected {
     text-overflow: ellipsis;
 }
 
+#subject > .dropdown-multiselect .dropdown-toggle,
+#subject > button.dropdown-toggle,
+#subject > .dropdown-multiselect {
+    width: 100%;
+    text-align: left;
+}
+
+#subject li>a span {
+    padding-left: 18px;
+}
+
+#subject li>a span.glyphicon {
+    padding-left: 0px;
+}
+
 .single_scenario_item p {
     font-size: 13px;
 }

@@ -12,8 +12,9 @@
         $location.path('/');
       }
 
-      $scope.selected_subject = null;
+      $scope.selected_subjects = [];
 
+      $scope.subjects_list = [];
       $scope.outcomes_list = [];
       $scope.activity_list = [];
 
@@ -34,13 +35,13 @@
           .then(function(data) {
 
             if(data.scenario){
-              //console.log(data.scenario);
+              console.log(data.scenario);
 
               $scope.scenario = data.scenario;
-              /*console.log(data.scenario.subject);
-              if(data.scenario.subject){
-                $scope.selected_subject = data.scenario.subject;
-              }*/
+              console.log(data.scenario.subjects);
+              if(data.scenario.subjects){
+                $scope.selected_subjects = data.scenario.subjects;
+              }
 
               console.log('Loaded scenario');
 
@@ -95,7 +96,8 @@
         .then(function(data) {
 
           if(data.subjects && data.activity_organization){
-            $scope.subjects = data.subjects;
+            $scope.subjects_list = data.subjects;
+            console.log($scope.subjects_list);
             $scope.activity_organization = data.activity_organization;
 
             $scope.fully_loaded = true;
@@ -117,6 +119,20 @@
       }
 
       function createDropdowns(){
+
+        $scope.subjectsSettings = {
+            scrollableHeight: '200px',
+            scrollable: true,
+            smartButtonMaxItems: 1,
+            displayProp: 'name',
+            showCheckAll: false,
+            showUncheckAll: false,
+            idProp: '_id',
+            externalIdProp: '',
+            buttonClasses: 'btn btn-default',
+        };
+        $scope.subjectsText = {buttonDefaultText: 'Subjects'};
+
 
         $scope.outcomesSettings = {
           scrollableHeight: '150px',
@@ -153,6 +169,10 @@
         $scope.watch_init_event = true;
 
         $scope.$watch("scenario", function(v) {
+          userChangedScenario();
+        }, true);
+
+        $scope.$watch("subjects_list", function(v) {
           userChangedScenario();
         }, true);
 
