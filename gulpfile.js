@@ -25,6 +25,7 @@ gulp.task('build-js', function() {
       'public/bower/angular/angular.min.js',
       'public/bower/angular-route/angular-route.min.js',
       'public/bower/angular-resource/angular-resource.min.js',
+      'public/bower/angular-sanitize/angular-sanitize.min.js',
       'public/bower/lodash/dist/lodash.min.js',
       'public/bower/angularjs-dropdown-multiselect/dist/angularjs-dropdown-multiselect.min.js',
       'public/bower/angular-utils-pagination/dirPagination.js',

@@ -564,6 +564,7 @@ span.not-selected {
 
 .comment-post {
     margin-top: 15px;
+    word-wrap: break-word;
 }
 
 .commets p.text-right {
