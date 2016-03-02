@@ -501,22 +501,25 @@
 
                                 //CONVEYOR
                                 var conveyor = null;
-                                if(material.conveyor_url){
-
-                                    // ICON IMAGE
-                                    var conveyor_icon = new Image();
-                                    conveyor_icon.className = 'conveyor-icon';
-                                    conveyor_icon.src = '/images/favs/icon_'+escapeRegExp(material.conveyor_url)+'.png';
-                                    conveyor_icon.style.width = this.conveyor_icon_size + 'px';
+                                if(material.conveyor_name){
 
                                     var conveyor_style = this.getConveyorStyle(material, wrapper_style);
 
                                     // LINK TO CONVEYOR
                                     conveyor = createElementWithStyle('a','.conveyor-container '+material.position, conveyor_style);
-                                    conveyor.href = material.conveyor_url;
-                                    conveyor.target = '_blank';
+                                    if(material.conveyor_url){
+                                        // ICON IMAGE
+                                        var conveyor_icon = new Image();
+                                        conveyor_icon.className = 'conveyor-icon';
+                                        conveyor_icon.src = '/images/favs/icon_'+escapeRegExp(material.conveyor_url)+'.png';
+                                        conveyor_icon.style.width = this.conveyor_icon_size + 'px';
+                                        conveyor.appendChild(conveyor_icon);
+
+                                        conveyor.href = material.conveyor_url;
+                                        conveyor.target = '_blank';
+                                    }
                                     conveyor.title = material.conveyor_name;
-                                    conveyor.appendChild(conveyor_icon);
+
 
                                     //APPEND CONVEYOR
                                     material_wrapper.appendChild(conveyor);
