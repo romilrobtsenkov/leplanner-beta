@@ -35,10 +35,10 @@
           .then(function(data) {
 
             if(data.scenario){
-              console.log(data.scenario);
+              //console.log(data.scenario);
 
               $scope.scenario = data.scenario;
-              console.log(data.scenario.subjects);
+              //console.log(data.scenario.subjects);
               if(data.scenario.subjects){
                 $scope.selected_subjects = data.scenario.subjects;
               }
@@ -97,7 +97,7 @@
 
           if(data.subjects && data.activity_organization){
             $scope.subjects_list = data.subjects;
-            console.log($scope.subjects_list);
+            //console.log($scope.subjects_list);
             $scope.activity_organization = data.activity_organization;
 
             $scope.fully_loaded = true;
