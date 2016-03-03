@@ -572,30 +572,32 @@
                                 }
 
                                 // DISPLAY
-                                var display = null;
+                                var displays = [];
                                 //adpat to displays
                                 console.log(material.displays);
-                                if(material.display_id !== null && typeof material.display_id !== 'undefined'){
-                                    // DISPLAY IMAGE
-                                    var display_icon = new Image();
-                                    display_icon.className = 'display-icon';
-                                    display_icon.src = 'images/'+$scope.displays_list[material.display_id].icon;
-                                    display_icon.style.width = this.display_icon_size + 'px';
+                                if(material.displays.length > 0){
 
-                                    var display_style = this.getDisplayStyle(material, wrapper_style);
+                                    for(var j = 0; j < material.displays.length; j++){
 
-                                    // DISPLAY CONTAINER DIV
-                                    display = createElementWithStyle('div','.display-container '+material.position, display_style);
-                                    if(material.display_id == $scope.displays_list.length-1){
-                                        //other display, user wrote name
-                                        display.title = material.other_display;
-                                    }else{
-                                        display.title = $scope.displays_list[material.display_id].name;
+                                        var current_display = material.displays[j];
+                                        // DISPLAY IMAGE
+                                        var display_icon = new Image();
+                                        display_icon.className = 'display-icon';
+                                        display_icon.src = 'images/'+$scope.displays_list[current_display].icon;
+                                        display_icon.style.width = this.display_icon_size + 'px';
+
+                                        var display_style = this.getDisplayStyle(material, wrapper_style, j, material.displays.length);
+
+                                        // DISPLAY CONTAINER DIV
+                                        var display = createElementWithStyle('div','.display-container '+material.position, display_style);
+                                        display.title = $scope.displays_list[current_display].name;
+
+                                        display.appendChild(display_icon);
+
+                                        //APPEND DISPLAY
+                                        material_wrapper.appendChild(display);
+                                        displays.push({index: j, display: display});
                                     }
-                                    display.appendChild(display_icon);
-
-                                    //APPEND DISPLAY
-                                    material_wrapper.appendChild(display);
                                 }
 
                                 //EDIT LINK IF IN EDIT MODE
@@ -622,7 +624,7 @@
                                     material: material,
                                     element: material_wrapper,
                                     conveyor: conveyor,
-                                    display: display
+                                    displays: displays
                                 });
 
                             } // exists end
@@ -726,11 +728,14 @@
                     };
                 },
                 getConveyorStyle: function(material, material_style){
+                    var padding_top = 4;
+
                     var conveyor_top = null;
                     if(material.position === 'top'){
-                        conveyor_top = -this.conveyor_icon_size -8;
+                        conveyor_top = -this.conveyor_icon_size -8 - padding_top;
                     }else{
-                        conveyor_top = material_style.height.replace('px','');
+                        conveyor_top = parseInt(material_style.height.replace('px',''));
+                        conveyor_top += padding_top;
                     }
 
                     /* TODO IF there is no room, hide */
@@ -740,16 +745,22 @@
                         top: conveyor_top + 'px'
                     };
                 },
-                getDisplayStyle: function(material, material_style){
+                getDisplayStyle: function(material, material_style, index, count){
+
+                    var padding_top = 4;
+
                     var display_top = null;
                     if(material.position === 'top'){
-                        display_top = -this.conveyor_icon_size -8;
+                        display_top = -this.conveyor_icon_size -8 - padding_top;
                     }else{
-                        display_top = material_style.height.replace('px','');
+                        display_top = parseInt(material_style.height.replace('px',''));
+                        display_top += padding_top;
                     }
 
+                    var padding = 3;
+
                     return {
-                        left: 0 + 'px',
+                        left: count*padding - index * padding + 'px',
                         top: display_top + 'px'
                     };
                 },
@@ -780,7 +791,7 @@
                             var material = this.materialElements[i].material;
                             var material_element = this.materialElements[i].element;
                             var conveyor = this.materialElements[i].conveyor;
-                            var display = this.materialElements[i].display;
+                            var displays = this.materialElements[i].displays;
 
                             //MATERIAL
                             var material_style = this.getMateriaMainStyle(material);
@@ -792,10 +803,12 @@
                                 setElementStyle(conveyor, conveyor_style);
                             }
 
-                            //CONVEYOR
-                            if(display){
-                                var display_style = this.getDisplayStyle(material, material_style);
-                                setElementStyle(display, display_style);
+                            //DISPLAYS
+                            if(displays.length > 0){
+                                for(var j = 0; j < displays.length; j++){
+                                    var display_style = this.getDisplayStyle(material, material_style, j, displays.length);
+                                    setElementStyle(displays[j].display, display_style);
+                                }
                             }
 
                         }

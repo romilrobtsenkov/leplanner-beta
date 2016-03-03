@@ -1073,6 +1073,7 @@ a.delete-link {
     width: 20px;
     height: 20px;
     z-index: 2;
+    border-radius: 999em;
 }
 
 .conveyor-container img,
@@ -1084,15 +1085,15 @@ a.delete-link {
 
 .conveyor-container.bottom ,
 .display-container.bottom {
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
+    /*border-bottom-left-radius: 4px;*/
+    /*border-bottom-right-radius: 4px;*/
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24) !important;
 }
 
 .conveyor-container.top ,
 .display-container.top {
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
+    /*border-top-left-radius: 4px;*/
+    /*border-top-right-radius: 4px;*/
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24) !important;
 }
 
