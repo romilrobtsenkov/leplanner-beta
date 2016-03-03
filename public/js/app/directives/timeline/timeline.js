@@ -54,7 +54,7 @@
                 defaultFontSize: 12,
                 org_language: 'name_eng',
                 edit: 'Edit',
-                add: 'Add'
+                add: '+'
             };
 
             Planner.prototype = {
@@ -133,9 +133,13 @@
                 zoomEvent: function(){
                     if(this.zoom){
                         this.zoom = false;
+                        //fix dblclick scrollleft after zoomout
+                        var el = document.querySelector(this.config.scenarioWrapperId);
+                        el.scrollLeft = 0;
                     }else{
                         this.zoom = true;
                     }
+
                     this.timelineResize();
                 },
                 timelineResizeDelay: function(){
@@ -749,15 +753,18 @@
                 },
                 getAddNewButtonStyle: function(position){
 
-                    var height = 25;
-                    var top = this.y + this.height;
+                    var height = 30;
+                    var width = 30;
+                    var margin = 10;
+
+                    var top = this.y + this.height + margin;
                     if(position === 'top'){
-                        top -=  this.height + height;
+                        top -=  this.height + height + margin*2;
                     }
                     return {
                         top: top + 'px',
-                        left: this.x + 'px', //parent left
-                        width: this.width + 'px', //parent width
+                        left: (this.x + this.width/2 - width/2)+ 'px', //parent left
+                        width: width + 'px', //parent width
                         height: height + 'px',
                         backgroundColor: this.add_new_button_color,
                     };
