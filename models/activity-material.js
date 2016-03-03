@@ -8,10 +8,15 @@ var materialSchema = new Schema({
     material_name: { type: String },
     material_url: { type: String },
     involvement_level: { type: Number },
-    conveyor_name: { type: String },
-    conveyor_url: { type: String },
-    display_id: { type: Number },
-    other_display: { type: String },
+    conveyor_name: { type: String }, //retired
+    conveyor_url: { type: String }, //retired
+    conveyors: [{
+        name: { type: String },
+        url: { type: String }
+    }],
+    display_id: { type: Number }, //retired
+    other_display: { type: String }, //retired
+    displays: [{ type: Number }],
     created: { type: Date, default: Date.now },
     deleted: { type: Boolean, required: true, default: false },
     deleted_date: { type: Date },

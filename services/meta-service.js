@@ -33,12 +33,28 @@ exports.getInvolvementOptions = function(next) {
 
 exports.getDisplays = function(next) {
   return next(null, [
+    { _id: 0, name: "Dataprojektor/TV (Projector/TV)", icon: "other_display.png" },
+    { _id: 1, name: "Puutetahvel (Smartboard)", icon: "other_display.png" },
+    { _id: 2, name: "Arvuti (Computer)", icon: "pc.png" },
+    { _id: 3, name: "Tahvelarvuti (Tablet)", icon: "tablet.png" },
+    { _id: 4, name: "Nutitelefon (Smartphone)", icon: "smartphone.png" },
+  ]);
+};
+
+
+/* OLD
+exports.getDisplays = function(next) {
+    // 0 > 2
+    // 1 > 4
+    // 2 > 3
+    // 3 > NO TRANSFER
+  return next(null, [
     { _id: 0, name: "Arvuti (Computer)", icon: "pc.png" },
     { _id: 1, name: "Nutitelefon (Smartphone)", icon: "smartphone.png" },
     { _id: 2, name: "Tahvelarvuti (Tablet)", icon: "tablet.png" },
     { _id: 3, name: "Muu (Other)", icon: "other_display.png" }
   ]);
-};
+};*/
 
 
 /* exports.insertSubjects = function(next) {
