@@ -573,6 +573,8 @@
 
                                 // DISPLAY
                                 var display = null;
+                                //adpat to displays
+                                console.log(material.displays);
                                 if(material.display_id !== null && typeof material.display_id !== 'undefined'){
                                     // DISPLAY IMAGE
                                     var display_icon = new Image();

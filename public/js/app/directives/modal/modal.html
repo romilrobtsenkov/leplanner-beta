@@ -73,11 +73,10 @@
           <div class="col-sm-8">
 
             <div class=" form-group">
-              <label for="display"><strong>Display: </strong> <a ng-click="material.display_id = null">clear selection</a></label>
-              <div ng-repeat="display in displays_list" class="radio">
+              <label for="display"><strong>Display: </strong> 
+              <div ng-repeat="display in displays_list" class="checkbox">
                 <label>
-                  <input style="display: inline-block;" type="radio" name="optradio" ng-model="material.display_id" ng-value="display._id">{{display.name}}
-                  <input style="display: inline-block; width: 200px; margin-left: 10px;"  ng-if="material.display_id == display._id && display._id == displays_list.length-1" type="text" ng-model="material.other_display" name="other_display" id="other_display" class="form-control" placeholder="Other" required/>
+                  <input style="display: inline-block;" type="checkbox" name="optradio" ng-model="displays_selection[display._id]" ng-value="display._id">{{display.name}}
                 </label>
               </div>
             </div>

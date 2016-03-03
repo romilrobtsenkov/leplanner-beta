@@ -119,6 +119,8 @@
         $scope.material = {};
         $scope.material.involvement_level =  0;
 
+        $scope.displays_selection = [];
+
         $scope.manageModal('show');
       };
 
@@ -133,6 +135,12 @@
           $scope.material_position = 'top';
         }
         $scope.material = material;
+
+        $scope.displays_selection = [];
+        //console.log(material.displays);
+        for(var i = 0; i < material.displays.length; i++){
+            $scope.displays_selection[material.displays[i]] = true;
+        }
 
         $scope.manageModal('show');
       };
@@ -204,6 +212,18 @@
 
         $scope.material.activity_id = $scope.activity._id;
         $scope.material.position =$scope.material_position;
+
+        //rearrange displays
+        var temp_arr = [];
+        for(var i = 0; i < $scope.displays_list.length; i++){
+            //if checked then true
+            if($scope.displays_selection[$scope.displays_list[i]._id]){
+                //console.log($scope.displays_list[i]._id);
+                temp_arr.push($scope.displays_list[i]._id);
+            }
+        }
+
+        $scope.material.displays = temp_arr;
 
         var params = {
           user: {
