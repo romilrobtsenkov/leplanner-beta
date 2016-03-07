@@ -144,4 +144,78 @@ router.get('/update-displays/', restrict,  function(req, res, next) {
 
 });
 
+router.get('/update-conveyors/', restrict,  function(req, res, next) {
+  /*console.log('updating');
+  async.waterfall([
+    function(next){
+        var q = {};
+        q.args = {};
+        mongoService.find(q, Material, function(err, materials){
+          if (err) { return next({error: err}); }
+          if(materials){
+
+              console.log(materials.length);
+              //console.log(scenarios[0]._id);
+              //console.log(scenarios[0].subjects.length);
+
+              var array = [];
+
+              for(var i = 0; i < materials.length; i++){
+                  if(materials[i].conveyor_name !== null && typeof materials[i].conveyor_name !== 'undefined'){
+
+                      //if already has not
+                     if(materials[i].conveyors.length === 0){
+
+                        var new_conveyor = {
+                            name: materials[i].conveyor_name
+                        };
+
+
+                         if(materials[i].conveyor_url){
+                             new_conveyor.url = materials[i].conveyor_url;
+                         }
+
+                         var conveyors = [];
+                         conveyors.push(new_conveyor);
+                         console.log(new_conveyor);
+
+                         array.push({_id: materials[i]._id, conveyors: conveyors});
+                     }
+                  }
+              }
+
+              //console.log(array);
+
+              next(null, array);
+          }
+        });
+        console.log('updating');
+
+
+    },
+    function(materials, next){
+
+        for(var i = 0; i < materials.length; i++){
+
+            var q = {};
+            q.where = {"_id": materials[i]._id};
+            q.update = { conveyors: materials[i].conveyors};
+
+            mongoService.update(q, Material, function(err, m){
+              if (err) { return next({error: err}); }
+              console.log('updated '+ m._id + ' ' + m.conveyors.length);
+              //next(null, success);
+          });
+      }
+
+
+      next(null, {hello: 'success'});
+    }
+  ], function (err, result) {
+    if(err){ res.json(err); }
+    res.json(result);
+});*/
+
+});
+
 module.exports = router;
