@@ -17,6 +17,7 @@
       $scope.materials = [];
       $scope.involvement_options = [];
       $scope.displays_list = [];
+      $scope.conveyor_list = [];
 
       $scope.whois_material = '';
       $scope.activity = null;
@@ -121,6 +122,11 @@
 
         $scope.displays_selection = [];
 
+        //empty conveyor on empty material
+        $scope.material.conveyors = [
+            {name: null, url: null},
+        ];
+
         $scope.manageModal('show');
       };
 
@@ -138,8 +144,16 @@
 
         $scope.displays_selection = [];
         //console.log(material.displays);
+
         for(var i = 0; i < material.displays.length; i++){
             $scope.displays_selection[material.displays[i]] = true;
+        }
+
+        // empty conveyor add empty one
+        if($scope.material.conveyors.length === 0){
+            $scope.material.conveyors = [
+                {name: null, url: null},
+            ];
         }
 
         $scope.manageModal('show');
@@ -224,6 +238,16 @@
         }
 
         $scope.material.displays = temp_arr;
+        console.log($scope.material.conveyors);
+        //clean empty conveyors
+        for(var j = 0; j < $scope.material.conveyors.length; j++){
+            //if both name and url empty
+            console.log(!$scope.material.conveyors[j].name && !$scope.material.conveyors[j].url);
+            if(!$scope.material.conveyors[j].name && !$scope.material.conveyors[j].url){
+                //console.log($scope.displays_list[i]._id);
+                $scope.material.conveyors.splice(j, 1);
+            }
+        }
 
         var params = {
           user: {
@@ -345,6 +369,14 @@
           }
         }
 
+      };
+
+      $scope.addNewActivityItem = function(){
+        $scope.material.conveyors.push({name: null, url: null});
+      };
+
+      $scope.removeActivityItem = function(index){
+        $scope.material.conveyors.splice(index, 1);
       };
 
 

@@ -20,7 +20,7 @@
           <div class="col-sm-5">
 
             <div class=" form-group">
-              <label for="material_name"><strong>Name: </strong></label>
+              <label for="material_name"><strong>Title: </strong></label>
               <input type="text" ng-model="material.material_name" name="material_name" id="material_name" class="form-control" placeholder="Name" required/>
             </div>
 
@@ -28,14 +28,14 @@
           <div class="col-sm-7">
 
             <div class=" form-group">
-              <label for="material_url"><strong>URL:</strong></label>
+              <label for="material_url"><strong>Location:</strong></label>
               <input type="text" ng-model="material.material_url" name="material_url" id="material_url" class="form-control" placeholder="URL" required/>
             </div>
 
           </div>
         </div>
 
-        <div class="row no-margin">
+        <div ng-if="whois_material != 'Teacher'" class="row no-margin">
           <h4>Involvement</h4>
           <div class="col-sm-6">
 
@@ -50,21 +50,54 @@
 
         <div class="row no-margin">
           <h4>Conveyor</h4>
-          <div class="col-sm-5">
 
-            <div class=" form-group">
-              <label for="conveyor_name"><strong>Name: </strong></label>
-              <input type="text" ng-model="material.conveyor_name" name="conveyor_name" id="conveyor_name" class="form-control" placeholder="Name" required/>
-            </div>
+          <div class="row single-activity-item-labels no-margin">
+              <div class="col-xs-5">
 
+                <div class=" form-group">
+                  <label for="conveyor_name"><strong>Name: </strong></label>
+                </div>
+
+              </div>
+              <div class="col-xs-5">
+
+                <div class=" form-group">
+                  <label for="conveyor_url"><strong>URL:</strong></label>
+                </div>
+
+              </div>
           </div>
-          <div class="col-sm-7">
 
-            <div class=" form-group">
-              <label for="conveyor_url"><strong>URL:</strong></label>
-              <input type="text" ng-model="material.conveyor_url" name="conveyor_url" id="conveyor_url" class="form-control" placeholder="URL" required/>
+
+          <div class="row single-activity-item no-margin" ng-repeat="conveyor in material.conveyors track by $index">
+
+              <div class="col-sm-5">
+
+                <div class=" form-group">
+                  <input type="text" ng-model="conveyor.name" name="conveyor_name" id="conveyor_name" class="form-control" placeholder="Name" required/>
+                </div>
+
+              </div>
+              <div class="col-sm-5 col-xs-10">
+
+                <div class=" form-group">
+                  <input type="text" ng-model="conveyor.url" name="conveyor_url" id="conveyor_url" class="form-control" placeholder="URL" required/>
+                </div>
+
+              </div>
+              <div class="col-xs-2">
+
+                <div class=" form-group">
+                    <button ng-click="removeActivityItem($index)" class="btn btn-sm btn-default pull-left"><span class="glyphicon glyphicon-remove"></span></button>
+                </div>
+
+              </div>
+          </div>
+
+          <div style="margin-bottom: 30px;" class="row">
+            <div class="col-sm-12">
+              <button ng-click="addNewActivityItem()" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-plus"></span></button>
             </div>
-
           </div>
         </div>
 
@@ -73,7 +106,7 @@
           <div class="col-sm-8">
 
             <div class=" form-group">
-              <label for="display"><strong>Display: </strong> 
+              <label for="display"><strong>Display: </strong>
               <div ng-repeat="display in displays_list" class="checkbox">
                 <label>
                   <input style="display: inline-block;" type="checkbox" name="optradio" ng-model="displays_selection[display._id]" ng-value="display._id">{{display.name}}
