@@ -546,35 +546,52 @@
                                 this.activities_wrapper.appendChild(material_wrapper);
 
                                 //CONVEYOR
-                                var conveyor = null;
-                                if(material.conveyor_name){
+                                var conveyors = [];
+                                //console.log(material.conveyors);
+                                if(material.conveyors.length > 0){
 
-                                    var conveyor_style = this.getConveyorStyle(material, wrapper_style);
+                                    for(var k = 0; k < material.conveyors.length; k++){
 
-                                    // LINK TO CONVEYOR
-                                    conveyor = createElementWithStyle('a','.conveyor-container '+material.position, conveyor_style);
-                                    if(material.conveyor_url){
-                                        // ICON IMAGE
-                                        var conveyor_icon = new Image();
-                                        conveyor_icon.className = 'conveyor-icon';
-                                        conveyor_icon.src = '/images/favs/icon_'+escapeRegExp(material.conveyor_url)+'.png';
-                                        conveyor_icon.style.width = this.conveyor_icon_size + 'px';
-                                        conveyor.appendChild(conveyor_icon);
+                                        var current_conveyor = material.conveyors[k];
 
-                                        conveyor.href = material.conveyor_url;
-                                        conveyor.target = '_blank';
+                                        if(current_conveyor.name){
+
+                                            var conveyor_style = this.getConveyorStyle(material, wrapper_style, k, material.conveyors.length);
+
+                                            // LINK TO CONVEYOR
+                                            var conveyor = createElementWithStyle('a','.conveyor-container '+material.position, conveyor_style);
+                                            if(current_conveyor.url){
+                                                // ICON IMAGE
+                                                var conveyor_icon = new Image();
+                                                conveyor_icon.className = 'conveyor-icon';
+                                                conveyor_icon.src = 'http://www.google.com/s2/favicons?domain='+current_conveyor.url;
+                                                conveyor_icon.style.width = this.conveyor_icon_size + 'px';
+                                                conveyor.appendChild(conveyor_icon);
+
+                                                //fix url
+                                                if (!current_conveyor.url.match(/^[a-zA-Z]+:\/\//))
+                                                {
+                                                    current_conveyor.url = 'http://' + current_conveyor.url;
+                                                }
+
+                                                conveyor.href = current_conveyor.url;
+                                                conveyor.target = '_blank';
+                                            }
+                                            conveyor.title = current_conveyor.name;
+
+
+                                            //APPEND CONVEYOR
+                                            material_wrapper.appendChild(conveyor);
+
+                                            conveyors.push({index: k, conveyor: conveyor});
+                                        }
                                     }
-                                    conveyor.title = material.conveyor_name;
-
-
-                                    //APPEND CONVEYOR
-                                    material_wrapper.appendChild(conveyor);
                                 }
 
                                 // DISPLAY
                                 var displays = [];
                                 //adpat to displays
-                                console.log(material.displays);
+                                //console.log(material.displays);
                                 if(material.displays.length > 0){
 
                                     for(var j = 0; j < material.displays.length; j++){
@@ -623,7 +640,7 @@
                                 this.materialElements.push({
                                     material: material,
                                     element: material_wrapper,
-                                    conveyor: conveyor,
+                                    conveyors: conveyors,
                                     displays: displays
                                 });
 
@@ -713,7 +730,14 @@
                     return button_wrapper;
                 },
                 getMateriaMainStyle: function(material){
+
                     var m_height = 29 + (this.material_height * material.involvement_level);
+
+                    // DISABLE teacher involvement_level
+                    if(material.position === 'top'){
+                        m_height = 10 + this.material_height;
+                    }
+
                     var m_top = this.y + this.height;
                     if(material.position === 'top'){
                         m_top -=  this.height + m_height;
@@ -727,7 +751,7 @@
                         backgroundColor: 'transparent',
                     };
                 },
-                getConveyorStyle: function(material, material_style){
+                getConveyorStyle: function(material, material_style, index, count){
                     var padding_top = 4;
 
                     var conveyor_top = null;
@@ -739,9 +763,10 @@
                     }
 
                     /* TODO IF there is no room, hide */
+                    var padding = 3;
 
                     return {
-                        left: this.width - this.conveyor_icon_size - 8  + 'px',
+                        left: this.width - this.conveyor_icon_size - 8 - count*padding + index * padding + padding  + 'px',
                         top: conveyor_top + 'px'
                     };
                 },
@@ -760,7 +785,7 @@
                     var padding = 3;
 
                     return {
-                        left: count*padding - index * padding + 'px',
+                        left: count*padding - index * padding - padding+ 'px',
                         top: display_top + 'px'
                     };
                 },
@@ -790,17 +815,19 @@
 
                             var material = this.materialElements[i].material;
                             var material_element = this.materialElements[i].element;
-                            var conveyor = this.materialElements[i].conveyor;
+                            var conveyors = this.materialElements[i].conveyors;
                             var displays = this.materialElements[i].displays;
 
                             //MATERIAL
                             var material_style = this.getMateriaMainStyle(material);
                             setElementStyle(material_element, material_style);
 
-                            //CONVEYOR
-                            if(conveyor){
-                                var conveyor_style = this.getConveyorStyle(material, material_style);
-                                setElementStyle(conveyor, conveyor_style);
+                            //CONVEYORS
+                            if(conveyors.length > 0){
+                                for(var k = 0; k < conveyors.length; k++){
+                                    var conveyor_style = this.getConveyorStyle(material, material_style, k, conveyors.length);
+                                    setElementStyle(conveyors[k].conveyor, conveyor_style);
+                                }
                             }
 
                             //DISPLAYS
