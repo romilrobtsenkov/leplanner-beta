@@ -31,6 +31,9 @@
                 this.zoom = false;
                 this.activity_min_px_for_zoom = 50;
 
+                // center height
+                this.top_percent = 25;
+
                 //resize delay var
                 this.resizeDelay = null;
 
@@ -96,7 +99,7 @@
                     // wrapper
                     var timeline_wrapper = document.querySelector(this.config.scenarioWrapperId);
                     var width = timeline_wrapper.offsetWidth - border_fix;
-                    var height = Math.round(timeline_wrapper.offsetWidth * (9/16));
+                    var height = Math.round(timeline_wrapper.offsetWidth * (8/16));
                     this.zoom_start_width = width;
 
                     if(this.zoom){
@@ -230,7 +233,7 @@
                 DrawLine: function(width, height, thickness, color, timeline){
                     var style = {
                         //top: height/2 + 'px',
-                        top: '50%',
+                        top: this.top_percent + '%',
                         left: 0 + 'px',
                         //width: width + 'px',
                         width: '100%',
@@ -355,14 +358,14 @@
                     this.minute_constant = ((Planner.instance_.WIDTH-((getScopeList().length+1)*padding))/Planner.instance_.activities_duration); // min in px
                     this.x = parseInt((this.minute_constant * this.start) + ((this.index+1)* padding));
                     this.height = 20;
-                    this.y = parseInt(Planner.instance_.HEIGHT/2-this.height/2);
+                    this.y = parseInt((Planner.instance_.HEIGHT*Planner.instance_.top_percent/100)-this.height/2);
                     this.width = parseInt(this.minute_constant * this.duration);
 
                     if(this.width < Planner.instance_.activity_min_px_for_zoom){
                         Planner.instance_.activity_min_px_for_zoom = this.width;
                     }
-
-                    this.material_height = Math.round(Planner.instance_.HEIGHT*Planner.instance_.HEIGHT  / 10000); //30 is just some constant, used in level * this
+                    //var height_dim = Planner.instance_.HEIGHT * Planner.instance_.top_percent / 100;
+                    this.material_height = Math.round(Planner.instance_.HEIGHT * Planner.instance_.HEIGHT  / 6000); // 6000 is just some constant, used in level * this
 
                 },
                 createActivity: function(){
