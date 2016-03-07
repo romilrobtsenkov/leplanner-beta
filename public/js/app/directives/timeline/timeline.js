@@ -719,6 +719,8 @@
                 createAddButtonOverflow: function(style, pos, activity_id){
                     //console.log(activity_id);
                     var button_wrapper = createElementWithStyle('div','.new-material-button '+pos, style, null, {attribute: 'data-id', value: activity_id});
+                    button_wrapper.setAttribute('style', button_wrapper.getAttribute('style') +' background-color:'+ style.backgroundColor +' !important;');
+
                     var button_overflow = createElementWithStyle('a','.new-add '+pos, {backgroundColor: 'rgba(0,0,0,0.2)'});
                     button_overflow.title = Planner.instance_.config.add; // title for tooltip
                     var add_text = document.createTextNode(Planner.instance_.config.add);
@@ -853,14 +855,15 @@
                             //console.log('created new top');
                             var top_style = this.getAddNewButtonStyle('top');
                             setElementStyle(button_top, top_style);
-
+                            //for printig
+                            button_top.setAttribute('style', button_top.getAttribute('style') +' background-color:'+ top_style.backgroundColor +' !important;');
                         }
 
                         if(button_bottom){
                             //console.log('created new bottom');
                             var bottom_style = this.getAddNewButtonStyle('bottom');
                             setElementStyle(button_bottom, bottom_style);
-
+                            button_bottom.setAttribute('style', button_bottom.getAttribute('style') +' background-color:'+ bottom_style.backgroundColor +' !important;');
                         }
                     }
 
