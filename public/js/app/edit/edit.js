@@ -267,6 +267,12 @@
           // enable save button
           $scope.saving_material = undefined;
 
+          if($scope.material.conveyors.length === 0){
+              $scope.material.conveyors = [
+                  {name: null, url: null},
+              ];
+          }
+
           if(data.material){
             console.log('saved');
             // replace updated material
