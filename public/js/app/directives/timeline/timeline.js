@@ -592,6 +592,7 @@
                                                 conveyor_icon.className = 'conveyor-icon';
                                                 conveyor_icon.src = 'http://www.google.com/s2/favicons?domain='+current_conveyor.url;
                                                 conveyor_icon.style.width = this.conveyor_icon_size + 'px';
+                                                conveyor_icon.style.height = this.conveyor_icon_size + 'px';
                                                 conveyor.appendChild(conveyor_icon);
 
                                                 //fix url
