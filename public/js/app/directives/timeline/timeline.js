@@ -647,6 +647,7 @@
                                         display_icon.className = 'display-icon';
                                         display_icon.src = 'images/'+$scope.displays_list[current_display].icon;
                                         display_icon.style.width = this.display_icon_size + 'px';
+                                        display_icon.style.height = this.display_icon_size + 'px';
 
                                         var display_style = this.getDisplayStyle(material, wrapper_style, j, material.displays.length);
 
