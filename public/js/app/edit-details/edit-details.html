@@ -20,12 +20,22 @@
         </div>
       </div>
 
-      <div class="row no-margin">
-        <div class=" form-group">
-          <label for="description"><strong>Description:</strong></label>
-          <textarea class="form-control" id="description" ng-model="scenario.description" placeholder="Add a description to the subject" name="description"></textarea>
-        </div>
+     </div>
+   </div>
+
+   <div class="row no-margin">
+     <div class="col-sm-11">
+         <div class="row no-margin">
+           <div class=" form-group">
+             <label for="description"><strong>Description:</strong></label>
+             <textarea ng-focus="resizeTextarea()" class="form-control" id="description" ng-model="scenario.description" placeholder="Add a description to the subject" name="description"></textarea>
+           </div>
+         </div>
       </div>
+   </div>
+
+   <div class="row no-margin">
+     <div class="col-sm-4">
 
       <div class="row no-margin">
         <div class=" form-group">

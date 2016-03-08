@@ -1261,6 +1261,15 @@ a.delete-link {
     display: block;
 }
 
+textarea#description {
+    max-width: 100%;
+    min-width: 100px;
+}
+
+.enable-lines {
+    white-space: pre-line;
+}
+
 @page { size: A4 landscape }
 
 @media print {

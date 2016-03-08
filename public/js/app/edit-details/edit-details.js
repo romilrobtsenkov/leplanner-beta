@@ -183,7 +183,19 @@
         $scope.$watch("activity_list", function(v) {
           userChangedScenario();
         }, true);
+
+        //resize textare on change
+        $scope.$watch("scenario.description", function(v) {
+          $scope.resizeTextarea();
+        }, true);
       }
+
+      $scope.resizeTextarea = function(){
+          var el = angular.element("#description")[0];
+          var heightLimit = 400;
+          el.style.height = ""; /* Reset the height*/
+          el.style.height = Math.min(el.scrollHeight, heightLimit) + "px";
+      };
 
       $scope.saveScenario = function(scenario) {
         saveScenarioData({forward_to_edit_canvas: true});
