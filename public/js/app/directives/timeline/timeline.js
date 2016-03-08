@@ -52,8 +52,8 @@
                 ColorAddNewButtonOffClass: 'rgb(202,255,190)',
                 legendInClass: 'tunnitegevus (in-class)',
                 legendOffClass: 'muu (off-class)',
-                aboveAxisLegend: 'õpetaja (teacher)',
-                belowAxisLegend: 'õpilane (student)',
+                aboveAxisLegend: 'üleval õpetajale (teacher)',
+                belowAxisLegend: 'all õpilasele (student)',
                 defaultFontSize: 12,
                 org_language: 'name_eng',
                 edit: 'Edit',
@@ -174,9 +174,14 @@
 
                     // legend
                     var spaceFromBottom = 15;
+                    var spaceFromTop= 15;
                     var box_dim = 11;
                     this.Drawlegend(this.config.legendInClass, 0+15, spaceFromBottom, box_dim, box_dim, this.config.ColorInClass, this.timeline);
                     this.Drawlegend(this.config.legendOffClass, 160, spaceFromBottom, box_dim, box_dim, this.config.ColorOffClass, this.timeline);
+
+                    //text legend for teacher and student side
+                    this.DrawTextlegend(this.config.aboveAxisLegend, spaceFromTop, this.timeline, true); //true for top
+                    this.DrawTextlegend(this.config.belowAxisLegend, spaceFromBottom, this.timeline);
 
                     //line
                     this.DrawLine(this.WIDTH, this.HEIGHT, 1, 'lightgray', this.timeline);
@@ -230,6 +235,21 @@
                         left: x + textPadding + 'px'
                     };
                     style.left = x + textPadding + 'px';
+                    var textEl = createElementWithStyle('div','.legend-text', textStyle, text);
+                    timeline.appendChild(textEl);
+                },
+                DrawTextlegend: function(text, x, timeline, top){
+
+                    var textPadding = 17;
+                    var textStyle = {
+                        bottom: x + 'px',
+                        right: textPadding + 'px'
+                    };
+                    if(top){
+                        textStyle.bottom = 'none';
+                        textStyle.top = x + 'px';
+                    }
+
                     var textEl = createElementWithStyle('div','.legend-text', textStyle, text);
                     timeline.appendChild(textEl);
                 },
