@@ -896,7 +896,7 @@ a.delete-link {
 
 #scenario-wrapper {
     border: 1px solid lightgray;
-    overflow: scroll;
+    overflow-x: auto;
     -webkit-overflow-scrolling: touch;
 }
 
