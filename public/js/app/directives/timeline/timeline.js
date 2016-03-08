@@ -32,7 +32,7 @@
                 this.activity_min_px_for_zoom = 50;
 
                 // center height
-                this.top_percent = 25;
+                this.top_percent = 30;
 
                 //resize delay var
                 this.resizeDelay = null;
@@ -154,6 +154,9 @@
                     for (var i=0; i<this.timeouts.length; i++) {
                       clearTimeout(this.timeouts[i]);
                     }
+
+                    //clear popovers
+                    jQuery('.has-popover').popover('hide');
 
                     this.resize();
 
@@ -580,8 +583,8 @@
                                                 conveyor.href = current_conveyor.url;
                                                 conveyor.target = '_blank';
                                             }
-                                            conveyor.title = current_conveyor.name;
-
+                                            //conveyor.title = current_conveyor.name; hide for popover_content
+                                            conveyor.setAttribute('data-popdata', current_conveyor.name);
 
                                             //APPEND CONVEYOR
                                             material_wrapper.appendChild(conveyor);
@@ -589,6 +592,25 @@
                                             conveyors.push({index: k, conveyor: conveyor});
                                         }
                                     }
+
+                                    var last_conveyor = conveyors[conveyors.length-1].conveyor;
+                                    last_conveyor.className += " has-popover";
+                                    last_conveyor.setAttribute('data-toggle', 'popover');
+
+                                    //create HTML
+                                    var popover_content = document.createElement('div');
+                                    for(var d = 0; d < conveyors.length; d++){
+
+                                        var conveyor_clone = conveyors[d].conveyor.cloneNode(true);
+                                        var textdata = document.createTextNode(conveyor_clone.dataset.popdata);
+                                        conveyor_clone.appendChild(textdata);
+                                        conveyor_clone.className = "inner-conveyor-icon";
+                                        popover_content.appendChild(conveyor_clone);
+
+                                        // remove hrefs for clicks
+                                        conveyors[d].conveyor.removeAttribute('href');
+                                    }
+                                    this.createPopover(last_conveyor, popover_content);
                                 }
 
                                 // DISPLAY
@@ -610,7 +632,10 @@
 
                                         // DISPLAY CONTAINER DIV
                                         var display = createElementWithStyle('div','.display-container '+material.position, display_style);
-                                        display.title = $scope.displays_list[current_display].name;
+                                        //display.title = $scope.displays_list[current_display].name; hide for popover
+
+                                        //name for popover
+                                        display.setAttribute("data-popdata", $scope.displays_list[current_display].name);
 
                                         display.appendChild(display_icon);
 
@@ -618,6 +643,23 @@
                                         material_wrapper.appendChild(display);
                                         displays.push({index: j, display: display});
                                     }
+
+                                    // BOOTSTRAP POPOVER for first display even if has multiple
+                                    var last_display = displays[displays.length-1].display;
+                                    last_display.className += " has-popover";
+                                    last_display.setAttribute('data-toggle', 'popover');
+                                    //create HTML
+                                    var pop_content = document.createElement('div');
+                                    for(var e = 0; e < displays.length; e++){
+
+                                        var display_clone = displays[e].display.cloneNode(true);
+                                        var display_textdata = document.createTextNode(display_clone.dataset.popdata);
+                                        display_clone.appendChild(display_textdata);
+                                        display_clone.className = "inner-display-icon";
+                                        pop_content.appendChild(display_clone);
+                                    }
+                                    this.createPopover(last_display, pop_content);
+
                                 }
 
                                 //EDIT LINK IF IN EDIT MODE
@@ -654,6 +696,35 @@
 
                     this.updateAddNewButtons();
 
+                },
+                createPopover: function(el, content){
+                    // BOOTSTRAP - http://stackoverflow.com/questions/15989591/how-can-i-keep-bootstrap-popover-alive-while-the-popover-is-being-hovered
+                    jQuery(el).popover({
+                        animation: false,
+                        content: content,
+                        trigger: 'manual',
+                        container: "#scenario-timeline-wrapper",
+                        viewport: "#scenario-timeline-wrapper",
+                        placement: 'right auto',
+                        html: true
+                    }).on("mouseenter", function () {
+                        var _this = this;
+
+                        //clear popovers
+                        jQuery('.has-popover').popover('hide');
+
+                        jQuery(this).popover("show");
+                        jQuery(".popover").on("mouseleave", function () {
+                            jQuery(_this).popover('hide');
+                        });
+                    }).on("mouseleave", function () {
+                        var _this = this;
+                        setTimeout(function () {
+                        if (!jQuery(".popover:hover").length) {
+                            jQuery(_this).popover("hide");
+                        }
+                        }, 300);
+                    });
                 },
                 materialExists: function(material){
                     for(var i = 0; i < this.materialElements.length; i++){
