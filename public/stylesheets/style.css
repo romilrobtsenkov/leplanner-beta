@@ -1234,6 +1234,14 @@ a.delete-link {
     border-radius: 999em;
 }
 
+.tooltip {
+    z-index: 25;
+}
+
+.tooltip-inner {
+    border-radius: 0;
+}
+
 .popover {
     line-height: 1.4;
     font-size: 12px;
@@ -1245,8 +1253,12 @@ a.delete-link {
 }
 
 .popover.right>.arrow {
-    border-right-color: #e6e6e6;
-    border-right-color:rgba(0,0,0,.3);
+    border-right-color: #ededed;
+    border-right-color:rgba(0,0,0,.1);
+}
+.popover.left>.arrow {
+    border-left-color: #ededed;
+    border-left-color:rgba(0,0,0,.1);
 }
 
 .popover-content {

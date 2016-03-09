@@ -52,8 +52,10 @@
                 ColorAddNewButtonOffClass: 'rgb(202,255,190)',
                 legendInClass: 'tunnitegevus (in-class)',
                 legendOffClass: 'muu (off-class)',
-                aboveAxisLegend: 'üleval õpetajale (teacher)',
-                belowAxisLegend: 'all õpilasele (student)',
+                aboveAxisLegend: 'õpetaja (teacher)',
+                belowAxisLegend: 'õpilane (student)',
+                AddaboveAxisLegend: 'materjal õpetajale (for teacher)',
+                AddbelowAxisLegend: 'materjal õpilasele (for student)',
                 defaultFontSize: 12,
                 org_language: 'name_eng',
                 edit: 'Edit',
@@ -155,8 +157,9 @@
                       clearTimeout(this.timeouts[i]);
                     }
 
-                    //clear popovers
+                    //clear popovers & tooltips
                     jQuery('.has-popover').popover('hide');
+                    jQuery('.has-tooltip').tooltip('hide');
 
                     this.resize();
 
@@ -818,13 +821,21 @@
                     var button_wrapper = createElementWithStyle('div','.new-material-button '+pos, style, null, {attribute: 'data-id', value: activity_id});
                     button_wrapper.setAttribute('style', button_wrapper.getAttribute('style') +' background-color:'+ style.backgroundColor +' !important;');
 
-                    var button_overflow = createElementWithStyle('a','.new-add '+pos, {backgroundColor: 'rgba(0,0,0,0.2)'});
-                    button_overflow.title = Planner.instance_.config.add; // title for tooltip
+                    var button_overflow = createElementWithStyle('a','.new-add has-tooltip '+pos, {backgroundColor: 'rgba(0,0,0,0.2)'});
                     var add_text = document.createTextNode(Planner.instance_.config.add);
                     var add_text_span = document.createElement('span');
                     add_text_span.appendChild(add_text);
                     button_overflow.appendChild(add_text_span);
                     button_wrapper.appendChild(button_overflow);
+
+                    //add tooltip
+                    if(pos == "top"){
+                        button_overflow.title = Planner.instance_.config.AddaboveAxisLegend;
+                        jQuery(button_overflow).tooltip({container: '#scenario-timeline-wrapper', animation: false, placement: "auto "+pos, html: true});
+                    }else if(pos == "bottom"){
+                        button_overflow.title = Planner.instance_.config.AddbelowAxisLegend;
+                        jQuery(button_overflow).tooltip({container: '#scenario-timeline-wrapper', animation: false, placement: "auto "+pos, html: true});
+                    }
 
                     return button_wrapper;
                 },
