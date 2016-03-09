@@ -596,12 +596,13 @@
                                                 conveyor.appendChild(conveyor_icon);
 
                                                 //fix url
-                                                if (!current_conveyor.url.match(/^[a-zA-Z]+:\/\//))
+                                                var new_url = current_conveyor.url;
+                                                if (!new_url.match(/^[a-zA-Z]+:\/\//))
                                                 {
-                                                    current_conveyor.url = 'http://' + current_conveyor.url;
+                                                    new_url = 'http://' + new_url;
                                                 }
 
-                                                conveyor.href = current_conveyor.url;
+                                                conveyor.href = new_url;
                                                 conveyor.target = '_blank';
                                             }
                                             //conveyor.title = current_conveyor.name; hide for popover_content
