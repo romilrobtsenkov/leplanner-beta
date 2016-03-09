@@ -576,7 +576,7 @@
                                 //console.log(material.conveyors);
                                 if(material.conveyors.length > 0){
 
-                                    for(var k = 0; k < material.conveyors.length; k++){
+                                    for(var k = material.conveyors.length-1; k >= 0 ; k--){
 
                                         var current_conveyor = material.conveyors[k];
 
