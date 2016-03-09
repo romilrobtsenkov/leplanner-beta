@@ -835,6 +835,10 @@ label {
     padding-left: 0px;
 }
 
+.dropdown-menu li {
+    cursor: pointer;
+}
+
 .activity-list-container {
     margin-top: 30px;
     margin-bottom: 30px;
