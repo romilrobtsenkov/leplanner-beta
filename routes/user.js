@@ -9,6 +9,8 @@ var Follower = require('../models/follower').Follower;
 var User = require('../models/user').User;
 var Notification = require('../models/notification').Notification;
 
+var validateService = require('../services/validate-service');
+
 var config = require('../config/config');
 var restrict = require('../auth/restrict');
 var async = require('async');
