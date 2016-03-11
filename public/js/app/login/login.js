@@ -34,6 +34,9 @@
       $scope.login = function(user){
 
         $scope.login_in_process = true;
+        if(!user){
+            user = {};
+        }
 		user.new_beta_code = 'tallinnaülikool';
         requestService.post('/user/login', {email: user.email, password: user.password, remember_me: user.remember_me})
           .then(function(data) {
