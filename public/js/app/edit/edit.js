@@ -290,10 +290,10 @@
               case 0:
                 $scope.materialErrorMessage = 'Material name can not be empty';
                 break;
-              case 1:
+              /*case 1:
                 $scope.materialErrorMessage = 'Material url can not be empty';
                 break;
-              /*case 2:
+              case 2:
                 $scope.materialErrorMessage = 'Conveyor name can not be empty';
                 break;
               case 3:
