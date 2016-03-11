@@ -1,5 +1,5 @@
-exports.count = function(q, next){
-    Favorite.count(q.args, function (err, count) {
+exports.count = function(q, Collection, next){
+    Collection.count(q.args, function (err, count) {
         next(err, count);
     });
 };
