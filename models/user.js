@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var userService = require('../services/user-service');
+var mongoService = require('../services/mongo-service');
+var User = require('../models/user').User;
 
 var userSchema = new Schema({
   first_name: {type: String, required: true },
@@ -23,7 +24,7 @@ var userSchema = new Schema({
 userSchema.path('email').validate(function(value, next) {
   var q = {};
   q.args = {"email": value};
-  userService.findOne(q, function(err, user) {
+  mongoService.findOne(q, User, function(err, user) {
     if (err) { return next(false); }
     next(!user);
   });
