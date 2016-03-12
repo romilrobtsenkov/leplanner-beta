@@ -1,4 +1,6 @@
 {
+    "BUTTON_LANG": "language",
+    
     "HEADING": {
         "SUBJECTS": "Subjects",
         "SEARCH": "Search",
@@ -49,10 +51,8 @@
         "LOG_IN": "Log in",
         "SIGN_UP": "Sign up",
         "CREATE_MY_ACCOUNT": "Create my account",
-        "CREATE_USER": "Create user",
         "RESET_PASSWORD": "Reset password",
         "REMEMBER_ME": "Remember me",
-        "PASSWORD_AGAIN": "Password again",
 
         "OPEN": "Open",
         "SEARCH": "Search",
@@ -114,8 +114,6 @@
         "FOR_KEYWORD": "for keyword",
         "FILTER_USERS": "Filter by first name / last name / organization",
 
-        "CREATE_SCENARIO": "Create scenario",
-        "EDIT": "Edit",
         "TITLE": "Title",
         "DESCRIPTION": "Description",
         "SUBJECTS": "Subjects",
@@ -125,14 +123,9 @@
         "ACTIVITIES": "Activities",
         "ACTIVITY": "Activity",
         "INCLASS": "in-class",
-        "OFFCLASS": "off-class",
         "PUBLISH": "Publish",
-        "DRAFT": "Draft",
-        "PUBLISHED": "Published",
         "I_WANT_TO_DELETE": "I want to delete my scenario",
 
-        "STUDENT": "Student",
-        "TEACHER": "Teacher",
         "CO_AUTHORSHIP": "Level of Co-Authorship",
         "CONVEYOR": "Conveyor",
         "CONVEYOR_NAME": "Name",
@@ -145,30 +138,30 @@
     },
 
     "NOTICE": {
-        "UNKNOWN": "Unknown error",
-        "WRONG_CREDENTIALS": "Wrong credentials",
-        "PLEASE_ENTER_YOUR": "Please enter",
-        "CORRECT_EMAIL": "correct email",
-        "PASSWORD_MIN_LENGTH": "Password has to be min 8 chars long",
-        "EMAIL_IN_USE": "That email is already in use",
-        "NO_SUCH_EMAIL": "There is no such email",
-        "ENTER_ALL": "Please enter all fields",
-        "TOKEN_EXPIRED": "Token expired",
-        "REQUEST_NEW_TOKEN": "Request new token",
+        "-UNKNOWN": "Unknown error",
+        "-WRONG_CREDENTIALS": "Wrong credentials",
+        "-PLEASE_ENTER_YOUR": "Please enter",
+        "-CORRECT_EMAIL": "correct email",
+        "-PASSWORD_MIN_LENGTH": "Password has to be min 8 chars long",
+        "-EMAIL_IN_USE": "That email is already in use",
+        "-NO_SUCH_EMAIL": "There is no such email",
+        "-ENTER_ALL": "Please enter all fields",
+        "-TOKEN_EXPIRED": "Token expired",
+        "-REQUEST_NEW_TOKEN": "Request new token",
 
-        "COMMENT_EMPTY": "Comment text cannot be empty",
+        "-COMMENT_EMPTY": "Comment text cannot be empty",
         "LOGIN_TO_COMMENT": "You have to login to comment!",
         "FIRST_TO_COMMENT": "Be the first one to comment!",
-        "WRONG_PASSWORD": "Wrong password",
-        "NEW_PASSWORD_DIFFERENT": "New password has to be different from old one",
-        "NEW_PASSWORDS_DONT_MATCH": "New passwords don't match",
+        "-WRONG_PASSWORD": "Wrong password",
+        "-NEW_PASSWORD_DIFFERENT": "New password has to be different from old one",
+        "-NEW_PASSWORDS_DONT_MATCH": "New passwords don't match",
 
-        "FILE_TO_LARGE": "File to large",
-        "WRONG_FILE_TYPE": "Wrong file type",
-        "UPLOAD_LARGER_IMAGE": "Upload larger image than 400x400px",
+        "-FILE_TO_LARGE": "File to large",
+        "-WRONG_FILE_TYPE": "Wrong file type",
+        "-UPLOAD_LARGER_IMAGE": "Upload larger image than 400x400px",
 
-        "UPDATE_SUCCESS": "Updated successfully",
-        "UPLOAD_SUCCESS": "Uploaded successfully",
+        "-UPDATE_SUCCESS": "Updated successfully",
+        "-UPLOAD_SUCCESS": "Uploaded successfully",
         "SAVING": "saving...",
         "DELETING": "deleting...",
         "ALL_SAVED": "all modifications saved",
@@ -181,21 +174,18 @@
         "FEED_EMPTY": "Follow other users who have published scenarios, their scenarios will appear here!",
         "DRAFTS_EMPTY": "Drafts of your scenarios will appear here!!",
 
-        "PLEASE_ADD_ACTIVITY": "Please add more activity",
+        "-PLEASE_ADD_ACTIVITY": "Please add more activity",
 
-        "SCENARIO_NAME_LONG": "Scenario name has to be atleast 3 chars long!",
-        "SCENARIO_DESC_LONG": "Scenario description has to be atleast 3 chars long!",
+        "-SCENARIO_NAME_LONG": "Scenario name has to be atleast 3 chars long!",
+        "-SCENARIO_DESC_LONG": "Scenario description has to be atleast 3 chars long!",
         "NO_SCENARIO": "No such scenario found, check URL!",
         "NO_USER": "No such user found, check URL",
-        "RELOAD": "Please try reloading the page",
-        "DELETE_SCENARIO": "Do you really want to delete scenario, there is no turning back!",
-        "NO_RIGHTS": "no rights",
-        "MATERIAL_NAME_REQUIRED": "Material name can not be empty",
-        "MATERIAL_EXISTS": "Material exists try reloading the page",
+        "-RELOAD": "Please try reloading the page",
+        "-DELETE_SCENARIO": "Do you really want to delete scenario, there is no turning back!",
+        "-NO_RIGHTS": "no rights",
+        "-MATERIAL_NAME_REQUIRED": "Material name can not be empty",
+        "-MATERIAL_EXISTS": "Material exists try reloading the page",
 
         "NO_USER_SCENARIOS": "User has no scenarios yet"
-
-    },
-
-    "BUTTON_LANG": "language"
+    }
 }
