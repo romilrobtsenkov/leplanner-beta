@@ -37,7 +37,7 @@
                 //resize delay var
                 this.resizeDelay = null;
 
-                //translate and then init
+                //translate and then init, TODO better solution in future
                 $translate(['BUTTON.EDIT',
                             'CONTENT.TEACHER_RESOURCE',
                             'CONTENT.STUDENT_RESOURCE',
@@ -53,7 +53,6 @@
                     Planner.instance_.config.legendOffClass = translations['CONTENT.OFFCLASS_ACTIVITY'];
                     Planner.instance_.config.aboveAxisLegend = translations['CONTENT.TEACHER_RESOURCE'];
                     Planner.instance_.config.belowAxisLegend = translations['CONTENT.STUDENT_RESOURCE'];
-
 
                     Planner.instance_.init();
                 });
@@ -216,7 +215,11 @@
 
                     if(ScopeList.length === 0 ||
                       (ScopeList.length === 1 && ScopeList[0].duration === 0)){
-                      alert('please add more acitivty');
+
+                      $translate('NOTICE.PLEASE_ADD_ACTIVITY').then(function (t) {
+                          alert(t);
+                      });
+
                       //TODO write to timeline
                       return;
                     }

@@ -15,14 +15,20 @@
         $scope.saving_in_progress = true;
 
         if(!scenario || typeof scenario.name == 'undefined' || scenario.name === '' || scenario.name.length <= 2){
-          $scope.errorMessage = 'Scenario name has to be atleast 3 chars long!';
+          //$scope.errorMessage = 'Scenario name has to be atleast 3 chars long!';
+          $translate('NOTICE.SCENARIO_NAME_LONG').then(function (t) {
+              $scope.errorMessage = t;
+          });
           $scope.saving_in_progress = undefined;
           $timeout(function() { $scope.errorMessage = null; }, 2000);
           return;
         }
 
         if(typeof scenario.description == 'undefined' || scenario.description === '' || scenario.description.length <= 2){
-          $scope.errorMessage = 'Scenario description has to be atleast 3 chars long!';
+          //$scope.errorMessage = 'Scenario description has to be atleast 3 chars long!';
+          $translate('NOTICE.SCENARIO_DESC_LONG').then(function (t) {
+              $scope.errorMessage = t;
+          });
           $scope.saving_in_progress = undefined;
           $timeout(function() { $scope.errorMessage = null; }, 2000);
           return;
@@ -58,13 +64,22 @@
                   $location.path('/');
                   break;
                 case 0:
-                  $scope.errorMessage = 'Scenario name has to be atlest 3 chars long';
+                  //$scope.errorMessage = 'Scenario name has to be atlest 3 chars long';
+                  $translate('NOTICE.SCENARIO_NAME_LONG').then(function (t) {
+                      $scope.errorMessage = t;
+                  });
                   break;
                 case 1:
-                  $scope.errorMessage = 'Scenario description has to be atlest 3 chars long';
+                  //$scope.errorMessage = 'Scenario description has to be atlest 3 chars long';
+                  $translate('NOTICE.SCENARIO_DESC_LONG').then(function (t) {
+                      $scope.errorMessage = t;
+                  });
                   break;
                 default:
-                  $scope.errorMessage = 'Unknown error';
+                  //$scope.errorMessage = 'Unknown error';
+                  $translate('NOTICE.UNKNOWN').then(function (t) {
+                      $scope.errorMessage = t;
+                  });
               }
 
               $timeout(function() { $scope.errorMessage = null; }, 2000);

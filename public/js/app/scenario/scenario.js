@@ -3,8 +3,8 @@
 
   angular
     .module('app')
-    .controller('ScenarioController', ['$scope','$rootScope','$routeParams','$location','$timeout','requestService',
-    function($scope,$rootScope,$routeParams,$location,$timeout,requestService) {
+    .controller('ScenarioController', ['$scope','$rootScope','$routeParams','$location','$timeout','requestService','$translate',
+    function($scope,$rootScope,$routeParams,$location,$timeout,requestService,$translate) {
 
       if(typeof $routeParams.id !== 'undefined'){
         $scope.scenario_id = $routeParams.id;
@@ -78,12 +78,18 @@
             $scope.fully_loaded = true;
 
           }else{
-            $scope.errorMessage = 'Please try reloading the page';
+            //$scope.errorMessage = 'Please try reloading the page';
+            $translate('NOTICE.RELOAD').then(function (t) {
+                $scope.errorMessage = t;
+            });
           }
 
           if(data.error){
             console.log(data.error);
-            $scope.errorMessage = 'Please try reloading the page';
+            //$scope.errorMessage = 'Please try reloading the page';
+            $translate('NOTICE.RELOAD').then(function (t) {
+                $scope.errorMessage = t;
+            });
           }
         });
 
@@ -213,7 +219,10 @@
 
       $scope.addComment = function(comment){
         if(typeof comment === 'undefined' || typeof comment.text == 'undefined' ){
-          $scope.save_error = "Comment text cannot be empty";
+          //$scope.save_error = "Comment text cannot be empty";
+          $translate('NOTICE.COMMENT_EMPTY').then(function (t) {
+              $scope.save_error = t;
+          });
           $timeout(function() { $scope.save_error = null; }, 2000);
           return;
         }
@@ -244,7 +253,11 @@
               $scope.comments = data.comments;
               $scope.scenario.comments_count = data.comments.length;
               comment.text = undefined;
-              $scope.save_success = "Comment posted successfully!";
+              //$scope.save_success = "Comment posted successfully!";
+              $translate('NOTICE.COMMENT_SUCCESS').then(function (t) {
+                  $scope.save_success = t;
+              });
+
               $timeout(function() { $scope.save_success = null; }, 2000);
             }
 
@@ -255,7 +268,10 @@
                   $location.path('/');
                   break;
                 case 0:
-                  $scope.save_error = "Comment text cannot be empty";
+                  //$scope.save_error = "Comment text cannot be empty";
+                  $translate('NOTICE.COMMENT_EMPTY').then(function (t) {
+                      $scope.save_error = t;
+                  });
                   $timeout(function() { $scope.save_error = null; }, 2000);
                   break;
                 default:
@@ -280,7 +296,10 @@
         if (del === true) {
 
           $scope.is_deleting = comment_id;
-          $scope.comment_delete_text = "deleting...";
+          //$scope.comment_delete_text = "deleting...";
+          $translate('NOTICE.DELETING').then(function (t) {
+              $scope.comment_delete_text = t;
+          });
 
           var params = {
             user: {
@@ -298,7 +317,10 @@
             .then(function(data) {
               if(data.comments){
 
-                $scope.comment_delete_text = "deleted";
+                //$scope.comment_delete_text = "deleted";
+                $translate('NOTICE.DELETED').then(function (t) {
+                    $scope.comment_delete_text = t;
+                });
 
                 $timeout(function() {
                   $scope.is_deleting = undefined;
@@ -316,14 +338,20 @@
                     $location.path('/');
                     break;
                   case 3:
-                    $scope.comment_delete_text = "error, no rights";
+                    //$scope.comment_delete_text = "error, no rights";
+                    $translate('NOTICE.NO_RIGHTS').then(function (t) {
+                        $scope.comment_delete_text = t;
+                    });
                     console.log("No rights");
                     break;
                   default:
                     console.log(data.error);
                 }
 
-                $scope.comment_delete_text = "error, refresh the page";
+                //$scope.comment_delete_text = "error, refresh the page";
+                $translate('NOTICE.RELOAD').then(function (t) {
+                    $scope.comment_delete_text = t;
+                });
                 $timeout(function() {
                   $scope.is_deleting = undefined;
                 }, 2000);

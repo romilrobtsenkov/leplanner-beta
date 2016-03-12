@@ -41,28 +41,52 @@
                   $scope.create_error = 'Wrong beta code!';
                   break;
                 case 0:
-                  $scope.create_error = 'Please enter your first name';
+                  //$scope.create_error = 'Please enter your first name';
+                  $translate('NOTICE.PLEASE_ENTER_FIRST_NAME').then(function (t) {
+                      $scope.create_error = t;
+                  });
                   break;
                 case 1:
-                  $scope.create_error = 'Please enter your last name';
+                  //$scope.create_error = 'Please enter your last name';
+                  $translate('NOTICE.PLEASE_ENTER_LAST_NAME').then(function (t) {
+                      $scope.create_error = t;
+                  });
                   break;
                 case 2:
-                  $scope.create_error = 'Please enter yout email';
+                  //$scope.create_error = 'Please enter yout email';
+                  $translate('NOTICE.PLEASE_ENTER_EMAIL').then(function (t) {
+                      $scope.create_error = t;
+                  });
                   break;
                 case 3:
-                  $scope.create_error = 'Please enter correct email';
+                  //$scope.create_error = 'Please enter correct email';
+                  $translate('NOTICE.PLEASE_ENTER_CORRECT_EMAIL').then(function (t) {
+                      $scope.create_error = t;
+                  });
                   break;
                 case 4:
-                  $scope.create_error = 'Please enter your password';
+                  //$scope.create_error = 'Please enter your password';
+                  $translate('NOTICE.PLEASE_ENTER_PASSWORD').then(function (t) {
+                      $scope.create_error = t;
+                  });
                   break;
                 case 5:
-                  $scope.create_error = 'Password has to be min 8 chars long';
+                  //$scope.create_error = 'Password has to be min 8 chars long';
+                  $translate('NOTICE.PASSWORD_MIN_LENGTH').then(function (t) {
+                      $scope.create_error = t;
+                  });
                   break;
                 case 6:
-                  $scope.create_error = 'That email is already in use';
+                  //$scope.create_error = 'That email is already in use';
+                  $translate('NOTICE.EMAIL_IN_USE').then(function (t) {
+                      $scope.create_error = t;
+                  });
                   break;
                 default:
-                  $scope.create_error = 'Unknown error';
+                  //$scope.create_error = 'Unknown error';
+                  $translate('NOTICE.UNKNOWN').then(function (t) {
+                      $scope.create_error = t;
+                  });
               }
               $timeout(function() { $scope.create_error = null; }, 2000);
             }

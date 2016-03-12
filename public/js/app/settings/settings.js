@@ -42,7 +42,10 @@
                   $rootScope.user = data.user;
                   $scope.user = $rootScope.user;
                   fillUpdateProfileForm();
-                  $scope.updateProfile_success = 'Update successful';
+                  //$scope.updateProfile_success = 'Update successful';
+                  $translate('NOTICE.UPDATE_SUCCESS').then(function (t) {
+                      $scope.updateProfile_success = t;
+                  });
                   $scope.updateProfile_error = null;
                   $timeout(function() { $scope.updateProfile_success = null; }, 2000);
                 }
@@ -54,28 +57,52 @@
                       $location.path('/');
                       break;
                     case 0:
-                      $scope.updateProfile_error = 'Please enter your first name';
+                      //$scope.updateProfile_error = 'Please enter your first name';
+                      $translate('NOTICE.PLEASE_ENTER_FIRST_NAME').then(function (t) {
+                          $scope.updateProfile_error = t;
+                      });
                       break;
                     case 1:
-                      $scope.updateProfile_error = 'Please enter your last name';
+                      //$scope.updateProfile_error = 'Please enter your last name';
+                      $translate('NOTICE.PLEASE_ENTER_LAST_NAME').then(function (t) {
+                          $scope.updateProfile_error = t;
+                      });
                       break;
                     case 2:
-                      $scope.updateProfile_error = 'Please enter yout email';
+                      //$scope.updateProfile_error = 'Please enter yout email';
+                      $translate('NOTICE.PLEASE_ENTER_EMAIL').then(function (t) {
+                          $scope.updateProfile_error = t;
+                      });
                       break;
                     case 3:
-                      $scope.updateProfile_error = 'Please enter correct email';
+                      //$scope.updateProfile_error = 'Please enter correct email';
+                      $translate('NOTICE.PLEASE_ENTER_CORRECT_EMAIL').then(function (t) {
+                          $scope.updateProfile_error = t;
+                      });
                       break;
                     case 6:
-                      $scope.updateProfile_error = 'That email is already in use';
+                      //$scope.updateProfile_error = 'That email is already in use';
+                      $translate('NOTICE.EMAIL_IN_USE').then(function (t) {
+                          $scope.updateProfile_error = t;
+                      });
                       break;
                     case 7:
-                      $scope.updateProfile_error = 'Please enter password to confirm email change!';
+                      //$scope.updateProfile_error = 'Please enter password to confirm email change!';
+                      $translate('NOTICE.ENTER_PASSWORD_TO_CONFIRM').then(function (t) {
+                          $scope.updateProfile_error = t;
+                      });
                       break;
                     case 10:
-                      $scope.updateProfile_error = 'Wrong password!';
+                      //$scope.updateProfile_error = 'Wrong password!';
+                      $translate('NOTICE.WRONG_PASSWORD').then(function (t) {
+                          $scope.updateProfile_error = t;
+                      });
                       break;
                     default:
-                      $scope.updateProfile_error = 'Unknown error';
+                      //$scope.updateProfile_error = 'Unknown error';
+                      $translate('NOTICE.UNKNOWN').then(function (t) {
+                          $scope.updateProfile_error = t;
+                      });
                       console.log(data.error);
                   }
                   $timeout(function() { $scope.updateProfile_error = null; }, 2000);
@@ -84,7 +111,10 @@
             });
 
         }else{
-          $scope.updateProfile_error = 'No profile data modified';
+          //$scope.updateProfile_error = 'No profile data modified';
+          $translate('NOTICE.NO_DATA_MODIFIED').then(function (t) {
+              $scope.updateProfile_error = t;
+          });
           $timeout(function() { $scope.updateProfile_error = null; }, 2000);
         }
       };
@@ -106,7 +136,10 @@
 
                   //console.log(data);
                   if(data.user){
-                    $scope.updatePassword_success = 'Update successful';
+                    //$scope.updatePassword_success = 'Update successful';
+                    $translate('NOTICE.UPDATE_SUCCESS').then(function (t) {
+                        $scope.updatePassword_success = t;
+                    });
                     $scope.updatePassword_error = null;
                     user.password = undefined;
                     user.new_password = undefined;
@@ -121,22 +154,40 @@
                         $location.path('/');
                         break;
                       case 5:
-                        $scope.updatePassword_error = 'Password has to be min 8 chars long';
+                        //$scope.updatePassword_error = 'Password has to be min 8 chars long';
+                        $translate('NOTICE.PASSWORD_MIN_LENGTH').then(function (t) {
+                            $scope.updatePassword_error = t;
+                        });
                         break;
                       case 7:
-                        $scope.updatePassword_error = 'Please enter all fields';
+                        //$scope.updatePassword_error = 'Please enter all fields';
+                        $translate('NOTICE.ENTER_ALL').then(function (t) {
+                            $scope.updatePassword_error = t;
+                        });
                         break;
                       case 8:
-                        $scope.updatePassword_error = 'New password has to be different from old one';
+                        //$scope.updatePassword_error = 'New password has to be different from old one';
+                        $translate('NOTICE.NEW_PASSWORD_DIFFERENT').then(function (t) {
+                            $scope.updatePassword_error = t;
+                        });
                         break;
                       case 9:
-                        $scope.updatePassword_error = 'New passwords dont match';
+                        //$scope.updatePassword_error = 'New passwords dont match';
+                        $translate('NOTICE.NEW_PASSWORDS_DONT_MATCH').then(function (t) {
+                            $scope.updatePassword_error = t;
+                        });
                         break;
                       case 10:
-                        $scope.updatePassword_error = 'Wrong password';
+                        //$scope.updatePassword_error = 'Wrong password';
+                        $translate('NOTICE.WRONG_PASSWORD').then(function (t) {
+                            $scope.updatePassword_error = t;
+                        });
                         break;
                       default:
-                        $scope.updatePassword_error = 'Unknown error';
+                        //$scope.updatePassword_error = 'Unknown error';
+                        $translate('NOTICE.UNKNOWN').then(function (t) {
+                            $scope.updatePassword_error = t;
+                        });
                     }
                     $timeout(function() { $scope.updatePassword_error = null; }, 2000);
                   }
@@ -144,12 +195,18 @@
               });
 
             }else{
-              $scope.updatePassword_error = 'New passwords dont match';
+              //$scope.updatePassword_error = 'New passwords dont match';
+              $translate('NOTICE.NEW_PASSWORDS_DONT_MATCH').then(function (t) {
+                  $scope.updatePassword_error = t;
+              });
               $timeout(function() { $scope.updatePassword_error = null; }, 2000);
             }
 
         }else{
-          $scope.updatePassword_error = 'All fields are required';
+          //$scope.updatePassword_error = 'All fields are required';
+          $translate('NOTICE.ENTER_ALL').then(function (t) {
+              $scope.updatePassword_error = t;
+          });
           $timeout(function() { $scope.updatePassword_error = null; }, 2000);
         }
       };
@@ -186,7 +243,10 @@
                 $rootScope.user.image = $scope.user._id+".jpg?last_modified="+last_modified;
                 $rootScope.user.image_thumb = $scope.user._id+"_thumb.jpg?last_modified="+last_modified;
 
-                $scope.upload_success = 'Upload successful';
+                //$scope.upload_success = 'Upload successful';
+                $translate('NOTICE.UPLOAD_SUCCESS').then(function (t) {
+                    $scope.upload_success = t;
+                });
                 $scope.progress_percentage = null;
                 $timeout(function() { $scope.upload_success = null; }, 2000);
               }
@@ -198,13 +258,22 @@
                     $location.path('/');
                     break;
                   case 20:
-                    $scope.upload_error = 'File too large';
+                    //$scope.upload_error = 'File too large';
+                    $translate('NOTICE.FILE_TO_LARGE').then(function (t) {
+                        $scope.upload_error = t;
+                    });
                     break;
                   case 22:
-                    $scope.upload_error = 'Unsupported file type';
+                    //$scope.upload_error = 'Unsupported file type';
+                    $translate('NOTICE.WRONG_FILE_TYPE').then(function (t) {
+                        $scope.upload_error = t;
+                    });
                     break;
                   case 23:
-                    $scope.upload_error = 'Upload larger image than 400px x 400px';
+                    //$scope.upload_error = 'Upload larger image than 400px x 400px';
+                    $translate('NOTICE.UPLOAD_LARGER_IMAGE').then(function (t) {
+                        $scope.upload_error = t+' 400px x 400px';
+                    });
                     break;
 
                 }
@@ -214,7 +283,10 @@
 
           }).error(function (data, status, headers, config) {
             $scope.progress_percentage = null;
-            $scope.upload_error = 'Unknown error!';
+            //$scope.upload_error = 'Unknown error!';
+            $translate('NOTICE.UNKNOWN').then(function (t) {
+                $scope.upload_error = t;
+            });
             $timeout(function() { $scope.upload_error = null; }, 2000);
           });
 

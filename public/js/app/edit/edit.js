@@ -72,12 +72,18 @@
 
             if(data.error){
               if(typeof data.error.id !== 'undefined' && data.error.id === 0){
-                $scope.errorMessage = 'No such scenario found, check URL!';
+                //$scope.errorMessage = 'No such scenario found, check URL!';
+                $translate('NOTICE.NO_SCENARIO').then(function (t) {
+                    $scope.errorMessage = t;
+                });
               }else if(typeof data.error.id !== 'undefined' && data.error.id === 3){
                 //no rights
                 $location.path('/');
               }else{
-                $scope.errorMessage = 'No such scenario found, check URL!';
+                //$scope.errorMessage = 'No such scenario found, check URL!';
+                $translate('NOTICE.NO_SCENARIO').then(function (t) {
+                    $scope.errorMessage = t;
+                });
               }
               console.log(data.error);
             }
@@ -98,12 +104,18 @@
             $scope.fully_loaded = true;
 
           }else{
-            $scope.errorMessage = 'Please try reloading the page';
+            //$scope.errorMessage = 'Please try reloading the page';
+            $translate('NOTICE.RELOAD').then(function (t) {
+                $scope.errorMessage = t;
+            });
           }
 
           if(data.error){
             console.log(data.error);
-            $scope.errorMessage = 'Please try reloading the page';
+            //$scope.errorMessage = 'Please try reloading the page';
+            $translate('NOTICE.RELOAD').then(function (t) {
+                $scope.errorMessage = t;
+            });
           }
         });
 
@@ -210,7 +222,10 @@
                 $location.path('/');
                 break;
               default:
-                $scope.materialErrorMessage = 'Unknown error';
+                //$scope.materialErrorMessage = 'Unknown error';
+                $translate('NOTICE.UNKNOWN').then(function (t) {
+                    $scope.materialErrorMessage = t;
+                });
             }
 
             $timeout(function() { $scope.materialErrorMessage = null; }, 2000);
@@ -290,7 +305,10 @@
                 $location.path('/');
                 break;
               case 0:
-                $scope.materialErrorMessage = 'Material name can not be empty';
+                //$scope.materialErrorMessage = 'Material name can not be empty';
+                $translate('NOTICE.MATERIAL_NAME_REQUIRED').then(function (t) {
+                    $scope.materialErrorMessage = t;
+                });
                 break;
               /*case 1:
                 $scope.materialErrorMessage = 'Material url can not be empty';
@@ -305,10 +323,16 @@
                 $scope.materialErrorMessage = 'Display can not be empty';
                 break;*/
               case 20:
-                $scope.materialErrorMessage = 'Material exists try reloading the page';
+                //$scope.materialErrorMessage = 'Material exists try reloading the page';
+                $translate('NOTICE.MATERIAL_EXISTS').then(function (t) {
+                    $scope.materialErrorMessage = t;
+                });
                 break;
               default:
-                $scope.materialErrorMessage = 'Unknown error';
+                //$scope.materialErrorMessage = 'Unknown error';
+                $translate('NOTICE.UNKNOWN').then(function (t) {
+                    $scope.materialErrorMessage = t;
+                });
             }
 
             $timeout(function() { $scope.materialErrorMessage = null; }, 2000);

@@ -66,12 +66,18 @@
 
             if(data.error){
               if(typeof data.error.id !== 'undefined' && data.error.id === 0){
-                $scope.errorMessage = 'No such scenario found, check URL!';
+                //$scope.errorMessage = 'No such scenario found, check URL!';
+                $translate('NOTICE.NO_SCENARIO').then(function (t) {
+                    $scope.errorMessage = t;
+                });
               }else if(typeof data.error.id !== 'undefined' && data.error.id === 3){
                 //no rights
                 $location.path('/');
               }else{
-                $scope.errorMessage = 'No such scenario found, check URL!';
+                //$scope.errorMessage = 'No such scenario found, check URL!';
+                $translate('NOTICE.NO_SCENARIO').then(function (t) {
+                    $scope.errorMessage = t;
+                });
               }
               console.log(data.error);
             }
@@ -108,12 +114,18 @@
 
 
           }else{
-            $scope.errorMessage = 'Please try reloading the page';
+            //$scope.errorMessage = 'Please try reloading the page';
+            $translate('NOTICE.RELOAD').then(function (t) {
+                $scope.errorMessage = t;
+            });
           }
 
           if(data.error){
             console.log(data.error);
-            $scope.errorMessage = 'Please try reloading the page';
+            //$scope.errorMessage = 'Please try reloading the page';
+            $translate('NOTICE.RELOAD').then(function (t) {
+                $scope.errorMessage = t;
+            });
           }
         });
 
@@ -283,7 +295,10 @@
 
             if(data.error){
               console.log(data.error);
-              $scope.errorMessage = 'Please try reloading the page';
+              //$scope.errorMessage = 'Please try reloading the page';
+              $translate('NOTICE.RELOAD').then(function (t) {
+                  $scope.errorMessage = t;
+              });
             }
           });
         }
@@ -362,11 +377,17 @@
                   $location.path('/');
                   break;
                 case 3:
-                  $scope.errorMessage = 'no rights';
+                  //$scope.errorMessage = 'no rights';
+                  $translate('NOTICE.NO_RIGHTS').then(function (t) {
+                      $scope.errorMessage = t;
+                  });
                   $location.path('/');
                   break;
                 default:
-                  $scope.errorMessage = 'Unknown error';
+                  //$scope.errorMessage = 'Unknown error';
+                  $translate('NOTICE.UNKNOWN').then(function (t) {
+                      $scope.errorMessage = t;
+                  });
               }
 
               $timeout(function() { $scope.errorMessage = null; }, 2000);

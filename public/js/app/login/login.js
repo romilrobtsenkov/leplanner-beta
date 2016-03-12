@@ -60,10 +60,16 @@
             if(data.error){
               switch (data.error.id) {
                 case 10:
-                  $scope.login_error = 'Wrong credentials';
+                  //$scope.login_error = 'Wrong credentials';
+                  $translate('NOTICE.WRONG_CREDENTIALS').then(function (t) {
+                      $scope.login_error = t;
+                  });
                   break;
                 default:
-                  $scope.login_error = 'Unknown error';
+                    //$scope.login_error = 'Unknown error';
+                    $translate('NOTICE.UNKNOWN').then(function (t) {
+                        $scope.login_error = t;
+                    });
               }
               $timeout(function() { $scope.login_error = null; }, 2000);
             }
@@ -81,7 +87,10 @@
             $scope.sending_in_progress = undefined;
 
             if(data.success){
-              $scope.success_alert = 'Successfully reset email sent';
+              //$scope.success_alert = 'Successfully reset email sent';
+              $translate('NOTICE.SUCCESS_EMAIL_SENT').then(function (t) {
+                  $scope.success_alert = t;
+              });
               $scope.reset_error = null;
               $timeout(function() { $scope.success_alert = null; }, 2000);
             }
@@ -90,13 +99,22 @@
               console.log(data);
               switch(data.error.id) {
                 case 3:
-                  $scope.reset_error = 'Please enter correct email';
+                  //$scope.reset_error = 'Please enter correct email';
+                  $translate('NOTICE.PLEASE_ENTER_CORRECT_EMAIL').then(function (t) {
+                      $scope.reset_error = t;
+                  });
                   break;
                 case 20:
-                  $scope.reset_error = 'No such email found';
+                  //$scope.reset_error = 'No such email found';
+                  $translate('NOTICE.NO_SUCH_EMAIL').then(function (t) {
+                      $scope.reset_error = t;
+                  });
                   break;
                 default:
-                  $scope.reset_error = 'Unknown error';
+                  //$scope.reset_error = 'Unknown error';
+                  $translate('NOTICE.UNKNOWN').then(function (t) {
+                      $scope.reset_error = t;
+                  });
               }
               $timeout(function() { $scope.reset_error = null; }, 2000);
             }

@@ -31,22 +31,40 @@
                     if(data.error){
                       switch(data.error.id) {
                         case 5:
-                          $scope.reset_error = 'Password has to be min 8 chars long';
+                          //$scope.reset_error = 'Password has to be min 8 chars long';
+                          $translate('NOTICE.PASSWORD_MIN_LENGTH').then(function (t) {
+                              $scope.reset_error = t;
+                          });
                           break;
                         case 7:
-                          $scope.reset_error = 'Please enter all fields';
+                          //$scope.reset_error = 'Please enter all fields';
+                          $translate('NOTICE.ENTER_ALL').then(function (t) {
+                              $scope.reset_error = t;
+                          });
                           break;
                         case 9:
-                          $scope.reset_error = 'New passwords dont match';
+                          //$scope.reset_error = 'New passwords dont match';
+                          $translate('NOTICE.NEW_PASSWORDS_DONT_MATCH').then(function (t) {
+                              $scope.reset_error = t;
+                          });
                           break;
                         case 10:
-                          $scope.reset_error = 'Request new token';
+                          //$scope.reset_error = 'Request new token';
+                          $translate('NOTICE.REQUEST_NEW_TOKEN').then(function (t) {
+                              $scope.reset_error = t;
+                          });
                           break;
                         case 11:
-                          $scope.reset_error = 'Token expired';
+                          //$scope.reset_error = 'Token expired';
+                          $translate('NOTICE.TOKEN_EXPIRED').then(function (t) {
+                              $scope.reset_error = t;
+                          });
                           break;
                         default:
-                          $scope.reset_error = 'Unknown error';
+                          //$scope.reset_error = 'Unknown error';
+                          $translate('NOTICE.UNKNOWN').then(function (t) {
+                              $scope.reset_error = t;
+                          });
                       }
                       $timeout(function() { $scope.reset_error = null; }, 2000);
                     }
@@ -54,12 +72,18 @@
                 });
 
             }else{
-              $scope.reset_error = 'New passwords dont match';
+              //$scope.reset_error = 'New passwords dont match';
+              $translate('NOTICE.NEW_PASSWORDS_DONT_MATCH').then(function (t) {
+                  $scope.reset_error = t;
+              });
               $timeout(function() { $scope.reset_error = null; }, 2000);
             }
 
         }else{
-          $scope.reset_error = 'All fields are required';
+          //$scope.reset_error = 'All fields are required';
+          $translate('NOTICE.ENTER_ALL').then(function (t) {
+              $scope.reset_error = t;
+          });
           $timeout(function() { $scope.reset_error = null; }, 2000);
         }
 
