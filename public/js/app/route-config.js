@@ -70,6 +70,15 @@
         }]
       }
     })
+    .when('/signup', {
+      templateUrl: '/js/app/signup/signup.html',
+      controller: 'SignUpController',
+      resolve: {
+        data: ['userAuthService', function(userAuthService) {
+          return userAuthService.checkUser({ success_location: '/dashboard'});
+        }]
+      }
+    })
     .when('/scenario/:id', {
       templateUrl: '/js/app/scenario/scenario.html',
       controller: 'ScenarioController',

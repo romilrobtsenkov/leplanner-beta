@@ -40,6 +40,7 @@ gulp.task('build-js', function() {
       'public/js/app/main/main.js',
       'public/js/app/home/home.js',
       'public/js/app/login/login.js',
+      'public/js/app/signup/signup.js',
       'public/js/app/create/create.js',
       'public/js/app/edit-details/edit-details.js',
       'public/js/app/edit/edit.js',

@@ -5,14 +5,20 @@
         <div class="main-login">
 
             <h3>
-              <span ng-if="!create_form && !reset_form">Log in</span>
-              <a ng-click="deactivateCreateForm($event)" style="cursor:pointer" ng-if="create_form">Log in</a>
-              <a ng-click="deactivateResetForm($event)" style="cursor:pointer" ng-if="reset_form">Log in</a> or
-              <a ng-click="activateCreateForm($event)" href="#/login" style="cursor:pointer">Create user</a>
+              <span ng-if="!reset_form">Sign up</span>
+            </h3>
+
+            <a ng-if="!reset_form" href="#/signup" class="btn btn-success btn-block" style="cursor:pointer">Sign up</a>
+
+            <br>
+
+            <h3>
+              <span ng-if="!reset_form">Log in</span>
+              <span ng-if="reset_form">Reset password</span>
             </h3>
 
             <!-- Using regular username and password to login -->
-            <form ng-if="!create_form && !reset_form" role="form" name="login-form" id="login-form" ng-submit="login(user)">
+            <form ng-if="!reset_form" role="form" name="login-form" id="login-form" ng-submit="login(user)">
               <div ng-if='login_error' class="alert alert-danger" role="alert">{{login_error}}</div>
               <div class="form-group">
                 <label for="email">Email</label>
@@ -34,7 +40,7 @@
             </form>
 
             <!-- Send reset email-->
-            <form ng-if='reset_form && !create_form' name="reset-user-form" id="reset-user-form" ng-submit="reset(user)">
+            <form ng-if='reset_form' name="reset-user-form" id="reset-user-form" ng-submit="reset(user)">
               <div ng-if='reset_error' class="alert alert-danger" role="alert">{{reset_error}}</div>
               <div ng-if='success_alert' class="alert alert-success" role="alert">{{success_alert}}</div>
               <div class="form-group">
@@ -43,38 +49,6 @@
               </div>
               <div class="form-submit">
                 <input ng-disabled="sending_in_progress" class="btn btn-sm btn btn-primary" type="submit" value="Reset my password" />
-              </div>
-            </form>
-
-            <!-- Create new account -->
-            <form ng-if='create_form' name="create-user-form" id="create-user-form" ng-submit="create(user)">
-              <div ng-if='create_error' class="alert alert-danger" role="alert">{{create_error}}</div>
-              <!--<div class="form-group">
-                <label for="new_beta_code">Beta code (required)</label>
-                <input type="text" class="form-control" id="new_beta_code" name="new_beta_code" ng-model="user.new_beta_code" required/>
-              </div>-->
-              <div class="form-group">
-                <label for="new_first_name">First name (required)</label>
-                <input type="text" class="form-control" id="new_first_name" name="new_first_name" ng-model="user.new_first_name" required/>
-              </div>
-              <div class="form-group">
-                <label for="new_last_name">Last name (required)</label>
-                <input type="text" class="form-control" id="new_last_name" name="new_last_name" ng-model="user.new_last_name" required />
-              </div>
-              <div class="form-group">
-                <label for="new_organization">Organization</label>
-                <input type="text" class="form-control" id="new_organization" name="new_organization" ng-model="user.new_organization" />
-              </div>
-              <div class="form-group">
-                <label for="new_email">Email  (required)</label>
-                <input type="email" class="form-control" id="new_email" name="new_email" ng-model="user.new_email" required />
-              </div>
-              <div class="form-group">
-                <label for="new_password">Password  (required)</label>
-                <input type="password" class="form-control" id="new_password" name="new_password" autocomplete="off" ng-model="user.new_password" required />
-              </div>
-              <div class="form-submit">
-                <input ng-disabled="creating_in_progress" class="btn btn-sm btn btn-primary" type="submit" value="Create my account" />
               </div>
             </form>
 
