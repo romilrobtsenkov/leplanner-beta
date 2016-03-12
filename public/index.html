@@ -44,7 +44,16 @@
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="navbar-collapse">
 
-        <a ng-if="!user" class="pull-right btn btn-primary btn-sm login-top hidden-xs" href="/#/login" ng-click="navigateToLogin($event)" title="Log in">Log in</a>
+      <!--lang -->
+      <div class="dropdown pull-right">
+          <a style="padding: 11px; margin-top: 3px;" class="dropdown-toggle btn hidden-xs" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{'BUTTON_LANG' | translate}} <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a ng-click="changeLanguage('et')">Eesti keel</a></li>
+            <li><a ng-click="changeLanguage('en')">English</a></li>
+          </ul>
+      </div>
+
+        <a ng-if="!user" class="pull-right btn btn-primary btn-sm login-top hidden-xs" href="/#/login" ng-click="navigateToLogin($event)" title="Log in">Log in / sign up </a>
 
         <!-- ALTERNATIVE FOR XS devices -->
         <ul class="nav navbar-nav menu-links pull-left visible-xs-block">
@@ -56,11 +65,21 @@
             </a>
           </li>
 
+
           <li ng-if="user"><a href="/#/create" data-toggle="collapse" data-target="#navbar-collapse" title="Create scenario"><span class="glyphicon glyphicon-plus"></span> Create scenario</a></li>
           <li ng-if="user"><a href="/#/user/{{user._id}}" data-toggle="collapse" data-target="#navbar-collapse" title="{{user.first_name}} {{user.last_name}}"><span class="glyphicon glyphicon-user"></span> User page</a></li>
           <li><a href="/#/search" data-toggle="collapse" data-target="#navbar-collapse" title="Search"><span class="glyphicon glyphicon-search"></span> Search</a></li>
           <li ng-if="user" role="presentation"><a role="menuitem" tabindex="-1" href="/#/settings/" data-toggle="collapse" data-target="#navbar-collapse" title="Settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
           <li ng-if="user" role="presentation"><a role="menuitem" tabindex="-1" ng-click="logout()" href="#" data-toggle="collapse" data-target="#navbar-collapse" title="Log out"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
+
+          <!--lang -->
+          <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{'BUTTON_LANG' | translate}} <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                  <li><a ng-click="changeLanguage('et')">Eesti keel</a></li>
+                  <li><a ng-click="changeLanguage('en')">English</a></li>
+              </ul>
+          </li>
         </ul>
 
         <div class="hidden-xs pull-right" ng-if="user">
@@ -84,6 +103,7 @@
             </ul>
           </div>
         </div>
+
         <div style="margin-right: 10px;" class="header-search search-dash inner-addon right-addon pull-right hidden-xs" >
           <form ng-submit="searchFromTop()">
             <a href="/#/search" ng-click="searchFromTop($event)" title="Search"><i type="submit" class="glyphicon glyphicon-search" ng-click="search()"></i></a>
@@ -132,8 +152,11 @@
   <script src="/bower/ng-file-upload/ng-file-upload-shim.min.js"></script>
   <script src="/bower/ng-file-upload/ng-file-upload.min.js"></script>
   <script src="/bower/angular-ui-sortable/sortable.min.js"></script>
+  <script src="/bower/angular-translate/angular-translate.min.js"></script>
+  <script src="/bower/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js"></script>
   <script src="/js/app/app.js"></script>
   <script src="/js/app/route-config.js"></script>
+  <script src="/js/app/translate-config.js"></script>
   <script src="/js/app/main/main.js"></script>
   <script src="/js/app/home/home.js"></script>
   <script src="/js/app/login/login.js"></script>

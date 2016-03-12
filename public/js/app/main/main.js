@@ -3,8 +3,8 @@
 
   angular
     .module('app')
-    .controller('MainController', ['$scope','$rootScope','$location','requestService',
-    function($scope,$rootScope,$location,requestService) {
+    .controller('MainController', ['$scope','$rootScope','$location','requestService', '$translate',
+    function($scope,$rootScope,$location,requestService, $translate) {
 
       $rootScope.title = 'Leplanner beta';
 
@@ -41,6 +41,37 @@
           $rootScope.top_search_word = $scope.top_search_word;
           $location.path('/search');
         }
+      };
+
+      //var currentLang = $translate.proposedLanguage() || $translate.use();
+      //console.log('language ' + currentLang);
+
+      $scope.changeLanguage = function (langKey) {
+        $translate.use(langKey);
+
+        //if user - save preferred language
+        if($rootScope.user){
+            $scope.setLanguage();
+        }
+
+      };
+
+      $scope.setLanguage = function(){
+          var currentLang = $translate.proposedLanguage() || $translate.use();
+          requestService.post('/user/save-language', {lang: currentLang})
+            .then(function(data) {
+
+              if(data.success){
+                  //console.log(data.success);
+                  $rootScope.user.lang = currentLang;
+              }
+
+              if(data.error){
+                //console.log(data);
+                console.log('unable to set user lang');
+              }
+          });
+
       };
 
   }]); // MainController end

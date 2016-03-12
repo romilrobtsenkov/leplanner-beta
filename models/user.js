@@ -18,6 +18,7 @@ var userSchema = new Schema({
   last_modified: {type: Date, default: Date.now },
   resetPasswordToken: String,
   resetPasswordExpires: Date,
+  lang: String
 });
 
 //validation on first save

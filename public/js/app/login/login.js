@@ -3,8 +3,8 @@
 
   angular
     .module('app')
-    .controller('LoginController', ['$scope','$rootScope','$location','$timeout','requestService',
-    function($scope,$rootScope,$location,$timeout,requestService) {
+    .controller('LoginController', ['$scope','$rootScope','$location','$timeout','requestService','$translate',
+    function($scope,$rootScope,$location,$timeout,requestService,$translate) {
 
       $rootScope.title = ' Login | Leplanner beta';
 
@@ -45,7 +45,15 @@
 
             if(data.user){
               //user id
-              //console.log(data.user.id);
+
+              //set or get language
+              if(data.user.lang){
+                  //console.log(data.user.lang + ' lang loaded from user data');
+                  $translate.use(data.user.lang);
+              }else{
+                  $scope.setLanguage(); //located in Main, saves lang to user
+              }
+
               if(typeof $rootScope.navigatedToLoginFrom !== 'undefined'){
                 $location.path($rootScope.navigatedToLoginFrom);
                 $rootScope.navigatedToLoginFrom = undefined;

@@ -3,14 +3,15 @@
 
   angular
     .module('app')
-    .factory('userAuthService', ['$q', '$rootScope', '$location', 'requestService',
-  function($q, $rootScope, $location, requestService) {
+    .factory('userAuthService', ['$q', '$rootScope', '$location', 'requestService','$translate',
+  function($q, $rootScope, $location, requestService, $translate) {
     return {
       checkUser: function(option) {
 
         var deferred = $q.defer();
         requestService.get('/user/me')
           .then(function(data){
+
             if(!$rootScope.user){
                //console.log('rootscope null, saved to rootscope');
                $rootScope.user = data;
@@ -22,6 +23,12 @@
 
               // rewrite with new user data
               $rootScope.user = data;
+            }
+
+            //check and fix language
+            var currentLang = $translate.proposedLanguage() || $translate.use();
+            if(data.lang && currentLang != data.lang){
+                $translate.use(data.lang);
             }
 
             if(typeof option !== 'undefined' && option.success_location){

@@ -329,7 +329,7 @@ router.post('/login', function(req, res, next) {
 
         req.logIn(user, function(err) {
           if (err) { return next(err); }
-          next(null, {user: {id: user._id}});
+          next(null, {user: {id: user._id, lang: user.lang}});
         });
       }
 
@@ -498,6 +498,33 @@ router.post('/send-reset-token', function(req, res){
   });
 
 });
+
+router.post('/save-language', restrict, function(req, res, next) {
+
+  async.waterfall([
+    function(next){
+
+      if(!req.body.lang){ return next({error: "no lang"}); }
+
+      var update = {};
+
+      var q = {};
+      q.where = {"_id": req.user._id};
+      q.update = {lang: req.body.lang};
+      q.select = "-password -resetPasswordExpires -resetPasswordToken";
+
+      mongoService.update(q, User, function(err, u_user){
+        if (err) { return next({error: err}); }
+        next(null, {success: 'saved lang:'+u_user.lang});
+      });
+    }
+  ], function (err, result) {
+    if(err){ res.json(err); }
+    res.json(result);
+  });
+
+});
+
 
 router.post('/update-password', restrict, function(req, res, next) {
 
