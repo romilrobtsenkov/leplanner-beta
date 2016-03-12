@@ -53,11 +53,11 @@
           </ul>
       </div>
 
-        <a ng-if="!user" class="pull-right btn btn-primary btn-sm login-top hidden-xs" href="/#/login" ng-click="navigateToLogin($event)" title="{{'BUTTON.LOG_IN' | translate}} / {{'BUTTON.SIGN_UP' | translate}}">{{'BUTTON.LOG_IN' | translate}} / {{'BUTTON.SIGN_UP' | translate}}</a>
+        <a ng-if="!user" class="pull-right btn btn-primary btn-sm login-top hidden-xs" href="/#/login" ng-click="navigateToLogin($event)" title="{{'BUTTON.LOG_IN' | translate}}">{{'BUTTON.LOG_IN' | translate}}</a>
 
         <!-- ALTERNATIVE FOR XS devices -->
         <ul class="nav navbar-nav menu-links pull-left visible-xs-block">
-          <li ng-if="!user"><a href="/#/login" ng-click="navigateToLogin($event)" data-toggle="collapse" data-target="#navbar-collapse" title="{{'BUTTON.LOG_IN' | translate}} / {{'BUTTON.SIGN_UP' | translate}}">{{'BUTTON.LOG_IN' | translate}} / {{'BUTTON.SIGN_UP' | translate}}</a></li>
+          <li ng-if="!user"><a href="/#/login" ng-click="navigateToLogin($event)" data-toggle="collapse" data-target="#navbar-collapse" title="{{'BUTTON.LOG_IN' | translate}}">{{'BUTTON.LOG_IN' | translate}}</a></li>
           <li ng-if="user">
             <a style="margin-top: 3px;" data-toggle="collapse" data-target="#navbar-collapse" class="btn" href="/#/dashboard" title="Dashboard">
               <img ng-src="./images/user/{{user.image}}?last_modified={{user.last_modified}}" alt="profile" title="{{user.first_name}} {{user.last_name}}" class="img-circle" style="height:30px;width:30px">

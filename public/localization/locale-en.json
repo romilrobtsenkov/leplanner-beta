@@ -1,11 +1,11 @@
 {
     "BUTTON_LANG": "language",
-    
+
     "HEADING": {
         "SUBJECTS": "Subjects",
         "SEARCH": "Search",
         "NOTIFICATIONS": "Notifications",
-        "MAIN_HEADLINE": "Create. Share. Discover. Scenarios",
+        "MAIN_HEADLINE": "Create. Share. Discover scenarios",
         "OTHER_USER_SCENARIOS": "Other user scenarios",
         "COMMENTS": "Comments",
         "ADD_COMMENT": "Add a comment",
@@ -17,7 +17,7 @@
     },
 
     "PAGE": {
-        "LOG_IN": "Login",
+        "LOG_IN": "Log in",
         "SIGN_UP": "Sign up",
         "PASSWORD_RESET": "Reset password",
         "SETTINGS": "Settings",
@@ -52,6 +52,7 @@
         "SIGN_UP": "Sign up",
         "CREATE_MY_ACCOUNT": "Create my account",
         "RESET_PASSWORD": "Reset password",
+        "SEND": "Send",
         "REMEMBER_ME": "Remember me",
 
         "OPEN": "Open",
@@ -172,7 +173,7 @@
         "NO_PUBLISHED": "Create scenario draft and then publish it. All your published scenarios will appear here!",
         "FAVORITES_EMPTY": "All scenarios favorited by you will appear here!",
         "FEED_EMPTY": "Follow other users who have published scenarios, their scenarios will appear here!",
-        "DRAFTS_EMPTY": "Drafts of your scenarios will appear here!!",
+        "DRAFTS_EMPTY": "Drafts of your scenarios will appear here!",
 
         "-PLEASE_ADD_ACTIVITY": "Please add more activity",
 
