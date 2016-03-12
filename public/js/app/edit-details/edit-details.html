@@ -106,9 +106,9 @@
             <input type="text" ng-model="activity_list[$index].name" name="activity-{{$index}}" id="item-{{$index}}-activity" class="form-control" placeholder="{{'INPUT.ACTIVITY' | translate}}" required />
           </div>
           <div class="col-xs-3">
-            <input style="width: 50%; float: left;" type="number" ng-model="activity_list[$index].duration" name="duration-{{$index}}" id="item-{{$index}}-duration" class="form-control list-activity-duration" placeholder="min" required />
+            <input style="width: 40%; float: left;" type="number" ng-model="activity_list[$index].duration" name="duration-{{$index}}" id="item-{{$index}}-duration" class="form-control list-activity-duration" placeholder="min" required />
 
-            <label style="width: 50%; text-align: center;">
+            <label style="width: 60%; font-size:12px; text-align: center; margin-top:7px;">
               <input type="checkbox" ng-model="activity_list[$index].in_class" name="in_class-{{$index}}" id="item-{{$index}}-in_class" required />
               {{'INPUT.INCLASS' | translate}}
             </label>
