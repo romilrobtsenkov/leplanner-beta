@@ -1,0 +1,165 @@
+{
+    "HEADING": {
+        "SUBJECTS": "Subjects",
+        "SEARCH": "Search",
+        "NOTIFICATIONS": "Notifications",
+        "MAIN_HEADLINE": "Loo. Jaga. Avasta. Õpistsenaariumeid"
+    },
+
+    "PAGE": {
+        "LOGIN": "Login",
+        "SIGN_UP": "Sign up",
+        "PASSWORD_RESET": "Password reset",
+        "SETTINGS": "Settings",
+        "DASHBOARD": "Dashboard",
+        "CREATE": "Create new scenario",
+        "EDIT": "Edit scenario:",
+        "SEARCH": "Search"
+    },
+
+    "CONTENT": {
+        "TAB_LATEST": "Latest",
+        "TAB_MOST_VIEWED": "Most Viewed",
+        "TAB_TOP_FAVORITED": "Top favorited",
+        "TAB_TOP_COMMENTED": "Top commented",
+        "JOINED": "Joined"
+    },
+
+    "BUTTON": {
+        "CREATE_SCENARIO": "Create scenario",
+
+        "LOG_IN": "Log in",
+        "CREATE_MY_ACCOUNT": "Create my account",
+        "CREATE_USER": "Create user",
+        "RESET_PASSWORD": "Reset password",
+        "REMEMBER_ME": "Remember me",
+        "PASSWORD_AGAIN": "Password again",
+
+        "OPEN": "Open",
+        "SEARCH": "Search",
+        "SUBJECTS": "Subjects",
+
+        "USER_PAGE": "User page",
+        "SETTINGS": "Settings",
+        "LOG_OUT": "Log out",
+
+        "UPDATE": "Update",
+        "UPDATE_PASSWORD": "Update",
+
+        "FEED": "Feed",
+        "DRAFTS": "Drafts",
+        "PUBLISHED": "Published",
+        "FAVORITES": "Favorites",
+        "USERS": "Users",
+        "GET_LATEST": "Get Latest",
+
+        "FAVORITE": "Favorite",
+        "UNFAVORITE": "Unfavorite",
+        "FOLLOW": "Follow",
+        "UNFOLLOW": "Unfollow",
+        "ADD": "Add",
+        "FOLLOW_YOURSELF": "You are awesome",
+
+        "SAVE_AND_CONTINUE": "Save and continue",
+        "CANCEL": "Cancel",
+        "CLOSE": "Close",
+        "SAVE": "Save"
+
+    },
+    "INPUT": {
+        "REQUIRED": "required",
+
+        "FIRST_NAME": "First name",
+        "LAST_NAME": "Last name",
+        "ORGANIZATION": "Organization",
+        "EMAIL": "Email",
+        "PASSWORD": "Email",
+        "UPDATE_PASSWORD": "Update password",
+        "UPDATE_PROFILE": "Update profile",
+        "PROFILE_PIC": "Profile picture",
+        "OLD_PASSWORD": "Old password",
+        "NEW_PASSWORD": "New password",
+        "NEW_PASSWORD_AGAIN": "New password again",
+
+        "SEARCH": "Search",
+        "SEARCH_SCENARIOS": "Search scenarios",
+        "FOUND": "Found",
+        "FOR_KEYWORD": "for keyword",
+        "FILTER_USERS": "Filter by first name / last name / organization",
+
+        "CREATE_SCENARIO": "Create scenario",
+        "EDIT": "Edit",
+        "TITLE": "Scenario title",
+        "DESCRIPTION": "Description",
+        "SUBJECTS": "Subjects",
+        "LEARNING_OUTCOMES": "Learning outcomes",
+        "GRADE": "Grade",
+        "DURATION": "Duration",
+        "LESSON_ACTIVITIES": "Lesson activities",
+        "ACTIVITY": "Activity",
+        "INCLASS": "in-class",
+        "OFFCLASS": "off-class",
+        "PUBLISH": "Publish",
+        "DRAFT": "Draft",
+        "PUBLISHED": "Published",
+        "I_WANT_TO_DELETE": "I want to delete my scenario",
+        "EDIT_DETAILS": "Edit details",
+
+        "STUDENT": "Student",
+        "TEACHER": "Teacher",
+        "RESOURCE": "Resource",
+        "CO_AUTHORSHIP": "Level of Co-Authorship",
+        "CONVEYOR": "Conveyor",
+        "CONVEYOR_NAME": "Name",
+        "CONVEYOR_URL": "URL",
+        "DISPLAY": "DISPLAY"
+    },
+
+    "NOTICE": {
+        "UNKNOWN": "Unknown error",
+        "WRONG_CREDENTIALS": "Wrong credentials",
+        "PLEASE_ENTER_YOUR": "Please enter",
+        "CORRECT_EMAIL": "correct email",
+        "PASSWORD_MIN_LENGTH": "Password has to be min 8 chars long",
+        "EMAIL_IN_USE": "That email is already in use",
+        "NO_SUCH_EMAIL": "There is no such email",
+        "ENTER_ALL": "Please enter all fields",
+        "TOKEN_EXPIRED": "Token expired",
+        "REQUEST_NEW_TOKEN": "Request new token",
+
+        "COMMENT_EMPTY": "Comment text cannot be empty",
+        "WRONG_PASSWORD": "Wrong password",
+        "NEW_PASSWORD_DIFFERENT": "New password has to be different from old one",
+        "NEW_PASSWORDS_DONT_MATCH": "New passwords don't match",
+
+        "FILE_TO_LARGE": "File to large",
+        "WRONG_FILE_TYPE": "Wrong file type",
+        "UPLOAD_LARGER_IMAGE": "Upload larger image than 400x400px",
+
+        "UPDATE_SUCCESS": "Updated successfully",
+        "UPLOAD_SUCCESS": "Uploaded successfully",
+        "SAVING": "saving...",
+        "ALL_SAVED": "all modifications saved",
+
+        "PROFILE_IMAGE_ACCEPT": "Accepts image file types .png / .jpg / .jpeg - file size up to 1MB",
+
+        "NOTIFICATIONS_EMPTY": "Notifications will appear if someone comments your published scenarios",
+        "PUBLISHED_EMPTY": "Create scenario draft and then publish it. All your published scenarios will appear here!",
+        "FAVORITES_EMPTY": "All scenarios favorited by you will appear here!",
+        "FEED_EMPTY": "Follow other users who have published scenarios, their scenarios will appear here!",
+        "DRAFTS_EMPTY": "Create your first scenario!",
+
+        "PLEASE_ADD_ACTIVITY": "Please add more activity",
+
+        "SCENARIO_NAME_LONG": "Scenario name has to be atleast 3 chars long!",
+        "SCENARIO_DESC_LONG": "Scenario description has to be atleast 3 chars long!",
+        "NO_SCENARIO": "No such scenario found, check URL!",
+        "RELOAD": "Please try reloading the page",
+        "DELETE_SCENARIO": "Do you really want to delete scenario, there is no turning back!",
+        "NO_RIGHTS": "no rights",
+        "MATERIAL_NAME_REQUIRED": "Material name can not be empty",
+        "MATERIAL_EXISTS": "Material exists try reloading the page"
+    },
+
+    "BUTTON_LANG": "language"
+}
