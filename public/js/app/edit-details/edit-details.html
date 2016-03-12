@@ -3,7 +3,7 @@
   <p class="loading-gif-animation"><img src="./images/loading.gif"></p>
 </div>
 <div class="container main-content" ng-if="scenario && fully_loaded">
-  <h2>Edit: <i>{{scenario.name}}</i> <span ng-if="saving" class="pull-right" style="font-size: 20px; color:gray;">saving...</span><span ng-if="!saving && saved" class="pull-right" style="font-size: 15px; color:gray;">all modifications saved</span></h2>
+  <h2>{{'PAGE.EDIT' | translate}}: <i>{{scenario.name}}</i> <span ng-if="saving" class="pull-right" style="font-size: 20px; color:gray;">{{'NOTICE.SAVING' | translate}}</span><span ng-if="!saving && saved" class="pull-right" style="font-size: 15px; color:gray;">{{'NOTICE.ALL_SAVED' | translate}}</span></h2>
   </br>
 
   <div ng-if='errorMessage' class="alert alert-danger" role="alert">{{errorMessage}}</div>
@@ -15,7 +15,7 @@
 
       <div class="row no-margin">
         <div class=" form-group">
-          <label for="name"><strong>Name: </strong></label>
+          <label for="name"><strong>{{'INPUT.TITLE' | translate}} </strong></label>
           <input type="text" ng-model="scenario.name" name="name" id="name" class="form-control" required/>
         </div>
       </div>
@@ -27,8 +27,8 @@
      <div class="col-sm-11">
          <div class="row no-margin">
            <div class=" form-group">
-             <label for="description"><strong>Description:</strong></label>
-             <textarea ng-focus="resizeTextarea()" class="form-control" id="description" ng-model="scenario.description" placeholder="Add a description to the subject" name="description"></textarea>
+             <label for="description"><strong>{{'INPUT.DESCRIPTION' | translate}} </strong></label>
+             <textarea ng-focus="resizeTextarea()" class="form-control" id="description" ng-model="scenario.description" name="description"></textarea>
            </div>
          </div>
       </div>
@@ -39,7 +39,7 @@
 
       <div class="row no-margin">
         <div class=" form-group">
-          <label for="subject"><strong>Subject: </strong></label>
+          <label for="subject"><strong>{{'INPUT.SUBJECTS' | translate}} </strong></label>
           <div id="subject" ng-dropdown-multiselect="" options="subjects_list" selected-model="selected_subjects" extra-settings="subjectsSettings" translation-texts="subjectsText"></div>
           <!--<select class="form-control" id="subject" ng-model="scenario.subject" ng-options="subject._id as subject.name for subject in subjects" name="subject" required>-->
           <!-- option.value as option.name for option in
@@ -52,14 +52,14 @@
 
       <div class="row no-margin">
         <div class=" form-group">
-          <label for="grade"><strong>Grade: </strong></label>
+          <label for="grade"><strong>{{'INPUT.GRADE' | translate}} </strong></label>
           <input type="number" min="0" step="1" ng-model="scenario.grade" name="grade" id="grade" class="form-control" required/>
         </div>
       </div>
 
       <div class="row no-margin">
         <div class=" form-group">
-          <label for="duration"><strong>Duration (min): </strong></label>
+          <label for="duration"><strong>{{'INPUT.DURATION' | translate}} (min) </strong></label>
           <input type="number" min="0" step="1" ng-model="scenario.duration" name="duration" id="duration" class="form-control" required/>
         </div>
       </div>
@@ -69,12 +69,12 @@
     <div class="col-sm-8">
 
       <div class="learining-outcomes-list-container">
-        <h3>Learning outcomes</h3>
+        <h3>{{'INPUT.LEARNING_OUTCOMES' | translate}}</h3>
 
           <!-- one line of activity -->
           <div ng-repeat="outcome in outcomes_list track by $index" class="row form-group outcome-item">
             <div class="col-xs-10">
-              <input type="text" ng-model="outcomes_list[$index].name" name="outcome-{{$index}}" id="item-{{$index}}-outcome" class="form-control" placeholder="Learning outcome" required />
+              <input type="text" ng-model="outcomes_list[$index].name" name="outcome-{{$index}}" id="item-{{$index}}-outcome" class="form-control" required />
             </div>
             <div class="col-xs-1 no-padding">
               <button style="margin-top: 2px;" ng-click="removeOutcome($index)" class="btn btn-sm btn-default pull-left"><span class="glyphicon glyphicon-remove"></span></button>
@@ -91,7 +91,7 @@
 
   <div class="row no-margin">
     <div class="activity-list-container">
-      <h3>Lesson activities</h3>
+      <h3>{{'INPUT.ACTIVITIES' | translate}}</h3>
 
       <div ui-sortable ng-model="activity_list" class="activity-list">
 
@@ -103,14 +103,14 @@
             </div>
           </div>
           <div class="col-xs-3 no-padding">
-            <input type="text" ng-model="activity_list[$index].name" name="activity-{{$index}}" id="item-{{$index}}-activity" class="form-control" placeholder="Activity" required />
+            <input type="text" ng-model="activity_list[$index].name" name="activity-{{$index}}" id="item-{{$index}}-activity" class="form-control" placeholder="{{'INPUT.ACTIVITY' | translate}}" required />
           </div>
           <div class="col-xs-3">
             <input style="width: 50%; float: left;" type="number" ng-model="activity_list[$index].duration" name="duration-{{$index}}" id="item-{{$index}}-duration" class="form-control list-activity-duration" placeholder="min" required />
 
             <label style="width: 50%; text-align: center;">
               <input type="checkbox" ng-model="activity_list[$index].in_class" name="in_class-{{$index}}" id="item-{{$index}}-in_class" required />
-              in-class
+              {{'INPUT.INCLASS' | translate}}
             </label>
           </div>
           <div class="col-xs-2 no-padding" style="padding-right:5px;">
@@ -132,19 +132,19 @@
   </div>
 
   <div class="row no-margin">
-    <h3>Publish</h3>
+    <h3>{{'INPUT.PUBLISH' | translate}}</h3>
 
     <div class="row no-margin">
       <div class=" form-group">
         <select ng-if="scenario" style="width: 200px;  display: inline-block;" class="form-control" id="publish_option" ng-model="scenario.draft" ng-options="option.value as option.name for option in publish_options" name="publish_option" required>
         </select>
-        <span> or   <a class="delete-link" ng-click="deleteScenario()" href style="margin-right: 20px;">I want to delete my scenario </a></span>
+        <span> <a class="delete-link" ng-click="deleteScenario()" href style="margin-right: 20px;">{{'INPUT.I_WANT_TO_DELETE' | translate}}</a></span>
       </div>
     </div>
 
   </div>
 
-  <button ng-disabled="saving_in_progress" ng-click="saveScenario(scenario)" class="btn btn-success pull-right">Save & continue editing</button>
-  <a href="/#/dashboard" style="margin-right: 10px;" class="btn btn-default pull-right">Cancel</a>
+  <button ng-disabled="saving_in_progress" ng-click="saveScenario(scenario)" class="btn btn-success pull-right">{{'BUTTON.SAVE_AND_CONTINUE' | translate}}</button>
+  <a href="/#/dashboard" style="margin-right: 10px;" class="btn btn-default pull-right">{{'BUTTON.CANCEL' | translate}}</a>
 
 </div>

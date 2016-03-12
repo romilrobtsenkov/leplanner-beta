@@ -5,25 +5,25 @@
       <nav class="navbar navbar-default" role="navigation">
         <div class="side-menu-container">
           <ul class="nav navbar-nav dash-menu">
-            <li ng-class="{active:isActiveDash('feed')}"><a ng-click="updateDashList('feed')" href title="Feed"><span class="glyphicon glyphicon-globe"></span> Feed</a></li>
-            <li ng-class="{active:isActiveDash('drafts')}"><a ng-click="updateDashList('drafts')" href title="Drafts"><span class="glyphicon glyphicon glyphicon-file"></span> <strong>Drafts</strong><!--<span class="badge">{{drafts_count}}</span>--></a></li>
-            <li ng-class="{active:isActiveDash('published')}"><a ng-click="updateDashList('published')" href title="Published"><span class="glyphicon glyphicon-list-alt"></span> Published</a></li>
-            <li ng-class="{active:isActiveDash('favorites')}"><a ng-click="updateDashList('favorites')" href title="Favorites"><span class="glyphicon glyphicon-heart"></span> Favorites</a></li>
-            <li ng-class="{active:isActiveDash('users')}"><a ng-click="updateDashList('users')" href title="Users"><span class="glyphicon glyphicon-user"></span> Users</a></li>
+            <li ng-class="{active:isActiveDash('feed')}"><a ng-click="updateDashList('feed')" href title="{{'BUTTON.FEED' | translate}}"><span class="glyphicon glyphicon-globe"></span> {{'BUTTON.FEED' | translate}}</a></li>
+            <li ng-class="{active:isActiveDash('drafts')}"><a ng-click="updateDashList('drafts')" href title="{{'BUTTON.DRAFTS' | translate}}"><span class="glyphicon glyphicon glyphicon-file"></span> <strong>{{'BUTTON.DRAFTS' | translate}}</strong><!--<span class="badge">{{drafts_count}}</span>--></a></li>
+            <li ng-class="{active:isActiveDash('published')}"><a ng-click="updateDashList('published')" href title="{{'BUTTON.PUBLISHED' | translate}}"><span class="glyphicon glyphicon-list-alt"></span> {{'BUTTON.PUBLISHED' | translate}}</a></li>
+            <li ng-class="{active:isActiveDash('favorites')}"><a ng-click="updateDashList('favorites')" href title="{{'BUTTON.FAVORITES' | translate}}"><span class="glyphicon glyphicon-heart"></span> {{'BUTTON.FAVORITES' | translate}}</a></li>
+            <li ng-class="{active:isActiveDash('users')}"><a ng-click="updateDashList('users')" href title="{{'BUTTON.USERS' | translate}}"><span class="glyphicon glyphicon-user"></span> {{'BUTTON.USERS' | translate}}</a></li>
           </ul>
         </div>
       </nav>
     </div><!-- /.sidemenu -->
 
     <div class="col-sm-3 col-sm-push-7 col-lg-push-7 col-md-push-7">
-      <h3>Notifications</h3>
+      <h3>{{'HEADING.NOTIFICATIONS' | translate}}</h3>
       <div class="panel panel-default">
         <div class="panel-collapse">
           <div class="panel-body">
             <ul class="notifications">
 
               <p ng-if="!notifications || notifications_loading_animation" class="loading-gif-animation"><img src="./images/loading.gif"></p>
-              <p ng-if="notifications && notifications.length == 0" >Notifications will appear if someone comments your published scenarios.</p>
+              <p ng-if="notifications && notifications.length == 0" >{{'NOTICE.NOTIFICATIONS_EMPTY' | translate}}</p>
 
 
               <!-- SINGLE NOTIFICATION -->
@@ -40,7 +40,7 @@
                       </small>
                     </p>
                   </div>
-                  <p class="content-for-notification">Commented: "<a href="/#/scenario/{{n.data.scenario._id}}">{{n.data.scenario.name}}</a>"</p>
+                  <p class="content-for-notification">{{'CONTENT.COMMENTED' | translate}}: "<a href="/#/scenario/{{n.data.scenario._id}}">{{n.data.scenario.name}}</a>"</p>
                 </div>
               </li>
               <!-- SINGLE NOTIFICATION  END-->
@@ -49,8 +49,8 @@
           </div>
 
           <div class="panel-footer clearfix">
-             <a  ng-click="getLatestNotifications()" style="cursor:pointer" class="pull-left" >Get latest</a>
-             <a  ng-if="notifications.length > 0" ng-hide="notifications.length > 10" ng-click="getAllNotifications()" style="cursor:pointer" class="pull-right" >Load all</a>
+             <a  ng-click="getLatestNotifications()" style="cursor:pointer" class="pull-left" >{{'BUTTON.GET_LATEST' | translate}}</a>
+             <a  ng-if="notifications.length > 0" ng-hide="notifications.length > 10" ng-click="getAllNotifications()" style="cursor:pointer" class="pull-right" >{{'BUTTON.LOAD_ALL' | translate}}</a>
           </div>
         </div>
       </div>
@@ -59,27 +59,27 @@
     <div class="col-sm-7 col-sm-pull-3 col-lg-pull-3 col-md-pull-3" style="height:100%; min-height: 100px;">
       <div class="dashboard-main-content">
 
-        <ul ng-if="!isActiveDash('users') && !messages.no_drafts && !messages.no_published && !messages.no_favorites && !messages.no_following" class="nav nav-tabs nav-tab-pop">
-  				<li ng-class="{active:isSortActive('latest')}">
-  					<a href ng-click="updateSortList('latest')" title="Latest">Latest</a>
-  				</li>
-  				<li ng-class="{active:isSortActive('popular')}">
-  					<a href ng-click="updateSortList('popular')" title="Popular">Popular</a>
-  				</li>
-  				<li ng-class="{active:isSortActive('favorited')}">
-  					<a href ng-click="updateSortList('favorited')" title="Top favorited">Top favorited</a>
-  				</li>
-  				<li ng-class="{active:isSortActive('commented')}">
-  					<a href ng-click="updateSortList('commented')" title="Top commented">Top commented</a>
-  				</li>
-  			</ul>
+          <ul ng-if="!isActiveDash('users') && !messages.no_drafts && !messages.no_published && !messages.no_favorites && !messages.no_following" class="nav nav-tabs nav-tab-pop">
+              <li ng-class="{active:isSortActive('latest')}">
+                  <a href ng-click="updateSortList('latest')" title="{{ 'CONTENT.TAB_LATEST' | translate }}">{{ 'CONTENT.TAB_LATEST' | translate }}</a>
+              </li>
+              <li ng-class="{active:isSortActive('popular')}">
+                  <a href ng-click="updateSortList('popular')" title="{{ 'CONTENT.TAB_MOST_VIEWED' | translate }}">{{ 'CONTENT.TAB_MOST_VIEWED' | translate }}</a>
+              </li>
+              <li ng-class="{active:isSortActive('favorited')}">
+                  <a href ng-click="updateSortList('favorited')" title="{{ 'CONTENT.TAB_TOP_FAVORITED' | translate }}">{{ 'CONTENT.TAB_TOP_FAVORITED' | translate }}</a>
+              </li>
+              <li ng-class="{active:isSortActive('commented')}">
+                  <a href ng-click="updateSortList('commented')" title="{{ 'CONTENT.TAB_TOP_COMMENTED' | translate }}">{{ 'CONTENT.TAB_TOP_COMMENTED' | translate }}</a>
+              </li>
+          </ul>
 
         <p ng-if="!scenarios || loading_animation" class="loading-gif-animation"><img src="./images/loading.gif"></p>
 
-        <p ng-if="messages.no_drafts"> Start your first scenario by clicking <a href="/#/create" class="add-favorite-button btn btn-success btn-sm"><span class="glyphicon glyphicon-plus"></span> Create scenario</a></p>
-        <p ng-if="messages.no_published"> Create scenario draft and then publish it. All your published scenarios will appear here!</p>
-        <p ng-if="messages.no_favorites"> Add favorites by clickking on <button class="add-favorite-button btn btn-success btn-sm"><span class="glyphicon glyphicon-heart"></span> Favorite</button> button while viewing single scenario </p>
-        <p ng-if="messages.no_following"> Follow other users who have <strong>published scenarios</strong> by clicking <button class="add-favorite-button btn btn-success btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Follow</button> next to user. <br> Go to <a style="cursor:pointer;" ng-click="updateDashList('users')"> Users</a></p>
+        <p ng-if="messages.no_drafts"> {{'NOTICE.DRAFTS_EMPTY' | translate }}</p>
+        <p ng-if="messages.no_published"> {{'NOTICE.NO_PUBLISHED' | translate }}</p>
+        <p ng-if="messages.no_favorites"> {{'NOTICE.FAVORITES_EMPTY' | translate }}</p>
+        <p ng-if="messages.no_following"> {{'NOTICE.FEED_EMPTY' | translate }}</p>
 
         <!-- scenario items -->
         <div class="single_scenario_item" dir-paginate="scenario in scenarios | itemsPerPage: 10">
@@ -119,15 +119,15 @@
   								 </span>
   							</div>
   							<div class="col-xs-4">
-  							 <a ng-if="!scenario.draft" class="btn btn-success btn-block btn-sm pull-right" href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">OPEN <span class="glyphicon glyphicon-chevron-right"></span></a>
+  							 <a ng-if="!scenario.draft" class="btn btn-success btn-block btn-sm pull-right" href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{ 'BUTTON.OPEN' | translate }} <span class="glyphicon glyphicon-chevron-right"></span></a>
                  <div ng-if="scenario.draft" class="btn-group" role="group">
                   <button type="button" class="btn btn-success btn-block btn-sm pull-right dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    EDIT
+                    {{'BUTTON.EDIT' | translate }}
                     <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu">
-                    <li><a href="/#/edit-details/{{scenario._id}}" title="Edit {{scenario.name}}">Details</a></li>
-                    <li><a href="/#/edit/{{scenario._id}}" title="Edit {{scenario.name}}">Canvas</a></li>
+                    <li><a href="/#/edit-details/{{scenario._id}}" title="Edit {{scenario.name}}">{{'BUTTON.DETAILS' | translate }}</a></li>
+                    <li><a href="/#/edit/{{scenario._id}}" title="Edit {{scenario.name}}">{{'BUTTON.CANVAS' | translate }}</a></li>
                   </ul>
                 </div>
   							</div>
@@ -141,7 +141,7 @@
         <dir-pagination-controls></dir-pagination-controls>
 
         <div ng-if="users_list.length > 0" >
-          <label>Filter by first name / last name / organization </label><input class="form-control" type="search" ng-model="filter_text">
+          <label>{{'INPUT.FILTER_USERS' | translate}} </label><input class="form-control" type="search" ng-model="filter_text">
           <!-- USERS LIST -->
           <div ng-repeat="u in users_list | filter:filter_text">
             <div class="row no-margin">
@@ -153,8 +153,8 @@
                 <span style="display: none;" class="follow">{{u.following}}</span>
               </div>
               <div class="col-xs-3">
-                <a ng-click="addRemoveFollow(u._id,'remove')" ng-if="u.following" class="btn btn-default btn-xs user-list-follow-unfollow-btn">Unfollow</a>
-                <a ng-click="addRemoveFollow(u._id)" ng-if="!u.following" class="btn btn-success btn-xs user-list-follow-unfollow-btn">Follow</a>
+                <a ng-click="addRemoveFollow(u._id,'remove')" ng-if="u.following" class="btn btn-default btn-xs user-list-follow-unfollow-btn">{{'BUTTON.UNFOLLOW' | translate}}</a>
+                <a ng-click="addRemoveFollow(u._id)" ng-if="!u.following" class="btn btn-success btn-xs user-list-follow-unfollow-btn">{{'BUTTON.FOLLOW' | translate}}</a>
               </div>
 
             </div>

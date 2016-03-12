@@ -1,16 +1,16 @@
 <div class="container main-content">
-	<h2>Search</h2>
+	<h2>{{'HEADING.SEARCH' | translate}}</h2>
 	<!-- Dropdown menu and textbox for search criterions -->
 	<div class="row search-fields-top">
 		<form class='search-form' ng-submit="search()" >
 			<div class="col-sm-3">
-				<input id='search-word-input' class="form-control" type="text" ng-model="search_word" name="name" placeholder="Search" autofocus >
+				<input id='search-word-input' class="form-control" type="text" ng-model="search_word" name="name" placeholder="{{'INPUT.SEARCH' | translate}}" autofocus >
 			</div>
 			<div class="col-sm-2">
 		  	<div style="display: inline; width: 100%;" ng-dropdown-multiselect="" options="subjects" selected-model="selected_subjects" extra-settings="subjectsSettings" translation-texts="subjectsText"></div>
 			</div>
 			<div class="col-sm-2">
-				<input style="width: 100%; display: inline" class="btn btn-primary btn-block" type="submit" value="Search">
+				<input style="width: 100%; display: inline" class="btn btn-primary btn-block" type="submit" value="{{'BUTTON.SEARCH' | translate}}">
 			</div>
 		</form>
 	</div>
@@ -40,20 +40,20 @@
       </div>
     </div>-->
 		<div class="col-sm-12 col-md-9 col-lg-9 col-xs-12">
-			<h4 class="results-heading">Found <strong>{{scenarios.length}}</strong>  scenarios <span ng-if="search_word_end">for keyword <strong >"{{search_word_end}}"</strong></span></h4>
-
+			<h4 class="results-heading">{{ 'INPUT.FOUND' | translate }} <strong>{{scenarios.length}}</strong> <span ng-if="search_word_end">{{ 'INPUT.FOR_KEYWORD' | translate }} <strong >"{{search_word_end}}"</strong></span></h4>
+			<!-- makes the clicked tab active-->
 			<ul class="nav nav-tabs nav-tab-pop">
 				<li ng-class="{active:isSortActive('latest')}">
-					<a href ng-click="updateSortList('latest')" title="Latest">Latest</a>
+					<a href ng-click="updateSortList('latest')" title="{{ 'CONTENT.TAB_LATEST' | translate }}">{{ 'CONTENT.TAB_LATEST' | translate }}</a>
 				</li>
 				<li ng-class="{active:isSortActive('popular')}">
-					<a href ng-click="updateSortList('popular')" title="Popular">Popular</a>
+					<a href ng-click="updateSortList('popular')" title="{{ 'CONTENT.TAB_MOST_VIEWED' | translate }}">{{ 'CONTENT.TAB_MOST_VIEWED' | translate }}</a>
 				</li>
 				<li ng-class="{active:isSortActive('favorited')}">
-					<a href ng-click="updateSortList('favorited')" title="Top favorited">Top favorited</a>
+					<a href ng-click="updateSortList('favorited')" title="{{ 'CONTENT.TAB_TOP_FAVORITED' | translate }}">{{ 'CONTENT.TAB_TOP_FAVORITED' | translate }}</a>
 				</li>
 				<li ng-class="{active:isSortActive('commented')}">
-					<a href ng-click="updateSortList('commented')" title="Top commented">Top commented</a>
+					<a href ng-click="updateSortList('commented')" title="{{ 'CONTENT.TAB_TOP_COMMENTED' | translate }}">{{ 'CONTENT.TAB_TOP_COMMENTED' | translate }}</a>
 				</li>
 			</ul>
 
@@ -93,7 +93,7 @@
 								 </span>
 							</div>
 							<div class="col-xs-4">
-							 <a class="btn btn-success btn-block btn-sm pull-right" href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">OPEN <span class="glyphicon glyphicon-chevron-right"></span></a>
+							 <a class="btn btn-success btn-block btn-sm pull-right" href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{ 'BUTTON.OPEN' | translate }} <span class="glyphicon glyphicon-chevron-right"></span></a>
 							</div>
 						</div>
 					</div>

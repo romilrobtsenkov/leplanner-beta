@@ -6,7 +6,10 @@
     .controller('LoginController', ['$scope','$rootScope','$location','$timeout','requestService','$translate',
     function($scope,$rootScope,$location,$timeout,requestService,$translate) {
 
-      $rootScope.title = 'Login | Leplanner beta';
+      $translate('PAGE.LOG_IN').then(function (t) {
+         $rootScope.title = t+' | Leplanner beta';
+      });
+
 
       $scope.activateResetForm = function($event){
         $event.preventDefault();

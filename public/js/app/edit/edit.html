@@ -3,8 +3,8 @@
   <p class="loading-gif-animation"><img src="./images/loading.gif"></p>
 </div>
 <div class="container main-content" ng-if="scenario && fully_loaded">
-  <h2>{{scenario.name}} <span ng-if="saving" class="pull-right" style="font-size: 20px; color:gray;">saving...</span><span ng-if="!saving && saved" class="pull-right" style="font-size: 15px; color:gray;">all modifications saved</span>
-    <a href="/#/edit-details/{{scenario._id}}" class="btn btn-default pull-right">Edit details</a>
+  <h2>{{scenario.name}} <span ng-if="saving" class="pull-right" style="font-size: 20px; color:gray;">{{'NOTICE.SAVING' | translate}}</span><span ng-if="!saving && saved" class="pull-right" style="font-size: 15px; color:gray;">{{'NOTICE.ALL_SAVED' | translate}}</span>
+    <a href="/#/edit-details/{{scenario._id}}" class="btn btn-default pull-right">{{'BUTTON.EDIT_DETAILS' | translate}}</a>
   </h2>
   </br>
 
@@ -12,6 +12,6 @@
 
   <editcanvasmodal></editcanvasmodal>
 
-  <a href="/#/dashboard" class="btn btn-default pull-right">Cancel</a>
+  <a href="/#/dashboard" class="btn btn-default pull-right">{{'BUTTON.CANCEL' | translate}}</a>
 
 </div>

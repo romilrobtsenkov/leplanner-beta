@@ -46,18 +46,18 @@
 
       <!--lang -->
       <div class="dropdown pull-right">
-          <a style="padding: 11px; margin-top: 3px;" class="dropdown-toggle btn hidden-xs" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{'BUTTON_LANG' | translate}} <span class="caret"></span></a>
+          <a style="padding: 11px; margin-top: 3px;" class="dropdown-toggle btn hidden-xs" data-toggle="dropdown" role="button" aria-haspopup="true" title="{{'BUTTON_LANG' | translate}}" aria-expanded="false">{{'BUTTON_LANG' | translate}} <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a ng-click="changeLanguage('et')">Eesti keel</a></li>
             <li><a ng-click="changeLanguage('en')">English</a></li>
           </ul>
       </div>
 
-        <a ng-if="!user" class="pull-right btn btn-primary btn-sm login-top hidden-xs" href="/#/login" ng-click="navigateToLogin($event)" title="Log in">Log in / sign up </a>
+        <a ng-if="!user" class="pull-right btn btn-primary btn-sm login-top hidden-xs" href="/#/login" ng-click="navigateToLogin($event)" title="{{'BUTTON.LOG_IN' | translate}} / {{'BUTTON.SIGN_UP' | translate}}">{{'BUTTON.LOG_IN' | translate}} / {{'BUTTON.SIGN_UP' | translate}}</a>
 
         <!-- ALTERNATIVE FOR XS devices -->
         <ul class="nav navbar-nav menu-links pull-left visible-xs-block">
-          <li ng-if="!user"><a href="/#/login" ng-click="navigateToLogin($event)" data-toggle="collapse" data-target="#navbar-collapse" title="Log in">Log in</a></li>
+          <li ng-if="!user"><a href="/#/login" ng-click="navigateToLogin($event)" data-toggle="collapse" data-target="#navbar-collapse" title="{{'BUTTON.LOG_IN' | translate}} / {{'BUTTON.SIGN_UP' | translate}}">{{'BUTTON.LOG_IN' | translate}} / {{'BUTTON.SIGN_UP' | translate}}</a></li>
           <li ng-if="user">
             <a style="margin-top: 3px;" data-toggle="collapse" data-target="#navbar-collapse" class="btn" href="/#/dashboard" title="Dashboard">
               <img ng-src="./images/user/{{user.image}}?last_modified={{user.last_modified}}" alt="profile" title="{{user.first_name}} {{user.last_name}}" class="img-circle" style="height:30px;width:30px">
@@ -66,11 +66,11 @@
           </li>
 
 
-          <li ng-if="user"><a href="/#/create" data-toggle="collapse" data-target="#navbar-collapse" title="Create scenario"><span class="glyphicon glyphicon-plus"></span> Create scenario</a></li>
-          <li ng-if="user"><a href="/#/user/{{user._id}}" data-toggle="collapse" data-target="#navbar-collapse" title="{{user.first_name}} {{user.last_name}}"><span class="glyphicon glyphicon-user"></span> User page</a></li>
-          <li><a href="/#/search" data-toggle="collapse" data-target="#navbar-collapse" title="Search"><span class="glyphicon glyphicon-search"></span> Search</a></li>
-          <li ng-if="user" role="presentation"><a role="menuitem" tabindex="-1" href="/#/settings/" data-toggle="collapse" data-target="#navbar-collapse" title="Settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
-          <li ng-if="user" role="presentation"><a role="menuitem" tabindex="-1" ng-click="logout()" href="#" data-toggle="collapse" data-target="#navbar-collapse" title="Log out"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
+          <li ng-if="user"><a href="/#/create" data-toggle="collapse" data-target="#navbar-collapse" title="{{'BUTTON.CREATE_SCENARIO' | translate}}"><span class="glyphicon glyphicon-plus"></span> {{'BUTTON.CREATE_SCENARIO' | translate}}</a></li>
+          <li ng-if="user"><a href="/#/user/{{user._id}}" data-toggle="collapse" data-target="#navbar-collapse" title="{{user.first_name}} {{user.last_name}}"><span class="glyphicon glyphicon-user"></span> {{'BUTTON.USER_PAGE' | translate}}</a></li>
+          <li><a href="/#/search" data-toggle="collapse" data-target="#navbar-collapse" title="{{'BUTTON.SEARCH' | translate}}"><span class="glyphicon glyphicon-search"></span> {{'BUTTON.SEARCH' | translate}}</a></li>
+          <li ng-if="user" role="presentation"><a role="menuitem" tabindex="-1" href="/#/settings/" data-toggle="collapse" data-target="#navbar-collapse" title="{{'BUTTON.SETTINGS' | translate}}"><span class="glyphicon glyphicon-cog"></span> {{'BUTTON.SETTINGS' | translate}}</a></li>
+          <li ng-if="user" role="presentation"><a role="menuitem" tabindex="-1" ng-click="logout()" href="#" data-toggle="collapse" data-target="#navbar-collapse" title="{{'BUTTON.LOG_OUT' | translate}}"><span class="glyphicon glyphicon-log-out"></span> {{'BUTTON.LOG_OUT' | translate}}</a></li>
 
           <!--lang -->
           <li class="dropdown">
@@ -83,7 +83,7 @@
         </ul>
 
         <div class="hidden-xs pull-right" ng-if="user">
-          <a href="/#/create" class="btn btn-success btn-sm add-new-top-button"><span class="glyphicon glyphicon-plus"></span> Create scenario</a>
+          <a href="/#/create" class="btn btn-success btn-sm add-new-top-button" title="{{'BUTTON.CREATE_SCENARIO' | translate}}"><span class="glyphicon glyphicon-plus"></span> {{'BUTTON.CREATE_SCENARIO' | translate}}</a>
           <a style="margin-top: 3px;" class="btn" href="/#/dashboard">
             <img ng-src="./images/user/{{user.image}}?last_modified={{user.last_modified}}" title="{{user.first_name}} {{user.last_name}}" class="img-circle" style="height:30px;width:30px">
             <span>{{user.first_name}} {{user.last_name}}</span>
@@ -94,20 +94,20 @@
               <span class="top-menu-dropdown-icon glyphicon glyphicon-triangle-bottom"></span>
             </a>
             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-              <li role="presentation"><a role="menuitem" tabindex="-1" href="/#/create" title="Create scenario"><span class="glyphicon glyphicon-plus"></span> Create scenario</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="/#/create" title="{{'BUTTON.CREATE_SCENARIO' | translate}}"><span class="glyphicon glyphicon-plus"></span> {{'BUTTON.CREATE_SCENARIO' | translate}}</a></li>
               <li role="separator" class="divider"></li>
-              <li role="presentation"><a role="menuitem" tabindex="-1" href="/#/user/{{user._id}}" title="{{user.first_name}} {{user.last_name}}"><span class="glyphicon glyphicon-user"></span> User page</a></li>
-              <li role="presentation"><a role="menuitem" tabindex="-1" href="/#/settings/" title="Settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="/#/user/{{user._id}}" title="{{user.first_name}} {{user.last_name}}"><span class="glyphicon glyphicon-user"></span> {{'BUTTON.USER_PAGE' | translate}}</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="/#/settings/" title="{{'BUTTON.SETTINGS' | translate}}"><span class="glyphicon glyphicon-cog"></span> {{'BUTTON.SETTINGS' | translate}}</a></li>
               <li role="separator" class="divider"></li>
-              <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="logout()" href title="Log out"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="logout()" href title="{{'BUTTON.LOG_OUT' | translate}}"><span class="glyphicon glyphicon-log-out"></span> {{'BUTTON.LOG_OUT' | translate}}</a></li>
             </ul>
           </div>
         </div>
 
         <div style="margin-right: 10px;" class="header-search search-dash inner-addon right-addon pull-right hidden-xs" >
           <form ng-submit="searchFromTop()">
-            <a href="/#/search" ng-click="searchFromTop($event)" title="Search"><i type="submit" class="glyphicon glyphicon-search" ng-click="search()"></i></a>
-            <input type="text" name="search" ng-model="top_search_word" class="form-control" placeholder="Search scenarios">
+            <a href="/#/search" ng-click="searchFromTop($event)" title="{{'BUTTON.SEARCH' | translate}}"><i type="submit" class="glyphicon glyphicon-search" ng-click="search()"></i></a>
+            <input type="text" name="search" ng-model="top_search_word" class="form-control" placeholder="{{'INPUT.SEARCH_SCENARIOS' | translate}}">
           </form>
         </div>
 

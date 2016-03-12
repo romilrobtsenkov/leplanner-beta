@@ -3,10 +3,12 @@
 
   angular
     .module('app')
-    .controller('CreateController', ['$scope','$rootScope','$timeout','$location','requestService',
-    function($scope,$rootScope,$timeout,$location,requestService) {
+    .controller('CreateController', ['$scope','$rootScope','$timeout','$location','requestService','$translate',
+    function($scope,$rootScope,$timeout,$location,requestService, $translate) {
 
-      $rootScope.title = 'Create new scenario | Leplanner beta';
+      $translate('PAGE.CREATE').then(function (t) {
+        $rootScope.title = t+' | Leplanner beta';
+      });
 
       $scope.createScenario = function(scenario){
 

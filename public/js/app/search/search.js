@@ -3,10 +3,13 @@
 
   angular
     .module('app')
-    .controller('SearchController', ['$scope','$rootScope','requestService',
-    function($scope,$rootScope,requestService) {
+    .controller('SearchController', ['$scope','$rootScope','requestService','$translate',
+    function($scope,$rootScope,requestService,$translate) {
 
-      $rootScope.title = 'Search | Leplanner beta';
+        $translate('PAGE.SEARCH').then(function (t) {
+            $rootScope.title = t+' | Leplanner beta';
+        });
+
 
       $scope.$on('triggerSearchForm', function(e) {
         angular.element('#search-word-input').trigger('focus');
@@ -48,6 +51,9 @@
         };
 
         $scope.subjectsText = {buttonDefaultText: 'Filter subjects'};
+        $translate('BUTTON.SUBJECTS').then(function (t) {
+            $scope.subjectsText = {buttonDefaultText: t};
+        });
 
          requestService.get('/meta/subjects')
           .then(function(data) {

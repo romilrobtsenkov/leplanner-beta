@@ -4,15 +4,15 @@
       <div class="col-sm-4" >
         <div ng-if='reset_error' class="alert alert-danger" role="alert">{{reset_error}}</div>
         <div class="form-group">
-          <label for="new_password">Password</label>
+          <label for="new_password">{{'INPUT.NEW_PASSWORD' | translate}}</label>
           <input type="password" id="new_password" name="new_password" class="form-control" ng-model="user.new_password" />
         </div>
         <div class="form-group">
-          <label for="new_password_twice">Password twice</label>
+          <label for="new_password_twice">{{'INPUT.NEW_PASSWORD_AGAIN' | translate}}</label>
           <input type="password" id="new_password_twice" name="new_password_twice" class="form-control" ng-model="user.new_password_twice"  />
         </div>
         <div class="form-submit">
-          <input type="submit" class="btn btn-success" value="Reset" />
+          <input type="submit" class="btn btn-success" value="{{'BUTTON.SAVE' | translate}}" />
         </div>
       </div>
     </div>

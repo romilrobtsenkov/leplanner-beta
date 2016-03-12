@@ -2,10 +2,10 @@
   <p class="loading-gif-animation"><img src="./images/loading.gif"></p>
 </div>
 <div class="container main-content" ng-if="no_scenario">
-  No such scenario found, check URL
+  {{'NOTICE.NO_SCENARIO' | translate}}
 </div>
 <div class="container main-content" ng-show="scenario.draft">
-  This scenario is a draft! <a class="print-button btn btn-primary" ng-if="user._id==scenario.author._id" href="/#/edit-details/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> Edit</a>
+  {{'CONTENT.IS_DRAFT' | translate}} <a class="print-button btn btn-primary" ng-if="user._id==scenario.author._id" href="/#/edit-details/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> {{'BUTTON.EDIT' | translate}}</a>
 </div>
 <div class="container main-content" ng-if="scenario && !no_scenario && !scenario.draft && fully_loaded">
 
@@ -24,13 +24,13 @@
           </div>
           <div class="col-xs-3">
             <div ng-if="!is_favorite && user">
-                <a ng-click="addRemoveFavorite()" class="add-favorite-button btn btn-success btn-sm pull-right"><span class="glyphicon glyphicon-heart"></span> Favorite</a>
+                <a ng-click="addRemoveFavorite()" class="add-favorite-button btn btn-success btn-sm pull-right"><span class="glyphicon glyphicon-heart"></span> {{'BUTTON.FAVORITE' | translate}}</a>
             </div>
             <div ng-if="is_favorite && user">
-              <a ng-click="addRemoveFavorite('remove')" class="add-favorite-button btn btn-default btn-sm pull-right"><span class="glyphicon glyphicon-heart-empty"></span> Unfavorite</a>
+              <a ng-click="addRemoveFavorite('remove')" class="add-favorite-button btn btn-default btn-sm pull-right"><span class="glyphicon glyphicon-heart-empty"></span> {{'BUTTON.UNFAVORITE' | translate}}</a>
             </div>
             <div ng-if="!user">
-              <a class="pull-right" ng-click='navigateToLogin($event)' href="/#/login">Login to favorite</a>
+              <a class="pull-right" ng-click='navigateToLogin($event)' href="/#/login">{{'BUTTON.LOG_IN_TO_FAVORITE' | translate}}</a>
             </div>
           </div>
         </div>
@@ -41,7 +41,7 @@
             <span>| <span class="glyphicon glyphicon-heart"></span><span> {{scenario.favorites_count}}</span></span>
           </div>
           <div class="col-xs-3">
-            <a class="print-button btn btn-sm pull-right" ng-if="user._id==scenario.author._id" href="/#/edit-details/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> Edit</a>
+            <a class="print-button btn btn-sm pull-right" ng-if="user._id==scenario.author._id" href="/#/edit-details/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> {{'BUTTON.EDIT' | translate}}</a>
           </div>
         </div>
 
@@ -55,16 +55,16 @@
                 {{scenario.author.organization}}
               </div>
               <div class="small-profile-usertitle-sign-up">
-                <span class="glyphicon glyphicon-time"></span> <span>Joined {{scenario.author.created | date:'MMMM yyyy'}}</span>
+                <span class="glyphicon glyphicon-time"></span> <span>{{'CONTENT.JOINED' | translate}} {{scenario.author.created | date:'MMMM yyyy'}}</span>
               </div>
             </div>
           </div>
           <div class="col-xs-3">
             <div class="small-profile-userbuttons">
-              <a ng-click="addRemoveFollow()" ng-if="!is_following && user && user._id!=scenario.author._id" class="btn btn-success btn-sm pull-right"><span class="glyphicon glyphicon-plus-sign"></span> Follow</a>
-              <a ng-click="addRemoveFollow('remove')" ng-if="is_following && user && user._id!=scenario.author._id" class="btn btn-default btn-sm pull-right"><span class="glyphicon glyphicons-circle-minus"></span> Unfollow</a>
-              <a href="/#/login" ng-if="!user" class="pull-right"> Login to follow</a>
-              <a ng-if="user._id==scenario.author._id" disabled="disabled" class="btn btn-success btn-sm pull-right">You are awesome</a>
+              <a ng-click="addRemoveFollow()" ng-if="!is_following && user && user._id!=scenario.author._id" class="btn btn-success btn-sm pull-right"><span class="glyphicon glyphicon-plus-sign"></span> {{'BUTTON.FOLLOW' | translate}}</a>
+              <a ng-click="addRemoveFollow('remove')" ng-if="is_following && user && user._id!=scenario.author._id" class="btn btn-default btn-sm pull-right"><span class="glyphicon glyphicons-circle-minus"></span> {{'BUTTON.UNFOLLOW' | translate}}</a>
+              <a href="/#/login" ng-if="!user" class="pull-right"> {{'BUTTON.LOG_IN_TO_FOLLOW' | translate}}</a>
+              <a ng-if="user._id==scenario.author._id" disabled="disabled" class="btn btn-success btn-sm pull-right">{{'BUTTON.FOLLOW_YOURSELF' | translate}}</a>
             </div>
           </div>
         </div>
@@ -85,23 +85,23 @@
           </div>
         </div>
 
-        <p><a rel="license" href="http://creativecommons.org/licenses/by/4.0/deed.et"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a> Sellel tööl on <a rel="license" href="http://creativecommons.org/licenses/by/4.0/deed.et">Creative Commons Autorile viitamine 4.0 Rahvusvaheline litsents</a>.</p>
+        <p><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /> {{'CONTENT.THIS_WORK_HAS' | translate}} <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">{{'CONTENT.CC_LICENSE' | translate}}</a> {{'CONTENT.LICENSE' | translate}}</p>
 
       </div>
 
       <div class="commets">
 
-        <p ng-if="!user"><strong>You have to login to comment!</strong></p>
+        <p ng-if="!user"><strong>{{'NOTICE.LOGIN_TO_COMMENT' | translate}}</strong></p>
         <div ng-if="user">
           <form ng-submit="addComment(comment)">
             <div class="form-group">
-              <label for="comment-text"><h3>Add a comment</h3></label><br>
+              <label for="comment-text"><h3>{{'HEADING.ADD_COMMENT' | translate}}</h3></label><br>
               <div ng-if='save_error' class="alert alert-danger" role="alert">{{save_error}}</div>
               <div ng-if='save_success' class="alert alert-success" role="alert">{{save_success}}</div>
-              <textarea id="comment-text" name="comment-text" ng-model="comment.text" class="form-control" rows="5" placeholder="Write comment here"></textarea>
+              <textarea id="comment-text" name="comment-text" ng-model="comment.text" class="form-control" rows="5" placeholder="{{'INPUT.WRITE_COMMENT_HERE' | translate}}"></textarea>
             </div>
             <div class="form-submit">
-              <button ng-disabled="adding_comment_in_progress" type="submit" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-share-alt"></span> ADD</button>
+              <button ng-disabled="adding_comment_in_progress" type="submit" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-share-alt"></span> {{'BUTTON.ADD' | translate}}</button>
             </div>
           </form>
         </div>
@@ -109,7 +109,7 @@
 
         <div ng-if="scenario.comments_count > 0">
 
-          <h3>Comments ({{scenario.comments_count}})</h3>
+          <h3>{{'HEADING.COMMENTS' | translate}} ({{scenario.comments_count}})</h3>
 
           <p ng-if="!comments" class="loading-gif-animation"><img src="./images/loading.gif"></p>
 
@@ -146,7 +146,7 @@
 
         </div>
 
-        <p ng-if="scenario.comments_count == 0">Be the first one to comment!</p>
+        <p ng-if="scenario.comments_count == 0">{{'NOTICE.FIRST_TO_COMMENT' | translate}}</p>
 
       </div>
     </div>
@@ -160,10 +160,10 @@
         </div>
 
         <div class="profile-userbuttons">
-          <a ng-click="addRemoveFollow()" ng-if="!is_following && user && user._id!=scenario.author._id" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> Follow</a>
-          <a ng-click="addRemoveFollow('remove')" ng-if="is_following && user && user._id!=scenario.author._id" class="btn btn-default btn-sm"><span class="glyphicon glyphicons-circle-minus"></span> Unfollow</a>
-          <a href="/#/login" ng-if="!user" class=""> Login to follow</a>
-          <a ng-if="user._id==scenario.author._id" disabled="disabled" class="btn btn-success btn-sm">You are awesome</a>
+          <a ng-click="addRemoveFollow()" ng-if="!is_following && user && user._id!=scenario.author._id" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> {{'BUTTON.FOLLOW' | translate}}</a>
+          <a ng-click="addRemoveFollow('remove')" ng-if="is_following && user && user._id!=scenario.author._id" class="btn btn-default btn-sm"><span class="glyphicon glyphicons-circle-minus"></span> {{'BUTTON.UNFOLLOW' | translate}}</a>
+          <a href="/#/login" ng-if="!user" class=""> {{'BUTTON.LOG_IN_TO_FOLLOW' | translate}}</a>
+          <a ng-if="user._id==scenario.author._id" disabled="disabled" class="btn btn-success btn-sm">{{'BUTTON.FOLLOW_YOURSELF' | translate}}</a>
         </div>
 
         <div class="profile-usertitle">
@@ -174,17 +174,16 @@
             {{scenario.author.organization}}
           </div>
           <div class="profile-usertitle-sign-up">
-            <span class="glyphicon glyphicon-time"></span> <span>Joined {{scenario.author.created | date:'MMMM yyyy'}}</span>
+            <span class="glyphicon glyphicon-time"></span> <span>{{'CONTENT.JOINED' | translate}} {{scenario.author.created | date:'MMMM yyyy'}}</span>
           </div>
         </div>
 
       </div>
 
       <!-- Popular scenarios -->
-      <div class="similar-scenarios">
-        <h3>Other user scenarios</h3>
+      <div ng-if="!no_popular_scenarios" class="similar-scenarios">
+        <h3>{{'HEADING.OTHER_USER_SCENARIOS' | translate}}</h3>
         <div class="row">
-          <p ng-if="no_popular_scenarios">You are lucky, this is the only one!</p>
           <div class="col-xs-6 col-sm-12" ng-repeat="scenario in scenarios">
             <div class="thumbnail thumbnail-first-page">
               <a href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">
@@ -198,7 +197,7 @@
                     <span class="glyphicon glyphicon-heart"><span class="icon-space-after">{{scenario.favorites_count}}</span></span>
                     <span class="glyphicon glyphicon-comment"><span class="icon-space-after">{{scenario.comments_count}}</span></span>
                   </span>
-                  <a class="open-link pull-right" href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">OPEN<span class="glyphicon glyphicon-chevron-right"></span></a>
+                  <a class="open-link pull-right" href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{'BUTTON.OPEN' | translate}}<span class="glyphicon glyphicon-chevron-right"></span></a>
                 </p>
               </div>
             </div>

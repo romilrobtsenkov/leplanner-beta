@@ -3,10 +3,12 @@
 
   angular
     .module('app')
-    .controller('DashboardController', ['$scope','$rootScope','requestService',
-    function ($scope,$rootScope,requestService) {
+    .controller('DashboardController', ['$scope','$rootScope','requestService','$translate',
+    function ($scope,$rootScope,requestService,$translate) {
 
-      $rootScope.title = $rootScope.user.first_name+' '+$rootScope.user.last_name+' dashboard | Leplanner beta';
+      $translate('PAGE.DASHBOARD').then(function (t) {
+          $rootScope.title = $rootScope.user.first_name+' '+$rootScope.user.last_name+' '+t+' | Leplanner beta';
+      });
 
       if(typeof $rootScope.dash_active_tab === 'undefined'){
         $rootScope.dash_active_tab = 'feed';

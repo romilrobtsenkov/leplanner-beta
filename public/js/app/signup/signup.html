@@ -5,7 +5,7 @@
         <div class="main-login">
 
             <h3>
-              <span>Sign up</span>
+              <span>{{'PAGE.SIGN_UP' | translate}}</span>
             </h3>
 
             <!-- Create new account -->
@@ -16,27 +16,27 @@
                 <input type="text" class="form-control" id="new_beta_code" name="new_beta_code" ng-model="user.new_beta_code" required/>
               </div>-->
               <div class="form-group">
-                <label for="new_first_name">First name (required)</label>
+                <label for="new_first_name">{{'INPUT.FIRST_NAME' | translate}} ({{'INPUT.REQUIRED' | translate}})</label>
                 <input type="text" class="form-control" id="new_first_name" name="new_first_name" ng-model="user.new_first_name" required/>
               </div>
               <div class="form-group">
-                <label for="new_last_name">Last name (required)</label>
+                <label for="new_last_name">{{'INPUT.LAST_NAME' | translate}} ({{'INPUT.REQUIRED' | translate}})</label>
                 <input type="text" class="form-control" id="new_last_name" name="new_last_name" ng-model="user.new_last_name" required />
               </div>
               <div class="form-group">
-                <label for="new_organization">Organization</label>
+                <label for="new_organization">{{'INPUT.ORGANIZATION' | translate}}</label>
                 <input type="text" class="form-control" id="new_organization" name="new_organization" ng-model="user.new_organization" />
               </div>
               <div class="form-group">
-                <label for="new_email">Email  (required)</label>
+                <label for="new_email">{{'INPUT.EMAIL' | translate}} ({{'INPUT.REQUIRED' | translate}})</label>
                 <input type="email" class="form-control" id="new_email" name="new_email" ng-model="user.new_email" required />
               </div>
               <div class="form-group">
-                <label for="new_password">Password  (required)</label>
+                <label for="new_password">{{'INPUT.PASSWORD' | translate}} ({{'INPUT.REQUIRED' | translate}})</label>
                 <input type="password" class="form-control" id="new_password" name="new_password" autocomplete="off" ng-model="user.new_password" required />
               </div>
               <div class="form-submit">
-                <input ng-disabled="creating_in_progress" class="btn btn-sm btn btn-primary" type="submit" value="Create my account" />
+                <input ng-disabled="creating_in_progress" class="btn btn-sm btn btn-primary" type="submit" value="{{'BUTTON.CREATE_MY_ACCOUNT' | translate}}" />
               </div>
             </form>
 

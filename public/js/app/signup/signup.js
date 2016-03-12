@@ -6,7 +6,9 @@
     .controller('SignUpController', ['$scope','$rootScope','$location','$timeout','requestService','$translate',
     function($scope,$rootScope,$location,$timeout,requestService,$translate) {
 
-      $rootScope.title = 'Sign up | Leplanner beta';
+        $translate('PAGE.SIGN_UP').then(function (t) {
+           $rootScope.title = t+' | Leplanner beta';
+        });
 
       $scope.create = function(user){
 

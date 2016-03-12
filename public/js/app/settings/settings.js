@@ -3,10 +3,12 @@
 
   angular
     .module('app')
-    .controller('SettingsController', ['$scope','$rootScope','$location','$timeout','requestService','Upload',
-    function($scope,$rootScope,$location,$timeout,requestService,Upload) {
+    .controller('SettingsController', ['$scope','$rootScope','$location','$timeout','requestService','Upload','$translate',
+    function($scope,$rootScope,$location,$timeout,requestService,Upload,$translate) {
 
-      $rootScope.title = 'Settings | Leplanner beta';
+        $translate('PAGE.SETTINGS').then(function (t) {
+            $rootScope.title = t+' | Leplanner beta';
+        });
 
       $scope.user = $rootScope.user;
       $scope.user.profile_image ="./images/user/"+$scope.user._id+".jpg";

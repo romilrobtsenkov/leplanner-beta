@@ -3,10 +3,13 @@
 
   angular
     .module('app')
-    .controller('ResetController', ['$scope','$location','$rootScope','$routeParams','$timeout','requestService',
-    function($scope,$location,$rootScope,$routeParams,$timeout,requestService) {
+    .controller('ResetController', ['$scope','$location','$rootScope','$routeParams','$timeout','requestService','$translate',
+    function($scope,$location,$rootScope,$routeParams,$timeout,requestService,$translate) {
 
-      $rootScope.title = 'Password reset | Leplanner beta';
+        $translate('PAGE.PASSWORD_RESET').then(function (t) {
+           $rootScope.title = t+' | Leplanner beta';
+        });
+
 
       $scope.reset = function(user){
 

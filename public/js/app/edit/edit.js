@@ -3,8 +3,8 @@
 
   angular
     .module('app')
-    .controller('EditController', ['$scope','$rootScope','$timeout','$routeParams','$location','requestService',
-    function($scope,$rootScope,$timeout,$routeParams,$location,requestService) {
+    .controller('EditController', ['$scope','$rootScope','$timeout','$routeParams','$location','requestService','$translate',
+    function($scope,$rootScope,$timeout,$routeParams,$location,requestService,$translate) {
 
       if(typeof $routeParams.id !== 'undefined'){
         $scope.scenario_id = $routeParams.id;
@@ -45,7 +45,9 @@
               //console.log(data.scenario);
 
               $scope.scenario = data.scenario;
-              $rootScope.title = 'Edit scenario: '+$scope.scenario.name+' canvas';
+              $translate('PAGE.EDIT').then(function (t) {
+                  $rootScope.title = t+' '+$scope.scenario.name+' canvas';
+              });
               console.log('Loaded scenario');
 
               if(typeof data.scenario.outcomes !== 'undefined'){
