@@ -40,6 +40,8 @@
         "COMMENTED": "Kommenteeris",
         "INCLASS": "tunnitegevus",
         "OFFCLASS": "tunniväline",
+        "INCLASS_ACTIVITY": "tunnitegevus",
+        "OFFCLASS_ACTIVITY": "tunniväline (muu) tegevus",
         "TEACHER_RESOURCE": "Õpetaja materjal",
         "STUDENT_RESOURCE": "Õpilase materjal"
 

@@ -40,6 +40,8 @@
         "COMMENTED": "Commented",
         "INCLASS": "in-class",
         "OFFCLASS": "off-class",
+        "INCLASS_ACTIVITY": "In-class activity",
+        "OFFCLASS_ACTIVITY": "Off-class activity",
         "TEACHER_RESOURCE": "Teacher resource",
         "STUDENT_RESOURCE": "Student resource"
 

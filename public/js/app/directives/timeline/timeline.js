@@ -3,8 +3,8 @@
 
   angular
     .module('app')
-    .directive('timeline', ['$routeParams','$timeout','$window','$filter',
-    function($routeParams,$timeout,$window,$filter) {
+    .directive('timeline', ['$routeParams','$timeout','$window','$filter','$translate',
+    function($routeParams,$timeout,$window,$filter,$translate) {
       return {
         restrict: 'E',
         templateUrl: 'js/app/directives/timeline/timeline.html',
@@ -37,7 +37,26 @@
                 //resize delay var
                 this.resizeDelay = null;
 
-                this.init();
+                //translate and then init
+                $translate(['BUTTON.EDIT',
+                            'CONTENT.TEACHER_RESOURCE',
+                            'CONTENT.STUDENT_RESOURCE',
+                            'CONTENT.INCLASS_ACTIVITY',
+                            'CONTENT.OFFCLASS_ACTIVITY',
+                            'CONTENT.TEACHER_RESOURCE',
+                            'CONTENT.STUDENT_RESOURCE'
+                            ]).then(function (translations) {
+                    Planner.instance_.config.edit = translations['BUTTON.EDIT'];
+                    Planner.instance_.config.AddaboveAxisLegend = translations['CONTENT.TEACHER_RESOURCE'];
+                    Planner.instance_.config.AddbelowAxisLegend = translations['CONTENT.STUDENT_RESOURCE'];
+                    Planner.instance_.config.legendInClass = translations['CONTENT.INCLASS_ACTIVITY'];
+                    Planner.instance_.config.legendOffClass = translations['CONTENT.OFFCLASS_ACTIVITY'];
+                    Planner.instance_.config.aboveAxisLegend = translations['CONTENT.TEACHER_RESOURCE'];
+                    Planner.instance_.config.belowAxisLegend = translations['CONTENT.STUDENT_RESOURCE'];
+
+
+                    Planner.instance_.init();
+                });
             };
 
             Planner.config = {
@@ -697,6 +716,8 @@
                                     edit_text_span.appendChild(edit_text);
                                     edit_overflow.appendChild(edit_text_span);
                                     material_wrapper.appendChild(edit_overflow);
+                                    //calculate word widht depending on language
+                                    edit_text_span.style.marginLeft = -edit_text_span.offsetWidth/2 + 'px';
 
                                     this.bindOpenModal(edit_overflow, material.position, material._id);
                                 }
