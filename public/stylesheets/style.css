@@ -1289,6 +1289,17 @@ textarea#description {
     white-space: pre-line;
 }
 
+/* without link */
+.popover a.inner-conveyor-icon:hover {
+    cursor: default;
+    text-decoration: none;
+}
+
+.popover a.inner-conveyor-icon[href]:hover {
+    cursor: pointer;;
+    text-decoration: underline;
+}
+
 @page { size: A4 landscape }
 
 @media print {
