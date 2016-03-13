@@ -36,7 +36,7 @@ h6, .h6 {
 
 .navbar-brand,
 .navbar-brand:hover {
-    background-image: url(../images/logo.png);
+    background-image: url(/images/logo.png);
     background-size: 130px;
     width: 132px;
     color: transparent !important;
