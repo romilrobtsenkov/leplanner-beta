@@ -4,4 +4,6 @@ public/bower/
 public/images/user/
 public/images/user-temp/
 public/images/favs/
+public/js/min/
+public/stylesheets/min/
 .DS_Store
