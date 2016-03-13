@@ -9,8 +9,9 @@ var gulp   = require('gulp'),
     uglify = require('gulp-uglify');
     jsonminify = require('gulp-jsonminify');
     size = require('gulp-size');
+    cleanCSS = require('gulp-clean-css');
 
-gulp.task('default', ['watch']);
+gulp.task('default', ['jshint', 'build-js', 'minify-languages', 'minify-css']);
 
 gulp.task('jshint', function() {
   return gulp.src('public/js/app/**/*.js')
@@ -79,4 +80,13 @@ gulp.task('minify-languages', function() {
   return gulp.src(lang_files)
     .pipe(jsonminify())
     .pipe(gulp.dest('public/localization/min'));
+});
+
+gulp.task('minify-css', function() {
+    return gulp.src('public/stylesheets/*.css')
+        .pipe(cleanCSS({debug: true}, function(details) {
+            console.log(details.name + ': ' + details.stats.originalSize);
+            console.log(details.name + ': ' + details.stats.minifiedSize);
+        }))
+        .pipe(gulp.dest('public/stylesheets/min'));
 });
