@@ -8,3 +8,5 @@ public/js/min/
 public/stylesheets/min/
 public/localization/min/
 .DS_Store
+
+public/stylesheets/min/style.css
