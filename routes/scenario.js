@@ -948,7 +948,7 @@ router.post('/single-scenario/', function(req, res, next) {
       var q = {};
       q.args = { follower: params.user._id, following: response.scenario.author._id, removed: null };
 
-      mongoService.findOne(q, Favorite, function(err, following){
+      mongoService.findOne(q, Follower, function(err, following){
         if (err) { return next({error: err}); }
         if(following !== null){ response.is_following = true; }
         next(null, response);
