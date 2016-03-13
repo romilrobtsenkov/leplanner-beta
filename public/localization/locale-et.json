@@ -71,6 +71,7 @@
         "FEED": "Voog",
         "DRAFTS": "Mustandid",
         "PUBLISHED": "Avaldatud",
+        "DRAFT": "Mustand",
         "FAVORITES": "Lemmikud",
         "USERS": "Kasutajad",
         "GET_LATEST": "Lae uusimad",
@@ -112,6 +113,7 @@
         "PASSWORD_TO_CONFIRM": "Parool (e-posti muutmise kinnitamiseks)",
 
         "SEARCH": "Otsisõna",
+        "UNCHECK_ALL": " Tühista valikud",
         "SEARCH_SCENARIOS": "Otsi stsenaariumeid",
         "FOUND": "Leitud",
         "FOR_KEYWORD": "otsisõnaga",
@@ -135,7 +137,7 @@
         "CONVEYOR_URL": "URL",
         "DISPLAY": "Digiseade",
         "RESOURCE": "Materjal",
-        "LOCATION": "Asukoht",
+        "LOCATION": "Asukoha URL",
 
         "WRITE_COMMENT_HERE": "Kirjuta kommentaar siia"
     },
@@ -197,6 +199,33 @@
         "MATERIAL_NAME_REQUIRED": "Materjali nimi ei saa jääda tühjaks",
         "MATERIAL_EXISTS": "Materjal on juba olemas, uuenda lehte",
 
-        "NO_USER_SCENARIOS": "Kasutaja ei ole veel avaldatud stsenaariumeid"
+        "NO_USER_SCENARIOS": "Kasutaja ei ole veel avaldatud stsenaariumeid",
+
+        "DELETE_CONFIRM": "Oled kindel, et tahad kustutada?"
+    },
+
+    "ORGANIZATION" : {
+        "0": "Individuaalne",
+        "1": "Paaris",
+        "2": "Väikerühmas",
+        "3": "Terve klassiga"
+    },
+
+    "CO_AUTHORSHIP": {
+        "0": "0 - Vaatamine (kuulamine, lugemine)",
+        "1": "1 - Märgendamine (annoteerimine, meeldimine)",
+        "2": "2 - Interaktsioon (enesekontrolli test)",
+        "3": "3 - Esitamine (ülesande esitamine)",
+        "4": "4 - Laiendamine (materjali lisamine olemasolevale)",
+        "5": "5 - Remiksimine (materjalile uue tähenduse andmine)",
+        "6": "6 - Loomine (uue materjali loomine)"
+    },
+
+    "DISPLAYS": {
+        "0" : "Dataprojektor/TV",
+        "1" : "Puutetahvel",
+        "2" : "Arvuti",
+        "3" : "Tahvelarvuti",
+        "4" : "Nutitelefon"
     }
 }

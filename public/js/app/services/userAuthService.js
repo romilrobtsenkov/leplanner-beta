@@ -29,6 +29,8 @@
             var currentLang = $translate.proposedLanguage() || $translate.use();
             if(data.lang && currentLang != data.lang){
                 $translate.use(data.lang);
+                //load default translation
+                $rootScope.translateDefaults();
             }
 
             if(typeof option !== 'undefined' && option.success_location){

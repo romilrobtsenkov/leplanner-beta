@@ -45,15 +45,18 @@
           smartButtonMaxItems: 3,
           displayProp: 'name',
           idProp: '_id',
+          showCheckAll: false,
           //externalIdProp: '_id',
           externalIdProp: '',
           buttonClasses: 'btn btn-default btn-fixed-width',
         };
 
-        $scope.subjectsText = {buttonDefaultText: 'Filter subjects'};
-        $translate('BUTTON.SUBJECTS').then(function (t) {
-            $scope.subjectsText = {buttonDefaultText: t};
-        });
+        //$scope.subjectsText = {buttonDefaultText: 'Filter subjects'};
+        $scope.subjectsText = {
+            buttonDefaultText: $rootScope.translated.dropdowns.subjects,
+            uncheckAll: $rootScope.translated.dropdowns.uncheck_all,
+            searchPlaceholder: $rootScope.translated.dropdowns.search
+        };
 
          requestService.get('/meta/subjects')
           .then(function(data) {

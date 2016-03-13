@@ -97,7 +97,8 @@
         }
 
         //publish/draft dropdown
-        $scope.publish_options = [{name: 'Draft', value: true},{name: 'Published', value: false}];
+        //$scope.publish_options = [{name: 'Draft', value: true},{name: 'Published', value: false}];
+        $scope.publish_options = [{name: $rootScope.translated.dropdowns.draft, value: true},{name: $rootScope.translated.dropdowns.published, value: false}];
 
         requestService.get('/meta/get-scenario-meta')
         .then(function(data) {
@@ -106,6 +107,13 @@
             $scope.subjects_list = data.subjects;
             //console.log($scope.subjects_list);
             $scope.activity_organization = data.activity_organization;
+
+            //replace with translation
+            if($rootScope.translated && $rootScope.translated.organization){
+                for(var i = 0; i < $scope.activity_organization.length; i++){
+                    $scope.activity_organization[i].name = $rootScope.translated.organization[i];
+                }
+            }
 
             $scope.fully_loaded = true;
 
@@ -134,38 +142,44 @@
       function createDropdowns(){
 
         $scope.subjectsSettings = {
-            scrollableHeight: '200px',
+            scrollableHeight: '250px',
             scrollable: true,
             smartButtonMaxItems: 1,
             displayProp: 'name',
             showCheckAll: false,
-            showUncheckAll: false,
+            enableSearch: true,
+            //showUncheckAll: false,
             idProp: '_id',
             externalIdProp: '',
             buttonClasses: 'btn btn-default',
         };
-        $scope.subjectsText = {buttonDefaultText: 'Subjects'};
+        //$scope.subjectsText = {buttonDefaultText: 'Subjects'};
+        $scope.subjectsText = {
+            buttonDefaultText: $rootScope.translated.dropdowns.subjects,
+            uncheckAll: $rootScope.translated.dropdowns.uncheck_all,
+            searchPlaceholder: $rootScope.translated.dropdowns.search};
 
 
         $scope.outcomesSettings = {
-          scrollableHeight: '150px',
+          scrollableHeight: '200px',
           scrollable: true,
           smartButtonMaxItems: 1,
           displayProp: 'name',
-          //showCheckAll: false,
-          //showUncheckAll: false,
+          showCheckAll: false,
+          showUncheckAll: false,
           idProp: '_id',
           externalIdProp: '',
           buttonClasses: 'btn btn-default',
         };
-        $scope.outcomesText = {buttonDefaultText: 'Learning outcomes'};
+        //$scope.outcomesText = {buttonDefaultText: 'Learning outcomes'};
+        $scope.outcomesText = {buttonDefaultText: $rootScope.translated.dropdowns.learning_outcomes};
 
         $scope.activity_organizationSettings = {
           scrollableHeight: '200px',
           scrollable: false,
           selectionLimit: 1,
           smartButtonMaxItems: 1,
-          displayProp: 'name_eng',
+          displayProp: 'name',
           showCheckAll: false,
           showUncheckAll: false,
           closeOnSelect: true,
@@ -173,7 +187,7 @@
           externalIdProp: '',
           buttonClasses: 'btn btn-default',
         };
-        $scope.activity_organizationText = {buttonDefaultText: 'Organization'};
+        $scope.activity_organizationText = {buttonDefaultText: 'Organization'}; // it is not used, first selection marked as default
 
       }
 
@@ -273,7 +287,8 @@
       };
 
       $scope.deleteScenario = function(){
-        var del = confirm("Do you really want to delete scenario '"+$scope.scenario.name+"', there is no turning back!");
+        //var del = confirm("Do you really want to delete scenario '"+$scope.scenario.name+"', there is no turning back!");
+        var del = confirm($rootScope.translated.confirm);
         if(del === true){
 
           var params = {

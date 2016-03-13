@@ -71,6 +71,7 @@
         "FEED": "Feed",
         "DRAFTS": "Drafts",
         "PUBLISHED": "Published",
+        "DRAFT": "Draft",
         "FAVORITES": "Favorites",
         "USERS": "Users",
         "GET_LATEST": "Get Latest",
@@ -112,6 +113,7 @@
         "PASSWORD_TO_CONFIRM": "Password (to confirm email change)",
 
         "SEARCH": "Search",
+        "UNCHECK_ALL": "Uncheck all",
         "SEARCH_SCENARIOS": "Search scenarios",
         "FOUND": "Found",
         "FOR_KEYWORD": "for keyword",
@@ -135,7 +137,7 @@
         "CONVEYOR_URL": "URL",
         "DISPLAY": "Display",
         "RESOURCE": "Resource",
-        "LOCATION": "Location",
+        "LOCATION": "Location URL",
 
         "WRITE_COMMENT_HERE": "Write comment here"
     },
@@ -197,6 +199,34 @@
         "MATERIAL_NAME_REQUIRED": "Resource name can not be empty",
         "MATERIAL_EXISTS": "Resource already exists try reloading the page",
 
-        "NO_USER_SCENARIOS": "User has no scenarios yet"
+        "NO_USER_SCENARIOS": "User has no scenarios yet",
+
+        "DELETE_CONFIRM": "Are you sure that you want to delete?"
+    },
+
+    "ORGANIZATION" : {
+        "0": "Individual",
+        "1": "Pair",
+        "2": "Small group",
+        "3": "Whole class"
+    },
+
+    "CO_AUTHORSHIP": {
+        "0": "0 - Consuming (read, view, listen)",
+        "1": "1 - Annotating (like, tag, bookmark, comment)",
+        "2": "2 - Interacting (select, drag-n-drop, enter the response, take self-test)",
+        "3": "3 - Submitting (send response to teacher for feedback or assessment)",
+        "4": "4 - Expanding (add videos, pages, files)",
+        "5": "5 - Remixing (change the content, replace some parts, add subtitles)",
+        "6": "6 - Creating (compose new content from scratch, re-use some pieces)"
+    },
+
+    "DISPLAYS": {
+        "0" : "Projector/TV",
+        "1" : "Smartboard",
+        "2" : "Computer",
+        "3" : "Tablet",
+        "4" : "Smartphone"
     }
+
 }

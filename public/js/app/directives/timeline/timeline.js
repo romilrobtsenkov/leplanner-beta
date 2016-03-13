@@ -75,7 +75,7 @@
                 AddaboveAxisLegend: 'materjal õpetajale (for teacher)',
                 AddbelowAxisLegend: 'materjal õpilasele (for student)',
                 defaultFontSize: 12,
-                org_language: 'name_eng',
+                org_language: 'name',
                 edit: 'Edit',
                 add: '+'
             };
@@ -720,7 +720,9 @@
                                     edit_overflow.appendChild(edit_text_span);
                                     material_wrapper.appendChild(edit_overflow);
                                     //calculate word widht depending on language
-                                    edit_text_span.style.marginLeft = -edit_text_span.offsetWidth/2 + 'px';
+                                    if(edit_text_span.offsetWidth){
+                                        edit_text_span.style.marginLeft = -edit_text_span.offsetWidth/2 + 'px';
+                                    }
 
                                     this.bindOpenModal(edit_overflow, material.position, material._id);
                                 }

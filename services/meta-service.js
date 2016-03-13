@@ -12,32 +12,32 @@ exports.getSubjects = function(next) {
 
 exports.getActivityOrganization = function(next) {
   return next(null, [
-    { _id: 0, name: 'individuaalne', name_eng: 'individual' },
-    { _id: 1, name: 'paaris', name_eng: 'pair' },
-    { _id: 2, name: 'väikerühmas', name_eng: 'small group' },
-    { _id: 3, name: 'terve klassiga', name_eng: 'whole class' },
+    { _id: 0, name: 'individual' },
+    { _id: 1, name: 'pair' },
+    { _id: 2, name: 'small group' },
+    { _id: 3, name: 'whole class' },
   ]);
 };
 
 exports.getInvolvementOptions = function(next) {
   return next(null, [
-    { _id: 0, name: "0 - vaatamine (kuulamine, lugemine) / consuming (read, view, listen)" },
-    { _id: 1, name: "1 - märgendamine (annoteerimine, meeldimine) / annotating (like, tag, bookmark, comment)" },
-    { _id: 2, name: "2 - interaktsioon (enesekontrolli test) / interacting (select, drag-n-drop, enter the response, take self-test)" },
-    { _id: 3, name: "3 - esitamine (ülesande esitamine) / submitting (send response to teacher for feedback or assessment)" },
-    { _id: 4, name: "4 - laiendamine (materjali lisamine olemasolevale) / expanding (add videos, pages, files)" },
-    { _id: 5, name: "5 - remiksimine (materjalile uue tähenduse andmine) / remixing (change the content, replace some parts, add subtitles)" },
-    { _id: 6, name: "6 - loomine (uue materjali loomine) / creating (compose new content from scratch, re-use some pieces)" }
+    { _id: 0, name: "0 - consuming (read, view, listen)" },
+    { _id: 1, name: "1 - annotating (like, tag, bookmark, comment)" },
+    { _id: 2, name: "2 - interacting (select, drag-n-drop, enter the response, take self-test)" },
+    { _id: 3, name: "3 - submitting (send response to teacher for feedback or assessment)" },
+    { _id: 4, name: "4 - expanding (add videos, pages, files)" },
+    { _id: 5, name: "5 - remixing (change the content, replace some parts, add subtitles)" },
+    { _id: 6, name: "6 - creating (compose new content from scratch, re-use some pieces)" }
   ]);
 };
 
 exports.getDisplays = function(next) {
   return next(null, [
-    { _id: 0, name: "Dataprojektor/TV (Projector/TV)", icon: "other_display.png" },
-    { _id: 1, name: "Puutetahvel (Smartboard)", icon: "other_display.png" },
-    { _id: 2, name: "Arvuti (Computer)", icon: "pc.png" },
-    { _id: 3, name: "Tahvelarvuti (Tablet)", icon: "tablet.png" },
-    { _id: 4, name: "Nutitelefon (Smartphone)", icon: "smartphone.png" },
+    { _id: 0, name: "projector/TV", icon: "other_display.png" },
+    { _id: 1, name: "smartboard", icon: "other_display.png" },
+    { _id: 2, name: "computer", icon: "pc.png" },
+    { _id: 3, name: "tablet", icon: "tablet.png" },
+    { _id: 4, name: "smartphone", icon: "smartphone.png" },
   ]);
 };
 

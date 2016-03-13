@@ -101,6 +101,23 @@
             $scope.involvement_options = data.involvement_options;
             $scope.displays_list = data.displays;
 
+            //load translations
+            if($rootScope.translated && $rootScope.translated.organization){
+                for(var i = 0; i < $scope.activity_organization.length; i++){
+                    $scope.activity_organization[i].name = $rootScope.translated.organization[i];
+                }
+            }
+            if($rootScope.translated && $rootScope.translated.co_authorship){
+                for(var j = 0; j < $scope.involvement_options.length; j++){
+                    $scope.involvement_options[j].name = $rootScope.translated.co_authorship[j];
+                }
+            }
+            if($rootScope.translated && $rootScope.translated.displays){
+                for(var k = 0; k < $scope.displays_list.length; k++){
+                    $scope.displays_list[k].name = $rootScope.translated.displays[k];
+                }
+            }
+
             $scope.fully_loaded = true;
 
           }else{
@@ -183,7 +200,8 @@
 
       $scope.deleteMaterial = function(id){
 
-        var del = confirm('Do you really want to delete this material?');
+        //var del = confirm('Do you really want to delete this material?');
+        var del = confirm($rootScope.translated.confirm);
 
         if(del !== true){ return; }
 
@@ -255,11 +273,11 @@
         }
 
         $scope.material.displays = temp_arr;
-        console.log($scope.material.conveyors);
+        //console.log($scope.material.conveyors);
         //clean empty conveyors
         for(var j = 0; j < $scope.material.conveyors.length; j++){
             //if both name and url empty
-            console.log(!$scope.material.conveyors[j].name && !$scope.material.conveyors[j].url);
+            //console.log(!$scope.material.conveyors[j].name && !$scope.material.conveyors[j].url);
             if(!$scope.material.conveyors[j].name && !$scope.material.conveyors[j].url){
                 //console.log($scope.displays_list[i]._id);
                 $scope.material.conveyors.splice(j, 1);
