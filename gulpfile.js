@@ -7,6 +7,8 @@ var gulp   = require('gulp'),
     sourcemaps = require('gulp-sourcemaps'),
     concat = require('gulp-concat'),
     uglify = require('gulp-uglify');
+    jsonminify = require('gulp-jsonminify');
+    size = require('gulp-size');
 
 gulp.task('default', ['watch']);
 
@@ -21,6 +23,7 @@ gulp.task('watch', function() {
 });
 
 gulp.task('build-js', function() {
+
   return gulp.src([
       'public/bower/angular/angular.min.js',
       'public/bower/angular-route/angular-route.min.js',
@@ -56,11 +59,24 @@ gulp.task('build-js', function() {
       'public/js/app/directives/timeline/timeline.js',
       'public/js/app/directives/modal/modal.js',
     ])
-    .pipe(sourcemaps.init())
+      //.pipe(sourcemaps.init())
+      .pipe(size())
       .pipe(concat('leplanner-min.js'))
       //only uglify if gulp is ran with '--type production'
       // gulp build-js --type production
-      .pipe(gutil.env.type === 'production' ? uglify() : gutil.noop())
+      //.pipe(gutil.env.type === 'production' ? uglify() : gutil.noop())
+      .pipe(uglify())
     //.pipe(sourcemaps.write())
     .pipe(gulp.dest('public/js/min'));
+});
+
+gulp.task('minify-languages', function() {
+
+  var lang_files = [
+    'public/localization/*.json'
+  ];
+
+  return gulp.src(lang_files)
+    .pipe(jsonminify())
+    .pipe(gulp.dest('public/localization/min'));
 });

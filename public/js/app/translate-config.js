@@ -11,7 +11,7 @@
         });*/
 
         $translateProvider.useStaticFilesLoader({
-            'prefix': 'localization/locale-',
+            'prefix': 'localization/min/locale-',
             'suffix': '.json'
         });
         $translateProvider.useSanitizeValueStrategy('escape');
