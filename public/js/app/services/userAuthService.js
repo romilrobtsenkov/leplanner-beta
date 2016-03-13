@@ -28,9 +28,11 @@
             //check and fix language
             var currentLang = $translate.proposedLanguage() || $translate.use();
             if(data.lang && currentLang != data.lang){
-                $translate.use(data.lang);
-                //load default translation
-                $rootScope.translateDefaults();
+                $translate.use(data.lang).then(function(data){
+    	            //console.log(data.lang);
+                    //load default translation
+                    $rootScope.translateDefaults();
+                });
             }
 
             if(typeof option !== 'undefined' && option.success_location){

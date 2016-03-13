@@ -47,17 +47,16 @@
       //console.log('language ' + currentLang);
 
       $scope.changeLanguage = function (langKey) {
-        $translate.use(langKey);
-
-        //if user - save preferred language
-        if($rootScope.user){
-            $scope.setLanguage();
-        }else{
-            //trigger on language change, change important defaults
-            $scope.translateDefaults();
-            $route.reload();
-        }
-
+        $translate.use(langKey).then(function(data){
+            //if user - save preferred language
+            if($rootScope.user){
+                $scope.setLanguage();
+            }else{
+                //trigger on language change, change important defaults
+                $scope.translateDefaults();
+                $route.reload();
+            }
+        });
       };
 
       $scope.setLanguage = function(){
