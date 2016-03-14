@@ -75,6 +75,23 @@
             $scope.involvement_options = data.involvement_options;
             $scope.displays_list = data.displays;
 
+            //load translations
+            if($rootScope.translated && $rootScope.translated.organization){
+                for(var i = 0; i < $scope.activity_organization.length; i++){
+                    $scope.activity_organization[i].name = $rootScope.translated.organization[i];
+                }
+            }
+            if($rootScope.translated && $rootScope.translated.co_authorship){
+                for(var j = 0; j < $scope.involvement_options.length; j++){
+                    $scope.involvement_options[j].name = $rootScope.translated.co_authorship[j];
+                }
+            }
+            if($rootScope.translated && $rootScope.translated.displays){
+                for(var k = 0; k < $scope.displays_list.length; k++){
+                    $scope.displays_list[k].name = $rootScope.translated.displays[k];
+                }
+            }
+
             $scope.fully_loaded = true;
 
           }else{
