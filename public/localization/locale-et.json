@@ -226,6 +226,7 @@
         "1" : "Puutetahvel",
         "2" : "Arvuti",
         "3" : "Tahvelarvuti",
-        "4" : "Nutitelefon"
+        "4" : "Nutitelefon",
+        "5" : "Muu"
     }
 }

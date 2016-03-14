@@ -683,7 +683,12 @@
                                         //display.title = $scope.displays_list[current_display].name; hide for popover
 
                                         //name for popover
-                                        display.setAttribute("data-popdata", $scope.displays_list[current_display].name);
+                                        if(current_display == $scope.displays_list[$scope.displays_list.length-1]._id){
+                                            //OTHER
+                                            display.setAttribute("data-popdata", material.other_display);
+                                        }else{
+                                            display.setAttribute("data-popdata", $scope.displays_list[current_display].name);
+                                        }
 
                                         display.appendChild(display_icon);
 

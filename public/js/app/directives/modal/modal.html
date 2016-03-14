@@ -93,6 +93,7 @@
               <div ng-repeat="display in displays_list" class="checkbox">
                 <label>
                   <input style="display: inline-block;" type="checkbox" name="optradio" ng-model="displays_selection[display._id]" ng-value="display._id">{{display.name}}
+                  <input style="display: inline-block; width: 200px; margin-left: 10px;"  ng-if="displays_selection[display._id] && display._id == displays_list.length-1" type="text" ng-model="material.other_display" name="other_display" id="other_display" class="form-control" placeholder="Other" required/>
                 </label>
               </div>
             </div>

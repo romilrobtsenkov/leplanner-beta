@@ -86,7 +86,7 @@
           $translate([
               'ORGANIZATION.0','ORGANIZATION.1','ORGANIZATION.2','ORGANIZATION.3',
               'CO_AUTHORSHIP.0','CO_AUTHORSHIP.1','CO_AUTHORSHIP.2','CO_AUTHORSHIP.3','CO_AUTHORSHIP.4','CO_AUTHORSHIP.5','CO_AUTHORSHIP.6',
-              'DISPLAYS.0','DISPLAYS.1','DISPLAYS.2','DISPLAYS.3','DISPLAYS.4',
+              'DISPLAYS.0','DISPLAYS.1','DISPLAYS.2','DISPLAYS.3','DISPLAYS.4','DISPLAYS.5',
 
               'INPUT.SUBJECTS', 'INPUT.UNCHECK_ALL', 'INPUT.SEARCH', 'INPUT.LEARNING_OUTCOMES', 'BUTTON.PUBLISHED', 'BUTTON.DRAFT',
 
@@ -96,7 +96,7 @@
               $rootScope.translated = {
                   organization: [t['ORGANIZATION.0'],t['ORGANIZATION.1'],t['ORGANIZATION.2'],t['ORGANIZATION.3']],
                   co_authorship: [t['CO_AUTHORSHIP.0'],t['CO_AUTHORSHIP.1'],t['CO_AUTHORSHIP.2'],t['CO_AUTHORSHIP.3'],t['CO_AUTHORSHIP.4'],t['CO_AUTHORSHIP.5'],t['CO_AUTHORSHIP.6']],
-                  displays: [t['DISPLAYS.0'],t['DISPLAYS.1'],t['DISPLAYS.2'],t['DISPLAYS.3'],t['DISPLAYS.4']],
+                  displays: [t['DISPLAYS.0'],t['DISPLAYS.1'],t['DISPLAYS.2'],t['DISPLAYS.3'],t['DISPLAYS.4'], t['DISPLAYS.5']],
                   dropdowns: {
                       subjects: t['INPUT.SUBJECTS'],
                       uncheck_all: t['INPUT.UNCHECK_ALL'],

@@ -38,6 +38,7 @@ exports.getDisplays = function(next) {
     { _id: 2, name: "computer", icon: "pc.png" },
     { _id: 3, name: "tablet", icon: "tablet.png" },
     { _id: 4, name: "smartphone", icon: "smartphone.png" },
+    { _id: 5, name: "other", icon: "other_display.png" }
   ]);
 };
 

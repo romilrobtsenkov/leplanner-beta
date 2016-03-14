@@ -226,7 +226,8 @@
         "1" : "Smartboard",
         "2" : "Computer",
         "3" : "Tablet",
-        "4" : "Smartphone"
+        "4" : "Smartphone",
+        "5" : "Other"
     }
 
 }
