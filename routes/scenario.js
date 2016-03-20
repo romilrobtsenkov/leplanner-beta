@@ -918,6 +918,10 @@ router.post('/single-scenario/', function(req, res, next) {
         field: 'author',
         populate: 'first_name last_name organization created image last_modified'
       });
+      q.populated_fields.push({
+        field: 'subjects',
+        populate: 'name'
+      });
       q.update = { $inc: { view_count: 1 } };
 
       mongoService.update(q, Scenario, function(err, scenario){

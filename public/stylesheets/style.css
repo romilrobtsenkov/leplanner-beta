@@ -1300,6 +1300,20 @@ textarea#description {
     text-decoration: underline;
 }
 
+#scenario-text-container {
+    margin-top: 20px;
+}
+
+.subject-labels {
+    margin-right: 2px;
+    font-weight: normal;
+}
+
+.only-print-title {
+    display: none;
+    margin-top: 15px;
+}
+
 @page { size: A4 landscape }
 
 @media print {
@@ -1307,7 +1321,6 @@ textarea#description {
     body {
 
         padding: 0;
-        background-color: red;
         -webkit-print-color-adjust: exact;
     }
 
@@ -1331,6 +1344,14 @@ textarea#description {
         display:  none;
     }
 
+    .only-print-title {
+        display: block !important;
+    }
+
+    .timeline-back-button {
+        display:  none;
+    }
+
     #scenario-timeline-wrapper {
         width: 100%;
         overflow: visible;
@@ -1350,6 +1371,25 @@ textarea#description {
 
     a[href]:after {
         content: none !important;
+    }
+
+    .scenario-text-container a {
+        color: blue !important;
+    }
+
+    .only-print-title a {
+        color: blue !important;
+        text-decoration: underline;
+    }
+
+    a.link-for-print {
+        color: blue !important;
+        text-decoration: underline;
+    }
+
+    .p-with-links a {
+        color: blue !important;
+        text-decoration: underline;
     }
 
 }

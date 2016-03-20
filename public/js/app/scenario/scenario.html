@@ -10,7 +10,8 @@
 <div class="container main-content" ng-if="scenario && !no_scenario && !scenario.draft && fully_loaded">
 
   <timeline></timeline>
-
+  <h4 class="only-print-title"><strong><a href="/#/scenario/{{scenario._id}}">{{scenario.name}}</a></strong></h4>
+  <h5 class="only-print-title"><strong>@<a href="/#/user/{{scenario.author._id}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a></strong></h5>
   <br>
   <div class="row scenario-page">
 
@@ -20,7 +21,10 @@
 
         <div class="row">
           <div class="col-xs-9">
-            <h2 class="pull-left scnario-name" ><strong>{{scenario.name}}</strong></h2>
+            <h2 class="scnario-name" ><strong>{{scenario.name}}</strong></h2>
+            <span ng-repeat="s in scenario.subjects" class="label label-default subject-labels">{{s.name}}</span>
+            <br>
+            <br>
           </div>
           <div class="col-xs-3">
             <div ng-if="!is_favorite && user">
@@ -38,7 +42,9 @@
         <div class="row">
           <div class="col-xs-9">
             <span class="glyphicon glyphicon-calendar scnario-created"></span> <span> {{scenario.created | date:'dd.MM.yyyy HH:mm'}}</span> | <span class="glyphicon glyphicon-eye-open"></span> <span> {{scenario.view_count}}</span>
-            <span>| <span class="glyphicon glyphicon-heart"></span><span> {{scenario.favorites_count}}</span></span>
+            <span>| <span class="glyphicon glyphicon-heart"></span><span> {{scenario.favorites_count}}</span> | </span>
+            <a class="btn btn-xs btn-primary" ng-href="#/scenario-text/{{scenario._id}}">{{'BUTTON.TEXT_VIEW' | translate}}</a><br>
+            <span>{{'INPUT.GRADE' | translate}}: {{scenario.grade}}</span> | <span>{{'INPUT.DURATION' | translate}}: {{scenario.duration}} min</span><br>
           </div>
           <div class="col-xs-3">
             <a class="print-button btn btn-sm pull-right" ng-if="user._id==scenario.author._id" href="/#/edit-details/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> {{'BUTTON.EDIT' | translate}}</a>

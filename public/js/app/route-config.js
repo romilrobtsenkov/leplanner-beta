@@ -88,6 +88,15 @@
         }]
       }
     })
+    .when('/scenario-text/:id', {
+      templateUrl: '/js/app/scenario-text/scenario-text.html',
+      controller: 'ScenarioTextController',
+      resolve: {
+        data: ['userAuthService', function(userAuthService) {
+          return userAuthService.checkUser();
+        }]
+      }
+    })
     .when('/search', {
       templateUrl: '/js/app/search/search.html',
       controller: 'SearchController',

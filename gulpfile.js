@@ -49,6 +49,7 @@ gulp.task('build-js', function() {
       'public/js/app/edit-details/edit-details.js',
       'public/js/app/edit/edit.js',
       'public/js/app/scenario/scenario.js',
+      'public/js/app/scenario-text/scenario-text.js',
       'public/js/app/user/user.js',
       'public/js/app/reset/reset.js',
       'public/js/app/settings/settings.js',
