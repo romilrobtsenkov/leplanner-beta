@@ -876,7 +876,7 @@ router.post('/search/', function(req, res, next) {
       // meta fields
 
       if(typeof query.subjects !== 'undefined' && query.subjects.length > 0){
-        q.args.subject = { $in : query.subjects };
+        q.args.subjects = { $in : query.subjects };
       }
 
       //console.log(q.args);
