@@ -229,11 +229,11 @@
                     this.activities = [];
                     for(var i = 0; i < ScopeList.length; i++){
                       //alert(getScopeList().length);
-                      var Activity = new Planner.Activity(i, start_time, ScopeList[i]);
-                      this.activities.push(Activity);
-
-                      start_time += ScopeList[i].duration;
-
+                      if(ScopeList[i].duration){
+                          var Activity = new Planner.Activity(i, start_time, ScopeList[i]);
+                          this.activities.push(Activity);
+                          start_time += ScopeList[i].duration;
+                      }
                     }
 
                 },
@@ -395,7 +395,10 @@
                 this.calculateVariables();
 
                 var timeout_delay = 40; //ms
-                Planner.instance_.timeouts.push(setTimeout(this.createActivity.bind(this), timeout_delay*index));
+                //duration is not 0
+                if(this.duration){
+                    Planner.instance_.timeouts.push(setTimeout(this.createActivity.bind(this), timeout_delay*index));
+                }
             };
 
             Planner.Activity.prototype = {
