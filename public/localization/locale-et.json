@@ -96,7 +96,9 @@
         "DELETE_RESOURCE": "Kustuta materjal",
 
         "DETAILS": "Detailid",
-        "CANVAS": "Lõuend"
+        "CANVAS": "Lõuend",
+        "TIMELINE_VIEW": "Ajajoone vaade",
+        "TEXT_VIEW": "Tunnikava vaade"
 
     },
     "INPUT": {
@@ -133,9 +135,11 @@
 
         "CO_AUTHORSHIP": "Kaasautorluse tase",
         "CONVEYOR": "Esitlusteenus",
+        "CONVEYORS": "Esitlusteenused",
         "CONVEYOR_NAME": "Nimi",
         "CONVEYOR_URL": "URL",
         "DISPLAY": "Digiseade",
+        "DISPLAYS": "Digiseadmed",
         "RESOURCE": "Materjal",
         "LOCATION": "Asukoha URL",
 

@@ -40,8 +40,8 @@
         "COMMENTED": "Commented",
         "INCLASS": "in-class",
         "OFFCLASS": "off-class",
-        "INCLASS_ACTIVITY": "In-class activity",
-        "OFFCLASS_ACTIVITY": "Off-class activity",
+        "INCLASS_ACTIVITY": "in-class activity",
+        "OFFCLASS_ACTIVITY": "off-class activity",
         "TEACHER_RESOURCE": "Teacher resource",
         "STUDENT_RESOURCE": "Student resource"
 
@@ -96,7 +96,9 @@
         "DELETE_RESOURCE": "Delete resource",
 
         "DETAILS": "Details",
-        "CANVAS": "Canvas"
+        "CANVAS": "Canvas",
+        "TIMELINE_VIEW": "Timeline view",
+        "TEXT_VIEW": "Text view"
 
     },
     "INPUT": {
@@ -133,9 +135,11 @@
 
         "CO_AUTHORSHIP": "Level of Co-Authorship",
         "CONVEYOR": "Conveyor",
+        "CONVEYORS": "Conveyors",
         "CONVEYOR_NAME": "Name",
         "CONVEYOR_URL": "URL",
         "DISPLAY": "Display",
+        "DISPLAYS": "Displays",
         "RESOURCE": "Resource",
         "LOCATION": "Location URL",
 
