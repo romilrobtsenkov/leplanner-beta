@@ -1307,6 +1307,7 @@ textarea#description {
 .subject-labels {
     margin-right: 2px;
     font-weight: normal;
+    display: inline-block;
 }
 
 .only-print-title {
