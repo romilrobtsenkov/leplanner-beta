@@ -227,12 +227,15 @@
                     var start_time = 0;
                     console.log('drawing');
                     this.activities = [];
+                    var temp_index = 0;
                     for(var i = 0; i < ScopeList.length; i++){
                       //alert(getScopeList().length);
                       if(ScopeList[i].duration){
-                          var Activity = new Planner.Activity(i, start_time, ScopeList[i]);
+                          //added temp_index and original index for materials update
+                          var Activity = new Planner.Activity(temp_index, i, start_time, ScopeList[i]);
                           this.activities.push(Activity);
                           start_time += ScopeList[i].duration;
+                          temp_index++;
                       }
                     }
 
@@ -295,7 +298,8 @@
 
                     for(var i = 0; i < Planner.instance_.activities.length; i++){
                         //update materials from scope for each activity
-                        Planner.instance_.activities[i].materials = getScopeList()[i].materials;
+                        //use correct not fixed index
+                        Planner.instance_.activities[i].materials = getScopeList()[Planner.instance_.activities[i].original_index].materials;
 
                         if(todo === "delete" || todo === "update"){
                             for(var k = 0; k < Planner.instance_.activities[i].materialElements.length; k++){
@@ -342,10 +346,11 @@
                 }
             };
 
-            Planner.Activity = function(index, start_time, data){
+            Planner.Activity = function(index, original_index, start_time, data){
 
                 //INCOMING
                 this.index = index;
+                this.original_index = original_index;
                 this.start = start_time;
 
                 //ELEMENTS
@@ -395,10 +400,7 @@
                 this.calculateVariables();
 
                 var timeout_delay = 40; //ms
-                //duration is not 0
-                if(this.duration){
-                    Planner.instance_.timeouts.push(setTimeout(this.createActivity.bind(this), timeout_delay*index));
-                }
+                Planner.instance_.timeouts.push(setTimeout(this.createActivity.bind(this), timeout_delay*index));
             };
 
             Planner.Activity.prototype = {
@@ -406,7 +408,7 @@
 
                     var padding = 5; //between activities
 
-                    this.minute_constant = ((Planner.instance_.WIDTH-((getScopeList().length+1)*padding))/Planner.instance_.activities_duration); // min in px
+                    this.minute_constant = ((Planner.instance_.WIDTH-((Planner.instance_.activities.length+1)*padding))/Planner.instance_.activities_duration); // min in px
                     this.x = parseInt((this.minute_constant * this.start) + ((this.index+1)* padding));
                     this.height = 20;
                     this.y = parseInt((Planner.instance_.HEIGHT*Planner.instance_.top_percent/100)-this.height/2);
