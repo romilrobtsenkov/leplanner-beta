@@ -118,6 +118,29 @@
                             <li>
                                 <a class="link-for-print" ng-if="m.material_url" ng-href="{{m.material_url}}">{{m.material_name}}</a>
                                 <span ng-if="!m.material_url">{{m.material_name}}</span>
+                                <br>
+                                <div style="margin-left:20px;">
+                                    <span ng-if="m.conveyors.length > 0">
+                                        {{'INPUT.CONVEYORS' | translate}}:
+                                        <ul>
+                                            <li ng-repeat="c in m.conveyors">
+                                                <a class="link-for-print" ng-if="c.url" ng-href="{{c.url}}"><img width="16" height="16" ng-src="{{'http://www.google.com/s2/favicons?domain=' + c.url}}"> {{c.name}}</a>
+                                                <span ng-if="!c.url">{{c.name}}</span>
+                                            </li>
+                                        </ul>
+                                    </span>
+                                    <span ng-if="m.displays.length > 0">
+                                        {{'INPUT.DISPLAYS' | translate}}:
+                                        <ul>
+                                            <li ng-repeat="d in m.displays">
+                                                <span><img width="16" height="16" ng-src="./images/{{displays_list[d].icon}}">
+                                                    <span ng-if="d != 5">{{displays_list[d].name}}</span>
+                                                    <span ng-if="d == 5">{{m.other_display}}</span>
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </span>
+                                </div>
                             </li>
                         </ul>
                     </span>
