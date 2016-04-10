@@ -107,8 +107,8 @@
                       published: t['BUTTON.PUBLISHED'],
                       draft: t['BUTTON.DRAFT'],
                       language: t['INPUT.LANGUAGE'],
-                      estonian: t['BUTTON_LANG_LONG_ET'],
-                      english: t['BUTTON_LANG_LONG_EN'],
+                      estonian: t.BUTTON_LANG_LONG_ET,
+                      english: t.BUTTON_LANG_LONG_EN,
                   },
                   confirm: t['NOTICE.DELETE_CONFIRM']
               };
