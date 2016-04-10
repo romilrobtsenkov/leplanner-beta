@@ -203,6 +203,7 @@
         "SCENARIO_DESC_LONG": "Scenario description has to be atleast 3 chars long!",
         "NO_SCENARIO": "No such scenario found, check URL!",
         "NO_USER": "No such user found, check URL",
+        "NO_TAG": "There are no scenarios with this tag",
         "RELOAD": "Please try reloading the page",
         "NO_RIGHTS": "no rights",
         "MATERIAL_NAME_REQUIRED": "Resource name can not be empty",

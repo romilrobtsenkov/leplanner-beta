@@ -115,6 +115,15 @@
         }]
       }
     })
+    .when('/tags/:tag', {
+      templateUrl: '/js/app/tags/tags.html',
+      controller: 'TagsController',
+      resolve: {
+        data: ['userAuthService', function(userAuthService) {
+          return userAuthService.checkUser();
+        }]
+      }
+    })
     .when('/user/:id', {
       templateUrl: '/js/app/user/user.html',
       controller: 'UserController',

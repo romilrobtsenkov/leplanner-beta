@@ -998,6 +998,45 @@ router.post('/single-scenario/', function(req, res, next) {
   });
 });
 
+router.post('/tag/', function(req, res, next) {
+
+  var query = req.body;
+
+  async.waterfall([
+    function(next){
+
+      scenarioService.getSortOrder(query, function(err, sort){
+        if (err) { return next({error: err}); }
+        next(null, sort);
+      });
+    },
+    function(sort, next){
+
+      var q = {};
+      q.args = { 'tags.text': query.tag.text, draft: false, deleted: false};
+      q.populated_fields = [];
+      q.populated_fields.push({
+        field: 'author',
+        populate: 'first_name last_name created'
+      });
+      q.populated_fields.push({
+        field: 'subjects',
+        populate: 'name'
+      });
+      q.sort = sort;
+
+      mongoService.find(q, Scenario, function(err, scenarios) {
+        if (err) { return next({error: err}); }
+        next(null, {scenarios: scenarios});
+      });
+    }
+  ], function (err, result) {
+    if(err){ res.json(err); }
+    res.json(result);
+  });
+
+});
+
 router.post('/widget-list/', function(req, res, next) {
 
   var query = req.body;

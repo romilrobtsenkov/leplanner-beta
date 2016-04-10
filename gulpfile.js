@@ -56,6 +56,7 @@ gulp.task('build-js', function() {
       'public/js/app/settings/settings.js',
       'public/js/app/dashboard/dashboard.js',
       'public/js/app/search/search.js',
+      'public/js/app/tags/tags.js',
       'public/js/app/modal/modal.js',
       'public/js/app/services/requestService.js',
       'public/js/app/services/userAuthService.js',

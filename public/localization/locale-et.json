@@ -203,6 +203,7 @@
         "SCENARIO_DESC_LONG": "Stsenaariumi kirjeldus peab olema vähemalt kolm tähemärkki pikk",
         "NO_SCENARIO": "Stsenaariumit ei leitud, kontrolli veebiaadressi!",
         "NO_USER": "Kasutajat ei leitud, kontrolli veebiaadressi",
+        "NO_TAG": "Ühtegi stsenaariumit ei leitud antud märksõnaga",
         "RELOAD": "Palun proovi laadida leht uuesti",
         "NO_RIGHTS": "Pole õigusi",
         "MATERIAL_NAME_REQUIRED": "Materjali nimi ei saa jääda tühjaks",

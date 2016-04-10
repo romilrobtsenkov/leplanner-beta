@@ -1,0 +1,80 @@
+<div class="container main-content" ng-show="get_tag">
+    <div class="row">
+
+        <div class="col-sm-10 col-sm-offset-1">
+            <h2><span ng-if="no_scenarios">{{'NOTICE.NO_TAG' | translate}} </span>#{{get_tag}}</h2><br>
+        </div>
+
+    </div>
+
+    <div ng-hide="no_scenarios" class="row">
+
+        <div class="col-sm-10 col-sm-offset-1">
+
+            <ul class="nav nav-tabs nav-tab-pop">
+                <li ng-class="{active:isSortActive('latest')}">
+                    <a href ng-click="updateSortList('latest')" title="{{ 'CONTENT.TAB_LATEST' | translate }}">{{ 'CONTENT.TAB_LATEST' | translate }}</a>
+                </li>
+                <li ng-class="{active:isSortActive('popular')}">
+                    <a href ng-click="updateSortList('popular')" title="{{ 'CONTENT.TAB_MOST_VIEWED' | translate }}">{{ 'CONTENT.TAB_MOST_VIEWED' | translate }}</a>
+                </li>
+                <li ng-class="{active:isSortActive('favorited')}">
+                    <a href ng-click="updateSortList('favorited')" title="{{ 'CONTENT.TAB_TOP_FAVORITED' | translate }}">{{ 'CONTENT.TAB_TOP_FAVORITED' | translate }}</a>
+                </li>
+                <li ng-class="{active:isSortActive('commented')}">
+                    <a href ng-click="updateSortList('commented')" title="{{ 'CONTENT.TAB_TOP_COMMENTED' | translate }}">{{ 'CONTENT.TAB_TOP_COMMENTED' | translate }}</a>
+                </li>
+            </ul>
+
+            <p ng-if="!scenarios || loading_animation" class="loading-gif-animation"><img src="./images/loading.gif"></p>
+
+            <hr>
+            <!-- scenario items -->
+            <div class="single_scenario_item" dir-paginate="scenario in scenarios | itemsPerPage: 20">
+
+                <!-- SINGLE SCENARIO -->
+                <div class="row no-margin">
+                    <a ng-repeat="subject in scenario.subjects"><span class="dash-scenario-label pull-right label label-primary">{{subject.name}}</span></a>
+                    <div class="col-sm-12">
+                        <h4><strong><a href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{scenario.name}}</a></strong></h4>
+                    </div>
+                </div>
+
+                <div class="row no-margin">
+                    <div class="col-sm-4">
+                        <a href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}" class="thumbnail">
+                            <img src="./images/thumbnail_200.png" alt="">
+                        </a>
+                    </div>
+                    <div class="col-sm-8">
+                        <p class="extra-info">
+                            <span class="glyphicon glyphicon-user"></span> <a href="/#/user/{{scenario.author._id}}" title="{{scenario.author.first_name}} {{scenario.author.last_name}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a><br>
+                            <span class="glyphicon glyphicon-calendar"></span> {{scenario.created | date:'dd.MM.yyyy'}}
+                            <span>| <span class="glyphicon glyphicon-eye-open"></span><span> {{scenario.view_count}}</span></span>
+                            <span>| <span class="glyphicon glyphicon-heart"></span><span> {{scenario.favorites_count}}</span></span>
+                            <span>| <span class="glyphicon glyphicon-comment"></span><span> {{scenario.comments_count}}</span></span>
+                        </p>
+                        <p class="description">{{scenario.description}}</p>
+                        <div class="row open-button">
+                            <div class="col-xs-8">
+                                <span class="labels">
+                                    <a href="#"><span class="label label-danger">{{scenario.method}}</span></a>
+                                    <a href="#"><span class="label label-success">{{scenario.materialType}}</span></a>
+                                </span>
+                            </div>
+                            <div class="col-xs-4">
+                                <a class="btn btn-success btn-block btn-sm pull-right" href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{'BUTTON.OPEN' | translate}} <span class="glyphicon glyphicon-chevron-right"></span></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <!-- SINGLE SCENARIO END -->
+
+            </div>
+            <dir-pagination-controls></dir-pagination-controls>
+
+        </div>
+
+    </div>
+</div>
