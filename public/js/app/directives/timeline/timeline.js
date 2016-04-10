@@ -216,9 +216,11 @@
                     if(ScopeList.length === 0 ||
                       (ScopeList.length === 1 && ScopeList[0].duration === 0)){
 
-                      $translate('NOTICE.PLEASE_ADD_ACTIVITY').then(function (t) {
-                          alert(t);
-                      });
+                      if(this.config.allow_edit){
+                          $translate('NOTICE.PLEASE_ADD_ACTIVITY').then(function (t) {
+                              alert(t);
+                          });
+                      }
 
                       //TODO write to timeline
                       return;
