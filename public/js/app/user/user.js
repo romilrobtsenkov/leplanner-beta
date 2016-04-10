@@ -3,8 +3,8 @@
 
   angular
     .module('app')
-    .controller('UserController', ['$scope','$rootScope','$routeParams','requestService',
-    function($scope,$rootScope,$routeParams,requestService) {
+    .controller('UserController', ['$scope','$rootScope','$location','$routeParams','requestService',
+    function($scope,$rootScope,$location, $routeParams,requestService) {
 
       if(typeof $routeParams.id !== 'undefined'){
         $scope.get_profile_id = $routeParams.id;
