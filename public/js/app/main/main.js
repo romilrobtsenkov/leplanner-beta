@@ -90,7 +90,9 @@
 
               'INPUT.SUBJECTS', 'INPUT.UNCHECK_ALL', 'INPUT.SEARCH', 'INPUT.LEARNING_OUTCOMES', 'BUTTON.PUBLISHED', 'BUTTON.DRAFT',
 
-              'NOTICE.DELETE_CONFIRM'
+              'NOTICE.DELETE_CONFIRM',
+
+              'INPUT.LANGUAGE', 'BUTTON_LANG_LONG_ET', 'BUTTON_LANG_LONG_EN'
           ]).then(function (t) {
 
               $rootScope.translated = {
@@ -103,7 +105,10 @@
                       search: t['INPUT.SEARCH'],
                       learning_outcomes: t['INPUT.LEARNING_OUTCOMES'],
                       published: t['BUTTON.PUBLISHED'],
-                      draft: t['BUTTON.DRAFT']
+                      draft: t['BUTTON.DRAFT'],
+                      language: t['INPUT.LANGUAGE'],
+                      estonian: t['BUTTON_LANG_LONG_ET'],
+                      english: t['BUTTON_LANG_LONG_EN'],
                   },
                   confirm: t['NOTICE.DELETE_CONFIRM']
               };

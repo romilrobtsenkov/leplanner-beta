@@ -35,6 +35,17 @@
    </div>
 
    <div class="row no-margin">
+     <div class="col-sm-11">
+         <div class="row no-margin">
+           <div class=" form-group">
+             <label for="description"><strong>{{'INPUT.TAGS' | translate}} </strong></label>
+              <tags-input placeholder="{{'INPUT.ADD_TAGS' | translate}}" ng-model="scenario.tags"></tags-input>
+           </div>
+         </div>
+      </div>
+   </div>
+
+   <div class="row no-margin">
      <div class="col-sm-4">
 
       <div class="row no-margin">
@@ -139,6 +150,14 @@
         <select ng-if="scenario" style="width: 200px;  display: inline-block;" class="form-control" id="publish_option" ng-model="scenario.draft" ng-options="option.value as option.name for option in publish_options" name="publish_option" required>
         </select>
         <span> <a class="delete-link" ng-click="deleteScenario()" href style="margin-right: 20px;">{{'INPUT.I_WANT_TO_DELETE' | translate}}</a></span>
+      </div>
+    </div>
+
+    <div class="row no-margin">
+      <div class=" form-group">
+        <label for="grade"><strong>{{'INPUT.LANGUAGE' | translate}} </strong></label><br>
+        <select style="width: 200px;  display: inline-block;" class="form-control" id="publish_option" ng-model="scenario.language" ng-options="option.value as option.name for option in language_options" name="language_options" required>
+        </select>
       </div>
     </div>
 

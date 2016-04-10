@@ -18,6 +18,8 @@
       $scope.outcomes_list = [];
       $scope.activity_list = [];
 
+      $scope.tags = [];
+
       init();
 
       function init(){
@@ -44,6 +46,8 @@
               }
 
               console.log('Loaded scenario');
+
+              //if there is no language, define by ui language
 
               if(typeof data.scenario.outcomes !== 'undefined'){
                 $scope.outcomes_list = data.scenario.outcomes;
@@ -99,6 +103,7 @@
         //publish/draft dropdown
         //$scope.publish_options = [{name: 'Draft', value: true},{name: 'Published', value: false}];
         $scope.publish_options = [{name: $rootScope.translated.dropdowns.draft, value: true},{name: $rootScope.translated.dropdowns.published, value: false}];
+        $scope.language_options = [{name: $rootScope.translated.dropdowns.estonian, value: 'et'},{name: $rootScope.translated.dropdowns.english, value: 'en'}];
 
         requestService.get('/meta/get-scenario-meta')
         .then(function(data) {

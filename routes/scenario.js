@@ -870,13 +870,21 @@ router.post('/search/', function(req, res, next) {
 
       // search word
       if(typeof query.search_word !== 'undefined'){
-        q.args.$or = [ { name: { "$regex": query.search_word, "$options": "i" } }, { description: { "$regex": query.search_word, "$options": "i" } }];
+        q.args.$or = [
+            { name: { "$regex": query.search_word, "$options": "i" } },
+            { description: { "$regex": query.search_word, "$options": "i" } },
+            { 'tags.text': { "$regex": query.search_word, "$options": "i" } },
+        ];
       }
 
       // meta fields
 
       if(typeof query.subjects !== 'undefined' && query.subjects.length > 0){
         q.args.subjects = { $in : query.subjects };
+      }
+
+      if(typeof query.languages !== 'undefined' && query.languages.length > 0){
+        q.args.language = { $in : query.languages };
       }
 
       //console.log(q.args);

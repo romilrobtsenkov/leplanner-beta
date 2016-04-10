@@ -3,7 +3,7 @@
 'use strict';
 
 angular
-  .module('app', ['ngRoute','ngResource', 'ngSanitize','angularjs-dropdown-multiselect','angularUtils.directives.dirPagination','ngFileUpload','ui.sortable', 'pascalprecht.translate'])
+  .module('app', ['ngRoute','ngResource', 'ngSanitize','angularjs-dropdown-multiselect','angularUtils.directives.dirPagination','ngFileUpload','ui.sortable', 'pascalprecht.translate','ngTagsInput'])
   .config(['$routeProvider','$locationProvider', '$resourceProvider', function($routeProvider,$locationProvider,$resourceProvider) {
     $routeProvider.otherwise({redirectTo: '/'});
   }]);

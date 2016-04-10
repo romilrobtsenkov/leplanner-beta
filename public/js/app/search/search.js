@@ -58,6 +58,31 @@
             searchPlaceholder: $rootScope.translated.dropdowns.search
         };
 
+        $scope.selected_languages = [];
+
+        $scope.languagesSettings = {
+          scrollableHeight: '400px',
+          scrollable: false,
+          enableSearch: false,
+          smartButtonMaxItems: 3,
+          displayProp: 'name',
+          idProp: 'value',
+          showCheckAll: false,
+          showUncheckAll: false,
+          //externalIdProp: '_id',
+          externalIdProp: '',
+          buttonClasses: 'btn btn-default btn-fixed-width',
+        };
+
+        //$scope.subjectsText = {buttonDefaultText: 'Filter subjects'};
+        $scope.languagesText = {
+            buttonDefaultText: $rootScope.translated.dropdowns.language,
+            uncheckAll: $rootScope.translated.dropdowns.uncheck_all,
+            searchPlaceholder: $rootScope.translated.dropdowns.search
+        };
+
+        $scope.language_options = [{name: $rootScope.translated.dropdowns.estonian, value: 'et'},{name: $rootScope.translated.dropdowns.english, value: 'en'}];
+
          requestService.get('/meta/subjects')
           .then(function(data) {
 
@@ -94,6 +119,8 @@
 
       function getSearchParamsAndSearch(){
 
+         console.log($rootScope.searchParams);
+
         $scope.loading_animation = true;
 
         if(typeof $rootScope.top_search_word !== 'undefined'){
@@ -105,6 +132,8 @@
 
         var subjects = [];
         var selected_subjects_labels = [];
+        var selected_languages_labels = [];
+
 
         // redirect from home page, search for subject only
         if(typeof $rootScope.search_subject !== 'undefined'){
@@ -116,19 +145,50 @@
             }
           }
           $rootScope.search_subject = undefined;
-        }
+      }else if($scope.selected_subjects.length === 0 && $rootScope.searchParams && $rootScope.searchParams.subjects){
+          //$scope.search_word = '';
+          $scope.selected_subjects = [];
+          for(var j = 0; j < $scope.subjects.length; j++){
+              for(var k = 0; k < $rootScope.searchParams.subjects.length; k++){
+
+                if($scope.subjects[j]._id == $rootScope.searchParams.subjects[k]){
+                  $scope.selected_subjects.push($scope.subjects[j]);
+                }
+              }
+          }
+      }
+
+      if($scope.selected_languages.length === 0 && $rootScope.searchParams && $rootScope.searchParams.languages){
+          //$scope.search_word = '';
+          $scope.selected_languages = [];
+          for(var l = 0; l < $scope.language_options.length; l++){
+              for(var m = 0; m < $rootScope.searchParams.languages.length; m++){
+                if($scope.language_options[l].value == $rootScope.searchParams.languages[m]){
+                  $scope.selected_languages.push($scope.language_options[l]);
+                }
+              }
+          }
+      }
 
         $scope.selected_subjects.forEach(function(element) {
           selected_subjects_labels.push(element._id);
         });
 
+        $scope.selected_languages.forEach(function(element) {
+          selected_languages_labels.push(element.value);
+        });
+
         var search_params = {
           search_word: $scope.search_word,
           subjects: selected_subjects_labels,
+          languages: selected_languages_labels
         };
+
+        console.log(search_params);
 
         // Save to rootScope to use when user navigates back
         $rootScope.searchParams = search_params;
+
 
         // Start search
         searchScenarios(search_params);
@@ -187,6 +247,7 @@
       $scope.search = function() {
         $scope.search_page_nr = 1;
         $rootScope.search_page_nr = 1;
+        $rootScope.searchParams = undefined;
         getSearchParamsAndSearch();
       };
 

@@ -38,6 +38,7 @@ gulp.task('build-js', function() {
       'public/bower/angular-ui-sortable/sortable.min.js',
       'public/bower/angular-translate/angular-translate.min.js',
       'public/bower/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js',
+      'public/bower/ng-tags-input/ng-tags-input.min.js',
       'public/js/app/app.js',
       'public/js/app/route-config.js',
       'public/js/app/translate-config.js',
@@ -84,10 +85,15 @@ gulp.task('minify-languages', function() {
 });
 
 gulp.task('minify-css', function() {
-    return gulp.src('public/stylesheets/*.css')
+    return gulp.src([
+        'public/bower/ng-tags-input/ng-tags-input.min.css',
+        'public/bower/ng-tags-input/ng-tags-input.bootstrap.min.css',
+        'public/stylesheets/style.css',
+    ])
         .pipe(cleanCSS({debug: true}, function(details) {
             console.log(details.name + ': ' + details.stats.originalSize);
             console.log(details.name + ': ' + details.stats.minifiedSize);
         }))
+        .pipe(concat('style.css'))
         .pipe(gulp.dest('public/stylesheets/min'));
 });

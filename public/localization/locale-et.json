@@ -1,5 +1,7 @@
 {
     "BUTTON_LANG": "et",
+    "BUTTON_LANG_LONG_ET": "Eesti",
+    "BUTTON_LANG_LONG_EN": "Inglise",
 
     "HEADING": {
         "SUBJECTS": "Õppeained",
@@ -123,6 +125,9 @@
 
         "TITLE": "Pealkiri",
         "DESCRIPTION": "Kirjeldus",
+        "TAGS": "Märksõnad",
+        "LANGUAGE": "Keel",
+        "ADD_TAGS": "Kirjuta märksõna ning vajuta Enter klahvi",
         "SUBJECTS": "Õppeained",
         "LEARNING_OUTCOMES": "Õpiväljundid",
         "GRADE": "Klass",

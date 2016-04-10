@@ -1,5 +1,7 @@
 {
     "BUTTON_LANG": "en",
+    "BUTTON_LANG_LONG_ET": "Estonian",
+    "BUTTON_LANG_LONG_EN": "English",
 
     "HEADING": {
         "SUBJECTS": "Subjects",
@@ -123,6 +125,9 @@
 
         "TITLE": "Title",
         "DESCRIPTION": "Description",
+        "TAGS": "Tags",
+        "LANGUAGE": "Language",
+        "ADD_TAGS": "Write the tag and then press Enter",
         "SUBJECTS": "Subjects",
         "LEARNING_OUTCOMES": "Learning outcomes",
         "GRADE": "Grade",

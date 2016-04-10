@@ -17,9 +17,10 @@
     "angular-ui-sortable": "~0.13.4",
     "angular-sanitize": "^1.5.0",
     "angular-translate": "^2.10.0",
-    "angular-translate-loader-static-files": "^2.10.0"
+    "angular-translate-loader-static-files": "^2.10.0",
+    "ng-tags-input": "^3.0.0"
   },
   "resolutions": {
-    "angular": "1.4.9"
+    "angular": "1.5.3"
   }
 }

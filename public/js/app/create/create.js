@@ -34,6 +34,11 @@
           return;
         }
 
+        // By default scenario language is the UI language
+        if($translate.use()){
+            scenario.language = $translate.use();
+        }
+
         var params = {
           user: {
             _id: $rootScope.user._id
