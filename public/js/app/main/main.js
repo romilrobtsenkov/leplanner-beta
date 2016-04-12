@@ -92,7 +92,9 @@
 
               'NOTICE.DELETE_CONFIRM',
 
-              'INPUT.LANGUAGE', 'BUTTON_LANG_LONG_ET', 'BUTTON_LANG_LONG_EN'
+              'INPUT.LANGUAGE', 'BUTTON_LANG_LONG_ET', 'BUTTON_LANG_LONG_EN',
+
+              'NOTICE.COPY_CONFIRM'
           ]).then(function (t) {
 
               $rootScope.translated = {
@@ -110,7 +112,8 @@
                       estonian: t.BUTTON_LANG_LONG_ET,
                       english: t.BUTTON_LANG_LONG_EN,
                   },
-                  confirm: t['NOTICE.DELETE_CONFIRM']
+                  confirm: t['NOTICE.DELETE_CONFIRM'],
+                  copy_confirm: t['NOTICE.COPY_CONFIRM']
               };
               //console.log($rootScope.translated);
 

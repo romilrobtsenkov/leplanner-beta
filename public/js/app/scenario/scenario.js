@@ -39,7 +39,11 @@
             $scope.activity_list = data.scenario.activities;
             $scope.is_favorite = data.is_favorite;
             $scope.is_following = data.is_following;
-            //console.log(data.scenario);
+            $scope.scenario.child_scenarios = data.child_scenarios;
+            if(data.mother_scenario_author){
+                $scope.scenario.mother_scenario.author = data.mother_scenario_author;
+            }
+            //console.log($scope.scenario.mother_scenario);
             if(typeof data.materials !== 'undefined'){
               $scope.materials = data.materials;
 
@@ -396,6 +400,43 @@
           }
         }
 
+      };
+
+      $scope.createCopy = function(){
+
+          var p = confirm($rootScope.translated.copy_confirm);
+
+          if(!p){ return; }
+
+          requestService.get('/scenario/copy/'+$scope.scenario_id)
+            .then(function(data) {
+
+              //console.log(data);
+
+              if(data.success){
+
+                  //redirect user to edit page
+                  $location.path('/edit-details/'+data.success._id);
+
+              }
+
+              if(data.error){
+                switch (data.error.id) {
+                  case 100:
+                    // user changed
+                    $location.path('/');
+                    break;
+                  case 0:
+                    //$scope.save_error = "Comment text cannot be empty";
+                    console.log(data.error);
+                    alert('something went wrong');
+                    break;
+                  default:
+                    console.log(data.error);
+                    alert('something went wrong');
+                }
+              }
+          });
       };
 
 

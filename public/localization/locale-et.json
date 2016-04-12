@@ -15,7 +15,9 @@
         "FOLLOWERS": "Jälgijad",
         "PROFILE_PIC": "Profiilipilt",
         "UPDATE_PASSWORD": "Uuenda parooli",
-        "UPDATE_PROFILE": "Uuenda profiili"
+        "UPDATE_PROFILE": "Uuenda profiili",
+        "MOTHER_SCENARIO": "Emastsenaarium",
+        "CHILD_SCENARIOS": "Tütarstsenaariumid"
     },
 
     "PAGE": {
@@ -81,6 +83,7 @@
 
         "FAVORITE": "Lisa lemmikuks",
         "UNFAVORITE": "Eemalda lemmikutest",
+        "CREATE_COPY": "Võta aluseks",
         "FOLLOW": "Jälgi",
         "LOG_IN_TO_FOLLOW": "Logi sisse jälgimiseks",
         "LOG_IN_TO_FAVORITE": "Logi sisse, et lisada lemmikuks",
@@ -211,7 +214,9 @@
 
         "NO_USER_SCENARIOS": "Kasutaja ei ole veel avaldatud stsenaariumeid",
 
-        "DELETE_CONFIRM": "Oled kindel, et tahad kustutada?"
+        "DELETE_CONFIRM": "Oled kindel, et tahad kustutada?",
+
+        "COPY_CONFIRM": "Teed endale koopia antud stsenaariumist. See lisatakse sinu mustandi juurde. Tahad jätkata?"
     },
 
     "ORGANIZATION" : {

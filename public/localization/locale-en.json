@@ -15,7 +15,9 @@
         "FOLLOWERS": "Followers",
         "PROFILE_PIC": "Profile picture",
         "UPDATE_PASSWORD": "Update password",
-        "UPDATE_PROFILE": "Update profile"
+        "UPDATE_PROFILE": "Update profile",
+        "MOTHER_SCENARIO": "Mother scenario",
+        "CHILD_SCENARIOS": "Child scenarios"
     },
 
     "PAGE": {
@@ -81,6 +83,7 @@
 
         "FAVORITE": "Favorite",
         "UNFAVORITE": "Unfavorite",
+        "CREATE_COPY": "Create copy",
         "FOLLOW": "Follow",
         "LOG_IN_TO_FOLLOW": "Log in to follow",
         "LOG_IN_TO_FAVORITE": "Log in to favorite",
@@ -211,7 +214,9 @@
 
         "NO_USER_SCENARIOS": "User has no scenarios yet",
 
-        "DELETE_CONFIRM": "Are you sure that you want to delete?"
+        "DELETE_CONFIRM": "Are you sure that you want to delete?",
+
+        "COPY_CONFIRM": "You are about to make a copy of this sceanario. It will be added to your drafts. Do you wish to proceed?"
     },
 
     "ORGANIZATION" : {

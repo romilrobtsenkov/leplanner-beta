@@ -4,6 +4,7 @@ var fs = require('fs');
 var config = require('../config/config');
 var router = express.Router();
 var restrict = require('../auth/restrict');
+var mongoose = require('mongoose');
 
 var mongoService = require('../services/mongo-service');
 var validateService = require('../services/validate-service');
@@ -15,6 +16,7 @@ var Notification = require('../models/notification').Notification;
 var Favorite = require('../models/favorite').Favorite;
 var Follower = require('../models/follower').Follower;
 var Material = require('../models/activity-material').Material;
+var User = require('../models/user').User;
 
 var async = require('async');
 
@@ -184,6 +186,58 @@ router.post('/add-remove-favorite/',restrict, function(req, res, next) {
   ], function (err, result) {
     if(err){ res.json(err); }
     res.json(result);
+  });
+
+});
+
+router.get('/copy/:id', restrict, function(req, res, next) {
+
+    var params = req.params;
+
+    console.log(req.user._id + ' creates copy of ' +params.id);
+
+    async.waterfall([
+      function(next){
+        var q = {};
+        q.args = { _id: params.id };
+        // find parent to copy
+        mongoService.findOne(q, Scenario, function(err, scenario){
+          if (err) { return next({error: err}); }
+          if(scenario === null){ return next({error: {id: 0, message: 'no scenario found' }}); }
+          console.log('found scenario');
+          next(null, scenario);
+        });
+
+      },
+      function(scenario, next){
+
+          //add mother_scenario params.id
+          //change user
+          var newOne = scenario;
+          newOne.name = "[copy] "+scenario.name;
+          newOne.mother_scenario = scenario._id;
+
+          newOne._id = mongoose.Types.ObjectId();
+          newOne.isNew = true; //<--------------------IMPORTANT
+
+          newOne.author = req.user._id;
+          newOne.created = new Date();
+          newOne.favorites_count = 0;
+          newOne.comments_count = 0;
+          newOne.view_count = 0;
+          newOne.draft = true;
+          newOne.last_modified = new Date();
+
+          mongoService.saveNew(newOne, Scenario, function(err, new_scenario) {
+            if (err) { return next({error: err}); }
+            console.log('saved new copy');
+            next(null, { 'success': {_id: new_scenario._id}});
+          });
+
+      },
+    ], function (err, result) {
+      if(err){ res.json(err); }
+      res.json(result);
   });
 
 });
@@ -930,6 +984,11 @@ router.post('/single-scenario/', function(req, res, next) {
         field: 'subjects',
         populate: 'name'
       });
+      // mother scenario id, scenario name ja scenario author
+      q.populated_fields.push({
+        field: 'mother_scenario',
+        populate: '_id name author'
+      });
       q.update = { $inc: { view_count: 1 } };
 
       mongoService.update(q, Scenario, function(err, scenario){
@@ -941,6 +1000,43 @@ router.post('/single-scenario/', function(req, res, next) {
         };
         next(null, response);
       });
+    },
+    function(response, next){
+
+      // Get child scenarios, only not draft ja not deleted
+      var q = {};
+      q.args = { mother_scenario: params.scenario._id, draft:false, deleted:false };
+      q.select = "name author";
+      q.populated_fields = [];
+      q.populated_fields.push({
+        field: 'author',
+        populate: 'first_name last_name'
+      });
+
+      mongoService.find(q, Scenario, function(err, child_scenarios){
+        if (err) { return next({error: err}); }
+        response.child_scenarios = child_scenarios;
+        next(null, response);
+      });
+    },
+    function(response, next){
+
+        // get mother scenario author name
+        if(response.scenario.mother_scenario){
+            //console.log(response.scenario);
+              var q = {};
+              q.args = { _id: response.scenario.mother_scenario.author };
+              q.select = "first_name last_name";
+
+              mongoService.findOne(q, User, function(err, user){
+                if (err) { return next({error: err}); }
+                response.mother_scenario_author = user;
+                next(null, response);
+              });
+        }else{
+            next(null, response);
+        }
+
     },
     function(response, next){
       if(typeof params.user === 'undefined'){ return next(null, response); } // skip

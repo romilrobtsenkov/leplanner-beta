@@ -33,6 +33,9 @@
             <div ng-if="is_favorite && user">
               <a ng-click="addRemoveFavorite('remove')" class="add-favorite-button btn btn-default btn-sm pull-right"><span class="glyphicon glyphicon-heart-empty"></span> {{'BUTTON.UNFAVORITE' | translate}}</a>
             </div>
+            <div ng-if=" user">
+              <a ng-click="createCopy()" style="margin-top:5px;" class="add-favorite-button btn btn-default btn-sm pull-right"><span class="glyphicon glyphicon-duplicate"></span> {{'BUTTON.CREATE_COPY' | translate}}</a>
+            </div>
             <div ng-if="!user">
               <a class="pull-right" ng-click='navigateToLogin($event)' href="/#/login">{{'BUTTON.LOG_IN_TO_FAVORITE' | translate}}</a>
             </div>
@@ -94,7 +97,20 @@
           </div>
         </div>
 
-        <p><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /> {{'CONTENT.THIS_WORK_HAS' | translate}} <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">{{'CONTENT.CC_LICENSE' | translate}}</a> {{'CONTENT.LICENSE' | translate}}</p>
+        <p style="margin-bottom:15px;"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /> {{'CONTENT.THIS_WORK_HAS' | translate}} <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">{{'CONTENT.CC_LICENSE' | translate}}</a> {{'CONTENT.LICENSE' | translate}}</p>
+
+        <div style="margin-bottom:10px;" ng-if="scenario.mother_scenario">
+            <p><strong>{{'HEADING.MOTHER_SCENARIO' | translate}}:</strong></p>
+            <ul>
+                <li>{{scenario.mother_scenario.author.first_name}} {{scenario.mother_scenario.author.last_name}} | <a ng-href="/#/scenario/{{scenario.mother_scenario._id}}" alt="{{scenario.mother_scenario.name}}">{{scenario.mother_scenario.name}}</a></li>
+            </ul>
+        </div>
+        <div ng-if="scenario.child_scenarios.length > 0">
+            <p><strong>{{'HEADING.CHILD_SCENARIOS' | translate}}:</strong></p>
+            <ul>
+                <li ng-repeat="child in scenario.child_scenarios" >{{child.author.first_name}} {{child.author.last_name}} | <a ng-href="/#/scenario/{{child._id}}" alt="{{child.name}}">{{child.name}}</a></li>
+            </ul>
+        </div>
 
       </div>
 
