@@ -230,11 +230,19 @@
                     console.log('drawing');
                     this.activities = [];
                     var temp_index = 0;
+                    var array_total_length = 0;
+                    for(var t = 0; t < ScopeList.length; t++){
+                      //alert(getScopeList().length);
+                      if(ScopeList[t].duration){
+                          //added temp_index and original index for materials update
+                          array_total_length++;
+                      }
+                    }
                     for(var i = 0; i < ScopeList.length; i++){
                       //alert(getScopeList().length);
                       if(ScopeList[i].duration){
                           //added temp_index and original index for materials update
-                          var Activity = new Planner.Activity(temp_index, i, start_time, ScopeList[i]);
+                          var Activity = new Planner.Activity(temp_index, i, start_time, ScopeList[i], array_total_length);
                           this.activities.push(Activity);
                           start_time += ScopeList[i].duration;
                           temp_index++;
@@ -348,12 +356,13 @@
                 }
             };
 
-            Planner.Activity = function(index, original_index, start_time, data){
+            Planner.Activity = function(index, original_index, start_time, data, array_total_length){
 
                 //INCOMING
                 this.index = index;
                 this.original_index = original_index;
                 this.start = start_time;
+                this.array_total_length = array_total_length;
 
                 //ELEMENTS
                 this.timeline = Planner.instance_.timeline;
@@ -410,8 +419,8 @@
 
                     var padding = 5; //between activities
 
-                    this.minute_constant = ((Planner.instance_.WIDTH-((Planner.instance_.activities.length+1)*padding))/Planner.instance_.activities_duration); // min in px
-                    this.x = parseInt((this.minute_constant * this.start) + ((this.index+1)* padding));
+                    this.minute_constant = ((Planner.instance_.WIDTH-((this.array_total_length+1)*padding))/Planner.instance_.activities_duration); // min in px
+                    this.x = (this.minute_constant * this.start) + ((this.index+1)* padding);
                     this.height = 20;
                     this.y = parseInt((Planner.instance_.HEIGHT*Planner.instance_.top_percent/100)-this.height/2);
                     this.width = parseInt(this.minute_constant * this.duration);
