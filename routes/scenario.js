@@ -235,6 +235,34 @@ router.get('/copy/:id', restrict, function(req, res, next) {
           });
 
       },
+      function(response, next){
+          //update all materials
+          var q = {};
+          q.args = {
+              scenario: params.id,
+              deleted: false
+           };
+
+           mongoService.find(q, Material, function(err, materials){
+               if (err) { return next({error: err}); }
+               //console.log(materials);
+               for(var i = 0; i < materials.length; i++){
+                   materials[i]._id = mongoose.Types.ObjectId();
+                   materials[i].isNew = true; //<--------------------IMPORTANT
+                   materials[i].created = new Date();
+                   materials[i].last_modified = new Date();
+                   materials[i].scenario = response.success._id; //<--------------------NEW SCENARIO ID
+               }
+               //console.log(materials);
+               //SAVE
+               Material.create(materials, function (err, saved) {
+                   if (err) {return next({error: err});}
+                   console.log('materials added:'+saved.length);
+                   next(null, response);
+               });
+
+           });
+      },
     ], function (err, result) {
       if(err){ res.json(err); }
       res.json(result);
