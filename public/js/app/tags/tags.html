@@ -2,7 +2,7 @@
     <div class="row">
 
         <div class="col-sm-10 col-sm-offset-1">
-            <h2><span ng-if="no_scenarios">{{'NOTICE.NO_TAG' | translate}} </span>#{{get_tag}}</h2><br>
+            <h2><span ng-if="no_scenarios">{{'NOTICE.NO_TAG' | translate}} </span>#{{get_tag}} <span style="color:gray; font-size:16px;" ng-if="scenarios.length > 0">({{scenarios.length}})</span></h2><br>
         </div>
 
     </div>
