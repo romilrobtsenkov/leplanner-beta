@@ -1137,7 +1137,8 @@ router.post('/tag/', function(req, res, next) {
     function(sort, next){
 
       var q = {};
-      q.args = { 'tags.text': query.tag.text, draft: false, deleted: false};
+
+      q.args = { 'tags.text': {$regex: new RegExp('^' + query.tag.text, 'i')}, draft: false, deleted: false};
       q.populated_fields = [];
       q.populated_fields.push({
         field: 'author',
