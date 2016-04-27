@@ -3,8 +3,13 @@
 
   angular
     .module('app')
-    .controller('SearchController', ['$scope','$rootScope','requestService','$translate',
-    function($scope,$rootScope,requestService,$translate) {
+    .controller('SearchController', ['$scope','$rootScope','requestService','$translate','$routeParams','$route',
+    function($scope,$rootScope,requestService,$translate,$routeParams, $route) {
+
+       if($routeParams.key){
+           console.log($routeParams);
+           $rootScope.top_search_word = $routeParams.key;
+       }
 
         $translate('PAGE.SEARCH').then(function (t) {
             $rootScope.title = t+' | Leplanner beta';
@@ -189,6 +194,7 @@
         // Save to rootScope to use when user navigates back
         $rootScope.searchParams = search_params;
 
+        $route.updateParams({key:search_params.search_word});
 
         // Start search
         searchScenarios(search_params);
