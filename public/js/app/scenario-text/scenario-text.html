@@ -45,6 +45,9 @@
           <br>
           <p class="p-with-links enable-lines" ng-bind-html="scenario.description | linky:'_blank'">
           </p>
+          <div style="margin-bottom:15px;" class="tags">
+              <a class="link-for-print" style="display:inline-block; padding:5px;" ng-repeat="tag in scenario.tags" ng-href="#/tags/{{tag.text}}">#{{tag.text}}</a>
+          </div>
         </div>
       </div>
 
@@ -150,6 +153,7 @@
             <br>
         </div>
       </div>
+      <p style="margin-bottom:15px;"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /> {{'CONTENT.THIS_WORK_HAS' | translate}} <a class="link-for-print" rel="license" href="http://creativecommons.org/licenses/by/4.0/">{{'CONTENT.CC_LICENSE' | translate}}</a> {{'CONTENT.LICENSE' | translate}}</p>
 
   </div>
 </div>
