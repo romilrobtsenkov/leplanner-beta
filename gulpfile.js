@@ -62,6 +62,7 @@ gulp.task('build-js', function() {
       'public/js/app/services/userAuthService.js',
       'public/js/app/directives/timeline/timeline.js',
       'public/js/app/directives/modal/modal.js',
+      'public/js/app/filters/prefixHttp.js',
     ])
       //.pipe(sourcemaps.init())
       .pipe(size())

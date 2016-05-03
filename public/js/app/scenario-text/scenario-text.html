@@ -83,7 +83,7 @@
                         <strong>{{'CONTENT.STUDENT_RESOURCE' | translate}}:</strong>
                         <ul class="materjal-text">
                             <li>
-                                <a class="link-for-print" ng-if="m.material_url" ng-href="{{m.material_url}}">{{m.material_name}}</a>
+                                <a class="link-for-print" ng-if="m.material_url" ng-href="{{m.material_url|prefixHttp}}">{{m.material_name}}</a>
                                 <span ng-if="!m.material_url">{{m.material_name}}</span>
                                 <br>
                                 <div style="margin-left:20px;">
@@ -92,7 +92,7 @@
                                         {{'INPUT.CONVEYORS' | translate}}:
                                         <ul>
                                             <li ng-repeat="c in m.conveyors">
-                                                <a class="link-for-print" ng-if="c.url" ng-href="{{c.url}}"><img width="16" height="16" ng-src="{{'http://www.google.com/s2/favicons?domain=' + c.url}}"> {{c.name}}</a>
+                                                <a class="link-for-print" ng-if="c.url" ng-href="{{c.url|prefixHttp}}"><img width="16" height="16" ng-src="{{'http://www.google.com/s2/favicons?domain=' + c.url}}"> {{c.name}}</a>
                                                 <span ng-if="!c.url">{{c.name}}</span>
                                             </li>
                                         </ul>
@@ -119,7 +119,7 @@
                         <strong>{{'CONTENT.TEACHER_RESOURCE' | translate}}:</strong>
                         <ul class="materjal-text">
                             <li>
-                                <a class="link-for-print" ng-if="m.material_url" ng-href="{{m.material_url}}">{{m.material_name}}</a>
+                                <a class="link-for-print" ng-if="m.material_url" ng-href="{{m.material_url|prefixHttp}}">{{m.material_name}}</a>
                                 <span ng-if="!m.material_url">{{m.material_name}}</span>
                                 <br>
                                 <div style="margin-left:20px;">
@@ -127,7 +127,7 @@
                                         {{'INPUT.CONVEYORS' | translate}}:
                                         <ul>
                                             <li ng-repeat="c in m.conveyors">
-                                                <a class="link-for-print" ng-if="c.url" ng-href="{{c.url}}"><img width="16" height="16" ng-src="{{'http://www.google.com/s2/favicons?domain=' + c.url}}"> {{c.name}}</a>
+                                                <a class="link-for-print" ng-if="c.url" ng-href="{{c.url|prefixHttp}}"><img width="16" height="16" ng-src="{{'http://www.google.com/s2/favicons?domain=' + c.url}}"> {{c.name}}</a>
                                                 <span ng-if="!c.url">{{c.name}}</span>
                                             </li>
                                         </ul>

@@ -599,7 +599,7 @@
                                 // IF DIGITAL MATERIAL ADD LINK
                                 if(material.material_url){
                                     text_el = document.createElement('a');
-                                    text_el.href = material.material_url;
+                                    text_el.href = $filter('prefixHttp')(material.material_url);
                                     text_el.target = '_blank';
                                     text_el.appendChild(text);
                                 }else{
@@ -636,14 +636,7 @@
                                                 conveyor_icon.style.height = this.conveyor_icon_size + 'px';
                                                 conveyor.appendChild(conveyor_icon);
 
-                                                //fix url
-                                                var new_url = current_conveyor.url;
-                                                if (!new_url.match(/^[a-zA-Z]+:\/\//))
-                                                {
-                                                    new_url = 'http://' + new_url;
-                                                }
-
-                                                conveyor.href = new_url;
+                                                conveyor.href = $filter('prefixHttp')(current_conveyor.url);
                                                 conveyor.target = '_blank';
                                             }
                                             //conveyor.title = current_conveyor.name; hide for popover_content
