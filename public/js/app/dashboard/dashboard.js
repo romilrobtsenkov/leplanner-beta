@@ -3,11 +3,17 @@
 
   angular
     .module('app')
-    .controller('DashboardController', ['$scope','$rootScope','requestService','$translate',
-    function ($scope,$rootScope,requestService,$translate) {
+    .controller('DashboardController', ['$scope','$rootScope','requestService','$translate','$window','$location',
+    function ($scope,$rootScope,requestService,$translate, $window, $location) {
 
       $translate('PAGE.DASHBOARD').then(function (t) {
           $rootScope.title = $rootScope.user.first_name+' '+$rootScope.user.last_name+' '+t+' | Leplanner beta';
+
+          /* ANALYTICS */
+          $window.ga('send', 'pageview', {
+            'page': $location.path(),
+            'title': $rootScope.title
+          });
       });
 
       if(typeof $rootScope.dash_active_tab === 'undefined'){

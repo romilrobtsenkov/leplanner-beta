@@ -3,11 +3,17 @@
 
   angular
     .module('app')
-    .controller('SignUpController', ['$scope','$rootScope','$location','$timeout','requestService','$translate',
-    function($scope,$rootScope,$location,$timeout,requestService,$translate) {
+    .controller('SignUpController', ['$scope','$rootScope','$location','$timeout','requestService','$translate','$window',
+    function($scope,$rootScope,$location,$timeout,requestService,$translate,$window) {
 
         $translate('PAGE.SIGN_UP').then(function (t) {
            $rootScope.title = t+' | Leplanner beta';
+
+           /* ANALYTICS */
+           $window.ga('send', 'pageview', {
+             'page': $location.path(),
+             'title': $rootScope.title
+           });
         });
 
       $scope.create = function(user){

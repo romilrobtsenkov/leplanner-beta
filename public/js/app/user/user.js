@@ -3,8 +3,8 @@
 
   angular
     .module('app')
-    .controller('UserController', ['$scope','$rootScope','$location','$routeParams','requestService',
-    function($scope,$rootScope,$location, $routeParams,requestService) {
+    .controller('UserController', ['$scope','$rootScope','$location','$routeParams','requestService','$window',
+    function($scope,$rootScope,$location, $routeParams,requestService, $window) {
 
       if(typeof $routeParams.id !== 'undefined'){
         $scope.get_profile_id = $routeParams.id;
@@ -43,6 +43,12 @@
               //console.log(data);
               $scope.profile = data.profile;
               $rootScope.title = data.profile.first_name+' '+data.profile.last_name+' | Leplanner beta';
+
+              /* ANALYTICS */
+              $window.ga('send', 'pageview', {
+                'page': $location.path(),
+                'title': $rootScope.title
+              });
 
               //check if user is following
               if(typeof $rootScope.user === 'undefined'){

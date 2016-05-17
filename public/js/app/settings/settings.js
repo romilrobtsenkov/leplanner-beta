@@ -3,11 +3,17 @@
 
   angular
     .module('app')
-    .controller('SettingsController', ['$scope','$rootScope','$location','$timeout','requestService','Upload','$translate',
-    function($scope,$rootScope,$location,$timeout,requestService,Upload,$translate) {
+    .controller('SettingsController', ['$scope','$rootScope','$location','$timeout','requestService','Upload','$translate','$window',
+    function($scope,$rootScope,$location,$timeout,requestService,Upload,$translate,$window) {
 
         $translate('PAGE.SETTINGS').then(function (t) {
             $rootScope.title = t+' | Leplanner beta';
+
+            /* ANALYTICS */
+            $window.ga('send', 'pageview', {
+              'page': $location.path(),
+              'title': $rootScope.title
+            });
         });
 
       $scope.user = $rootScope.user;

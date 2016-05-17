@@ -3,11 +3,17 @@
 
   angular
     .module('app')
-    .controller('CreateController', ['$scope','$rootScope','$timeout','$location','requestService','$translate',
-    function($scope,$rootScope,$timeout,$location,requestService, $translate) {
+    .controller('CreateController', ['$scope','$rootScope','$timeout','$location','requestService','$translate','$window',
+    function($scope,$rootScope,$timeout,$location,requestService, $translate, $window) {
 
       $translate('PAGE.CREATE').then(function (t) {
         $rootScope.title = t+' | Leplanner beta';
+
+        /* ANALYTICS */
+        $window.ga('send', 'pageview', {
+          'page': $location.path(),
+          'title': $rootScope.title
+        });
       });
 
       $scope.createScenario = function(scenario){

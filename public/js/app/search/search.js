@@ -3,8 +3,8 @@
 
   angular
     .module('app')
-    .controller('SearchController', ['$scope','$rootScope','requestService','$translate','$routeParams','$route',
-    function($scope,$rootScope,requestService,$translate,$routeParams, $route) {
+    .controller('SearchController', ['$scope','$rootScope','requestService','$translate','$routeParams','$route','$window','$location',
+    function($scope,$rootScope,requestService,$translate,$routeParams, $route, $window, $location) {
 
        if($routeParams.key){
            console.log($routeParams);
@@ -13,6 +13,12 @@
 
         $translate('PAGE.SEARCH').then(function (t) {
             $rootScope.title = t+' | Leplanner beta';
+
+            /* ANALYTICS */
+            $window.ga('send', 'pageview', {
+              'page': $location.path(),
+              'title': $rootScope.title
+            });
         });
 
 
@@ -230,6 +236,13 @@
 
         requestService.post('/scenario/search', q)
           .then(function(data) {
+
+            /* ANALYTICS */
+            if(q.search_word){
+                console.log('logged ANALYTICS');
+                $window.ga('send', 'event', 'Keyword', 'search', q.search_word);
+            }
+
             //console.log(data);
             if(data.scenarios){
               $scope.scenarios = data.scenarios;

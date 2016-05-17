@@ -3,8 +3,8 @@
 
     angular
     .module('app')
-    .controller('TagsController', ['$scope','$rootScope','$location','$routeParams','requestService',
-    function($scope,$rootScope,$location, $routeParams,requestService) {
+    .controller('TagsController', ['$scope','$rootScope','$location','$routeParams','requestService','$window',
+    function($scope,$rootScope,$location, $routeParams,requestService,$window) {
 
         if(typeof $routeParams.tag !== 'undefined'){
             $scope.get_tag = $routeParams.tag;
@@ -23,6 +23,12 @@
         function getSingleTagScenarios(){
 
             $rootScope.title = '#'+$scope.get_tag+' | Leplanner beta';
+
+            /* ANALYTICS */
+            $window.ga('send', 'pageview', {
+              'page': $location.path(),
+              'title': $rootScope.title
+            });
 
             $scope.loading_animation = true;
             $scope.no_scenarios = false;

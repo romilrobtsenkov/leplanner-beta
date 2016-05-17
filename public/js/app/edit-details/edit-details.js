@@ -3,8 +3,8 @@
 
   angular
     .module('app')
-    .controller('EditDetailsController', ['$scope','$rootScope','$timeout','$routeParams','$location','requestService','$translate',
-    function($scope,$rootScope,$timeout,$routeParams,$location,requestService, $translate) {
+    .controller('EditDetailsController', ['$scope','$rootScope','$timeout','$routeParams','$location','requestService','$translate','$window',
+    function($scope,$rootScope,$timeout,$routeParams,$location,requestService, $translate,$window) {
 
       if(typeof $routeParams.id !== 'undefined'){
         $scope.scenario_id = $routeParams.id;
@@ -62,6 +62,12 @@
               //console.log(data.scenario);
               $translate('PAGE.EDIT').then(function (t) {
                   $rootScope.title = t+' '+$scope.scenario.name+' details | Leplanner beta';
+
+                  /* ANALYTICS */
+                  $window.ga('send', 'pageview', {
+                    'page': $location.path(),
+                    'title': $rootScope.title
+                  });
               });
 
               loadDropdownData();

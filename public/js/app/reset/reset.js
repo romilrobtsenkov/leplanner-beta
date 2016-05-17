@@ -3,11 +3,17 @@
 
   angular
     .module('app')
-    .controller('ResetController', ['$scope','$location','$rootScope','$routeParams','$timeout','requestService','$translate',
-    function($scope,$location,$rootScope,$routeParams,$timeout,requestService,$translate) {
+    .controller('ResetController', ['$scope','$location','$rootScope','$routeParams','$timeout','requestService','$translate','$window',
+    function($scope,$location,$rootScope,$routeParams,$timeout,requestService,$translate,$window) {
 
         $translate('PAGE.PASSWORD_RESET').then(function (t) {
            $rootScope.title = t+' | Leplanner beta';
+
+           /* ANALYTICS */
+           $window.ga('send', 'pageview', {
+             'page': $location.path(),
+             'title': $rootScope.title
+           });
         });
 
 

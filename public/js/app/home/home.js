@@ -3,10 +3,16 @@
 
   angular
     .module('app')
-    .controller('HomeController', ['$scope','$rootScope','$location','requestService',
-    function($scope,$rootScope,$location,requestService) {
+    .controller('HomeController', ['$scope','$rootScope','$location','requestService','$window',
+    function($scope,$rootScope,$location,requestService,$window) {
 
       $rootScope.title = 'Leplanner beta';
+
+      /* ANALYTICS */
+      $window.ga('send', 'pageview', {
+        'page': $location.path(),
+        'title': $rootScope.title
+      });
 
       if(typeof $rootScope.home_active_sort_tab === 'undefined'){
         $rootScope.home_active_sort_tab = 'latest';

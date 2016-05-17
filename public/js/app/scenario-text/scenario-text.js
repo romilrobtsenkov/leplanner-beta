@@ -3,8 +3,8 @@
 
   angular
     .module('app')
-    .controller('ScenarioTextController', ['$scope','$rootScope','$routeParams','$location','$timeout','requestService','$translate',
-    function($scope,$rootScope,$routeParams,$location,$timeout,requestService,$translate) {
+    .controller('ScenarioTextController', ['$scope','$rootScope','$routeParams','$location','$timeout','requestService','$translate','$window',
+    function($scope,$rootScope,$routeParams,$location,$timeout,requestService,$translate,$window) {
 
       if(typeof $routeParams.id !== 'undefined'){
         $scope.scenario_id = $routeParams.id;
@@ -34,6 +34,12 @@
           if(data.scenario){
 
             $rootScope.title = data.scenario.name+' - '+data.scenario.author.first_name+' '+data.scenario.author.last_name+' | Leplanner beta';
+
+            /* ANALYTICS */
+            $window.ga('send', 'pageview', {
+              'page': $location.path(),
+              'title': $rootScope.title
+            });
 
             $scope.scenario = data.scenario;
             $scope.activity_list = data.scenario.activities;
