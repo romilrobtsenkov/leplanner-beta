@@ -1021,6 +1021,8 @@ router.post('/single-scenario/', function(req, res, next) {
 
       mongoService.update(q, Scenario, function(err, scenario){
         if (err) { return next({error: err}); }
+        if(!scenario){return next({error: 'no scenerio'}); }
+
         var response = {
           scenario: scenario,
           is_favorite: false,
