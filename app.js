@@ -80,6 +80,19 @@ app.use(function(err, req, res, next) {
 
 // https://strongloop.com/strongblog/robust-node-applications-error-handling/
 if (config.errorMails) {
+
+    var transport = nodemailer.createTransport();
+
+    transport.sendMail({
+      from: config.email,
+      to: config.developer_email,
+      subject: '[LePlanner beta] process restarted',
+      text: 'leplanner restarted '+(new Date())
+    }, function (err) {
+       if (err) console.error(err);
+       log.warning('Email sent to developer about restart');
+    });
+
     process.on('uncaughtException', function (err) {
     log.error(err.stack);
 
