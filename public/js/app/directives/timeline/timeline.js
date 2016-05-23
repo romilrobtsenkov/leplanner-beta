@@ -649,24 +649,27 @@
                                         }
                                     }
 
-                                    var last_conveyor = conveyors[conveyors.length-1].conveyor;
-                                    last_conveyor.className += " has-popover";
-                                    last_conveyor.setAttribute('data-toggle', 'popover');
+                                    //if not empty conveyor names
+                                    if(conveyors.length !== 0){
+                                        var last_conveyor = conveyors[conveyors.length-1].conveyor;
+                                        last_conveyor.className += " has-popover";
+                                        last_conveyor.setAttribute('data-toggle', 'popover');
 
-                                    //create HTML
-                                    var popover_content = document.createElement('div');
-                                    for(var d = 0; d < conveyors.length; d++){
+                                        //create HTML
+                                        var popover_content = document.createElement('div');
+                                        for(var d = 0; d < conveyors.length; d++){
 
-                                        var conveyor_clone = conveyors[d].conveyor.cloneNode(true);
-                                        var textdata = document.createTextNode(conveyor_clone.dataset.popdata);
-                                        conveyor_clone.appendChild(textdata);
-                                        conveyor_clone.className = "inner-conveyor-icon";
-                                        popover_content.appendChild(conveyor_clone);
+                                            var conveyor_clone = conveyors[d].conveyor.cloneNode(true);
+                                            var textdata = document.createTextNode(conveyor_clone.dataset.popdata);
+                                            conveyor_clone.appendChild(textdata);
+                                            conveyor_clone.className = "inner-conveyor-icon";
+                                            popover_content.appendChild(conveyor_clone);
 
-                                        // remove hrefs for clicks
-                                        conveyors[d].conveyor.removeAttribute('href');
+                                            // remove hrefs for clicks
+                                            conveyors[d].conveyor.removeAttribute('href');
+                                        }
+                                        this.createPopover(last_conveyor, popover_content);
                                     }
-                                    this.createPopover(last_conveyor, popover_content);
                                 }
 
                                 // DISPLAY
