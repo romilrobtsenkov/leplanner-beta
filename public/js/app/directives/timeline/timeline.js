@@ -615,7 +615,7 @@
                                 //CONVEYOR
                                 var conveyors = [];
                                 //console.log(material.conveyors);
-                                if(material.conveyors.length > 0){
+                                if(material.conveyors && material.conveyors.length > 0){
 
                                     for(var k = material.conveyors.length-1; k >= 0 ; k--){
 
@@ -673,7 +673,7 @@
                                 var displays = [];
                                 //adpat to displays
                                 //console.log(material.displays);
-                                if(material.displays.length > 0){
+                                if(material.displays && material.displays.length > 0){
 
                                     for(var j = 0; j < material.displays.length; j++){
 
