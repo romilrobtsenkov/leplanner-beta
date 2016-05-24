@@ -245,6 +245,7 @@ router.get('/copy/:id', restrict, function(req, res, next) {
 
            mongoService.find(q, Material, function(err, materials){
                if (err) { return next({error: err}); }
+               if(materials.length === 0){ return next(null, response); }
                //console.log(materials);
                for(var i = 0; i < materials.length; i++){
                    materials[i]._id = mongoose.Types.ObjectId();
@@ -255,6 +256,7 @@ router.get('/copy/:id', restrict, function(req, res, next) {
                }
                //console.log(materials);
                //SAVE
+
                Material.create(materials, function (err, saved) {
                    if (err) {return next({error: err});}
                    console.log('materials added:'+saved.length);
