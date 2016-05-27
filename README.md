@@ -57,7 +57,9 @@ PS! use [pm2](http://pm2.keymetrics.io) for better control
 
 # License
 
-Copyright (c) 2015 Romil Rõbtšenkov
+The MIT License
+
+Copyright (c) 2015-2016 Romil Rõbtšenkov
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
