@@ -4,6 +4,7 @@ var mongoService = require('../services/mongo-service');
 var restrict = require('../auth/restrict');
 var Scenario = require('../models/scenario').Scenario;
 var Material = require('../models/activity-material').Material;
+var Subject = require('../models/subject').Subject;
 
 var async = require('async');
 
@@ -297,6 +298,71 @@ router.get('/update-conveyors/', restrict,  function(req, res, next) {
     if(err){ res.json(err); }
     res.json(result);
 });*/
+
+});
+
+router.get('/update-subjects/', restrict,  function(req, res, next) {
+  console.log('updating');
+
+ var translated_subjects=[{name_et:"Eesti keel ",name_en:"Estonian"},{name_et:"Vene keel emakeelena",name_en:"Russian (as the native language)"},{name_et:"Kirjandus",name_en:"Literature"},{name_et:"Eesti keel võõrkeelena",name_en:"Estonian (as a foreign language)"},{name_et:"Inglise keel",name_en:"English"},{name_et:"Prantsuse keel",name_en:"French"},{name_et:"Saksa keel",name_en:"German"},{name_et:"Vene keel",name_en:"Russian"},{name_et:"Rootsi keel",name_en:"Swedish"},{name_et:"Soome keel",name_en:"Finnish"},{name_et:"Matemaatika",name_en:"Mathematics"},{name_et:"Loodusõpetus",name_en:"Nature education"},{name_et:"Bioloogia",name_en:"Biology"},{name_et:"Geograafia",name_en:"Geography"},{name_et:"Füüsika",name_en:"Physics"},{name_et:"Keemia",name_en:"Chemistry"},{name_et:"Inimeseõpetus",name_en:"Human studies"},{name_et:"Ajalugu",name_en:"History"},{name_et:"Ühiskonnaõpetus",name_en:"Civic education"},{name_et:"Kunst",name_en:"Art education"},{name_et:"Muusika",name_en:"Music education"},{name_et:"Töö- ja tehnoloogiaõpetus",name_en:"Craft and technology studies"},{name_et:"Käsitöö",name_en:"Handicraft"},{name_et:"Kodundus",name_en:"Home economics"},{name_et:"Haridustehnoloogia",name_en:"Education technology"},{name_et:"Kehaline kasvatus",name_en:"Physical education"},{name_et:"Informaatika",name_en:"Computer science"},{name_et:"Majandus ja ettevõtlus",name_en:"Economics and entrepreneurial education"},{name_et:"Meediaõpetus",name_en:"Media studies"},{name_et:"Rigiikaitse",name_en:"National defence"},{name_et:"Uurimistöö",name_en:"Research paper"},{name_et:"Filosoofia",name_en:"Philosophy"}];
+
+  async.waterfall([
+    function(next){
+        var q = {};
+        q.args = {};
+        mongoService.find(q, Subject, function(err, subjects){
+          if (err) { return next({error: err}); }
+          if(subjects){
+
+              console.log(subjects.length);
+              //console.log(scenarios[0]._id);
+              //console.log(scenarios[0].subjects.length);
+
+              var array = [];
+
+              for(var i = 0; i < subjects.length; i++){
+
+                  for(var j = 0; j < translated_subjects.length; j++){
+
+                      if(subjects[i].name == translated_subjects[j].name_et){
+
+                         array.push({_id: subjects[i]._id, name_et: translated_subjects[j].name_et, name_en: translated_subjects[j].name_en});
+
+                      }
+                  }
+              }
+
+              //console.log(array);
+
+              next(null, array);
+          }
+        });
+        console.log('updating');
+
+
+    },
+    function(subjects, next){
+
+        for(var i = 0; i < subjects.length; i++){
+
+            var q = {};
+            q.where = {"_id": subjects[i]._id};
+            q.update = { name_et: subjects[i].name_et, name_en: subjects[i].name_en};
+
+            mongoService.update(q, Subject, function(err, s){
+              if (err) { return next({error: err}); }
+              console.log('updated '+ s._id + ' ' + s.name_et+ ' ' + s.name_en);
+              //next(null, success);
+          });
+      }
+
+
+      next(null, {hello: 'success'});
+    }
+  ], function (err, result) {
+    if(err){ res.json(err); }
+    res.json(result);
+});
 
 });
 
