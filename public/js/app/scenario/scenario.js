@@ -49,6 +49,12 @@
             if(data.mother_scenario_author){
                 $scope.scenario.mother_scenario.author = data.mother_scenario_author;
             }
+
+            //translating subjects
+            for(var a = 0; a < $scope.scenario.subjects.length; a++){
+                $scope.scenario.subjects[a].name = $scope.scenario.subjects[a]["name_"+$translate.use()];
+            }
+
             //console.log($scope.scenario.mother_scenario);
             if(typeof data.materials !== 'undefined'){
               $scope.materials = data.materials;

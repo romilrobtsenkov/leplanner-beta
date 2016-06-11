@@ -3,8 +3,8 @@
 
   angular
     .module('app')
-    .controller('UserController', ['$scope','$rootScope','$location','$routeParams','requestService','$window',
-    function($scope,$rootScope,$location, $routeParams,requestService, $window) {
+    .controller('UserController', ['$scope','$rootScope','$location','$routeParams','requestService','$window','$translate',
+    function($scope,$rootScope,$location, $routeParams,requestService, $window, $translate) {
 
       if(typeof $routeParams.id !== 'undefined'){
         $scope.get_profile_id = $routeParams.id;
@@ -134,6 +134,13 @@
                   $scope.no_scenarios = true;
               }
               $scope.scenarios = data.scenarios;
+
+              for(var j = 0; j < $scope.scenarios.length; j++){
+                  //translating subjects
+                  for(var a = 0; a < $scope.scenarios[j].subjects.length; a++){
+                      $scope.scenarios[j].subjects[a].name = $scope.scenarios[j].subjects[a]["name_"+$translate.use()];
+                  }
+              }
 
               $scope.loading_animation = false;
             }

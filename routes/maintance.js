@@ -302,7 +302,7 @@ router.get('/update-conveyors/', restrict,  function(req, res, next) {
 });
 
 router.get('/update-subjects/', restrict,  function(req, res, next) {
-  console.log('updating');
+  /*console.log('updating');
 
  var translated_subjects=[{name_et:"Eesti keel ",name_en:"Estonian"},{name_et:"Vene keel emakeelena",name_en:"Russian (as the native language)"},{name_et:"Kirjandus",name_en:"Literature"},{name_et:"Eesti keel võõrkeelena",name_en:"Estonian (as a foreign language)"},{name_et:"Inglise keel",name_en:"English"},{name_et:"Prantsuse keel",name_en:"French"},{name_et:"Saksa keel",name_en:"German"},{name_et:"Vene keel",name_en:"Russian"},{name_et:"Rootsi keel",name_en:"Swedish"},{name_et:"Soome keel",name_en:"Finnish"},{name_et:"Matemaatika",name_en:"Mathematics"},{name_et:"Loodusõpetus",name_en:"Nature education"},{name_et:"Bioloogia",name_en:"Biology"},{name_et:"Geograafia",name_en:"Geography"},{name_et:"Füüsika",name_en:"Physics"},{name_et:"Keemia",name_en:"Chemistry"},{name_et:"Inimeseõpetus",name_en:"Human studies"},{name_et:"Ajalugu",name_en:"History"},{name_et:"Ühiskonnaõpetus",name_en:"Civic education"},{name_et:"Kunst",name_en:"Art education"},{name_et:"Muusika",name_en:"Music education"},{name_et:"Töö- ja tehnoloogiaõpetus",name_en:"Craft and technology studies"},{name_et:"Käsitöö",name_en:"Handicraft"},{name_et:"Kodundus",name_en:"Home economics"},{name_et:"Haridustehnoloogia",name_en:"Education technology"},{name_et:"Kehaline kasvatus",name_en:"Physical education"},{name_et:"Informaatika",name_en:"Computer science"},{name_et:"Majandus ja ettevõtlus",name_en:"Economics and entrepreneurial education"},{name_et:"Meediaõpetus",name_en:"Media studies"},{name_et:"Rigiikaitse",name_en:"National defence"},{name_et:"Uurimistöö",name_en:"Research paper"},{name_et:"Filosoofia",name_en:"Philosophy"}];
 
@@ -362,7 +362,7 @@ router.get('/update-subjects/', restrict,  function(req, res, next) {
   ], function (err, result) {
     if(err){ res.json(err); }
     res.json(result);
-});
+});*/
 
 });
 

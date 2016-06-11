@@ -42,6 +42,12 @@
             });
 
             $scope.scenario = data.scenario;
+
+            //translating subjects
+            for(var a = 0; a < $scope.scenario.subjects.length; a++){
+                $scope.scenario.subjects[a].name = $scope.scenario.subjects[a]["name_"+$translate.use()];
+            }
+
             $scope.activity_list = data.scenario.activities;
             $scope.is_favorite = data.is_favorite;
             $scope.is_following = data.is_following;

@@ -20,6 +20,8 @@ var User = require('../models/user').User;
 
 var async = require('async');
 
+var main_subjects_languages = main_subjects_languages;
+
 /* template
 async.waterfall([], function (err, result) {
   if(err){ res.json(err); }
@@ -522,7 +524,7 @@ router.post('/get-edit-data-single-scenario/', restrict, function(req, res, next
       q.populated_fields = [];
       q.populated_fields.push({
         field: 'subjects',
-        populate: 'name'
+        populate: main_subjects_languages
       });
 
       mongoService.findOne(q, Scenario, function(err, scenario){
@@ -569,7 +571,7 @@ router.post('/list/', function(req, res, next) {
       });
       q.populated_fields.push({
         field: 'subjects',
-        populate: 'name'
+        populate: main_subjects_languages
       });
       q.sort = sort;
 
@@ -810,7 +812,7 @@ router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
               });
               q.populated_fields.push({
                 field: 'subjects',
-                populate: 'name'
+                populate: main_subjects_languages
               });
               q.sort = sort;
 
@@ -838,7 +840,7 @@ router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
           });
           q.populated_fields.push({
             field: 'subjects',
-            populate: 'name'
+            populate: main_subjects_languages
           });
           q.sort = sort;
 
@@ -860,7 +862,7 @@ router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
           });
           q.populated_fields.push({
             field: 'subjects',
-            populate: 'name'
+            populate: main_subjects_languages
           });
           q.sort = sort;
 
@@ -903,7 +905,7 @@ router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
                 });
                 q.populated_fields.push({
                   field: 'subjects',
-                  populate: 'name'
+                  populate: main_subjects_languages
                 });
                 q.sort = sort;
 
@@ -980,7 +982,7 @@ router.post('/search/', function(req, res, next) {
       });
       q.populated_fields.push({
         field: 'subjects',
-        populate: 'name'
+        populate: main_subjects_languages
       });
       q.sort = sort;
 
@@ -1012,7 +1014,7 @@ router.post('/single-scenario/', function(req, res, next) {
       });
       q.populated_fields.push({
         field: 'subjects',
-        populate: 'name'
+        populate: main_subjects_languages
       });
       // mother scenario id, scenario name ja scenario author
       q.populated_fields.push({
@@ -1150,7 +1152,7 @@ router.post('/tag/', function(req, res, next) {
       });
       q.populated_fields.push({
         field: 'subjects',
-        populate: 'name'
+        populate: main_subjects_languages
       });
       q.sort = sort;
 

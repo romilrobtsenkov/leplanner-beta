@@ -3,8 +3,8 @@
 
   angular
     .module('app')
-    .controller('HomeController', ['$scope','$rootScope','$location','requestService','$window',
-    function($scope,$rootScope,$location,requestService,$window) {
+    .controller('HomeController', ['$scope','$rootScope','$location','requestService','$window','$translate',
+    function($scope,$rootScope,$location,requestService,$window,$translate) {
 
       $rootScope.title = 'Leplanner beta';
 
@@ -67,6 +67,11 @@
 
           if(data.subjects){
             $scope.subjects = data.subjects;
+
+            for(var a = 0; a < $scope.subjects.length; a++){
+                $scope.subjects[a].name = $scope.subjects[a]["name_"+$translate.use()];
+            }
+
           }
 
           if(data.error){

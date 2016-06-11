@@ -4,7 +4,7 @@ var Subject = require('../models/subject').Subject;
 exports.getSubjects = function(next) {
     var query = Subject.find();
     query.sort({name: 1});
-    query.select('_id name');
+    query.select('_id name_et name_en');
     query.exec(function(err, subjects) {
       return next(null, subjects);
     });

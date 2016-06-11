@@ -161,6 +161,14 @@
               }
 
               $scope.scenarios = data.scenarios;
+
+              for(var j = 0; j < $scope.scenarios.length; j++){
+                  //translating subjects
+                  for(var a = 0; a < $scope.scenarios[j].subjects.length; a++){
+                      $scope.scenarios[j].subjects[a].name = $scope.scenarios[j].subjects[a]["name_"+$translate.use()];
+                  }
+              }
+
               $scope.loading_animation = false;
 
             }

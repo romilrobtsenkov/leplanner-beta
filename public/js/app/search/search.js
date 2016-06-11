@@ -101,6 +101,10 @@
 
               $scope.subjects = data.subjects;
 
+              for(var a = 0; a < $scope.subjects.length; a++){
+                  $scope.subjects[a].name = $scope.subjects[a]["name_"+$translate.use()];
+              }
+
               // Retrieve search from navigating back to search
               if(typeof $rootScope.searchParams !== 'undefined'){
 
@@ -251,6 +255,14 @@
               }else{
                 $scope.search_word_end = undefined;
               }
+
+              for(var j = 0; j < $scope.scenarios.length; j++){
+                  //translating subjects
+                  for(var a = 0; a < $scope.scenarios[j].subjects.length; a++){
+                      $scope.scenarios[j].subjects[a].name = $scope.scenarios[j].subjects[a]["name_"+$translate.use()];
+                  }
+              }
+
               // update how many results found label
               //$scope.search_end = 1;
               $scope.loading_animation = false;

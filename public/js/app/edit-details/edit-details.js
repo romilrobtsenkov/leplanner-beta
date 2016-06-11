@@ -117,6 +117,12 @@
           if(data.subjects && data.activity_organization){
             $scope.subjects_list = data.subjects;
             //console.log($scope.subjects_list);
+
+            //translating subjects
+            for(var a = 0; a < $scope.subjects_list.length; a++){
+                $scope.subjects_list[a].name = $scope.subjects_list[a]["name_"+$translate.use()];
+            }
+
             $scope.activity_organization = data.activity_organization;
 
             //replace with translation

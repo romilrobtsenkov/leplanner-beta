@@ -3,8 +3,8 @@
 
     angular
     .module('app')
-    .controller('TagsController', ['$scope','$rootScope','$location','$routeParams','requestService','$window',
-    function($scope,$rootScope,$location, $routeParams,requestService,$window) {
+    .controller('TagsController', ['$scope','$rootScope','$location','$routeParams','requestService','$window','$translate',
+    function($scope,$rootScope,$location, $routeParams,requestService,$window,$translate) {
 
         if(typeof $routeParams.tag !== 'undefined'){
             $scope.get_tag = $routeParams.tag;
@@ -68,6 +68,14 @@
                         $scope.no_scenarios = true;
                     }
                     $scope.scenarios = data.scenarios;
+
+                    for(var j = 0; j < $scope.scenarios.length; j++){
+                        //translating subjects
+                        for(var a = 0; a < $scope.scenarios[j].subjects.length; a++){
+                            $scope.scenarios[j].subjects[a].name = $scope.scenarios[j].subjects[a]["name_"+$translate.use()];
+                        }
+                    }
+
                     $scope.loading_animation = false;
                 }
 
