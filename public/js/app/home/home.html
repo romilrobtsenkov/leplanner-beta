@@ -6,7 +6,8 @@
     <div class="row ">
 
       <div class="col-sm-6">
-        <iframe width="100%" height="250" src="https://www.youtube.com/embed/MubgWpERWas?rel=0" frameborder="0" allowfullscreen></iframe>
+        <iframe ng-if="translated.lang == 'et'" width="100%" height="220" src="https://player.vimeo.com/video/167885023" frameborder="0" webkitallowfullscreen mozallowfullscree allowfullscreen></iframe>
+        <iframe ng-if="translated.lang == 'en'" width="100%" height="220" src="https://player.vimeo.com/video/168032150" frameborder="0" webkitallowfullscreen mozallowfullscree allowfullscreen></iframe>
       </div>
       <div class="col-sm-5 col-sm-offset-1">
         <h2>{{ 'HEADING.MAIN_HEADLINE' | translate }}</h2>

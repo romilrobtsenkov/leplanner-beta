@@ -98,6 +98,7 @@
           ]).then(function (t) {
 
               $rootScope.translated = {
+                  lang: $translate.use(),
                   organization: [t['ORGANIZATION.0'],t['ORGANIZATION.1'],t['ORGANIZATION.2'],t['ORGANIZATION.3']],
                   co_authorship: [t['CO_AUTHORSHIP.0'],t['CO_AUTHORSHIP.1'],t['CO_AUTHORSHIP.2'],t['CO_AUTHORSHIP.3'],t['CO_AUTHORSHIP.4'],t['CO_AUTHORSHIP.5'],t['CO_AUTHORSHIP.6']],
                   displays: [t['DISPLAYS.0'],t['DISPLAYS.1'],t['DISPLAYS.2'],t['DISPLAYS.3'],t['DISPLAYS.4'], t['DISPLAYS.5']],
