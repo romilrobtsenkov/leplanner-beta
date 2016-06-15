@@ -451,6 +451,18 @@
           });
       };
 
+      $scope.hasErasmusTag = function(tag){
+          if(!$scope.scenario.tags){return false;}
+
+          for(var i = 0; i < $scope.scenario.tags.length; i++){
+              if($scope.scenario.tags[i].text == tag){
+                  return true;
+              }
+          }
+
+          return false;
+
+      };
 
   }]); // ScenarioController end
 }());
