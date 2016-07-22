@@ -112,9 +112,4 @@ if (config.errorMails) {
   });
 }
 
-var memwatch = require('memwatch-next');
-memwatch.on('leak', function (info) {
-  log.warning('MEMORY LEAK DETECTED', info);
-});
-
 module.exports = app;
