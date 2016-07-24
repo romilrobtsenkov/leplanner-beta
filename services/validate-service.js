@@ -1,6 +1,6 @@
 exports.validate = function(to_validate_array, next){
 
-  if(typeof to_validate_array == 'undefined' || to_validate_array.length === 0){
+  if(typeof to_validate_array === 'undefined' || to_validate_array.length === 0){
     return next({error: 'Validation array undefined'});
   }
 
@@ -21,7 +21,7 @@ exports.validate = function(to_validate_array, next){
   for(var i = 0; i < to_validate_array.length; i++){
     var fn = to_validate_array[i].fn.toString();
     var data = to_validate_array[i].data;
-    if(typeof validation[fn] != 'undefined'){
+    if(typeof validation[fn] !== 'undefined'){
       validation[fn](data);
     }
   }
@@ -49,7 +49,7 @@ exports.validate = function(to_validate_array, next){
 
   function addRemoveFollow(params) {
     if(typeof params === 'undefined'){return next('no params sent');}
-    if(params.user._id == params.following._id){ return next("can not follow yourself");}
+    if(params.user._id === params.following._id){ return next("can not follow yourself");}
     if(!params.user._id){return next("no user data sent");}
     if(!params.following._id){return next("to follow/unfollow not sent");}
 
@@ -58,8 +58,8 @@ exports.validate = function(to_validate_array, next){
 
   function createScenario(params) {
     if(typeof params === 'undefined'){return next('no params sent');}
-    if(typeof params.scenario.name == 'undefined' || params.scenario.name === '' || params.scenario.name.length <= 2){ return next({id: 0, message: 'Scenario name has to be atleast 3 chars long!'});}
-    if(typeof params.scenario.description == 'undefined' || params.scenario.description === '' || params.scenario.description.length <= 2){ return next({id: 1, message: 'Scenario description has to be atleast 3 chars long!'});}
+    if(typeof params.scenario.name === 'undefined' || params.scenario.name === '' || params.scenario.name.length <= 10){ return next({id: 0, message: 'Scenario name has to be atleast 3 chars long!'});}
+    if(typeof params.scenario.description === 'undefined' || params.scenario.description === '' || params.scenario.description.length <= 2){ return next({id: 1, message: 'Scenario description has to be atleast 3 chars long!'});}
 
     next();
   }
