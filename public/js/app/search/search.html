@@ -43,7 +43,7 @@
       </div>
     </div>-->
 		<div class="col-sm-12 col-md-9 col-lg-9 col-xs-12">
-			<h4 class="results-heading">{{ 'INPUT.FOUND' | translate }} <strong>{{scenarios.length}}</strong> <span ng-if="search_word_end">{{ 'INPUT.FOR_KEYWORD' | translate }} <strong >"{{search_word_end}}"</strong></span></h4>
+			<h4 class="results-heading">{{ 'INPUT.FOUND' | translate }} <strong>{{total_count}}</strong> <span ng-if="search_word_end">{{ 'INPUT.FOR_KEYWORD' | translate }} <strong >"{{search_word_end}}"</strong></span></h4>
 			<!-- makes the clicked tab active-->
 			<ul class="nav nav-tabs nav-tab-pop">
 				<li ng-class="{active:isSortActive('latest')}">
@@ -63,7 +63,7 @@
 			<p ng-if="!scenarios || loading_animation" class="loading-gif-animation"><img src="./images/loading.gif"></p>
 
 			<hr>
-			<div class="single_scenario_item" id="{{scenario._id}}" current-page="search_page_nr" dir-paginate="scenario in scenarios | itemsPerPage: 10">
+			<div class="single_scenario_item" id="{{scenario._id}}" current-page="search_page_nr" dir-paginate="scenario in scenarios | itemsPerPage: 10" total-items="total_count">
 
 				<!-- SINGLE SCENARIO -->
 				<div class="row no-margin">
@@ -107,7 +107,7 @@
 			</div>
 
 			<!-- https://github.com/michaelbromley/angularUtils/tree/master/src/directives/pagination -->
-			<dir-pagination-controls on-page-change="pageChanged(newPageNumber)"></dir-pagination-controls>
+			<dir-pagination-controls on-page-change="pageChanged(newPageNumber)" ></dir-pagination-controls>
 
 		</div>
 	</div>

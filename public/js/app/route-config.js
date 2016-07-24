@@ -97,7 +97,7 @@
         }]
       }
     })
-    .when('/search/:key?', {
+    .when('/search', {
       templateUrl: '/js/app/search/search.html',
       controller: 'SearchController',
       resolve: {

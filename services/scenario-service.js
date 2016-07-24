@@ -22,6 +22,10 @@ exports.getSortOrder = function(query, next){
     }
   }
 
+  // TODO promise peale
+  if(!next){
+      return sort;
+  }
   next(null, sort);
 
 };

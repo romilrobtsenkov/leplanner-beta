@@ -95,13 +95,5 @@
         }
       };
 
-      $scope.searchSubject = function(subject_name, $event){
-        if(typeof $event !== 'undefined'){
-          $event.preventDefault();
-        }
-        $rootScope.search_subject = subject_name;
-        $location.path('/search');
-      };
-
   }]);
 }());

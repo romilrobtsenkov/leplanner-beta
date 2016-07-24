@@ -5,9 +5,13 @@ var config = require('../config/config');
 var router = express.Router();
 var restrict = require('../auth/restrict');
 var mongoose = require('mongoose');
+mongoose.Promise = require('bluebird');
+
+var Promise = require('bluebird');
 
 var mongoService = require('../services/mongo-service');
 var validateService = require('../services/validate-service');
+var validationPromise = Promise.promisify(validateService.validate);
 var scenarioService = require('../services/scenario-service');
 
 var Scenario = require('../models/scenario').Scenario;
@@ -57,9 +61,9 @@ router.post('/add-comment/',restrict, function(req, res, next) {
     function(comment, next){
 
       // No notification if scenario author comments own scenario
-      if(params.author._id == params.user._id){ return next(); }
+      if(params.author._id === params.user._id){ return next(); }
 
-      new_notification = {
+      var new_notification = {
         user: params.author._id,
         type: "comment",
         data: {
@@ -135,7 +139,7 @@ router.post('/add-remove-favorite/',restrict, function(req, res, next) {
       // add favorite
       if(typeof params.remove === 'undefined'){
         if(favorite_doc === null){
-          new_favorite_doc = { scenario: params.scenario_id, user: params.user._id };
+          var new_favorite_doc = { scenario: params.scenario_id, user: params.user._id };
 
           mongoService.saveNew(new_favorite_doc, Favorite, function(err) {
             if (err) { return next({error: err}); }
@@ -278,31 +282,22 @@ router.post('/create/', restrict, function(req, res, next) {
 
     var params = req.body;
 
-    async.waterfall([
-      function(next){
+    validationPromise([{fn:'createScenario', data:params}])
+        .then(function (){
+            var new_scenario = params.scenario;
+            new_scenario.author = params.user._id;
+            new_scenario.draft = true;
+            new_scenario.last_modified = new Date();
 
-        validateService.validate([{fn:'createScenario', data:params}], function(err){
-          if (err) { return next({error: err}); }
-          next();
+            return mongoService.saveNewWithPromise(new_scenario, Scenario);
+        })
+        .then(function (scenario){
+            res.json({scenario: { _id: scenario._id } });
+        })
+        .catch(function (err) {
+            console.log(err);
+            res.json({error: err});
         });
-
-      },
-      function(next){
-
-        var new_scenario = params.scenario;
-        new_scenario.author = params.user._id;
-        new_scenario.draft = true;
-        new_scenario.last_modified = new Date();
-
-        mongoService.saveNew(new_scenario, Scenario, function(err, scenario){
-          if (err) { return next({error: err}); }
-          next(null, {scenario: { _id: scenario._id } } );
-        });
-      }
-    ], function (err, result) {
-      if(err){ res.json(err); }
-      res.json(result);
-    });
 
 });
 
@@ -421,7 +416,7 @@ router.post('/delete-material/', restrict, function(req, res, next) {
     },
     function(next){
       // check if there is such material
-      if(typeof params.material._id == 'undefined'){ return next({error: {id: 0, message: 'no material id provided'}}); }
+      if(typeof params.material._id === 'undefined'){ return next({error: {id: 0, message: 'no material id provided'}}); }
 
       var q = {};
       q.args = { _id: params.material._id, deleted: false };
@@ -627,7 +622,7 @@ router.post('/save/', restrict, function(req, res, next) {
         new_scenario.activities_duration = 0;
 
         for(var i = 0; i < new_scenario.activities.length; i++){
-          if(typeof new_scenario.activities[i].duration == 'undefined'){
+          if(typeof new_scenario.activities[i].duration === 'undefined'){
             // fix if user left it empty
             new_scenario.activities[i].duration = 0;
           }
@@ -637,7 +632,7 @@ router.post('/save/', restrict, function(req, res, next) {
 
         //console.log(new_scenario);
 
-        if(typeof new_scenario._id == 'undefined'){ return next ({error: {id: 0, message: "No scenario id" }}); }
+        if(typeof new_scenario._id === 'undefined'){ return next ({error: {id: 0, message: "No scenario id" }}); }
 
         //update existing
         var q = {};
@@ -689,7 +684,7 @@ router.post('/save-material/', restrict, function(req, res, next) {
         // check if that spot is empty for new Material
 
         // if updating skip this step
-        if(typeof params.material._id != 'undefined'){ return next(); }
+        if(typeof params.material._id !== 'undefined'){ return next(); }
 
         var q = {};
         q.args = { scenario: params.scenario._id, activity_id: params.material.activity_id, position: params.material.position, deleted: false };
@@ -704,7 +699,7 @@ router.post('/save-material/', restrict, function(req, res, next) {
       },
       function(next){
 
-        if(typeof params.material._id != 'undefined'){
+        if(typeof params.material._id !== 'undefined'){
             // update
             //console.log('update '+params.material._id);
             var q = {};
@@ -712,16 +707,16 @@ router.post('/save-material/', restrict, function(req, res, next) {
             q.update = params.material;
 
             // TODO not neccesery
-            if(typeof q.update.conveyor_name == 'undefined'){
+            if(typeof q.update.conveyor_name === 'undefined'){
               q.update.conveyor_name = null;
             }
-            if(typeof q.update.conveyor_url == 'undefined'){
+            if(typeof q.update.conveyor_url === 'undefined'){
               q.update.conveyor_url = null;
             }
-            if(typeof q.update.display_id == 'undefined'){
+            if(typeof q.update.display_id === 'undefined'){
               q.update.display_id = null;
             }
-            if(typeof q.update.material_url == 'undefined'){
+            if(typeof q.update.material_url === 'undefined'){
               q.update.material_url = null;
             }
             q.update.last_modified = new Date();
@@ -779,7 +774,7 @@ router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
     function(sort, next){
 
       // default page to feed
-      if(typeof query.page == 'undefined'){ query.page = 'feed'; }
+      if(typeof query.page === 'undefined'){ query.page = 'feed'; }
 
       switch (query.page) {
         case 'feed':
@@ -889,7 +884,7 @@ router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
             function(favorites, next){
 
               if(favorites.length > 0){
-                list_of_scenario_ids = [];
+                var list_of_scenario_ids = [];
 
                 //create a list of scenario ids
                 for(var i = 0; i < favorites.length; i++){
@@ -937,64 +932,71 @@ router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
 
 });
 
-router.post('/search/', function(req, res, next) {
+router.get('/search', function(req, res, next) {
 
-  var query = req.body;
+  // parameters
+  // order & page & q & languages & subjects
 
-  async.waterfall([
-    function(next){
+  const PAGESIZE = 10;
 
-      scenarioService.getSortOrder(query, function(err, sort){
-        if (err) { return next({error: err}); }
-        next(null, sort);
-      });
-    },
-    function(sort, next){
+  var query = req.query;
+  console.log(query);
 
-      var q = {};
-      q.args = { draft: false, deleted: false };
+  query.page = parseInt(query.page, 10) > 0 || 0;
+  if(query.page < 0) {query.page = 0;}
 
-      // search word
-      if(typeof query.search_word !== 'undefined'){
-        q.args.$or = [
-            { name: { "$regex": query.search_word, "$options": "i" } },
-            { description: { "$regex": query.search_word, "$options": "i" } },
-            { 'tags.text': { "$regex": query.search_word, "$options": "i" } },
-        ];
-      }
+  Promise.resolve(scenarioService.getSortOrder(query))
+    .then(function (sort) {
+        var q = {};
+        q.args = { draft: false, deleted: false };
 
-      // meta fields
+        // search word
+        if(typeof query.q !== 'undefined'){
+          q.args.$or = [
+              { name: { "$regex": query.q, "$options": "i" } },
+              { description: { "$regex": query.q, "$options": "i" } },
+              { 'tags.text': { "$regex": query.q, "$options": "i" } },
+          ];
+        }
 
-      if(typeof query.subjects !== 'undefined' && query.subjects.length > 0){
-        q.args.subjects = { $in : query.subjects };
-      }
+        // meta fields
+        if(query.subjects){
+            query.subjects= query.subjects.split(",");
+            q.args.subject = { $in : query.subjects };
+        }
+        if(query.languages){
+            query.languages= query.languages.split(",");
+            q.args.language = { $in : query.languages };
+        }
 
-      if(typeof query.languages !== 'undefined' && query.languages.length > 0){
-        q.args.language = { $in : query.languages };
-      }
+        q.populated_fields = [];
+        q.populated_fields.push({
+          field: 'author',
+          populate: 'first_name last_name created'
+        });
+        q.populated_fields.push({
+          field: 'subjects',
+          populate: main_subjects_languages
+        });
+        q.sort = sort;
 
-      //console.log(q.args);
+        q.skip = query.page * PAGESIZE;
+        q.limit = PAGESIZE;
 
-      q.populated_fields = [];
-      q.populated_fields.push({
-        field: 'author',
-        populate: 'first_name last_name created'
-      });
-      q.populated_fields.push({
-        field: 'subjects',
-        populate: main_subjects_languages
-      });
-      q.sort = sort;
-
-      mongoService.find(q, Scenario, function(err, scenarios) {
-        if (err) { return next({error: err}); }
-        next(null, {scenarios: scenarios});
-      });
-    }
-  ], function (err, result) {
-    if(err){ res.json(err); }
-    res.json(result);
-  });
+        return mongoService.findWithPromise(q, Scenario).then(function(scenarios){
+            //count all
+            q.skip = q.limit = undefined;
+            return mongoService.countWithPromise(q, Scenario).then(function (count) {
+                return {count: count, scenarios: scenarios};
+            });
+        });
+    })
+    .then(function (result) {
+        res.json(result);
+    })
+    .catch(function (err) {
+        res.json(err);
+    });
 
 });
 
@@ -1099,8 +1101,8 @@ router.post('/single-scenario/', function(req, res, next) {
     function(response, next){
 
       // if author viewing if there are notifications - mark them as seen, else skip!
-      if(typeof params.user == 'undefined'){ return next(null, response); }
-      if(typeof params.user != 'undefined' && params.user._id !== response.scenario.author._id.toString()){ return next(null, response); }
+      if(typeof params.user === 'undefined'){ return next(null, response); }
+      if(typeof params.user !== 'undefined' && params.user._id !== response.scenario.author._id.toString()){ return next(null, response); }
 
       var q = {};
       q.where = { user: params.user._id, type: 'comment', 'data.scenario': response.scenario._id, seen: null };
