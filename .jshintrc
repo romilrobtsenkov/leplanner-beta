@@ -1,0 +1,11 @@
+{
+    "esversion": 6,
+    "predef": [
+        "-Promise",
+        "angular",
+        "document"
+    ],
+    "node": true,
+    "undef": true,
+    "eqeqeq": true
+}
