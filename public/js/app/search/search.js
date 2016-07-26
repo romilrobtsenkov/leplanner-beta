@@ -236,6 +236,11 @@
             // PAGE
             if($location.search().page){
                 url_params.page = $location.search().page;
+
+                //if new search word - start from 0
+                if ($location.search().q !== $scope.search_word) {
+                    url_params.page = 1;
+                }
             }
 
             // SUBJECTS

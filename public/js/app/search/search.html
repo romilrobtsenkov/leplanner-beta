@@ -43,7 +43,7 @@
       </div>
     </div>-->
 		<div class="col-sm-12 col-md-9 col-lg-9 col-xs-12">
-			<h4 class="results-heading">{{ 'INPUT.FOUND' | translate }} <strong>{{total_count}}</strong> <span ng-if="search_word_end">{{ 'INPUT.FOR_KEYWORD' | translate }} <strong >"{{search_word_end}}"</strong></span></h4>
+			<h4 class="results-heading">{{ 'INPUT.FOUND' | translate }} <strong ng-if="total_count">{{total_count}}</strong> <span ng-if="search_word_end">{{ 'INPUT.FOR_KEYWORD' | translate }} <strong >"{{search_word_end}}"</strong></span></h4>
 			<!-- makes the clicked tab active-->
 			<ul class="nav nav-tabs nav-tab-pop">
 				<li ng-class="{active:isSortActive('latest')}">
