@@ -11,6 +11,8 @@ const Material = require('../models/activity-material').Material;
 
 const Scenario = require('../models/scenario').Scenario;
 
+const E = require('../errors');
+
 /**
 * POST /api/materials/
 * save new material for activity
@@ -32,7 +34,7 @@ router.post('/', restrict, function (req, res, next) {
         !params.material.position ||
         !params.scenario._id) {
 
-      return res.sendStatus(404);
+        return res.sendStatus(404);
     }
 
     var q = {};
@@ -42,7 +44,9 @@ router.post('/', restrict, function (req, res, next) {
     mongoService.findOneWithPromise(q, Scenario)
     .then(function (latestScenario) {
 
-        if (!latestScenario) { return res.status(403).send('no access to others scenarios'); }
+        if (!latestScenario) {
+            return Promise.reject(new E.ForbiddenError('no access to others scenarios'));
+        }
 
         var q = {};
         q.args = {
@@ -50,13 +54,13 @@ router.post('/', restrict, function (req, res, next) {
             activity_id: params.material.activity_id,
             position: params.material.position,
             deleted: false,
-          };
+        };
         q.select = '_id';
 
         return mongoService.findOneWithPromise(q, Material);
-      })
+    })
     .then(function (material) {
-        if (material) { return res.status(400).send('already exists'); }
+        if (material) { return Promise.reject(new E.Error('already exists')); }
 
         // save new
         var newMaterial = params.material;
@@ -64,7 +68,7 @@ router.post('/', restrict, function (req, res, next) {
         newMaterial.last_modified = new Date();
 
         return mongoService.saveNewWithPromise(newMaterial, Material);
-      })
+    })
     .then(function (material) {
 
         savedMaterial = material;
@@ -75,17 +79,20 @@ router.post('/', restrict, function (req, res, next) {
         q.update = { last_modified: new Date() };
 
         return mongoService.updateWithPromise(q, Scenario);
-      })
+    })
     .then(function (scenario) {
         console.log(req.user.first_name + ' updated scenario: ' + scenario._id);
         res.json({ material: savedMaterial });
-      })
+    })
+    .catch(E.Error, function (err) {
+        res.status(err.statusCode).send(err.message);
+    })
     .catch(function (err) {
         console.log(err);
         res.status(500).send('could not create material due to server error');
-      });
+    });
 
-  });
+});
 
 /**
 * POST /api/materials/:id
@@ -101,17 +108,17 @@ router.post('/', restrict, function (req, res, next) {
 */
 router.post('/:id', restrict, function (req, res, next) {
 
-    var params = req.params;
-    var postData = req.body;
-    var updatedMaterial;
+var params = req.params;
+var postData = req.body;
+var updatedMaterial;
 
-    if (!postData.material.material_name ||
-        !postData.material.activity_id ||
-        !postData.material.position ||
-        !params.id ||
-        !postData.scenario._id) {
+if (!postData.material.material_name ||
+    !postData.material.activity_id ||
+    !postData.material.position ||
+    !params.id ||
+    !postData.scenario._id) {
 
-      return res.sendStatus(404);
+        return res.sendStatus(404);
     }
 
     var q = {};
@@ -121,7 +128,7 @@ router.post('/:id', restrict, function (req, res, next) {
     mongoService.findOneWithPromise(q, Scenario)
     .then(function (latestScenario) {
 
-        if (!latestScenario) { return res.status(403).send('no access to others scenarios'); }
+        if (!latestScenario) { return Promise.reject(new E.ForbiddenError('no access to others scenarios')); }
 
         var q = {};
         q.where = { _id: params.id };
@@ -130,23 +137,23 @@ router.post('/:id', restrict, function (req, res, next) {
 
         // TODO replace
         if (typeof q.update.conveyor_name === 'undefined') {
-          q.update.conveyor_name = null;
+            q.update.conveyor_name = null;
         }
 
         if (typeof q.update.conveyor_url === 'undefined') {
-          q.update.conveyor_url = null;
+            q.update.conveyor_url = null;
         }
 
         if (typeof q.update.display_id === 'undefined') {
-          q.update.display_id = null;
+            q.update.display_id = null;
         }
 
         if (typeof q.update.material_url === 'undefined') {
-          q.update.material_url = null;
+            q.update.material_url = null;
         }
 
         return mongoService.updateWithPromise(q, Material);
-      })
+    })
     .then(function (material) {
 
         updatedMaterial = material;
@@ -157,16 +164,19 @@ router.post('/:id', restrict, function (req, res, next) {
         q.update = { last_modified: new Date() };
 
         return mongoService.updateWithPromise(q, Scenario);
-      })
+    })
     .then(function (scenario) {
         console.log(req.user.first_name + ' updated scenario: ' + scenario._id);
         res.json({ material: updatedMaterial });
-      })
+    })
+    .catch(E.Error, function (err) {
+        res.status(err.statusCode).send(err.message);
+    })
     .catch(function (err) {
         console.log(err);
         res.status(500).send('could not update material due to server error');
-      });
-  });
+    });
+});
 
 /**
 * POST /api/materials/delete/:id
@@ -181,7 +191,7 @@ router.post('/delete/:id', restrict, function (req, res, next) {
     var postData = req.body;
 
     if (!params.id || !postData.scenario._id) {
-      return res.sendStatus(404);
+        return res.sendStatus(404);
     }
 
     var q = {};
@@ -192,7 +202,7 @@ router.post('/delete/:id', restrict, function (req, res, next) {
     .then(function (latestScenario) {
 
         if (!latestScenario) {
-          return res.sendStatus(403);
+            return Promise.reject(new E.ForbiddenError());
         }
 
         var q = {};
@@ -200,32 +210,36 @@ router.post('/delete/:id', restrict, function (req, res, next) {
         q.select = '_id';
 
         return mongoService.findOneWithPromise(q, Material);
-      })
+    })
     .then(function (existingMaterial) {
 
         if (!existingMaterial) {
-            return res.status(400).send('material already does not exist'); }
+            return Promise.reject(new E.Error('material already does not exist'));
+        }
 
         var q = {};
         q.where = { _id: existingMaterial._id };
         q.update = {
             deleted: true,
             deleted_date: new Date(),
-          };
+        };
         q.select = '_id';
 
         return mongoService.updateWithPromise(q, Material);
 
-      })
+    })
     .then(function (material) {
         console.log('material ' + material._id + ' deleted');
         res.json({ material: { _id: material._id } });
-      })
+    })
+    .catch(E.Error, function (err) {
+        res.status(err.statusCode).send(err.message);
+    })
     .catch(function (err) {
         console.log(err);
         res.status(500).send('could not delete material due to server error');
-      });
+    });
 
-  });
+});
 
 module.exports = router;

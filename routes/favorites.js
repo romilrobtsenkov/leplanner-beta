@@ -33,19 +33,19 @@ router.post('/', restrict, function (req, res, next) {
     .then(function (favoriteDoc) {
 
         if (!favoriteDoc) {
-          var newFavoriteDoc = { scenario: params.scenario_id, user: req.user._id };
-          return mongoService.saveNewWithPromise(newFavoriteDoc, Favorite);
+            var newFavoriteDoc = { scenario: params.scenario_id, user: req.user._id };
+            return mongoService.saveNewWithPromise(newFavoriteDoc, Favorite);
         } else {
-          return Promise.resolve();
+            return Promise.resolve();
         }
-      })
+    })
     .then(function () {
 
         var q = {};
         q.args = { scenario: params.scenario_id, removed: null };
 
         return mongoService.countWithPromise(q, Favorite);
-      })
+    })
     .then(function (count) {
 
         var q = {};
@@ -53,16 +53,16 @@ router.post('/', restrict, function (req, res, next) {
         q.update = { favorites_count: count };
 
         return mongoService.updateWithPromise(q, Scenario);
-      })
+    })
     .then(function () {
         res.status(200).send('successfully favorited scenario');
-      })
+    })
     .catch(function (err) {
         console.log(err);
         res.status(500).send('unable to add to favorites due to server error');
-      });
+    });
 
-  });
+});
 
 /**
 * POST /api/favorites/delete/:id
@@ -86,24 +86,24 @@ router.post('/delete/:scenario_id', restrict, function (req, res, next) {
     .then(function (favoriteDoc) {
 
         if (!favoriteDoc) {
-          return Promise.resolve();
+            return Promise.resolve();
         } else {
 
-          var q = {};
-          q.where = { _id: favoriteDoc._id };
-          q.update = { removed: Date.now() };
-          q.select = '_id';
+            var q = {};
+            q.where = { _id: favoriteDoc._id };
+            q.update = { removed: Date.now() };
+            q.select = '_id';
 
-          return mongoService.updateWithPromise(q, Favorite);
+            return mongoService.updateWithPromise(q, Favorite);
         }
-      })
+    })
     .then(function () {
 
         var q = {};
         q.args = { scenario: params.scenario_id, removed: null };
 
         return mongoService.countWithPromise(q, Favorite);
-      })
+    })
     .then(function (count) {
 
         var q = {};
@@ -111,15 +111,15 @@ router.post('/delete/:scenario_id', restrict, function (req, res, next) {
         q.update = { favorites_count: count };
 
         return mongoService.updateWithPromise(q, Scenario);
-      })
+    })
     .then(function () {
         res.status(200).send('removed from favorite successfully');
-      })
+    })
     .catch(function (err) {
         console.log(err);
         res.status(500).send('unable to add to favorites due to server error');
-      });
+    });
 
-  });
+});
 
 module.exports = router;

@@ -11,6 +11,8 @@ const Scenario = require('../models/scenario').Scenario;
 const Comment = require('../models/comment').Comment;
 const Notification = require('../models/notification').Notification;
 
+const E = require('../errors');
+
 /**
 * POST /api/comments/
 * create new scenario comment, adds notification, updates scenarios comment count, returns all scenario omments
@@ -35,7 +37,7 @@ router.post('/', restrict, function (req, res, next) {
         text: params.comment.text,
         author: params.user._id,
         scenario: params.scenario._id,
-      };
+    };
 
     mongoService.saveNewWithPromise(newComment, Comment)
     .then(function (comment) {
@@ -50,11 +52,11 @@ router.post('/', restrict, function (req, res, next) {
                 comment: comment._id,
                 user: params.user._id,
                 scenario: params.scenario._id,
-              },
-          };
+            },
+        };
 
         return mongoService.saveNewWithPromise(newNotification, Notification);
-      })
+    })
     .then(function () {
 
         var q = {};
@@ -63,10 +65,10 @@ router.post('/', restrict, function (req, res, next) {
         q.populated_fields.push({
             field: 'author',
             populate: 'first_name last_name last_modified image_thumb',
-          });
+        });
 
         return mongoService.countWithPromise(q, Comment);
-      })
+    })
     .then(function (count) {
 
         var q = {};
@@ -74,15 +76,15 @@ router.post('/', restrict, function (req, res, next) {
         q.update = { comments_count: count };
 
         return mongoService.updateWithPromise(q, Scenario);
-      })
+    })
     .then(function () {
         res.status(200).send('comment successfully saved');
-      })
+    })
     .catch(function (err) {
         console.log(err);
         res.status(500).send('comment saving failed due to server error');
-      });
-  });
+    });
+});
 
 /**
 * GET /api/comments/scenario/:id
@@ -104,17 +106,17 @@ router.get('/scenario/:id', function (req, res, next) {
     q.populated_fields.push({
         field: 'author',
         populate: 'first_name last_name last_modified image_thumb',
-      });
+    });
 
     mongoService.findWithPromise(q, Comment)
     .then(function (comments) {
         res.json({ comments: comments });
-      })
+    })
     .catch(function (err) {
         console.log(err);
         res.status(500).send('comments retrieving failed due to server error');
-      });
-  });
+    });
+});
 
 /**
 * POST /api/comments/delete/:id
@@ -137,7 +139,7 @@ router.post('/delete/:id', restrict, function (req, res, next) {
     mongoService.updateWithPromise(q, Comment)
     .then(function (comment) {
 
-        if (comment === null) { return res.sendStatus(404); }
+        if (comment === null) { return Promise.reject(new E.NotFoundError()); }
 
         scenarioId = comment.scenario;
 
@@ -146,12 +148,12 @@ router.post('/delete/:id', restrict, function (req, res, next) {
         q.args = { _id: scenarioId, author: req.user._id };
 
         return mongoService.findOneWithPromise(q, Scenario);
-      })
+    })
     .then(function (scenario) {
 
         if (scenario === null) {
-          // passport req user different from scenario author
-          return res.status(403).send('no access to others scenarios');
+            // passport req user different from scenario author
+            return Promise.reject(new E.ForbiddenError('no access to others scenarios'));
         }
 
         var q = {};
@@ -159,18 +161,18 @@ router.post('/delete/:id', restrict, function (req, res, next) {
         q.update = {
             deleted: true,
             deleted_date: new Date(),
-          };
+        };
         q.select = '_id';
 
         return mongoService.updateWithPromise(q, Comment);
-      })
+    })
     .then(function (comment) {
 
         var q = {};
         q.args = { scenario: scenarioId, deleted: false };
 
         return mongoService.countWithPromise(q, Comment);
-      })
+    })
     .then(function (count) {
 
         var q = {};
@@ -178,15 +180,18 @@ router.post('/delete/:id', restrict, function (req, res, next) {
         q.update = { comments_count: count };
 
         return mongoService.updateWithPromise(q, Scenario);
-      })
+    })
     .then(function () {
         res.status(200).send('scenario comment successfully deleted');
-      })
+    })
+    .catch(E.Error, function (err) {
+        res.status(err.statusCode).send(err.message);
+    })
     .catch(function (err) {
         console.log(err);
         res.status(500).send('could not delete comment due to server error');
-      });
+    });
 
-  });
+});
 
 module.exports = router;
