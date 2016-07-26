@@ -5,7 +5,12 @@
         "angular",
         "document"
     ],
+    "globals": {
+        "$": false,
+        "jQuery": false
+    },
     "node": true,
     "undef": true,
-    "eqeqeq": true
+    "eqeqeq": true,
+    "browser": true
 }
