@@ -225,8 +225,9 @@
                 // remove material
                 updateMaterialList(data.material, 'delete');
                 $scope.manageModal('hide');
-            },
-            function (error) {
+            })
+            .catch(function (error) {
+                console.log(error);
                 $scope.deleting_material = undefined;
                 // 'Unknown error';
                 $translate('NOTICE.UNKNOWN').then(function (t) { $scope.materialErrorMessage = t; });
@@ -293,8 +294,8 @@
                 updateMaterialList(data.material, action);
                 $scope.manageModal('hide');
 
-            },
-            function (error) {
+            })
+            .catch(function (error) {
                 console.log(error);
                 $scope.saving_material = undefined;
 
@@ -386,6 +387,5 @@
             $scope.material.conveyors.splice(index, 1);
         };
 
-
-}]); //EditController end
+    }]); //EditController end
 }());

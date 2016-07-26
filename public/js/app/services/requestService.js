@@ -29,7 +29,7 @@
                         $location.path('/');
                         return;
                     }
-                    throw error;
+                    return $q.reject(error);
                 });
             }
         };
