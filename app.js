@@ -20,6 +20,11 @@ var upload = require('./routes/upload');
 var meta = require('./routes/meta');
 var maintance = require('./routes/maintance');
 
+//NEW
+var comments = require('./routes/comments');
+var favorites = require('./routes/favorites');
+var materials = require('./routes/materials');
+
 var passportConfig = require('./auth/passport-config');
 passportConfig();
 var restrict = require('./auth/restrict');
@@ -58,6 +63,11 @@ app.use('/api/scenario', scenario);
 app.use('/api/upload', upload);
 app.use('/api/meta', meta);
 app.use('/api/maintance', maintance);
+
+// NEW
+app.use('/api/comments', comments);
+app.use('/api/favorites', favorites);
+app.use('/api/materials', materials);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
