@@ -63,6 +63,18 @@ exports.findOne = function(q, Collection, next){
     });
 };
 
+exports.findOneWithPromise = function(q, Collection, next){
+    var query = Collection.findOne();
+    query.where(q.args);
+    if(q.select){ query.select(q.select); }
+    if(q.populated_fields){
+        for(var i = 0; i< q.populated_fields.length; i++){
+            query.populate(q.populated_fields[i].field, q.populated_fields[i].populate);
+        }
+    }
+    return query.exec();
+};
+
 exports.saveNew = function(newEntry, Collection, next) {
     var newCollection = new Collection(newEntry);
     newCollection.save(function(err, entry) {
@@ -95,6 +107,20 @@ exports.update = function(q, Collection, next){
     query.exec(function(err, entry) {
         next(err, entry);
     });
+};
+
+exports.updateWithPromise = function(q, Collection, next){
+    var conditions = q.where;
+    var update = q.update;
+    var options = {new: true};
+    if(q.select){ options.select = q.select; }
+    var query = Collection.findOneAndUpdate(conditions, update, options);
+    if(q.populated_fields){
+        for(var i = 0; i< q.populated_fields.length; i++){
+            query.populate(q.populated_fields[i].field, q.populated_fields[i].populate);
+        }
+    }
+    return query.exec();
 };
 
 exports.updateMultiple = function(q, Collection, next){

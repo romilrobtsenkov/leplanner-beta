@@ -6,8 +6,6 @@ const restrict = require('../auth/restrict');
 const Promise = require('bluebird');
 
 const mongoService = require('../services/mongo-service');
-const validateService = require('../services/validate-service');
-const validationPromise = Promise.promisify(validateService.validate);
 
 const Scenario = require('../models/scenario').Scenario;
 const Comment = require('../models/comment').Comment;
@@ -28,34 +26,35 @@ router.post('/', restrict, function (req, res, next) {
 
     var params = req.body;
 
-    validationPromise([{fn:'commentData', data:params}])
-    .then(function (){
+    if (!params.comment.text ||
+        !params.user._id ||
+        !params.scenario._id ||
+        !params.author._id) { return res.sendStatus(404); }
 
-        var new_comment = {
-            text: params.comment.text,
-            author: params.user._id,
-            scenario: params.scenario._id,
-        };
+    var newComment = {
+        text: params.comment.text,
+        author: params.user._id,
+        scenario: params.scenario._id,
+      };
 
-        return mongoService.saveNewWithPromise(new_comment, Comment);
-    })
+    mongoService.saveNewWithPromise(newComment, Comment)
     .then(function (comment) {
 
         // No notification if scenario author comments own scenario
-        if(params.author._id === params.user._id){ return Promise.resolve(); }
+        if (params.author._id === params.user._id) { return Promise.resolve(); }
 
-        var new_notification = {
+        var newNotification = {
             user: params.author._id,
-            type: "comment",
+            type: 'comment',
             data: {
                 comment: comment._id,
                 user: params.user._id,
                 scenario: params.scenario._id,
-            }
-        };
+              },
+          };
 
-        return mongoService.saveNewWithPromise(new_notification, Notification);
-    })
+        return mongoService.saveNewWithPromise(newNotification, Notification);
+      })
     .then(function () {
 
         var q = {};
@@ -63,30 +62,27 @@ router.post('/', restrict, function (req, res, next) {
         q.populated_fields = [];
         q.populated_fields.push({
             field: 'author',
-            populate: 'first_name last_name last_modified image_thumb'
-        });
+            populate: 'first_name last_name last_modified image_thumb',
+          });
 
         return mongoService.countWithPromise(q, Comment);
-
-    })
+      })
     .then(function (count) {
-
-        console.log(count);
 
         var q = {};
         q.where = { _id: params.scenario._id };
-        q.update = { comments_count: count};
+        q.update = { comments_count: count };
 
         return mongoService.updateWithPromise(q, Scenario);
-    })
+      })
     .then(function () {
-        res.sendStatus(200);
-    })
+        res.status(200).send('comment successfully saved');
+      })
     .catch(function (err) {
         console.log(err);
-        res.json({error: err});
-    });
-});
+        res.status(500).send('comment saving failed due to server error');
+      });
+  });
 
 /**
 * GET /api/comments/scenario/:id
@@ -96,28 +92,29 @@ router.post('/', restrict, function (req, res, next) {
 * @param {String} scenario_id
 * @return {Status} 200
 */
-router.get('/scenario/:id', function(req, res, next) {
+router.get('/scenario/:id', function (req, res, next) {
 
     var params = req.params;
-    if(!params.id){res.sendStatus(404);}
+
+    if (!params.id) { return res.sendStatus(404); }
 
     var q = {};
     q.args = { scenario: params.id, deleted: false };
     q.populated_fields = [];
     q.populated_fields.push({
         field: 'author',
-        populate: 'first_name last_name last_modified image_thumb'
-    });
+        populate: 'first_name last_name last_modified image_thumb',
+      });
 
     mongoService.findWithPromise(q, Comment)
     .then(function (comments) {
-        res.json({comments: comments});
-    })
+        res.json({ comments: comments });
+      })
     .catch(function (err) {
         console.log(err);
-        res.json({error: err});
-    });
-});
+        res.status(500).send('comments retrieving failed due to server error');
+      });
+  });
 
 /**
 * POST /api/comments/delete/:id
@@ -126,70 +123,70 @@ router.get('/scenario/:id', function(req, res, next) {
 * @param {String} id of the comment
 * @return {Status} 200
 */
-router.post('/delete/:id', restrict, function(req, res, next) {
+router.post('/delete/:id', restrict, function (req, res, next) {
 
     var params = req.params;
-    var scenario;
+    var scenarioId; // store scenario id which has comment
 
-    if(!params.id){res.sendStatus(404);}
+    if (!params.id) { return res.sendStatus(404); }
 
     var q = {};
-    q.where = { _id: params.id, deleted: false};
+    q.where = { _id: params.id, deleted: false };
     q.select = 'scenario';
 
     mongoService.updateWithPromise(q, Comment)
     .then(function (comment) {
 
-        if(comment === null){ return res.sendStatus(404); }
+        if (comment === null) { return res.sendStatus(404); }
 
-        scenario = comment.scenario;
+        scenarioId = comment.scenario;
 
         //check if user has rights to delete the comment
         var q = {};
-        q.args = { _id: scenario, author: req.user._id };
+        q.args = { _id: scenarioId, author: req.user._id };
 
         return mongoService.findOneWithPromise(q, Scenario);
-    })
+      })
     .then(function (scenario) {
 
-        if(scenario === null){
-            // passport req user different from scenario author
-            return res.sendStatus(403);
+        if (scenario === null) {
+          // passport req user different from scenario author
+          return res.status(403).send('no access to others scenarios');
         }
 
         var q = {};
-        q.where = { _id: params.id, deleted: false};
+        q.where = { _id: params.id, deleted: false };
         q.update = {
             deleted: true,
-            deleted_date: new Date()
-        };
+            deleted_date: new Date(),
+          };
         q.select = '_id';
 
         return mongoService.updateWithPromise(q, Comment);
-    })
+      })
     .then(function (comment) {
-        var q = {};
-        q.args = { scenario: scenario, deleted: false };
-        return mongoService.countWithPromise(q, Comment);
-    })
-    .then(function (count) {
-        console.log(count);
 
         var q = {};
-        q.where = { _id: scenario };
-        q.update = { comments_count: count};
+        q.args = { scenario: scenarioId, deleted: false };
+
+        return mongoService.countWithPromise(q, Comment);
+      })
+    .then(function (count) {
+
+        var q = {};
+        q.where = { _id: scenarioId };
+        q.update = { comments_count: count };
 
         return mongoService.updateWithPromise(q, Scenario);
-    })
+      })
     .then(function () {
-        res.sendStatus(200);
-    })
+        res.status(200).send('scenario comment successfully deleted');
+      })
     .catch(function (err) {
         console.log(err);
-        res.json({error: err});
-    });
+        res.status(500).send('could not delete comment due to server error');
+      });
 
-});
-
+  });
 
 module.exports = router;
