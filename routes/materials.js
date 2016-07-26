@@ -6,8 +6,7 @@ const restrict = require('../auth/restrict');
 const Promise = require('bluebird');
 
 const mongoService = require('../services/mongo-service');
-const validateService = require('../services/validate-service');
-const validationPromise = Promise.promisify(validateService.validate);
+
 const Material = require('../models/activity-material').Material;
 
 const Scenario = require('../models/scenario').Scenario;
