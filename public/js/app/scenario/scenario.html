@@ -28,10 +28,10 @@
           </div>
           <div class="col-xs-3">
             <div ng-if="!is_favorite && user">
-                <a ng-click="addRemoveFavorite()" class="add-favorite-button btn btn-success btn-sm pull-right"><span class="glyphicon glyphicon-heart"></span> {{'BUTTON.FAVORITE' | translate}}</a>
+                <a ng-click="addFavorite()" class="add-favorite-button btn btn-success btn-sm pull-right"><span class="glyphicon glyphicon-heart"></span> {{'BUTTON.FAVORITE' | translate}}</a>
             </div>
             <div ng-if="is_favorite && user">
-              <a ng-click="addRemoveFavorite('remove')" class="add-favorite-button btn btn-default btn-sm pull-right"><span class="glyphicon glyphicon-heart-empty"></span> {{'BUTTON.UNFAVORITE' | translate}}</a>
+              <a ng-click="removeFavorite()" class="add-favorite-button btn btn-default btn-sm pull-right"><span class="glyphicon glyphicon-heart-empty"></span> {{'BUTTON.UNFAVORITE' | translate}}</a>
             </div>
             <div ng-if=" user">
               <a ng-click="createCopy()" style="margin-top:5px;" class="add-favorite-button btn btn-default btn-sm pull-right"><span class="glyphicon glyphicon-duplicate"></span> {{'BUTTON.CREATE_COPY' | translate}}</a>
