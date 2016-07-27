@@ -12,125 +12,62 @@
             $location.path('/');
         }
 
-        $scope.activity_list = [];
-        $scope.materials = [];
-
-        // single scenario details
-        var params = {
-            scenario: {
-                _id: $scope.scenario_id,
-            },
-        };
-
-        if (typeof $rootScope.user !== 'undefined') {
-            params.user = {
-                _id: $rootScope.user._id,
-            };
-        }
-
         // INIT
-        requestService.post('/scenario/single-scenario', params)
+        /* FIXED */
+        requestService.get('/scenarios/single/' + $scope.scenario_id)
         .then(function (data) {
-            if (data.scenario) {
 
-                $rootScope.title = data.scenario.name + ' - ' + data.scenario.author.first_name + ' ' + data.scenario.author.last_name + ' | Leplanner beta';
+            if (!data.scenario) { $scope.no_scenario = true; }
 
-                /* ANALYTICS */
-                $window.ga('send', 'pageview', {
-                    'page': $location.path(),
-                    'title': $rootScope.title
-                });
+            $rootScope.title = data.scenario.name + ' - ' + data.scenario.author.first_name + ' ' + data.scenario.author.last_name + ' | Leplanner beta';
 
-                $scope.scenario = data.scenario;
-                $scope.activity_list = data.scenario.activities;
-                $scope.is_favorite = data.is_favorite;
-                $scope.is_following = data.is_following;
-                $scope.scenario.child_scenarios = data.child_scenarios;
-                if(data.mother_scenario_author){
-                    $scope.scenario.mother_scenario.author = data.mother_scenario_author;
-                }
-
-                //translating subjects
-                for(var a = 0; a < $scope.scenario.subjects.length; a++){
-                    $scope.scenario.subjects[a].name = $scope.scenario.subjects[a]["name_"+$translate.use()];
-                }
-
-                //console.log($scope.scenario.mother_scenario);
-                if(typeof data.materials !== 'undefined'){
-                    $scope.materials = data.materials;
-
-                    updateActivityList();
-                    //console.log($scope.activity_list);
-                    //console.log('Loaded materials');
-                }
-                loadMetaData();
-                getSidebarScenarios();
-                getComments();
-            }
-
-            if(data.error){
-                switch (data.error.id) {
-                    case 0:
-                    $scope.no_scenario = true;
-                    break;
-                    default:
-                    $scope.no_scenario = true;
-                    console.log(data.error);
-                }
-            }
-        });
-
-        function loadMetaData(){
-
-            requestService.get('/meta/get-scenario-meta')
-            .then(function(data) {
-
-                if(data.subjects && data.activity_organization && data.involvement_options && data.displays){
-                    $scope.subjects = data.subjects;
-                    $scope.activity_organization = data.activity_organization;
-                    $scope.involvement_options = data.involvement_options;
-                    $scope.displays_list = data.displays;
-
-                    //load translations
-                    if($rootScope.translated && $rootScope.translated.organization){
-                        for(var i = 0; i < $scope.activity_organization.length; i++){
-                            $scope.activity_organization[i].name = $rootScope.translated.organization[i];
-                        }
-                    }
-                    if($rootScope.translated && $rootScope.translated.co_authorship){
-                        for(var j = 0; j < $scope.involvement_options.length; j++){
-                            $scope.involvement_options[j].name = $rootScope.translated.co_authorship[j];
-                        }
-                    }
-                    if($rootScope.translated && $rootScope.translated.displays){
-                        for(var k = 0; k < $scope.displays_list.length; k++){
-                            $scope.displays_list[k].name = $rootScope.translated.displays[k];
-                        }
-                    }
-
-                    $scope.fully_loaded = true;
-
-                }else{
-                    //$scope.errorMessage = 'Please try reloading the page';
-                    $translate('NOTICE.RELOAD').then(function (t) {
-                        $scope.errorMessage = t;
-                    });
-                }
-
-                if(data.error){
-                    console.log(data.error);
-                    //$scope.errorMessage = 'Please try reloading the page';
-                    $translate('NOTICE.RELOAD').then(function (t) {
-                        $scope.errorMessage = t;
-                    });
-                }
+            /* ANALYTICS */
+            $window.ga('send', 'pageview', {
+                'page': $location.path(),
+                'title': $rootScope.title
             });
 
-        }
+            $scope.scenario = data.scenario;
+            //$scope.activity_list = data.scenario.activities;
+            $scope.is_favorite = data.is_favorite;
+            $scope.is_following = data.is_following;
 
+            //translating subjects
+            for(var a = 0; a < $scope.scenario.subjects.length; a++){
+                $scope.scenario.subjects[a].name = $scope.scenario.subjects[a]["name_"+$translate.use()];
+            }
+
+            //translate activities and displays
+            for (var i = 0; i < $scope.scenario.activities.length; i++) {
+                //translate activity organization
+                $scope.scenario.activities[i].activity_organization.name = $rootScope.translated.organization[$scope.scenario.activities[i].activity_organization._id];
+
+                if(!$scope.scenario.activities[i].materials ) { continue; }
+                for (var m = 0; m < $scope.scenario.activities[i].materials.length; m++) {
+                    for (var d = 0; d < $scope.scenario.activities[i].materials[m].displays.length; d++) {
+                        //translate display name
+                        $scope.scenario.activities[i].materials[m].displays[d].name = $rootScope.translated.displays[$scope.scenario.activities[i].materials[m].displays[d]._id];
+
+                        //involvement_level
+                        $scope.scenario.activities[i].materials[m].involvement.name = $rootScope.translated.co_authorship[$scope.scenario.activities[i].materials[m].involvement._id];
+                    }
+                }
+            }
+
+            $scope.fully_loaded = true;
+
+            getSidebarScenarios();
+            getComments();
+        })
+        .catch(function (error) {
+            console.log(error);
+            $scope.no_scenario = true;
+        });
+
+        /* FIXED */
         function getSidebarScenarios(){
             var q= {order: 'popular', limit: 3, exclude: $scope.scenario._id, author: $scope.scenario.author._id};
-            requestService.post('/scenario/widget-list', q)
+            requestService.get('/scenarios/widget/', q)
             .then(function(data) {
                 if(data.scenarios){
                     if(data.scenarios.length > 0){
@@ -138,14 +75,14 @@
                     }else{
                         $scope.no_popular_scenarios = true;
                     }
-
                 }
-                if(data.error){
-                    console.log(data.error);
-                }
+            })
+            .catch(function(error) {
+                console.log(error);
             });
         }
 
+        /* FIXED */
         function getComments(){
 
             requestService.get('/comments/scenario/'+$scope.scenario._id)
@@ -159,6 +96,7 @@
             }).catch(function (error) { console.error(error); });
         }
 
+        /* FIXED */
         $scope.addFavorite = function(){
 
             var params = {
@@ -177,9 +115,10 @@
             });
         };
 
+        /* FIXED */
         $scope.removeFavorite = function(){
 
-            requestService.post('/favorites/delete/'+$scope.scenario._id)
+            requestService.post('/favorites/delete/' + $scope.scenario._id)
             .then(function(data) {
 
                 console.log(data);
@@ -193,6 +132,7 @@
 
         };
 
+        /* TODO */
         $scope.addRemoveFollow = function(remove_follow){
 
             var params = {
@@ -240,6 +180,7 @@
             $location.path('/login');
         };
 
+        /* FIXED */
         $scope.addComment = function(comment){
 
             if (typeof comment === 'undefined' || typeof comment.text === 'undefined') {
@@ -290,13 +231,12 @@
 
         // disable delete button while deleting
         $scope.showDeleteText = function(comment_id){
-            if($scope.is_deleting === comment_id){
-                return true;
-            }else{
-                return false;
-            }
+
+            if($scope.is_deleting === comment_id){ return true; }
+            return false;
         };
 
+        /* FIXED */
         $scope.deleteComment = function(comment_id, text){
             var del = window.confirm("Are you sure that you want to delete comment: "+text);
             if (!del) { return; }
@@ -308,7 +248,7 @@
                 $scope.comment_delete_text = t;
             });
 
-            requestService.post('/comments/delete/'+comment_id, params)
+            requestService.post('/comments/delete/' + comment_id)
             .then(function(data) {
 
                 // deleted
@@ -347,73 +287,38 @@
             });
         };
 
-        var updateActivityList = function(){
-            // add material to relevant activities
-            for(var i = 0; i < $scope.activity_list.length; i++){
-
-                // empty materials
-                $scope.activity_list[i].materials = undefined;
-
-                for(var j = 0; j < $scope.materials.length; j++){
-                    if($scope.activity_list[i]._id === $scope.materials[j].activity_id){
-                        if(typeof $scope.activity_list[i].materials === 'undefined'){
-                            $scope.activity_list[i].materials = [];
-                        }
-                        $scope.activity_list[i].materials.push($scope.materials[j]);
-                    }
-                }
-            }
-
-        };
-
+        /* FIXED */
         $scope.createCopy = function(){
 
             var p = window.confirm($rootScope.translated.copy_confirm);
 
             if(!p){ return; }
 
-            requestService.get('/scenario/copy/'+$scope.scenario_id)
+            requestService.get('/scenarios/copy/'+$scope.scenario_id)
             .then(function(data) {
 
-                //console.log(data);
+                if (!data._id) { window.alert('something went wrong'); }
 
-                if(data.success){
+                //redirect user to edit page
+                $location.path('/edit-details/'+data.success._id);
 
-                    //redirect user to edit page
-                    $location.path('/edit-details/'+data.success._id);
-
-                }
-
-                if(data.error){
-                    switch (data.error.id) {
-                        case 100:
-                        // user changed
-                        $location.path('/');
-                        break;
-                        case 0:
-                        //$scope.save_error = "Comment text cannot be empty";
-                        console.log(data.error);
-                        window.alert('something went wrong');
-                        break;
-                        default:
-                        console.log(data.error);
-                        window.alert('something went wrong');
-                    }
-                }
+            })
+            .catch(function (error) {
+                console.log(error);
+                window.alert('something went wrong');
             });
         };
 
         $scope.hasErasmusTag = function(tag){
-            if(!$scope.scenario.tags){return false;}
 
+            if (!$scope.scenario.tags) { return false; }
             for(var i = 0; i < $scope.scenario.tags.length; i++){
-                if($scope.scenario.tags[i].text === tag){
+                if ($scope.scenario.tags[i].text === tag) {
                     return true;
                 }
             }
 
             return false;
-
         };
 
     }]); // ScenarioController end

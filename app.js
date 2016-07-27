@@ -24,6 +24,7 @@ var maintance = require('./routes/maintance');
 var comments = require('./routes/comments');
 var favorites = require('./routes/favorites');
 var materials = require('./routes/materials');
+var scenarios = require('./routes/scenarios');
 
 var passportConfig = require('./auth/passport-config');
 passportConfig();
@@ -68,6 +69,7 @@ app.use('/api/maintance', maintance);
 app.use('/api/comments', comments);
 app.use('/api/favorites', favorites);
 app.use('/api/materials', materials);
+app.use('/api/scenarios', scenarios);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

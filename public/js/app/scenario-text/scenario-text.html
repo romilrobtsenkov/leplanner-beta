@@ -60,7 +60,7 @@
             <br>
         </div>
       </div>
-      <div ng-repeat="activity in activity_list" class="row no-margin" style="border-bottom:1px solid black; margin-bottom:20px;">
+      <div ng-repeat="activity in scenario.activities" class="row no-margin" style="border-bottom:1px solid black; margin-bottom:20px;">
         <div class="col-xs-12">
             <h4><strong>
                 <span ng-if="activity.in_class" style="background-color: rgb(100,126,228) !important; display:inline-block; height:15px; width:15px;"></span>
@@ -69,7 +69,7 @@
             </strong></h4>
             <div style="margin-left:20px;">
                 <div class="row no-margin">
-                    <img width="16" height="16" ng-src="{{activityImageNames[activity.activity_organization._id]}}"/> <strong>{{activity_organization[activity.activity_organization._id].name}} <span ng-if="activity.in_class">{{'CONTENT.INCLASS_ACTIVITY' | translate}}</span><span ng-if="!activity.in_class">{{'CONTENT.OFFCLASS_ACTIVITY' | translate}}</span></strong>
+                    <img width="16" height="16" ng-src="{{activityImageNames[activity.activity_organization._id]}}"/> <strong>{{activity.activity_organization.name}} <span ng-if="activity.in_class">{{'CONTENT.INCLASS_ACTIVITY' | translate}}</span><span ng-if="!activity.in_class">{{'CONTENT.OFFCLASS_ACTIVITY' | translate}}</span></strong>
                 </div>
                 <div ng-if="activity.outcomes.length > 0" class="row no-margin">
                     <strong>{{'INPUT.LEARNING_OUTCOMES' | translate}}:</strong>
@@ -87,7 +87,7 @@
                                 <span ng-if="!m.material_url">{{m.material_name}}</span>
                                 <br>
                                 <div style="margin-left:20px;">
-                                    <i>{{'INPUT.CO_AUTHORSHIP' | translate}}: {{involvement_options[m.involvement_level].name}}</i></span><br>
+                                    <i>{{'INPUT.CO_AUTHORSHIP' | translate}}: {{m.involvement.name}}</i></span><br>
                                     <span ng-if="m.conveyors.length > 0">
                                         {{'INPUT.CONVEYORS' | translate}}:
                                         <ul>
@@ -101,8 +101,8 @@
                                         {{'INPUT.DISPLAYS' | translate}}:
                                         <ul>
                                             <li ng-repeat="d in m.displays">
-                                                <span><img width="16" height="16" ng-src="./images/{{displays_list[d].icon}}">
-                                                    <span ng-if="d != 5">{{displays_list[d].name}}</span>
+                                                <span><img width="16" height="16" ng-src="./images/{{d.icon}}">
+                                                    <span ng-if="d != 5">{{d.name}}</span>
                                                     <span ng-if="d == 5">{{m.other_display}}</span>
                                                 </span>
                                             </li>
@@ -136,8 +136,8 @@
                                         {{'INPUT.DISPLAYS' | translate}}:
                                         <ul>
                                             <li ng-repeat="d in m.displays">
-                                                <span><img width="16" height="16" ng-src="./images/{{displays_list[d].icon}}">
-                                                    <span ng-if="d != 5">{{displays_list[d].name}}</span>
+                                                <span><img width="16" height="16" ng-src="./images/{{d.icon}}">
+                                                    <span ng-if="d != 5">{{d.name}}</span>
                                                     <span ng-if="d == 5">{{m.other_display}}</span>
                                                 </span>
                                             </li>
