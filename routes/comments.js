@@ -78,11 +78,11 @@ router.post('/', restrict, function (req, res, next) {
         return mongoService.updateWithPromise(q, Scenario);
     })
     .then(function () {
-        res.status(200).send('comment successfully saved');
+        return res.status(200).send('comment successfully saved');
     })
     .catch(function (err) {
         console.log(err);
-        res.status(500).send('comment saving failed due to server error');
+        return res.status(500).send('comment saving failed due to server error');
     });
 });
 
@@ -110,11 +110,11 @@ router.get('/scenario/:id', function (req, res, next) {
 
     mongoService.findWithPromise(q, Comment)
     .then(function (comments) {
-        res.json({ comments: comments });
+        return res.json({ comments: comments });
     })
     .catch(function (err) {
         console.log(err);
-        res.status(500).send('comments retrieving failed due to server error');
+        return res.status(500).send('comments retrieving failed due to server error');
     });
 });
 
@@ -182,14 +182,14 @@ router.post('/delete/:id', restrict, function (req, res, next) {
         return mongoService.updateWithPromise(q, Scenario);
     })
     .then(function () {
-        res.status(200).send('scenario comment successfully deleted');
+        return res.status(200).send('scenario comment successfully deleted');
     })
     .catch(E.Error, function (err) {
-        res.status(err.statusCode).send(err.message);
+        return res.status(err.statusCode).send(err.message);
     })
     .catch(function (err) {
         console.log(err);
-        res.status(500).send('could not delete comment due to server error');
+        return res.status(500).send('could not delete comment due to server error');
     });
 
 });

@@ -55,11 +55,11 @@ router.post('/', restrict, function (req, res, next) {
         return mongoService.updateWithPromise(q, Scenario);
     })
     .then(function () {
-        res.status(200).send('successfully favorited scenario');
+        return res.status(200).send('successfully favorited scenario');
     })
     .catch(function (err) {
         console.log(err);
-        res.status(500).send('unable to add to favorites due to server error');
+        return res.status(500).send('unable to add to favorites due to server error');
     });
 
 });
@@ -113,11 +113,11 @@ router.post('/delete/:scenario_id', restrict, function (req, res, next) {
         return mongoService.updateWithPromise(q, Scenario);
     })
     .then(function () {
-        res.status(200).send('removed from favorite successfully');
+        return res.status(200).send('removed from favorite successfully');
     })
     .catch(function (err) {
         console.log(err);
-        res.status(500).send('unable to add to favorites due to server error');
+        return res.status(500).send('unable to add to favorites due to server error');
     });
 
 });
