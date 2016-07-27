@@ -3,13 +3,18 @@
 
     angular
     .module('app')
-    .factory('requestService', ['$http', '$rootScope', '$location', '$q', function($http, $rootScope, $location, $q) {
+    .factory('requestService', ['$http', '$rootScope', '$location', '$q', 'queryService', function($http, $rootScope, $location, $q, queryService) {
         var API_BASE = '/api';
 
         var success = function (response) { return response.data; };
 
         return {
-            get: function(request) {
+            get: function(request, query) {
+
+                if (query) {
+                    request += queryService.stringify(query);
+                }
+
                 return $http.get(API_BASE + request).then(success);
             },
 
