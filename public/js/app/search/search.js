@@ -167,22 +167,7 @@
                 languages: $location.search().languages,
             };
 
-            var q_string = Object.keys(q)
-            .filter(function (key) {
-                if(angular.isArray(q[key])){
-                    return q[key].length > 0;
-                }
-                return q[key];
-            })
-            .map(function (key) {
-                var val = q[key];
-                if (angular.isArray(val)) {
-                    val = val.join(',');
-                }
-                return key + '=' + val;
-            }).join('&');
-
-            requestService.get('/scenario/search/?'+ q_string)
+            requestService.get('/scenario/search/', q)
             .then(function(data) {
 
                 /* ANALYTICS */
