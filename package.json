@@ -31,7 +31,8 @@
     "passport": "~0.2.1",
     "passport-local": "~1.0.0",
     "request": "^2.61.0",
-    "snyk": "^1.9.2"
+    "snyk": "^1.9.2",
+    "subclass-error": "^0.1.1"
   },
   "devDependencies": {
     "gulp": "^3.9.1",
