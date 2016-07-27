@@ -132,3 +132,11 @@ exports.updateMultiple = function(q, Collection, next){
         next(err, success);
     });
 };
+
+exports.updateMultipleWithPromise = function(q, Collection, next){
+    var conditions = q.where;
+    var update = q.update;
+    var options = { multi: true };
+    var query = Collection.update(conditions, update, options);
+    return query.exec();
+};
