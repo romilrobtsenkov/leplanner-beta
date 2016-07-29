@@ -38,22 +38,6 @@
             });
         });
 
-        $scope.$on('triggerSearchForm', function(e) {
-            angular.element('#search-word-input').trigger('focus');
-            $scope.search();
-        });
-
-        //replace search word from top search
-        if(typeof $rootScope.top_search_word !== 'undefined'){
-            $scope.search_word = $rootScope.top_search_word;
-            $rootScope.top_search_word = undefined;
-            $scope.$parent.top_search_word = undefined;
-            //angular.element('#search-word-input').trigger('focus');
-
-            $location.search('q', $scope.search_word);
-            return;
-        }
-
         // INIT
         createDropDownMenusAndInitialSearch();
 
@@ -113,6 +97,10 @@
                     for(var a = 0; a < $scope.subjects.length; a++){
                         $scope.subjects[a].name = $scope.subjects[a]["name_"+$translate.use()];
                     }
+
+                    //Focus search
+                    //angular.element('#search-word-input').trigger('focus');
+
                     // INITAL SEARCH
                     getSearchParamsAndSearch();
                 }
@@ -125,6 +113,16 @@
         function getSearchParamsAndSearch(){
 
             $scope.loading_animation = true;
+
+            //replace search word from top search
+            if($rootScope.top_search_word){
+                $scope.search_word = $rootScope.top_search_word;
+                $rootScope.top_search_word = undefined;
+                $scope.$parent.top_search_word = undefined;
+
+                $location.search('q', $scope.search_word);
+                return;
+            }
 
             var subjects = [];
             var selected_subjects_labels = [];
@@ -162,12 +160,12 @@
             var q = {
                 q: $location.search().q,
                 page: $location.search().page - 1,
-                sort: $location.search().sort || 'latest',
+                order: $location.search().sort || 'latest',
                 subjects: $location.search().subjects,
                 languages: $location.search().languages,
             };
 
-            requestService.get('/scenario/search/', q)
+            requestService.get('/scenarios/search/', q)
             .then(function(data) {
 
                 /* ANALYTICS */
