@@ -89,7 +89,7 @@
                     <a ng-repeat="subject in scenario.subjects"><span class="dash-scenario-label pull-right label label-primary">{{subject.name}}</span></a>
   					<div class="col-sm-12">
   						<h4 ng-if="!scenario.draft" ><strong><a href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{scenario.name}}</a></strong></h4>
-  						<h4 ng-if="scenario.draft"><strong><a href="/#/edit-details/{{scenario._id}}" title="{{scenario.name}}">{{scenario.name}}</a></strong></h4>
+  						<h4 ng-if="scenario.draft"><strong><a href="/#/edit/{{scenario._id}}" title="{{scenario.name}}">{{scenario.name}}</a></strong></h4>
   					</div>
   				</div>
 
@@ -98,7 +98,7 @@
   						<a ng-if="!scenario.draft" href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}" class="thumbnail">
   							<img src="./images/thumbnail_200.png" alt="">
   						</a>
-              <a ng-if="scenario.draft" href="/#/edit-details/{{scenario._id}}" title="{{scenario.name}}" class="thumbnail">
+              <a ng-if="scenario.draft" href="/#/edit/{{scenario._id}}" title="{{scenario.name}}" class="thumbnail">
   							<img src="./images/thumbnail_200.png" alt="">
   						</a>
   					</div>
@@ -120,16 +120,9 @@
   							</div>
   							<div class="col-xs-4">
   							 <a ng-if="!scenario.draft" class="btn btn-success btn-block btn-sm pull-right" href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{ 'BUTTON.OPEN' | translate }} <span class="glyphicon glyphicon-chevron-right"></span></a>
-                 <div ng-if="scenario.draft" class="btn-group" role="group">
-                  <button type="button" class="btn btn-success btn-block btn-sm pull-right dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {{'BUTTON.EDIT' | translate }}
-                    <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu">
-                    <li><a href="/#/edit-details/{{scenario._id}}" title="Edit {{scenario.name}}">{{'BUTTON.DETAILS' | translate }}</a></li>
-                    <li><a href="/#/edit/{{scenario._id}}" title="Edit {{scenario.name}}">{{'BUTTON.CANVAS' | translate }}</a></li>
-                  </ul>
-                </div>
+                             <div ng-if="scenario.draft">
+                                 <a href="/#/edit/{{scenario._id}}" class="btn btn-success pull-right" title="{{'BUTTON.EDIT' | translate }} {{scenario.name}}">{{'BUTTON.EDIT' | translate }}</a>
+                            </div>
   							</div>
   						</div>
   					</div>
