@@ -9,7 +9,7 @@ router.get('/subjects/', function(req, res, next) {
 
     metaService.getSubjects()
     .then(function (subjects) {
-        return res.json({ subjects: subjects });
+        return res.status(200).json({ subjects: subjects });
     })
     .catch(function (error) {
         console.log(error);
@@ -26,7 +26,7 @@ router.get('/scenario/', function(req, res, next) {
         displays: metaService.getDisplays(),
     })
     .then(function (response) {
-        return res.json(response);
+        return res.status(200).json(response);
     })
     .catch(function (error) {
         console.log(error);

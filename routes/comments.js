@@ -110,7 +110,7 @@ router.get('/scenario/:id', function (req, res, next) {
 
     mongoService.findWithPromise(q, Comment)
     .then(function (comments) {
-        return res.json({ comments: comments });
+        return res.status(200).json({ comments: comments });
     })
     .catch(function (err) {
         console.log(err);
