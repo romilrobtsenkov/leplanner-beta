@@ -1,17 +1,30 @@
 <div class="container main-content" ng-if="!scenario && !fully_loaded">
-  <div ng-if='errorMessage' class="alert alert-danger" role="alert">{{errorMessage}}</div>
-  <p class="loading-gif-animation"><img src="./images/loading.gif"></p>
+    <div ng-if='errorMessage' class="alert alert-danger" role="alert">{{errorMessage}}</div>
+    <p class="loading-gif-animation"><img src="./images/loading.gif"></p>
 </div>
 <div class="container main-content" ng-if="scenario && fully_loaded">
-  <h2>{{scenario.name}} <span ng-if="saving" class="pull-right" style="font-size: 20px; color:gray;">{{'NOTICE.SAVING' | translate}}</span><span ng-if="!saving && saved" class="pull-right" style="font-size: 15px; color:gray;">{{'NOTICE.ALL_SAVED' | translate}}</span>
-    <a href="/#/edit-details/{{scenario._id}}" class="btn btn-default pull-right">{{'BUTTON.EDIT_DETAILS' | translate}}</a>
-  </h2>
-  </br>
+    <h4>
+         {{'PAGE.EDIT' | translate}}: <i>{{scenario.name}}</i> <span ng-if="saving" class="pull-right" style="font-size: 20px; color:gray;">{{'NOTICE.SAVING' | translate}}</span><span ng-if="!saving && saved" class="pull-right" style="font-size: 15px; color:gray;">{{'NOTICE.ALL_SAVED' | translate}}</span>
+    </h4>
 
-  <timeline></timeline>
+    <ul class="nav nav-tabs nav-tab-pop">
+      <li>
+        <a ng-href="#/edit/{{scenario._id}}/" title="{{ 'CONTENT.TAB_LATEST' | translate }}">Details</a>
+      </li>
+      <li class="active">
+        <a ng-href="#/edit/{{scenario._id}}/timeline" title="{{ 'CONTENT.TAB_MOST_VIEWED' | translate }}">Timeline</a>
+      </li>
+      <li>
+        <a ng-href="#/edit/{{scenario._id}}/publish" title="{{ 'CONTENT.TAB_TOP_FAVORITED' | translate }}">Publish</a>
+      </li>
+      <li ng-if="!scenario.draft" class='pull-right'>
+        <a ng-href="#/scenario/{{scenario._id}}" title="{{ 'CONTENT.TAB_TOP_COMMENTED' | translate }}">Open <span class="glyphicon glyphicon-new-window
+"></span></a>
+      </li>
+    </ul>
 
-  <editcanvasmodal></editcanvasmodal>
+    <timeline></timeline>
 
-  <a href="/#/dashboard" class="btn btn-default pull-right">{{'BUTTON.CANCEL' | translate}}</a>
+    <editcanvasmodal></editcanvasmodal>
 
 </div>

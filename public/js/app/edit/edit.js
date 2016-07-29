@@ -12,9 +12,7 @@
             $location.path('/');
         }
 
-        $scope.outcomes_list = [];
-        $scope.activity_list = [];
-        $scope.materials = [];
+        // META
         $scope.involvement_options = [];
         $scope.displays_list = [];
         $scope.conveyor_list = [];
@@ -22,124 +20,91 @@
         $scope.whois_material = '';
         $scope.activity = null;
 
-        //for canvas - show/hide edit possibilities
+        //for timeline - show/hide edit buttons
         $scope.allow_edit = true;
 
         init();
 
         function init(){
 
-            var params = {
-                user: {
-                    _id: $rootScope.user._id
-                },
-                scenario: {
-                    _id: $scope.scenario_id
-                }
-            };
-
-            requestService.post('/scenario/get-edit-data-single-scenario', params)
+            requestService.post('/scenarios/single-edit/' + $scope.scenario_id)
             .then(function(data) {
 
-                if(data.scenario && data.materials){
-                    //console.log(data.scenario);
+                console.log('Loaded scenario');
+                $scope.scenario = data.scenario;
 
-                    $scope.scenario = data.scenario;
-                    $translate('PAGE.EDIT').then(function (t) {
-                        $rootScope.title = t+' '+$scope.scenario.name+' canvas';
+                //translate activities and displays
+                for (var i = 0; i < $scope.scenario.activities.length; i++) {
+                    //translate activity organization
+                    $scope.scenario.activities[i].activity_organization.name = $rootScope.translated.organization[$scope.scenario.activities[i].activity_organization._id];
 
-                        /* ANALYTICS */
-                        $window.ga('send', 'pageview', {
-                            'page': $location.path(),
-                            'title': $rootScope.title
-                        });
+                    if(!$scope.scenario.activities[i].materials ) { continue; }
+                    for (var m = 0; m < $scope.scenario.activities[i].materials.length; m++) {
+                        for (var d = 0; d < $scope.scenario.activities[i].materials[m].displays.length; d++) {
+                            //translate display name
+                            $scope.scenario.activities[i].materials[m].displays[d].name = $rootScope.translated.displays[$scope.scenario.activities[i].materials[m].displays[d]._id];
+                        }
+                        //involvement_level
+                        $scope.scenario.activities[i].materials[m].involvement.name = $rootScope.translated.co_authorship[$scope.scenario.activities[i].materials[m].involvement._id];
+                    }
+                }
+
+                $translate('PAGE.EDIT').then(function (t) {
+                    $rootScope.title = t+' '+$scope.scenario.name+' canvas';
+
+                    /* ANALYTICS */
+                    $window.ga('send', 'pageview', {
+                        'page': $location.path(),
+                        'title': $rootScope.title
                     });
-                    console.log('Loaded scenario');
+                });
 
-                    if(typeof data.scenario.outcomes !== 'undefined'){
-                        $scope.outcomes_list = data.scenario.outcomes;
-                        console.log('Loaded outcomes');
-                    }
+                loadMetaData();
+            })
+            .catch(function (error) {
+                console.log(error);
 
-                    if(typeof data.scenario.activities !== 'undefined'){
-                        $scope.activity_list = data.scenario.activities;
-                        console.log('Loaded activities');
-                    }
-                    if(typeof data.materials !== 'undefined'){
-                        $scope.materials = data.materials;
-
-                        updateActivityList();
-                        //console.log($scope.activity_list);
-                        console.log('Loaded materials');
-                    }
-
-                    loadMetaData();
-                }
-
-                if(data.error){
-                    if(typeof data.error.id !== 'undefined' && data.error.id === 0){
-                        //$scope.errorMessage = 'No such scenario found, check URL!';
-                        $translate('NOTICE.NO_SCENARIO').then(function (t) {
-                            $scope.errorMessage = t;
-                        });
-                    }else if(typeof data.error.id !== 'undefined' && data.error.id === 3){
-                        //no rights
-                        $location.path('/');
-                    }else{
-                        //$scope.errorMessage = 'No such scenario found, check URL!';
-                        $translate('NOTICE.NO_SCENARIO').then(function (t) {
-                            $scope.errorMessage = t;
-                        });
-                    }
-                    console.log(data.error);
-                }
+                $translate('NOTICE.NO_SCENARIO').then(function (t) {
+                    $scope.errorMessage = t;
+                });
             });
         }
 
         function loadMetaData(){
 
-            requestService.get('/meta/get-scenario-meta')
+            requestService.get('/meta/scenario')
             .then(function(data) {
 
-                if(data.subjects && data.activity_organization && data.involvement_options && data.displays){
-                    $scope.subjects = data.subjects;
-                    $scope.activity_organization = data.activity_organization;
-                    $scope.involvement_options = data.involvement_options;
-                    $scope.displays_list = data.displays;
+                $scope.subjects = data.subjects;
+                $scope.activity_organization = data.activity_organization;
+                $scope.involvement_options = data.involvement_options;
+                $scope.displays_list = data.displays;
 
-                    //load translations
-                    if($rootScope.translated && $rootScope.translated.organization){
-                        for(var i = 0; i < $scope.activity_organization.length; i++){
-                            $scope.activity_organization[i].name = $rootScope.translated.organization[i];
-                        }
+                //load translations
+                if($rootScope.translated && $rootScope.translated.organization){
+                    for(var i = 0; i < $scope.activity_organization.length; i++){
+                        $scope.activity_organization[i].name = $rootScope.translated.organization[i];
                     }
-                    if($rootScope.translated && $rootScope.translated.co_authorship){
-                        for(var j = 0; j < $scope.involvement_options.length; j++){
-                            $scope.involvement_options[j].name = $rootScope.translated.co_authorship[j];
-                        }
+                }
+                if($rootScope.translated && $rootScope.translated.co_authorship){
+                    for(var j = 0; j < $scope.involvement_options.length; j++){
+                        $scope.involvement_options[j].name = $rootScope.translated.co_authorship[j];
                     }
-                    if($rootScope.translated && $rootScope.translated.displays){
-                        for(var k = 0; k < $scope.displays_list.length; k++){
-                            $scope.displays_list[k].name = $rootScope.translated.displays[k];
-                        }
+                }
+                if($rootScope.translated && $rootScope.translated.displays){
+                    for(var k = 0; k < $scope.displays_list.length; k++){
+                        $scope.displays_list[k].name = $rootScope.translated.displays[k];
                     }
-
-                    $scope.fully_loaded = true;
-
-                }else{
-                    //$scope.errorMessage = 'Please try reloading the page';
-                    $translate('NOTICE.RELOAD').then(function (t) {
-                        $scope.errorMessage = t;
-                    });
                 }
 
-                if(data.error){
-                    console.log(data.error);
-                    //$scope.errorMessage = 'Please try reloading the page';
-                    $translate('NOTICE.RELOAD').then(function (t) {
-                        $scope.errorMessage = t;
-                    });
-                }
+                $scope.fully_loaded = true;
+            })
+            .catch(function (error) {
+                console.log(error);
+                //$scope.errorMessage = 'Please try reloading the page';
+                $translate('NOTICE.RELOAD').then(function (t) {
+                    $scope.errorMessage = t;
+                });
             });
 
         }
@@ -180,10 +145,8 @@
             $scope.material = material;
 
             $scope.displays_selection = [];
-            //console.log(material.displays);
-
             for(var i = 0; i < material.displays.length; i++){
-                $scope.displays_selection[material.displays[i]] = true;
+                $scope.displays_selection[material.displays[i]._id] = true;
             }
 
             // empty conveyor add empty one
@@ -196,7 +159,7 @@
             $scope.manageModal('show');
         };
 
-        // making possible to launch direcetive fn
+        // making possible to launch directive fn
         $scope.setManageFunction = function(directiveFn) {
             $scope.manageModal = directiveFn.theDirFn;
         };
@@ -204,6 +167,7 @@
             $scope.reDrawMaterial = directiveFn.theDirFn;
         };
 
+        /* FIXED */
         $scope.deleteMaterial = function(id){
 
             var del = window.confirm($rootScope.translated.confirm);
@@ -235,6 +199,7 @@
             });
         };
 
+        /* FIXED */
         $scope.saveMaterial = function(){
 
             if(!$scope.material.material_name || $scope.material.material_name.length === 0){
@@ -277,7 +242,7 @@
             var params = {
                 scenario: { _id: $scope.scenario_id },
                 material: $scope.material,
-              };
+            };
 
             requestService.post(url, params)
             .then(function(data) {
@@ -318,65 +283,91 @@
 
         };
 
-        var updateMaterialList = function(new_material, action){
+        var updateMaterialList = function(newMaterial, action){
 
+            // NEW
             if(action === 'new'){
-                $scope.materials.push(new_material);
-                updateActivityList();
+
+                // translate
+                for (var d = 0; d < newMaterial.displays.length; d++) {
+                    //translate display name
+                    newMaterial.displays[d].name = $rootScope.translated.displays[newMaterial.displays[d]._id];
+                }
+                //translate involvement_level
+                newMaterial.involvement.name = $rootScope.translated.co_authorship[newMaterial.involvement._id];
+
+                for (var i = 0; i < $scope.scenario.activities.length; i++) {
+                    if ($scope.scenario.activities[i]._id === newMaterial.activity_id) {
+
+                        if (!$scope.scenario.activities[i].materials) { $scope.scenario.activities[i].materials = []; }
+
+                        $scope.scenario.activities[i].materials.push(newMaterial);
+                        break;
+                    }
+                }
+
                 $scope.reDrawMaterial('new');
+
                 return;
             }
 
+            // DELETE
             if(action === 'delete'){
-                console.log(new_material._id);
-                console.log($scope.materials.length);
-                var index = null;
-                for(var i = 0; i < $scope.materials.length; i++){
-                    if($scope.materials[i]._id === new_material._id){
-                        index = i;
-                        break;
-                    }
-                }
 
-                $scope.materials.splice(index, 1);
-                updateActivityList();
-                $scope.reDrawMaterial('delete', new_material._id);
-                //console.log($scope.materials.length);
+                var activity_index = null;
+                var material_index = null;
 
-            }
+                // find correct activty with material
+                for (var j = 0; j < $scope.scenario.activities.length; j++) {
+                    if ($scope.scenario.activities[j]._id === newMaterial.activity_id) {
 
-
-            if(action === 'update'){
-                for(var j = 0; j < $scope.materials.length; j++){
-                    if($scope.materials[j]._id === new_material._id){
-                        $scope.materials[j] = new_material;
-                        break;
-                    }
-                }
-
-                updateActivityList();
-                $scope.reDrawMaterial('update', new_material._id);
-            }
-
-        };
-
-        var updateActivityList = function(){
-            // add material to relevant activities
-            for(var i = 0; i < $scope.activity_list.length; i++){
-
-                // empty materials
-                $scope.activity_list[i].materials = undefined;
-
-                for(var j = 0; j < $scope.materials.length; j++){
-                    if($scope.activity_list[i]._id === $scope.materials[j].activity_id){
-                        if(typeof $scope.activity_list[i].materials === 'undefined'){
-                            $scope.activity_list[i].materials = [];
+                        for(var k = 0; k < $scope.scenario.activities[j].materials.length; k++){
+                            if($scope.scenario.activities[j].materials[k]._id === newMaterial._id){
+                                activity_index = j;
+                                material_index = k;
+                                break;
+                            }
                         }
-                        $scope.activity_list[i].materials.push($scope.materials[j]);
+
+                        break;
                     }
                 }
+
+                $scope.scenario.activities[activity_index].materials.splice(material_index, 1);
+                $scope.reDrawMaterial('delete', newMaterial._id);
+
+                return;
             }
 
+            // UPDATE
+            if(action === 'update'){
+
+                // translate
+                for (var m = 0; m < newMaterial.displays.length; m++) {
+                    //translate display name
+                    newMaterial.displays[m].name = $rootScope.translated.displays[newMaterial.displays[m]._id];
+                }
+                //translate involvement_level
+                newMaterial.involvement.name = $rootScope.translated.co_authorship[newMaterial.involvement._id];
+
+                for(var a = 0; a < $scope.scenario.activities.length; a++){
+
+                    if ($scope.scenario.activities[a]._id === newMaterial.activity_id) {
+                        for(var l = 0; l < $scope.scenario.activities[a].materials.length; l++){
+                            if($scope.scenario.activities[a].materials[l]._id === newMaterial._id){
+                                $scope.scenario.activities[a].materials[l] = newMaterial;
+                                break;
+                            }
+                        }
+
+                        break;
+                    }
+                }
+
+                $scope.reDrawMaterial('update', newMaterial._id);
+
+                return;
+            }
         };
 
         $scope.addNewActivityItem = function(){
