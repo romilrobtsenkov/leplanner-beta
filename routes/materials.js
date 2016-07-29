@@ -6,6 +6,8 @@ const restrict = require('../auth/restrict');
 const Promise = require('bluebird');
 
 const mongoService = require('../services/mongo-service');
+const metaService = require('../services/meta-service');
+
 
 const Material = require('../models/activity-material').Material;
 
@@ -67,9 +69,25 @@ router.post('/', restrict, function (req, res, next) {
         newMaterial.scenario = params.scenario._id;
         newMaterial.last_modified = new Date();
 
-        return mongoService.saveNewWithPromise(newMaterial, Material);
+        return Promise.props({
+            material: mongoService.saveNewWithPromise(newMaterial, Material),
+            involvement_options: metaService.getInvolvementOptions(),
+            displays: metaService.getDisplays(),
+        });
     })
-    .then(function (material) {
+    .then(function (meta) {
+
+        var material = meta.material.toJSON();
+
+        // Add displays
+        if(material.displays) {
+            for (var l = 0; l < material.displays.length; l++) {
+                material.displays[l] = meta.displays[material.displays[l]];
+            }
+        }
+
+        // Add involvement level name
+        material.involvement = meta.involvement_options[material.involvement_level];
 
         savedMaterial = material;
 
@@ -82,7 +100,7 @@ router.post('/', restrict, function (req, res, next) {
     })
     .then(function (scenario) {
         console.log(req.user.first_name + ' updated scenario: ' + scenario._id);
-        res.json({ material: savedMaterial });
+        res.status(200).json({ material: savedMaterial });
     })
     .catch(E.Error, function (err) {
         res.status(err.statusCode).send(err.message);
@@ -152,9 +170,25 @@ if (!postData.material.material_name ||
             q.update.material_url = null;
         }
 
-        return mongoService.updateWithPromise(q, Material);
+        return Promise.props({
+            material: mongoService.updateWithPromise(q, Material),
+            involvement_options: metaService.getInvolvementOptions(),
+            displays: metaService.getDisplays(),
+        });
     })
-    .then(function (material) {
+    .then(function (meta) {
+
+        var material = meta.material.toJSON();
+
+        // Add displays
+        if(material.displays) {
+            for (var l = 0; l < material.displays.length; l++) {
+                material.displays[l] = meta.displays[material.displays[l]];
+            }
+        }
+
+        // Add involvement level name
+        material.involvement = meta.involvement_options[material.involvement_level];
 
         updatedMaterial = material;
 
@@ -167,7 +201,7 @@ if (!postData.material.material_name ||
     })
     .then(function (scenario) {
         console.log(req.user.first_name + ' updated scenario: ' + scenario._id);
-        res.json({ material: updatedMaterial });
+        res.status(200).json({ material: updatedMaterial });
     })
     .catch(E.Error, function (err) {
         res.status(err.statusCode).send(err.message);
@@ -223,14 +257,13 @@ router.post('/delete/:id', restrict, function (req, res, next) {
             deleted: true,
             deleted_date: new Date(),
         };
-        q.select = '_id';
+        q.select = '_id activity_id';
 
         return mongoService.updateWithPromise(q, Material);
-
     })
     .then(function (material) {
         console.log('material ' + material._id + ' deleted');
-        res.json({ material: { _id: material._id } });
+        res.status(200).json({ material: { _id: material._id, activity_id: material.activity_id } });
     })
     .catch(E.Error, function (err) {
         res.status(err.statusCode).send(err.message);
