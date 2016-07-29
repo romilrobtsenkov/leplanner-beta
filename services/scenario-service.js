@@ -3,7 +3,7 @@ exports.getSortOrder = function(query, next){
   // default sort
   var sort = { created: -1 };
 
-  if(typeof query != 'undefined' && typeof query.order != 'undefined'){
+  if (query && query.order) {
     switch (query.order) {
       case 'latest':
         sort = { created: -1 };
