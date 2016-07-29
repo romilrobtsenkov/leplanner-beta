@@ -39,6 +39,7 @@ gulp.task('build-js', function() {
       'public/bower/angular-translate/angular-translate.min.js',
       'public/bower/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js',
       'public/bower/ng-tags-input/ng-tags-input.min.js',
+      'public/bower/angular-ui-notification/dist/angular-ui-notification.min.js',
       'public/js/app/app.js',
       'public/js/app/route-config.js',
       'public/js/app/translate-config.js',
@@ -48,6 +49,7 @@ gulp.task('build-js', function() {
       'public/js/app/signup/signup.js',
       'public/js/app/create/create.js',
       'public/js/app/edit-details/edit-details.js',
+      'public/js/app/edit-publish/edit-publish.js',
       'public/js/app/edit/edit.js',
       'public/js/app/scenario/scenario.js',
       'public/js/app/scenario-text/scenario-text.js',
@@ -91,6 +93,7 @@ gulp.task('minify-css', function() {
     return gulp.src([
         'public/bower/ng-tags-input/ng-tags-input.min.css',
         'public/bower/ng-tags-input/ng-tags-input.bootstrap.min.css',
+        'public/bower/angular-ui-notification/dist/angular-ui-notification.min.css',
         'public/stylesheets/style.css',
     ])
         .pipe(cleanCSS({debug: true}, function(details) {
