@@ -34,7 +34,16 @@
         }]
       }
     })
-    .when('/edit/:id', {
+    .when('/edit/:id/', {
+      templateUrl: '/js/app/edit-details/edit-details.html',
+      controller: 'EditDetailsController',
+      resolve: {
+        data: ['userAuthService', function(userAuthService) {
+          return userAuthService.checkUser({ error_location: '/login'});
+        }]
+      }
+    })
+    .when('/edit/:id/timeline', {
       templateUrl: '/js/app/edit/edit.html',
       controller: 'EditController',
       resolve: {
@@ -43,9 +52,9 @@
         }]
       }
     })
-    .when('/edit-details/:id', {
-      templateUrl: '/js/app/edit-details/edit-details.html',
-      controller: 'EditDetailsController',
+    .when('/edit/:id/publish', {
+      templateUrl: '/js/app/edit-publish/edit-publish.html',
+      controller: 'EditPublishController',
       resolve: {
         data: ['userAuthService', function(userAuthService) {
           return userAuthService.checkUser({ error_location: '/login'});
