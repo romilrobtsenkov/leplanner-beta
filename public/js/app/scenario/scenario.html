@@ -5,7 +5,7 @@
   {{'NOTICE.NO_SCENARIO' | translate}}
 </div>
 <div class="container main-content" ng-show="scenario.draft">
-  {{'CONTENT.IS_DRAFT' | translate}} <a class="print-button btn btn-primary" ng-if="user._id==scenario.author._id" href="/#/edit-details/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> {{'BUTTON.EDIT' | translate}}</a>
+  {{'CONTENT.IS_DRAFT' | translate}} <a class="print-button btn btn-primary" ng-if="user._id==scenario.author._id" href="/#/edit/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> {{'BUTTON.EDIT' | translate}}</a>
 </div>
 <div class="container main-content" ng-if="scenario && !no_scenario && !scenario.draft && fully_loaded">
 
@@ -50,7 +50,7 @@
             <span>{{'INPUT.GRADE' | translate}}: {{scenario.grade}}</span> | <span>{{'INPUT.DURATION' | translate}}: {{scenario.duration}} min</span><br>
           </div>
           <div class="col-xs-3">
-            <a class="print-button btn btn-sm pull-right" ng-if="user._id==scenario.author._id" href="/#/edit-details/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> {{'BUTTON.EDIT' | translate}}</a>
+            <a class="print-button btn btn-sm pull-right" ng-if="user._id==scenario.author._id" href="/#/edit/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> {{'BUTTON.EDIT' | translate}}</a>
           </div>
         </div>
 

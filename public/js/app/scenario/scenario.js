@@ -47,10 +47,9 @@
                     for (var d = 0; d < $scope.scenario.activities[i].materials[m].displays.length; d++) {
                         //translate display name
                         $scope.scenario.activities[i].materials[m].displays[d].name = $rootScope.translated.displays[$scope.scenario.activities[i].materials[m].displays[d]._id];
-
-                        //involvement_level
-                        $scope.scenario.activities[i].materials[m].involvement.name = $rootScope.translated.co_authorship[$scope.scenario.activities[i].materials[m].involvement._id];
                     }
+                    //involvement_level
+                    $scope.scenario.activities[i].materials[m].involvement.name = $rootScope.translated.co_authorship[$scope.scenario.activities[i].materials[m].involvement._id];
                 }
             }
 
@@ -296,11 +295,11 @@
 
             requestService.get('/scenarios/copy/'+$scope.scenario_id)
             .then(function(data) {
-
+                console.log(data);
                 if (!data._id) { window.alert('something went wrong'); }
 
                 //redirect user to edit page
-                $location.path('/edit-details/'+data.success._id);
+                $location.path('/edit-details/'+data._id);
 
             })
             .catch(function (error) {
