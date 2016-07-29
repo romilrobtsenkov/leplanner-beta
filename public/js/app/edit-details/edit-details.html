@@ -1,169 +1,161 @@
 <div class="container main-content" ng-if="!scenario && !fully_loaded">
-  <div ng-if='errorMessage' class="alert alert-danger" role="alert">{{errorMessage}}</div>
-  <p class="loading-gif-animation"><img src="./images/loading.gif"></p>
+    <div ng-if='errorMessage' class="alert alert-danger" role="alert">{{errorMessage}}</div>
+    <p class="loading-gif-animation"><img src="./images/loading.gif"></p>
 </div>
 <div class="container main-content" ng-if="scenario && fully_loaded">
-  <h2>{{'PAGE.EDIT' | translate}}: <i>{{scenario.name}}</i> <span ng-if="saving" class="pull-right" style="font-size: 20px; color:gray;">{{'NOTICE.SAVING' | translate}}</span><span ng-if="!saving && saved" class="pull-right" style="font-size: 15px; color:gray;">{{'NOTICE.ALL_SAVED' | translate}}</span></h2>
-  </br>
+    <h4>{{'PAGE.EDIT' | translate}}: <i>{{scenario.name}}</i></h4>
+    <!--<span ng-if="saving" class="pull-right" style="font-size: 20px; color:gray;">{{'NOTICE.SAVING' | translate}}</span><span ng-if="!saving && saved" class="pull-right" style="font-size: 15px; color:gray;">{{'NOTICE.ALL_SAVED' | translate}}</span> -->
 
-  <div ng-if='errorMessage' class="alert alert-danger" role="alert">{{errorMessage}}</div>
+    <ul class="nav nav-tabs nav-tab-pop">
+      <li class="active">
+        <a ng-href="#/edit/{{scenario._id}}/" ng-click="updateSortList('latest')" title="{{ 'CONTENT.TAB_LATEST' | translate }}">Details</a>
+      </li>
+      <li>
+        <a ng-href="#/edit/{{scenario._id}}/timeline" title="{{ 'CONTENT.TAB_MOST_VIEWED' | translate }}">Timeline</a>
+      </li>
+      <li>
+        <a ng-href="#/edit/{{scenario._id}}/publish" title="{{ 'CONTENT.TAB_TOP_FAVORITED' | translate }}">Publish</a>
+      </li>
+      <li ng-if="!scenario.draft" class='pull-right'>
+        <a ng-href="#/scenario/{{scenario._id}}" title="{{ 'CONTENT.TAB_TOP_COMMENTED' | translate }}">Open <span class="glyphicon glyphicon-new-window
+"></span></a>
+      </li>
+    </ul>
 
-  <div class="row no-margin">
+    <div ng-if='errorMessage' class="alert alert-danger" role="alert">{{errorMessage}}</div>
 
-    <!-- META DATA -->
-    <div class="col-sm-4">
+    <div class="row no-margin">
 
-      <div class="row no-margin">
-        <div class=" form-group">
-          <label for="name"><strong>{{'INPUT.TITLE' | translate}} </strong></label>
-          <input type="text" ng-model="scenario.name" name="name" id="name" class="form-control" required/>
+        <!-- META DATA -->
+        <div class="col-sm-11">
+
+            <div class="row no-margin">
+                <div class=" form-group">
+                    <label for="name"><strong>{{'INPUT.TITLE' | translate}} </strong></label>
+                    <input type="text" ng-model="scenario.name" name="name" id="name" class="form-control" required/>
+                </div>
+            </div>
+
         </div>
-      </div>
+    </div>
 
-     </div>
-   </div>
-
-   <div class="row no-margin">
-     <div class="col-sm-11">
-         <div class="row no-margin">
-           <div class=" form-group">
-             <label for="description"><strong>{{'INPUT.DESCRIPTION' | translate}} </strong></label>
-             <textarea ng-focus="resizeTextarea()" class="form-control" id="description" ng-model="scenario.description" name="description"></textarea>
-           </div>
-         </div>
-      </div>
-   </div>
-
-   <div class="row no-margin">
-     <div class="col-sm-11">
-         <div class="row no-margin">
-           <div class=" form-group">
-             <label for="description"><strong>{{'INPUT.TAGS' | translate}} </strong></label>
-              <tags-input placeholder="{{'INPUT.ADD_TAGS' | translate}}" ng-model="scenario.tags"></tags-input>
-           </div>
-         </div>
-      </div>
-   </div>
-
-   <div class="row no-margin">
-     <div class="col-sm-4">
-
-      <div class="row no-margin">
-        <div class=" form-group">
-          <label for="subject"><strong>{{'INPUT.SUBJECTS' | translate}} </strong></label>
-          <div id="subject" ng-dropdown-multiselect="" options="subjects_list" selected-model="selected_subjects" extra-settings="subjectsSettings" translation-texts="subjectsText"></div>
-          <!--<select class="form-control" id="subject" ng-model="scenario.subject" ng-options="subject._id as subject.name for subject in subjects" name="subject" required>-->
-          <!-- option.value as option.name for option in
-          <select class="form-control" id="subject" ng-model="selected_subject" name="subject" required>
-            <option value="" selected disabled>Choose subject</option>
-            <option ng-repeat="subject in subjects" value="{{subject._id}}">{{subject.name}}</option>-->
-          </select>
+    <div class="row no-margin">
+        <div class="col-sm-11">
+            <div class="row no-margin">
+                <div class=" form-group">
+                    <label for="description"><strong>{{'INPUT.DESCRIPTION' | translate}} </strong></label>
+                    <textarea ng-focus="resizeTextarea()" class="form-control" id="description" ng-model="scenario.description" name="description"></textarea>
+                </div>
+            </div>
         </div>
-      </div>
+    </div>
 
-      <div class="row no-margin">
-        <div class=" form-group">
-          <label for="grade"><strong>{{'INPUT.GRADE' | translate}} </strong></label>
-          <input type="number" min="0" step="1" ng-model="scenario.grade" name="grade" id="grade" class="form-control" required/>
+    <div class="row no-margin">
+        <div class="col-sm-11">
+            <div class="row no-margin">
+                <div class=" form-group">
+                    <label for="description"><strong>{{'INPUT.TAGS' | translate}} </strong></label>
+                    <tags-input placeholder="{{'INPUT.ADD_TAGS' | translate}}" ng-model="scenario.tags"></tags-input>
+                </div>
+            </div>
         </div>
-      </div>
+    </div>
 
-      <div class="row no-margin">
-        <div class=" form-group">
-          <label for="duration"><strong>{{'INPUT.DURATION' | translate}} (min) </strong></label>
-          <input type="number" min="0" step="1" ng-model="scenario.duration" name="duration" id="duration" class="form-control" required/>
+    <div class="row no-margin">
+        <div class="col-sm-4">
+
+            <div class="row no-margin">
+                <div class=" form-group">
+                    <label for="subject"><strong>{{'INPUT.SUBJECTS' | translate}} </strong></label>
+                    <div id="subject" ng-dropdown-multiselect="" options="subjects_list" selected-model="scenario.subjects" extra-settings="subjectsSettings" translation-texts="subjectsText"></div>
+                    <!--<select class="form-control" id="subject" ng-model="scenario.subject" ng-options="subject._id as subject.name for subject in subjects" name="subject" required>-->
+                    <!-- option.value as option.name for option in
+                    <select class="form-control" id="subject" ng-model="selected_subject" name="subject" required>
+                    <option value="" selected disabled>Choose subject</option>
+                    <option ng-repeat="subject in subjects" value="{{subject._id}}">{{subject.name}}</option>-->
+                </select>
+            </div>
         </div>
-      </div>
+
+        <div class="row no-margin">
+            <div class=" form-group">
+                <label for="grade"><strong>{{'INPUT.GRADE' | translate}} </strong></label>
+                <input type="number" min="0" step="1" ng-model="scenario.grade" name="grade" id="grade" class="form-control" required/>
+            </div>
+        </div>
+
+        <div class="row no-margin">
+            <div class=" form-group">
+                <label for="duration"><strong>{{'INPUT.DURATION' | translate}} (min) </strong></label>
+                <input type="number" min="0" step="1" ng-model="scenario.duration" name="duration" id="duration" class="form-control" required/>
+            </div>
+        </div>
 
     </div>
 
     <div class="col-sm-8">
 
-      <div class="learining-outcomes-list-container">
-        <h3>{{'INPUT.LEARNING_OUTCOMES' | translate}}</h3>
+        <div class="learining-outcomes-list-container">
+            <h3>{{'INPUT.LEARNING_OUTCOMES' | translate}}</h3>
 
-          <!-- one line of activity -->
-          <div ng-repeat="outcome in outcomes_list track by $index" class="row form-group outcome-item">
-            <div class="col-xs-10">
-              <input type="text" ng-model="outcomes_list[$index].name" name="outcome-{{$index}}" id="item-{{$index}}-outcome" class="form-control" required />
+            <!-- one line of activity -->
+            <div ng-repeat="outcome in scenario.outcomes track by $index" class="row form-group outcome-item">
+                <div class="col-xs-10">
+                    <input type="text" ng-model="scenario.outcomes[$index].name" name="outcome-{{$index}}" id="item-{{$index}}-outcome" class="form-control" required />
+                </div>
+                <div class="col-xs-1 no-padding">
+                    <button style="margin-top: 2px;" ng-click="removeOutcome($index)" class="btn btn-sm btn-default pull-left"><span class="glyphicon glyphicon-remove"></span></button>
+                </div>
             </div>
-            <div class="col-xs-1 no-padding">
-              <button style="margin-top: 2px;" ng-click="removeOutcome($index)" class="btn btn-sm btn-default pull-left"><span class="glyphicon glyphicon-remove"></span></button>
-            </div>
-          </div>
 
-        <button ng-click="addNewOutcomeItem()" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-plus"></span></button>
+            <button ng-click="addNewOutcomeItem()" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-plus"></span></button>
 
-      </div>
-
-    </div>
-
-  </div>
-
-  <div class="row no-margin">
-    <div class="activity-list-container">
-      <h3>{{'INPUT.ACTIVITIES' | translate}}</h3>
-
-      <div ui-sortable ng-model="activity_list" class="activity-list">
-
-        <!-- one line of activity -->
-        <div ng-repeat="activity in activity_list track by $index" class="row form-group activity-item">
-          <div class="col-xs-1 no-padding">
-            <div class="drag-selector">
-              <span class="glyphicon glyphicon-option-vertical"></span>
-            </div>
-          </div>
-          <div class="col-xs-3 no-padding">
-            <input type="text" ng-model="activity_list[$index].name" name="activity-{{$index}}" id="item-{{$index}}-activity" class="form-control" placeholder="{{'INPUT.ACTIVITY' | translate}}" required />
-          </div>
-          <div class="col-xs-3">
-            <input style="width: 40%; float: left;" type="number" ng-model="activity_list[$index].duration" name="duration-{{$index}}" id="item-{{$index}}-duration" class="form-control list-activity-duration" placeholder="min" required />
-
-            <label style="width: 60%; font-size:12px; text-align: center; margin-top:7px;">
-              <input type="checkbox" ng-model="activity_list[$index].in_class" name="in_class-{{$index}}" id="item-{{$index}}-in_class" required />
-              {{'INPUT.INCLASS' | translate}}
-            </label>
-          </div>
-          <div class="col-xs-2 no-padding" style="padding-right:5px;">
-            <div style="display: inline; width: 100%;" ng-dropdown-multiselect="" options="activity_organization" selected-model="activity_list[$index].activity_organization" extra-settings="activity_organizationSettings" translation-texts="activity_organizationText" ></div>
-          </div>
-          <div class="col-xs-2 no-padding" style="padding-right:10px;">
-            <div style="display: inline; width: 100%;" ng-dropdown-multiselect="" options="outcomes_list" selected-model="activity_list[$index].outcomes" extra-settings="outcomesSettings" translation-texts="outcomesText" ></div>
-          </div>
-          <div class="col-xs-1 no-padding">
-            <button style="margin-top: 2px;" ng-click="removeActivity($index)" class="btn btn-sm btn-default pull-left"><span class="glyphicon glyphicon-remove"></span></button>
-          </div>
         </div>
 
-      </div>
-
-      <button ng-click="addNewActivityItem()" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-plus"></span></button>
-
     </div>
-  </div>
 
-  <div class="row no-margin">
-    <h3>{{'INPUT.PUBLISH' | translate}}</h3>
-
-    <div class="row no-margin">
-      <div class=" form-group">
-        <select ng-if="scenario" style="width: 200px;  display: inline-block;" class="form-control" id="publish_option" ng-model="scenario.draft" ng-options="option.value as option.name for option in publish_options" name="publish_option" required>
-        </select>
-        <span> <a class="delete-link" ng-click="deleteScenario()" href style="margin-right: 20px;">{{'INPUT.I_WANT_TO_DELETE' | translate}}</a></span>
-      </div>
     </div>
 
     <div class="row no-margin">
-      <div class=" form-group">
-        <label for="grade"><strong>{{'INPUT.LANGUAGE' | translate}} </strong></label><br>
-        <select style="width: 200px;  display: inline-block;" class="form-control" id="publish_option" ng-model="scenario.language" ng-options="option.value as option.name for option in language_options" name="language_options" required>
-        </select>
-      </div>
+        <div class="activity-list-container">
+            <h3>{{'INPUT.ACTIVITIES' | translate}}</h3>
+
+            <div ui-sortable ng-model="scenario.activities" class="activity-list">
+
+                <!-- one line of activity -->
+                <div ng-repeat="activity in scenario.activities track by $index" class="row form-group activity-item">
+                    <div class="col-xs-1 no-padding">
+                        <div class="drag-selector">
+                            <span class="glyphicon glyphicon-option-vertical"></span>
+                        </div>
+                    </div>
+                    <div class="col-xs-3 no-padding">
+                        <input type="text" ng-model="scenario.activities[$index].name" name="activity-{{$index}}" id="item-{{$index}}-activity" class="form-control" placeholder="{{'INPUT.ACTIVITY' | translate}}" required />
+                    </div>
+                    <div class="col-xs-3">
+                        <input style="width: 40%; float: left;" type="number" ng-model="scenario.activities[$index].duration" name="duration-{{$index}}" id="item-{{$index}}-duration" class="form-control list-activity-duration" placeholder="min" required />
+
+                        <label style="width: 60%; font-size:12px; text-align: center; margin-top:7px;">
+                            <input type="checkbox" ng-model="scenario.activities[$index].in_class" name="in_class-{{$index}}" id="item-{{$index}}-in_class" required />
+                            {{'INPUT.INCLASS' | translate}}
+                        </label>
+                    </div>
+                    <div class="col-xs-2 no-padding" style="padding-right:5px;">
+                        <div style="display: inline; width: 100%;" ng-dropdown-multiselect="" options="activity_organization" selected-model="scenario.activities[$index].activity_organization" extra-settings="activity_organizationSettings" translation-texts="activity_organizationText" ></div>
+                    </div>
+                    <div class="col-xs-2 no-padding" style="padding-right:10px;">
+                        <div style="display: inline; width: 100%;" ng-dropdown-multiselect="" options="scenario.outcomes" selected-model="scenario.activities[$index].outcomes" extra-settings="outcomesSettings" translation-texts="outcomesText" ></div>
+                    </div>
+                    <div class="col-xs-1 no-padding">
+                        <button style="margin-top: 2px;" ng-click="removeActivity($index)" class="btn btn-sm btn-default pull-left"><span class="glyphicon glyphicon-remove"></span></button>
+                    </div>
+                </div>
+
+            </div>
+
+            <button ng-click="addNewActivityItem()" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-plus"></span></button>
+
+        </div>
     </div>
-
-  </div>
-
-  <button ng-disabled="saving_in_progress" ng-click="saveScenario(scenario)" class="btn btn-success pull-right">{{'BUTTON.SAVE_AND_CONTINUE' | translate}}</button>
-  <a href="/#/dashboard" style="margin-right: 10px;" class="btn btn-default pull-right">{{'BUTTON.CANCEL' | translate}}</a>
 
 </div>

@@ -314,7 +314,6 @@
 
                                     //delete from DOM
                                     document.querySelector('#activities-wrapper').removeChild(document.querySelector('div.material-wrapper[data-id="'+material_id+'"]'));
-
                                 }
                             }
                         }

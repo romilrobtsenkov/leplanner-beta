@@ -1,0 +1,47 @@
+<div class="container main-content" ng-if="!scenario && !fully_loaded">
+    <div ng-if='errorMessage' class="alert alert-danger" role="alert">{{errorMessage}}</div>
+    <p class="loading-gif-animation"><img src="./images/loading.gif"></p>
+</div>
+<div class="container main-content" ng-if="scenario && fully_loaded">
+    <h4>{{'PAGE.EDIT' | translate}}: <i>{{scenario.name}}</i> <span ng-if="saving" class="pull-right" style="font-size: 20px; color:gray;">{{'NOTICE.SAVING' | translate}}</span><span ng-if="!saving && saved" class="pull-right" style="font-size: 15px; color:gray;">{{'NOTICE.ALL_SAVED' | translate}}</span></h4>
+
+    <ul class="nav nav-tabs nav-tab-pop">
+      <li>
+        <a ng-href="#/edit/{{scenario._id}}/" ng-click="updateSortList('latest')" title="{{ 'CONTENT.TAB_LATEST' | translate }}">Details</a>
+      </li>
+      <li>
+        <a ng-href="#/edit/{{scenario._id}}/timeline" title="{{ 'CONTENT.TAB_MOST_VIEWED' | translate }}">Timeline</a>
+      </li>
+      <li class="active" >
+        <a ng-href="#/edit/{{scenario._id}}/publish" title="{{ 'CONTENT.TAB_TOP_FAVORITED' | translate }}">Publish</a>
+      </li>
+      <li ng-if="!scenario.draft" class='pull-right'>
+        <a ng-href="#/scenario/{{scenario._id}}" title="{{ 'CONTENT.TAB_TOP_COMMENTED' | translate }}">Open <span class="glyphicon glyphicon-new-window
+"></span></a>
+      </li>
+    </ul>
+
+    <div ng-if='errorMessage' class="alert alert-danger" role="alert">{{errorMessage}}</div>
+
+    <div class="row no-margin">
+        <h3>{{'INPUT.PUBLISH' | translate}}</h3>
+
+        <div class="row no-margin">
+            <div class=" form-group">
+                <select ng-if="scenario" style="width: 200px;  display: inline-block;" class="form-control" id="publish_option" ng-model="scenario.draft" ng-options="option.value as option.name for option in publish_options" name="publish_option" required>
+                </select>
+                <span> <a class="delete-link" ng-click="deleteScenario()" href style="margin-right: 20px;">{{'INPUT.I_WANT_TO_DELETE' | translate}}</a></span>
+            </div>
+        </div>
+
+        <div class="row no-margin">
+            <div class=" form-group">
+                <label for="grade"><strong>{{'INPUT.LANGUAGE' | translate}} </strong></label><br>
+                <select style="width: 200px;  display: inline-block;" class="form-control" id="publish_option" ng-model="scenario.language" ng-options="option.value as option.name for option in language_options" name="language_options" required>
+                </select>
+            </div>
+        </div>
+
+    </div>
+
+</div>
