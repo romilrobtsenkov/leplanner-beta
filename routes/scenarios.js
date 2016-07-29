@@ -37,6 +37,7 @@ res.json(result);
 });
 */
 
+/* Fixed */
 router.get('/copy/:id', restrict, function(req, res, next) {
 
     var params = req.params;
@@ -75,7 +76,7 @@ router.get('/copy/:id', restrict, function(req, res, next) {
     .then(function (newScenario) {
 
         console.log('saved new copy');
-        response = { _id: newScenario };
+        response = { _id: newScenario._id };
 
         // Find all materials
         var q = {};
@@ -104,7 +105,7 @@ router.get('/copy/:id', restrict, function(req, res, next) {
 
         if (savedMaterials) { console.log('materials added:' + savedMaterials.length); }
 
-        return res.json(response);
+        return res.status(200).json(response);
     })
     .catch(E.Error, function (err) {
         return res.status(err.statusCode).send(err.message);
@@ -116,21 +117,26 @@ router.get('/copy/:id', restrict, function(req, res, next) {
 
 });
 
-router.post('/create/', restrict, function(req, res, next) {
+/* Fixed */
+router.post('/', restrict, function(req, res, next) {
 
     var params = req.body;
 
-    validationPromise([{fn:'createScenario', data:params}])
-    .then(function (){
-        var new_scenario = params.scenario;
-        new_scenario.author = params.user._id;
-        new_scenario.draft = true;
-        new_scenario.last_modified = new Date();
+    if(!params.scenario ||
+        !params.scenario.name || !params.scenario.description ||
+        params.scenario.name.length <= 2 || params.scenario.description.length <= 2 ){
 
-        return mongoService.saveNewWithPromise(new_scenario, Scenario);
-    })
+        return res.sendStatus(404);
+    }
+
+    var newScenario = params.scenario;
+    newScenario.author = req.user._id;
+    newScenario.draft = true;
+    newScenario.last_modified = new Date();
+
+    mongoService.saveNewWithPromise(newScenario, Scenario)
     .then(function (scenario){
-        res.json({scenario: { _id: scenario._id } });
+        res.json({ _id: scenario._id } );
     })
     .catch(function (err) {
         console.log(err);
@@ -139,94 +145,115 @@ router.post('/create/', restrict, function(req, res, next) {
 
 });
 
-router.post('/delete-scenario/', restrict, function(req, res, next) {
+/* Fixed */
+router.post('/delete/:id', restrict, function(req, res, next) {
 
-    var params = req.body;
+    var params = req.params;
 
-    async.waterfall([
-        function(next){
+    if (!params.id) { return res.sendStatus(404); }
 
-            //check if user has rights to delete the comment
-            var q = {};
-            q.args = { _id: params.scenario._id, author: req.user._id };
+    var q = {};
+    q.args = { _id: params.id, author: req.user._id, deleted: false };
 
-            mongoService.findOne(q, Scenario, function(err, scenario){
-                if (err) { return next({error: err}); }
-                if(scenario === null){
-                    // passport req user different from scenario author
-                    return next({error: {id: 3, message: 'no rights'}});
-                }
-                next();
-            });
-        },
-        function(next){
+    mongoService.findOneWithPromise(q, Scenario)
+    .then(function (scenario) {
+        if (!scenario) { return Promise.reject(new E.ForbiddenError('not your scenario or already deleted')); }
 
-            var q = {};
-            q.where = { _id: params.scenario._id, deleted: false};
-            q.update = {
-                deleted: true
-            };
-            q.select = '_id';
+        var q = {};
+        q.where = { _id: params.id };
+        q.update = {
+            deleted: true
+        };
+        q.select = '_id';
 
-            mongoService.update(q, Scenario, function(err, scenario){
-                if (err) { return next({error: err}); }
-                if(scenario === null){ return next({error: "no scenario to remove"}); }
-                next(null, {success: 'success'});
-            });
-        }
-    ], function (err, result) {
-        if(err){ res.json(err); }
-        res.json(result);
+        return mongoService.updateWithPromise(q, Scenario);
+    })
+    .then(function () {
+        return res.status(200).send('already deleted');
+    })
+    .catch(E.Error, function (err) {
+        return res.status(err.statusCode).send(err.message);
+    })
+    .catch(function (err) {
+        console.log(err);
+        return res.status(500).send('deleting scenario failed due to server error');
     });
 
 });
 
-router.post('/get-edit-data-single-scenario/', restrict, function(req, res, next) {
+/* Fixed */
+router.post('/single-edit/:id', restrict, function(req, res, next) {
 
-    var params = req.body;
+    var params = req.params;
+    var response = {};
 
-    async.waterfall([
-        function(next){
-            var q = {};
-            q.args = { _id: params.scenario._id, author: req.user._id };
+    if (!params.id) { return res.sendStatus(404); }
 
-            mongoService.findOne(q, Scenario, function(err, user){
-                if (err) { return next({error: err}); }
-                if(user === null){
-                    console.log('no rights');
-                    // passport req user different from scenario author
-                    return next({error: {id: 3, message: 'no rights'}});
+    var q = {};
+    q.args = { _id: params.id, author: req.user._id };
+    q.populated_fields = [];
+    q.populated_fields.push({
+        field: 'subjects',
+        populate: main_subjects_languages
+    });
+
+    mongoService.findOneWithPromise(q, Scenario)
+    .then(function (scenario) {
+
+        if (!scenario) { return Promise.reject(new E.ForbiddenError('not your scenario')); }
+
+        response.scenario = scenario.toJSON(); // Plain JSON obj to modify
+
+        var q = {};
+        q.args = { scenario: params.id, deleted: false };
+
+        return Promise.props({
+            materials: mongoService.findWithPromise(q, Material),
+            activity_organization: metaService.getActivityOrganization(),
+            involvement_options: metaService.getInvolvementOptions(),
+            displays: metaService.getDisplays(),
+        });
+    })
+    .then(function (meta) {
+
+        // add materials & other meta to scenario activities
+        for(var i = 0; i < meta.materials.length; i++){
+            for(var j = 0; j < response.scenario.activities.length; j++) {
+                if(meta.materials[i].activity_id === response.scenario.activities[j]._id) {
+                    if (!response.scenario.activities[j].materials) {
+                        response.scenario.activities[j].materials = [];
+                    }
+
+                    var material = meta.materials[i].toJSON();
+
+                    // displays
+                    if(material.displays) {
+                        for (var l = 0; l < material.displays.length; l++) {
+                            material.displays[l] = meta.displays[material.displays[l]];
+                        }
+                    }
+
+                    // involvement level name
+                    material.involvement = meta.involvement_options[material.involvement_level];
+
+                    response.scenario.activities[j].materials.push(material);
                 }
-                next();
-            });
-        },
-        function(next){
-            var q = {};
-            q.args = { _id: params.scenario._id };
-            q.populated_fields = [];
-            q.populated_fields.push({
-                field: 'subjects',
-                populate: main_subjects_languages
-            });
-
-            mongoService.findOne(q, Scenario, function(err, scenario){
-                if (err) { return next({error: err}); }
-                if(scenario === null){ return next({error: {id: 0, message: 'no scenario found' }}); }
-                next(null, scenario);
-            });
-        },
-        function(scenario, next){
-            //get activity materials
-            var q = {};
-            q.args = { scenario: params.scenario._id, deleted: false };
-            mongoService.find(q, Material, function(err, materials){
-                if (err) { return next({error: err}); }
-                next(null, {scenario: scenario, materials: materials});
-            });
+            }
         }
-    ], function (err, result) {
-        if(err){ res.json(err); }
-        res.json(result);
+
+        // activity organization
+        for(var k = 0; k < response.scenario.activities.length; k++) {
+            response.scenario.activities[k].activity_organization.name = meta.activity_organization[response.scenario.activities[k].activity_organization._id].name;
+        }
+
+        return res.json(response);
+    })
+    .catch(E.Error, function (err) {
+        return res.status(err.statusCode).send(err.message);
+    })
+    .catch(function (err) {
+        console.log(err);
+        return res.status(500).send('retrieving scenario failed due to server error');
     });
 });
 
@@ -269,75 +296,70 @@ router.post('/list/', function(req, res, next) {
 
 });
 
+/* Fixed */
 router.post('/save/', restrict, function(req, res, next) {
 
     var params = req.body;
 
-    async.waterfall([
-        function(next){
-            //check author
-            var q = {};
-            q.args = { _id: params.scenario_data._id, author: req.user._id };
+    var q = {};
+    q.args = { _id: params.scenario._id, author: req.user._id };
 
-            mongoService.findOne(q, Scenario, function(err, latest_scenario){
-                if (err) { return next({error: err}); }
-                if(latest_scenario === null){
-                    console.log('no rights');
-                    // passport req user different from scenario author
-                    return next({error: {id: 3, message: 'no rights'}});
-                }
-                next(null, latest_scenario);
-            });
-        },
-        function(latest_scenario, next){
+    mongoService.findOneWithPromise(q, Scenario)
+    .then(function (latestScenario) {
+        if (!latestScenario) { return Promise.reject(new E.ForbiddenError('not your scenario')); }
 
-            var new_scenario = params.scenario_data;
-            new_scenario.last_modified = new Date();
+        var newScenario = params.scenario;
+        newScenario.last_modified = new Date();
 
-            //disallow in any way to change author
-            new_scenario.author = req.user._id;
+        // disallow in any way to change author
+        if(newScenario.author.toString() !== req.user._id.toString()) { return Promise.reject(new E.ForbiddenError('not allowed to change author')); }
 
-            // fix only positive numbers in grade, duration
-            if(new_scenario.grade !== null){
-                new_scenario.grade = Math.abs(new_scenario.grade);
-            }
-            if(new_scenario.duration !== null){
-                new_scenario.duration = Math.abs(new_scenario.duration);
-            }
+        // if publish tab, skip other checks
+        if(params.publish) { return Promise.resolve(newScenario); }
 
-            // reset to calculate again
-            new_scenario.activities_duration = 0;
-
-            for(var i = 0; i < new_scenario.activities.length; i++){
-                if(typeof new_scenario.activities[i].duration === 'undefined'){
-                    // fix if user left it empty
-                    new_scenario.activities[i].duration = 0;
-                }
-                new_scenario.activities[i].duration = Math.abs(new_scenario.activities[i].duration);
-                new_scenario.activities_duration += new_scenario.activities[i].duration;
-            }
-
-            //console.log(new_scenario);
-
-            if(typeof new_scenario._id === 'undefined'){ return next ({error: {id: 0, message: "No scenario id" }}); }
-
-            //update existing
-            var q = {};
-            q.where = { _id: new_scenario._id };
-            q.update = new_scenario;
-            q.update.last_modified = new Date();
-            mongoService.update(q, Scenario, function(err, scenario){
-                if (err) { return next({error: err}); }
-                console.log(req.user.first_name+' updated scenario: '+scenario._id);
-                next(null, {scenario: { _id: scenario._id } } );
-            });
-
+        // Allow only positive numbers in grade, duration
+        if(newScenario.grade){
+            newScenario.grade = Math.abs(newScenario.grade);
         }
-    ], function (err, result) {
-        if(err){ res.json(err); }
-        res.json(result);
-    });
+        if(newScenario.duration){
+            newScenario.duration = Math.abs(newScenario.duration);
+        }
 
+        // reset to calculate again
+        newScenario.activities_duration = 0;
+
+        for(var i = 0; i < newScenario.activities.length; i++){
+            if(!newScenario.activities[i].duration){
+                // fix if user left it empty
+                newScenario.activities[i].duration = 0;
+            }
+            newScenario.activities[i].duration = Math.abs(newScenario.activities[i].duration);
+            newScenario.activities_duration += newScenario.activities[i].duration;
+        }
+
+        return Promise.resolve(newScenario);
+    })
+    .then(function (newScenario) {
+        //update existing scenario
+        var q = {};
+        q.where = { _id: newScenario._id };
+        q.update = newScenario;
+        q.update.last_modified = new Date();
+
+        return mongoService.updateWithPromise(q, Scenario);
+    })
+    .then(function (scenario) {
+        console.log(req.user.first_name+' updated scenario: '+scenario._id);
+
+        return res.json({ _id: scenario._id });
+    })
+    .catch(E.Error, function (err) {
+        return res.status(err.statusCode).send(err.message);
+    })
+    .catch(function (err) {
+        console.log(err);
+        return res.status(500).send('saving scenario failed due to server error');
+    });
 });
 
 router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
@@ -513,18 +535,20 @@ router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
 
 });
 
+/* Fixed */
 router.get('/search', function(req, res, next) {
 
     const PAGESIZE = 10;
 
     var query = req.query;
-    //console.log(query);
+    console.log(query);
 
     query.page = parseInt(query.page, 10) > 0 || 0;
     if(query.page < 0) {query.page = 0;}
 
     Promise.resolve(scenarioService.getSortOrder(query))
     .then(function (sort) {
+
         var q = {};
         q.args = { draft: false, deleted: false };
 
@@ -570,15 +594,16 @@ router.get('/search', function(req, res, next) {
         });
     })
     .then(function (response) {
-        return res.json(response);
+        return res.status(200).json(response);
     })
     .catch(function (err) {
         console.log(err);
-        return res.json(err);
+        return res.status(500).send('retrieving scenario failed due to server error');
     });
 
 });
 
+/* Fixed */
 router.get('/single/:id', function(req, res, next) {
 
     var params = req.params;
@@ -769,6 +794,7 @@ router.post('/tag/', function(req, res, next) {
 
 });
 
+/* Fixed */
 // Takes in parameters
 // order & limit & exclude? & author?
 router.get('/widget/', function(req, res, next) {
@@ -797,7 +823,7 @@ router.get('/widget/', function(req, res, next) {
         return mongoService.findWithPromise(q, Scenario);
     })
     .then(function (scenarios) {
-        return res.json({scenarios: scenarios});
+        return res.status(200).json({scenarios: scenarios});
     })
     .catch(function (error) {
         console.log(error);
