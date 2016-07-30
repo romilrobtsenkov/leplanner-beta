@@ -91,7 +91,7 @@
 
       <hr>
       <!-- scenario items -->
-      <div class="single_scenario_item" dir-paginate="scenario in scenarios | itemsPerPage: 10">
+      <div class="single_scenario_item" dir-paginate="scenario in scenarios | itemsPerPage: 10" total-items="total_count" current-page="pagination.current" >
 
         <!-- SINGLE SCENARIO -->
 				<div class="row no-margin">
@@ -133,7 +133,7 @@
 				<!-- SINGLE SCENARIO END -->
 
       </div>
-      <dir-pagination-controls></dir-pagination-controls>
+      <dir-pagination-controls on-page-change="pageChanged(newPageNumber)"></dir-pagination-controls>
 
     </div>
 

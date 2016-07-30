@@ -7,25 +7,30 @@
     function($scope,$rootScope,requestService,$translate,$routeParams, $route, $window, $location) {
 
         $scope.loading_animation = true;
-        $scope.search_page_nr = 1;
+        $scope.pagination = {
+            current: 1
+        };
         $scope.total_count = 0;
 
+        //to store update sort and pagenumber on sort tab change
+        var updateParamsFromSort = null;
+
         if($location.search().q){
-            console.log('search ', $location.search().q);
+            //console.log('search ', $location.search().q);
             $scope.search_word = $location.search().q;
         }
 
         if($location.search().page){
-            console.log('page ', $location.search().page);
-            $scope.search_page_nr = $location.search().page;
+            //console.log('page ', $location.search().page);
+            $scope.pagination.current = $location.search().page;
         }
 
         if($location.search().subjects){
-            console.log('subjects ', $location.search().subjects);
+            //console.log('subjects ', $location.search().subjects);
         }
 
         if($location.search().languages){
-            console.log('languages ', $location.search().languages);
+            //console.log('languages ', $location.search().languages);
         }
 
         $translate('PAGE.SEARCH').then(function (t) {
@@ -157,9 +162,12 @@
 
         function searchScenarios(){
 
+            // fix negative page nr
+            var CorrectedPage = $location.search().page >= 1 ? $location.search().page : 1;
+
             var q = {
                 q: $location.search().q,
-                page: $location.search().page - 1,
+                page: CorrectedPage,
                 order: $location.search().sort || 'latest',
                 subjects: $location.search().subjects,
                 languages: $location.search().languages,
@@ -226,6 +234,15 @@
                 }
             }
 
+            // FROM SORT UPDATE
+            if (updateParamsFromSort) {
+
+                url_params.sort = updateParamsFromSort.sort;
+                url_params.page = updateParamsFromSort.page;
+
+                updateParamsFromSort = null;
+            }
+
             // SUBJECTS
             $scope.selected_subjects.forEach(function(element) {
                 selected_subjects_labels.push(element._id);
@@ -250,7 +267,6 @@
 
         $scope.pageChanged = function(new_page_nr) {
             $location.search('page', new_page_nr);
-            getSearchParamsAndSearch();
             document.body.scrollTop = 0;
         };
 
@@ -261,15 +277,16 @@
         };
 
         $scope.updateSortList = function(tab){
+            var newTab;
             if(tab === 'latest ' || tab === 'popular' || tab === 'favorited' || tab === 'commented'){
-                if($location.search().sort !== tab){
-                    $location.search('sort', tab);
-                }
-                getSearchParamsAndSearch();
+                newTab = tab;
             }else{
-                $location.search('sort', 'latest');
-                getSearchParamsAndSearch();
+                newTab = 'latest';
             }
+
+            updateParamsFromSort = {sort: tab, page: 1};
+
+            $scope.search();
         };
 
     }]); // SearchController end

@@ -40,7 +40,7 @@
                       </small>
                     </p>
                   </div>
-                  <p class="content-for-notification">{{'CONTENT.COMMENTED' | translate}}: "<a href="/#/scenario/{{n.data.scenario._id}}">{{n.data.scenario.name}}</a>"</p>
+                  <p class="content-for-notification">{{'CONTENT.COMMENTED' | translate}}: "<a href="/#/scenario/{{n.data.scenario._id}}">{{ n.data.scenario.name | limitTo: 20 }}{{n.data.scenario.name.length > 20 ? '...' : ''}}</a>"</p>
                 </div>
               </li>
               <!-- SINGLE NOTIFICATION  END-->
@@ -82,7 +82,7 @@
         <p ng-if="messages.no_following"> {{'NOTICE.FEED_EMPTY' | translate }}</p>
 
         <!-- scenario items -->
-        <div class="single_scenario_item" dir-paginate="scenario in scenarios | itemsPerPage: 10">
+        <div class="single_scenario_item" current-page="pagination.current" dir-paginate="scenario in scenarios | itemsPerPage: 10" total-items="total_count">
 
           <!-- SINGLE SCENARIO -->
   				<div class="row no-margin">
@@ -131,7 +131,7 @@
   				<!-- SINGLE SCENARIO END -->
         </div>
 
-        <dir-pagination-controls></dir-pagination-controls>
+        <dir-pagination-controls on-page-change="pageChanged(newPageNumber)"></dir-pagination-controls>
 
         <div ng-if="users_list.length > 0" >
           <label>{{'INPUT.FILTER_USERS' | translate}} </label><input class="form-control" type="search" ng-model="filter_text">

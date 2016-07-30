@@ -257,41 +257,51 @@ router.post('/single-edit/:id', restrict, function(req, res, next) {
     });
 });
 
-router.post('/list/', function(req, res, next) {
+/* Fixed */
+router.get('/user/:id', function(req, res, next) {
 
-    var query = req.body;
+    var query = req.query;
+    var params = req.params;
 
-    async.waterfall([
-        function(next){
+    if (!params.id) { return res.sendStatus(404); }
 
-            scenarioService.getSortOrder(query, function(err, sort){
-                if (err) { return next({error: err}); }
-                next(null, sort);
-            });
-        },
-        function(sort, next){
+    const PAGESIZE = 10;
 
-            var q = {};
-            q.args = { author: query.user._id, draft: false, deleted: false};
-            q.populated_fields = [];
-            q.populated_fields.push({
-                field: 'author',
-                populate: 'first_name last_name created'
-            });
-            q.populated_fields.push({
-                field: 'subjects',
-                populate: main_subjects_languages
-            });
-            q.sort = sort;
+    query.page = parseInt(query.page, 10) > 1 ? parseInt(query.page, 10) : 1;
+    if(query.page < 1) {query.page = 1;}
+    // fix skipping for 1
+    query.page -= 1;
 
-            mongoService.find(q, Scenario, function(err, scenarios) {
-                if (err) { return next({error: err}); }
-                next(null, {scenarios: scenarios});
-            });
-        }
-    ], function (err, result) {
-        if(err){ res.json(err); }
-        res.json(result);
+    Promise.resolve(scenarioService.getSortOrder(query))
+    .then(function (sort) {
+
+        var q = {};
+        q.args = { author: params.id, draft: false, deleted: false};
+        q.populated_fields = [];
+        q.populated_fields.push({
+            field: 'author',
+            populate: 'first_name last_name created'
+        });
+        q.populated_fields.push({field: 'subjects'});
+        q.sort = sort;
+
+        q.skip = query.page * PAGESIZE;
+        q.limit = PAGESIZE;
+
+        var count_q = JSON.parse(JSON.stringify(q));
+        count_q.skip = count_q.limit = undefined;
+
+        return Promise.props({
+            scenarios: mongoService.findWithPromise(q, Scenario),
+            count: mongoService.countWithPromise(count_q, Scenario)
+        });
+    })
+    .then(function (response) {
+        return res.status(200).json(response);
+    })
+    .catch(function (err) {
+        console.log(err);
+        return res.status(500).send('retrieving scenario failed due to server error');
     });
 
 });
@@ -362,73 +372,60 @@ router.post('/save/', restrict, function(req, res, next) {
     });
 });
 
-router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
+/* TODO */
+// !!! BUILD QUERY
+router.post('/dashboard/', restrict, function(req, res, next) {
 
     var query = req.body;
+    if(!query.tab){ query.tab = 'feed'; }
 
-    async.waterfall([
-        function(next){
+    const PAGESIZE = 10;
 
-            scenarioService.getSortOrder(query, function(err, sort){
-                if (err) { return next({error: err}); }
-                next(null, sort);
-            });
-        },
-        function(sort, next){
+    if(query.page) {
+        query.page = parseInt(query.page, 10) > 1 ? parseInt(query.page, 10) : 1;
+        if(query.page < 1) {query.page = 1;}
+        // fix skipping for 1
+        query.page -= 1;
+    }
 
-            // default page to feed
-            if(typeof query.page === 'undefined'){ query.page = 'feed'; }
+    Promise.resolve(scenarioService.getSortOrder(query))
+    .then(function (sort) {
 
-            switch (query.page) {
-                case 'feed':
+        switch (query.tab) {
+            case 'feed':
+                var q = {};
+                q.args = {follower: query.user._id, removed: null};
+                q.select = 'following';
 
-                async.waterfall([
-                    function(next){
+                return mongoService.findWithPromise(q, Follower)
+                .then(function(following) {
 
-                        var q = {};
-                        q.args = {follower: query.user._id, removed: null};
-                        q.select = 'following';
-
-                        mongoService.find(q, Follower, function(err, following){
-                            if (err) { return next({error: err}); }
-                            next(null, following);
-                        });
-                    },
-                    function(following, next){
-
-                        var list_of_following_ids = [];
-                        for(var i = 0; i< following.length; i++){
-                            list_of_following_ids[i] = following[i].following;
-                        }
-
-                        var q = {};
-                        q.args = { author: { $in : list_of_following_ids }, draft: false, deleted: false};
-                        q.populated_fields = [];
-                        q.populated_fields.push({
-                            field: 'author',
-                            populate: 'first_name last_name created'
-                        });
-                        q.populated_fields.push({
-                            field: 'subjects',
-                            populate: main_subjects_languages
-                        });
-                        q.sort = sort;
-
-                        mongoService.find(q, Scenario, function(err, scenarios) {
-                            if (err) { return next({error: err}); }
-                            next(null, {scenarios: scenarios});
-                        });
-
+                    var list_of_following_ids = [];
+                    for(var i = 0; i< following.length; i++){
+                        list_of_following_ids[i] = following[i].following;
                     }
-                ], function (err, result) {
-                    if(err){ next(err); }
-                    next(null, result);
+                    var q = {};
+                    q.args = { author: { $in : list_of_following_ids }, draft: false, deleted: false};
+                    q.populated_fields = [];
+                    q.populated_fields.push({
+                        field: 'author',
+                        populate: 'first_name last_name created'
+                    });
+                    q.populated_fields.push({ field: 'subjects' });
+                    q.sort = sort;
+                    q.skip = query.page * PAGESIZE;
+                    q.limit = PAGESIZE;
+
+                    var count_q = JSON.parse(JSON.stringify(q));
+                    count_q.skip = count_q.limit = undefined;
+
+                    return Promise.props({
+                        scenarios: mongoService.findWithPromise(q, Scenario),
+                        count: mongoService.countWithPromise(count_q, Scenario)
+                    });
                 });
 
-                break;
-
-                case 'drafts':
-
+            case 'drafts':
                 var q = {};
                 q.args = { author: query.user._id, draft: true, deleted: false};
                 q.populated_fields = [];
@@ -436,21 +433,20 @@ router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
                     field: 'author',
                     populate: 'first_name last_name created'
                 });
-                q.populated_fields.push({
-                    field: 'subjects',
-                    populate: main_subjects_languages
-                });
+                q.populated_fields.push({ field: 'subjects' });
                 q.sort = sort;
+                q.skip = query.page * PAGESIZE;
+                q.limit = PAGESIZE;
 
-                mongoService.find(q, Scenario, function(err, scenarios) {
-                    if (err) { return next({error: err}); }
-                    next(null, {scenarios: scenarios});
+                var count_q = JSON.parse(JSON.stringify(q));
+                count_q.skip = count_q.limit = undefined;
+
+                return Promise.props({
+                    scenarios: mongoService.findWithPromise(q, Scenario),
+                    count: mongoService.countWithPromise(count_q, Scenario)
                 });
 
-                break;
-
-                case 'published':
-
+            case 'published':
                 q = {};
                 q.args = { author: query.user._id, draft: false, deleted: false};
                 q.populated_fields = [];
@@ -458,79 +454,65 @@ router.post('/scenarios-dash-list/', restrict, function(req, res, next) {
                     field: 'author',
                     populate: 'first_name last_name created'
                 });
-                q.populated_fields.push({
-                    field: 'subjects',
-                    populate: main_subjects_languages
-                });
+                q.populated_fields.push({ field: 'subjects' });
                 q.sort = sort;
+                q.skip = query.page * PAGESIZE;
+                q.limit = PAGESIZE;
 
-                mongoService.find(q, Scenario, function(err, scenarios) {
-                    if (err) { return next({error: err}); }
-                    next(null, {scenarios: scenarios});
+                var count_q = JSON.parse(JSON.stringify(q));
+                count_q.skip = count_q.limit = undefined;
+
+                return Promise.props({
+                    scenarios: mongoService.findWithPromise(q, Scenario),
+                    count: mongoService.countWithPromise(count_q, Scenario)
                 });
 
-                break;
-                case 'favorites':
+            case 'favorites':
 
-                async.waterfall([
-                    function(next){
+                var q = {};
+                q.args = {user: query.user._id, removed: null};
+                q.select = 'scenario';
 
-                        var q = {};
-                        q.args = {user: query.user._id, removed: null};
-                        q.select = 'scenario';
+                return mongoService.findWithPromise(q, Favorite)
+                .then(function (favorites) {
 
-                        mongoService.find(q, Favorite, function(err, favorites){
-                            if (err) { return next({error: err}); }
-                            next(null, favorites);
-                        });
-                    },
-                    function(favorites, next){
+                    if(favorites.length === 0){ return Promise.resolve([]); }
 
-                        if(favorites.length > 0){
-                            var list_of_scenario_ids = [];
-
-                            //create a list of scenario ids
-                            for(var i = 0; i < favorites.length; i++){
-                                list_of_scenario_ids.push(favorites[i].scenario);
-                            }
-
-                            var q = {};
-                            q.args = { _id: { $in : list_of_scenario_ids }, draft: false, deleted: false};
-                            q.populated_fields = [];
-                            q.populated_fields.push({
-                                field: 'author',
-                                populate: 'first_name last_name created'
-                            });
-                            q.populated_fields.push({
-                                field: 'subjects',
-                                populate: main_subjects_languages
-                            });
-                            q.sort = sort;
-
-                            mongoService.find(q, Scenario, function(err, scenarios) {
-                                if (err) { return next({error: err}); }
-                                next(null, {scenarios: scenarios});
-                            });
-
-                        }else{
-                            return next(null, {scenarios: []});
-                        }
+                    var list_of_scenario_ids = [];
+                    //create a list of scenario ids
+                    for(var i = 0; i < favorites.length; i++){
+                        list_of_scenario_ids.push(favorites[i].scenario);
                     }
-                ], function (err, result) {
-                    if(err){ next(err); }
-                    next(null, result);
+
+                    var q = {};
+                    q.args = { _id: { $in : list_of_scenario_ids }, draft: false, deleted: false};
+                    q.populated_fields = [];
+                    q.populated_fields.push({
+                        field: 'author',
+                        populate: 'first_name last_name created'
+                    });
+                    q.populated_fields.push({ field: 'subjects' });
+                    q.sort = sort;
+                    q.skip = query.page * PAGESIZE;
+                    q.limit = PAGESIZE;
+
+                    var count_q = JSON.parse(JSON.stringify(q));
+                    count_q.skip = count_q.limit = undefined;
+
+                    return Promise.props({
+                        scenarios: mongoService.findWithPromise(q, Scenario),
+                        count: mongoService.countWithPromise(count_q, Scenario)
+                    });
                 });
-
-                break;
-
-                default:
-                return next(null, {scenarios: []});
-            }
 
         }
-    ], function (err, result) {
-        if(err){ res.json(err); }
-        res.json(result);
+    })
+    .then(function (response) {
+        return res.status(200).json(response);
+    })
+    .catch(function (error) {
+        console.log(error);
+        return res.status(500).send('could not get scenarios');
     });
 
 });
@@ -541,10 +523,11 @@ router.get('/search', function(req, res, next) {
     const PAGESIZE = 10;
 
     var query = req.query;
-    console.log(query);
 
-    query.page = parseInt(query.page, 10) > 0 || 0;
-    if(query.page < 0) {query.page = 0;}
+    query.page = parseInt(query.page, 10) > 1 ? parseInt(query.page, 10) : 1;
+    if(query.page < 1) {query.page = 1;}
+    // fix skipping for 1
+    query.page -= 1;
 
     Promise.resolve(scenarioService.getSortOrder(query))
     .then(function (sort) {
@@ -576,16 +559,13 @@ router.get('/search', function(req, res, next) {
             field: 'author',
             populate: 'first_name last_name created'
         });
-        q.populated_fields.push({
-            field: 'subjects',
-            populate: main_subjects_languages
-        });
+        q.populated_fields.push({ field: 'subjects' });
         q.sort = sort;
 
         q.skip = query.page * PAGESIZE;
         q.limit = PAGESIZE;
 
-        var count_q = q;
+        var count_q = JSON.parse(JSON.stringify(q));
         count_q.skip = count_q.limit = undefined;
 
         return Promise.props({
@@ -754,42 +734,51 @@ router.get('/single/:id', function(req, res, next) {
 
 });
 
-router.post('/tag/', function(req, res, next) {
+/* Fixed */
+router.get('/tag/', function(req, res, next) {
 
-    var query = req.body;
+    var query = req.query;
 
-    async.waterfall([
-        function(next){
+    const PAGESIZE = 10;
 
-            scenarioService.getSortOrder(query, function(err, sort){
-                if (err) { return next({error: err}); }
-                next(null, sort);
-            });
-        },
-        function(sort, next){
+    if(query.page) {
+        query.page = parseInt(query.page, 10) > 1 ? parseInt(query.page, 10) : 1;
+        if(query.page < 1) {query.page = 1;}
+        // fix skipping for 1
+        query.page -= 1;
+    }
 
-            var q = {};
+    Promise.resolve(scenarioService.getSortOrder(query))
+    .then(function (sort) {
 
-            q.args = { 'tags.text': {$regex: new RegExp('^' + query.tag.text, 'i')}, draft: false, deleted: false};
-            q.populated_fields = [];
-            q.populated_fields.push({
-                field: 'author',
-                populate: 'first_name last_name created'
-            });
-            q.populated_fields.push({
-                field: 'subjects',
-                populate: main_subjects_languages
-            });
-            q.sort = sort;
+        var q = {};
 
-            mongoService.find(q, Scenario, function(err, scenarios) {
-                if (err) { return next({error: err}); }
-                next(null, {scenarios: scenarios});
-            });
-        }
-    ], function (err, result) {
-        if(err){ res.json(err); }
-        res.json(result);
+        var tagRegex = '^' + query.tag;
+        q.args = { 'tags.text': { "$regex": tagRegex, "$options": "i" }, draft: false, deleted: false};
+        q.populated_fields = [];
+        q.populated_fields.push({
+            field: 'author',
+            populate: 'first_name last_name created'
+        });
+        q.populated_fields.push({ field: 'subjects' });
+        q.sort = sort;
+        q.skip = query.page * PAGESIZE;
+        q.limit = PAGESIZE;
+
+        var count_q = JSON.parse(JSON.stringify(q));
+        count_q.skip = count_q.limit = undefined;
+
+        return Promise.props({
+            scenarios: mongoService.findWithPromise(q, Scenario),
+            count: mongoService.countWithPromise(count_q, Scenario)
+        });
+    })
+    .then(function (response) {
+        return res.status(200).json(response);
+    })
+    .catch(function (err) {
+        console.log(err);
+        return res.status(500).send('retrieving scenarios failed due to server error');
     });
 
 });

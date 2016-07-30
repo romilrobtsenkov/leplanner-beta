@@ -63,7 +63,7 @@
 			<p ng-if="!scenarios || loading_animation" class="loading-gif-animation"><img src="./images/loading.gif"></p>
 
 			<hr>
-			<div class="single_scenario_item" id="{{scenario._id}}" current-page="search_page_nr" dir-paginate="scenario in scenarios | itemsPerPage: 10" total-items="total_count">
+			<div class="single_scenario_item" id="{{scenario._id}}" current-page="pagination.current" dir-paginate="scenario in scenarios | itemsPerPage: 10" total-items="total_count">
 
 				<!-- SINGLE SCENARIO -->
 				<div class="row no-margin">
