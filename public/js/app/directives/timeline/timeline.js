@@ -92,7 +92,13 @@
                     this.drawBaseLayer();
                     this.initActivities();
 
-                    window.addEventListener("resize", this.timelineResizeDelay.bind(this));
+                    // Resize
+                    var resizer = this.timelineResizeDelay.bind(this);
+                    window.addEventListener("resize", resizer);
+                    // remove resize listener when navigating away
+                    $scope.$on('$destroy', function () {
+                        window.removeEventListener("resize", resizer);
+                    });
 
                     //ZOOM
                     window.addEventListener("keypress", this.keyPressed.bind(this));
