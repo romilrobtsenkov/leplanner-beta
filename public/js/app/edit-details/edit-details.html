@@ -7,112 +7,111 @@
     <!--<span ng-if="saving" class="pull-right" style="font-size: 20px; color:gray;">{{'NOTICE.SAVING' | translate}}</span><span ng-if="!saving && saved" class="pull-right" style="font-size: 15px; color:gray;">{{'NOTICE.ALL_SAVED' | translate}}</span> -->
 
     <ul class="nav nav-tabs nav-tab-pop">
-      <li class="active">
-        <a ng-href="#/edit/{{scenario._id}}/" ng-click="updateSortList('latest')" title="{{ 'CONTENT.TAB_LATEST' | translate }}">Details</a>
-      </li>
-      <li>
-        <a ng-href="#/edit/{{scenario._id}}/timeline" title="{{ 'CONTENT.TAB_MOST_VIEWED' | translate }}">Timeline</a>
-      </li>
-      <li>
-        <a ng-href="#/edit/{{scenario._id}}/publish" title="{{ 'CONTENT.TAB_TOP_FAVORITED' | translate }}">Publish</a>
-      </li>
-      <li ng-if="!scenario.draft" class='pull-right'>
-        <a ng-href="#/scenario/{{scenario._id}}" title="{{ 'CONTENT.TAB_TOP_COMMENTED' | translate }}">Open <span class="glyphicon glyphicon-new-window
-"></span></a>
-      </li>
-    </ul>
+        <li class="active">
+            <a ng-href="#/edit/{{scenario._id}}/" ng-click="updateSortList('latest')" title="{{ 'CONTENT.TAB_LATEST' | translate }}">Details</a>
+        </li>
+        <li>
+            <a ng-href="#/edit/{{scenario._id}}/timeline" title="{{ 'CONTENT.TAB_MOST_VIEWED' | translate }}">Timeline</a>
+        </li>
+        <li>
+            <a ng-href="#/edit/{{scenario._id}}/publish" title="{{ 'CONTENT.TAB_TOP_FAVORITED' | translate }}">Publish</a>
+        </li>
+        <li ng-if="!scenario.draft" class='pull-right'>
+            <a ng-href="#/scenario/{{scenario._id}}" target="_blank" title="{{ 'CONTENT.TAB_TOP_COMMENTED' | translate }}">Open <span class="glyphicon glyphicon-new-window"></span></a>
+            </li>
+        </ul>
 
-    <div ng-if='errorMessage' class="alert alert-danger" role="alert">{{errorMessage}}</div>
+        <div ng-if='errorMessage' class="alert alert-danger" role="alert">{{errorMessage}}</div>
 
-    <div class="row no-margin">
+        <div class="row no-margin">
 
-        <!-- META DATA -->
-        <div class="col-sm-11">
+            <!-- META DATA -->
+            <div class="col-sm-11">
 
-            <div class="row no-margin">
-                <div class=" form-group">
-                    <label for="name"><strong>{{'INPUT.TITLE' | translate}} </strong></label>
-                    <input type="text" ng-model="scenario.name" name="name" id="name" class="form-control" required/>
+                <div class="row no-margin">
+                    <div class=" form-group">
+                        <label for="name"><strong>{{'INPUT.TITLE' | translate}} </strong></label>
+                        <input type="text" ng-model="scenario.name" name="name" id="name" class="form-control" required/>
+                    </div>
                 </div>
-            </div>
 
-        </div>
-    </div>
-
-    <div class="row no-margin">
-        <div class="col-sm-11">
-            <div class="row no-margin">
-                <div class=" form-group">
-                    <label for="description"><strong>{{'INPUT.DESCRIPTION' | translate}} </strong></label>
-                    <textarea ng-focus="resizeTextarea()" class="form-control" id="description" ng-model="scenario.description" name="description"></textarea>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row no-margin">
-        <div class="col-sm-11">
-            <div class="row no-margin">
-                <div class=" form-group">
-                    <label for="description"><strong>{{'INPUT.TAGS' | translate}} </strong></label>
-                    <tags-input placeholder="{{'INPUT.ADD_TAGS' | translate}}" ng-model="scenario.tags"></tags-input>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row no-margin">
-        <div class="col-sm-4">
-
-            <div class="row no-margin">
-                <div class=" form-group">
-                    <label for="subject"><strong>{{'INPUT.SUBJECTS' | translate}} </strong></label>
-                    <div id="subject" ng-dropdown-multiselect="" options="subjects_list" selected-model="scenario.subjects" extra-settings="subjectsSettings" translation-texts="subjectsText"></div>
-                    <!--<select class="form-control" id="subject" ng-model="scenario.subject" ng-options="subject._id as subject.name for subject in subjects" name="subject" required>-->
-                    <!-- option.value as option.name for option in
-                    <select class="form-control" id="subject" ng-model="selected_subject" name="subject" required>
-                    <option value="" selected disabled>Choose subject</option>
-                    <option ng-repeat="subject in subjects" value="{{subject._id}}">{{subject.name}}</option>-->
-                </select>
             </div>
         </div>
 
         <div class="row no-margin">
-            <div class=" form-group">
-                <label for="grade"><strong>{{'INPUT.GRADE' | translate}} </strong></label>
-                <input type="number" min="0" step="1" ng-model="scenario.grade" name="grade" id="grade" class="form-control" required/>
+            <div class="col-sm-11">
+                <div class="row no-margin">
+                    <div class=" form-group">
+                        <label for="description"><strong>{{'INPUT.DESCRIPTION' | translate}} </strong></label>
+                        <textarea ng-focus="resizeTextarea()" class="form-control" id="description" ng-model="scenario.description" name="description"></textarea>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="row no-margin">
-            <div class=" form-group">
-                <label for="duration"><strong>{{'INPUT.DURATION' | translate}} (min) </strong></label>
-                <input type="number" min="0" step="1" ng-model="scenario.duration" name="duration" id="duration" class="form-control" required/>
+            <div class="col-sm-11">
+                <div class="row no-margin">
+                    <div class=" form-group">
+                        <label for="description"><strong>{{'INPUT.TAGS' | translate}} </strong></label>
+                        <tags-input placeholder="{{'INPUT.ADD_TAGS' | translate}}" ng-model="scenario.tags"></tags-input>
+                    </div>
+                </div>
             </div>
         </div>
 
-    </div>
+        <div class="row no-margin">
+            <div class="col-sm-4">
 
-    <div class="col-sm-8">
-
-        <div class="learining-outcomes-list-container">
-            <h3>{{'INPUT.LEARNING_OUTCOMES' | translate}}</h3>
-
-            <!-- one line of activity -->
-            <div ng-repeat="outcome in scenario.outcomes track by $index" class="row form-group outcome-item">
-                <div class="col-xs-10">
-                    <input type="text" ng-model="scenario.outcomes[$index].name" name="outcome-{{$index}}" id="item-{{$index}}-outcome" class="form-control" required />
-                </div>
-                <div class="col-xs-1 no-padding">
-                    <button style="margin-top: 2px;" ng-click="removeOutcome($index)" class="btn btn-sm btn-default pull-left"><span class="glyphicon glyphicon-remove"></span></button>
+                <div class="row no-margin">
+                    <div class=" form-group">
+                        <label for="subject"><strong>{{'INPUT.SUBJECTS' | translate}} </strong></label>
+                        <div id="subject" ng-dropdown-multiselect="" options="subjects_list" selected-model="scenario.subjects" extra-settings="subjectsSettings" translation-texts="subjectsText"></div>
+                        <!--<select class="form-control" id="subject" ng-model="scenario.subject" ng-options="subject._id as subject.name for subject in subjects" name="subject" required>-->
+                        <!-- option.value as option.name for option in
+                        <select class="form-control" id="subject" ng-model="selected_subject" name="subject" required>
+                        <option value="" selected disabled>Choose subject</option>
+                        <option ng-repeat="subject in subjects" value="{{subject._id}}">{{subject.name}}</option>-->
+                    </select>
                 </div>
             </div>
 
-            <button ng-click="addNewOutcomeItem()" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-plus"></span></button>
+            <div class="row no-margin">
+                <div class=" form-group">
+                    <label for="grade"><strong>{{'INPUT.GRADE' | translate}} </strong></label>
+                    <input type="number" min="0" step="1" ng-model="scenario.grade" name="grade" id="grade" class="form-control" required/>
+                </div>
+            </div>
+
+            <div class="row no-margin">
+                <div class=" form-group">
+                    <label for="duration"><strong>{{'INPUT.DURATION' | translate}} (min) </strong></label>
+                    <input type="number" min="0" step="1" ng-model="scenario.duration" name="duration" id="duration" class="form-control" required/>
+                </div>
+            </div>
 
         </div>
 
-    </div>
+        <div class="col-sm-8">
+
+            <div class="learining-outcomes-list-container">
+                <h3>{{'INPUT.LEARNING_OUTCOMES' | translate}}</h3>
+
+                <!-- one line of activity -->
+                <div ng-repeat="outcome in scenario.outcomes track by $index" class="row form-group outcome-item">
+                    <div class="col-xs-10">
+                        <input type="text" ng-model="scenario.outcomes[$index].name" name="outcome-{{$index}}" id="item-{{$index}}-outcome" class="form-control" required />
+                    </div>
+                    <div class="col-xs-1 no-padding">
+                        <button style="margin-top: 2px;" ng-click="removeOutcome($index)" class="btn btn-sm btn-default pull-left"><span class="glyphicon glyphicon-remove"></span></button>
+                    </div>
+                </div>
+
+                <button ng-click="addNewOutcomeItem()" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-plus"></span></button>
+
+            </div>
+
+        </div>
 
     </div>
 
