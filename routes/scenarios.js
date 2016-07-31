@@ -354,8 +354,7 @@ router.post('/save/', restrict, function(req, res, next) {
     });
 });
 
-/* TODO */
-// !!! BUILD QUERY
+/* Fixed */
 router.post('/dashboard/', restrict, function(req, res, next) {
 
     var query = req.body;
@@ -373,30 +372,32 @@ router.post('/dashboard/', restrict, function(req, res, next) {
     Promise.resolve(scenarioService.getSortOrder(query))
     .then(function (sort) {
 
+        var q = {};
+        q.populated_fields = [];
+        q.populated_fields.push({
+            field: 'author',
+            populate: 'first_name last_name created'
+        });
+        q.populated_fields.push({ field: 'subjects' });
+        q.sort = sort;
+        q.skip = query.page * PAGESIZE;
+        q.limit = PAGESIZE;
+
         switch (query.tab) {
             case 'feed':
-                var q = {};
-                q.args = {follower: query.user._id, removed: null};
-                q.select = 'following';
+                var followerQ = {};
+                followerQ.args = {follower: query.user._id, removed: null};
+                followerQ.select = 'following';
 
-                return mongoService.findWithPromise(q, Follower)
+                return mongoService.findWithPromise(followerQ, Follower)
                 .then(function(following) {
 
                     var list_of_following_ids = [];
                     for(var i = 0; i< following.length; i++){
                         list_of_following_ids[i] = following[i].following;
                     }
-                    var q = {};
+
                     q.args = { author: { $in : list_of_following_ids }, draft: false, deleted: false};
-                    q.populated_fields = [];
-                    q.populated_fields.push({
-                        field: 'author',
-                        populate: 'first_name last_name created'
-                    });
-                    q.populated_fields.push({ field: 'subjects' });
-                    q.sort = sort;
-                    q.skip = query.page * PAGESIZE;
-                    q.limit = PAGESIZE;
 
                     var count_q = JSON.parse(JSON.stringify(q));
                     count_q.skip = count_q.limit = undefined;
@@ -408,17 +409,8 @@ router.post('/dashboard/', restrict, function(req, res, next) {
                 });
 
             case 'drafts':
-                var q = {};
+
                 q.args = { author: query.user._id, draft: true, deleted: false};
-                q.populated_fields = [];
-                q.populated_fields.push({
-                    field: 'author',
-                    populate: 'first_name last_name created'
-                });
-                q.populated_fields.push({ field: 'subjects' });
-                q.sort = sort;
-                q.skip = query.page * PAGESIZE;
-                q.limit = PAGESIZE;
 
                 var count_q = JSON.parse(JSON.stringify(q));
                 count_q.skip = count_q.limit = undefined;
@@ -429,17 +421,8 @@ router.post('/dashboard/', restrict, function(req, res, next) {
                 });
 
             case 'published':
-                q = {};
+
                 q.args = { author: query.user._id, draft: false, deleted: false};
-                q.populated_fields = [];
-                q.populated_fields.push({
-                    field: 'author',
-                    populate: 'first_name last_name created'
-                });
-                q.populated_fields.push({ field: 'subjects' });
-                q.sort = sort;
-                q.skip = query.page * PAGESIZE;
-                q.limit = PAGESIZE;
 
                 var count_q = JSON.parse(JSON.stringify(q));
                 count_q.skip = count_q.limit = undefined;
@@ -451,11 +434,11 @@ router.post('/dashboard/', restrict, function(req, res, next) {
 
             case 'favorites':
 
-                var q = {};
-                q.args = {user: query.user._id, removed: null};
-                q.select = 'scenario';
+                var favoriteQ = {};
+                favoriteQ.args = {user: query.user._id, removed: null};
+                favoriteQ.select = 'scenario';
 
-                return mongoService.findWithPromise(q, Favorite)
+                return mongoService.findWithPromise(favoriteQ, Favorite)
                 .then(function (favorites) {
 
                     if(favorites.length === 0){ return Promise.resolve({scenarios: [], count: 0}); }
@@ -466,17 +449,7 @@ router.post('/dashboard/', restrict, function(req, res, next) {
                         list_of_scenario_ids.push(favorites[i].scenario);
                     }
 
-                    var q = {};
                     q.args = { _id: { $in : list_of_scenario_ids }, draft: false, deleted: false};
-                    q.populated_fields = [];
-                    q.populated_fields.push({
-                        field: 'author',
-                        populate: 'first_name last_name created'
-                    });
-                    q.populated_fields.push({ field: 'subjects' });
-                    q.sort = sort;
-                    q.skip = query.page * PAGESIZE;
-                    q.limit = PAGESIZE;
 
                     var count_q = JSON.parse(JSON.stringify(q));
                     count_q.skip = count_q.limit = undefined;
