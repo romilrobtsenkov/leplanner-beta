@@ -1,163 +1,163 @@
 <div class="container main-content"  style="height:100%;">
-  <div class="row dashboard" style="height:100%; ">
+    <div class="row dashboard" style="height:100%; ">
 
-    <div class="col-sm-2 side-menu">
-      <nav class="navbar navbar-default" role="navigation">
-        <div class="side-menu-container">
-          <ul class="nav navbar-nav dash-menu">
-            <li ng-class="{active:isActiveDash('feed')}"><a ng-click="updateDashList('feed')" href title="{{'BUTTON.FEED' | translate}}"><span class="glyphicon glyphicon-globe"></span> {{'BUTTON.FEED' | translate}}</a></li>
-            <li ng-class="{active:isActiveDash('drafts')}"><a ng-click="updateDashList('drafts')" href title="{{'BUTTON.DRAFTS' | translate}}"><span class="glyphicon glyphicon glyphicon-file"></span> <strong>{{'BUTTON.DRAFTS' | translate}}</strong><!--<span class="badge">{{drafts_count}}</span>--></a></li>
-            <li ng-class="{active:isActiveDash('published')}"><a ng-click="updateDashList('published')" href title="{{'BUTTON.PUBLISHED' | translate}}"><span class="glyphicon glyphicon-list-alt"></span> {{'BUTTON.PUBLISHED' | translate}}</a></li>
-            <li ng-class="{active:isActiveDash('favorites')}"><a ng-click="updateDashList('favorites')" href title="{{'BUTTON.FAVORITES' | translate}}"><span class="glyphicon glyphicon-heart"></span> {{'BUTTON.FAVORITES' | translate}}</a></li>
-            <li ng-class="{active:isActiveDash('users')}"><a ng-click="updateDashList('users')" href title="{{'BUTTON.USERS' | translate}}"><span class="glyphicon glyphicon-user"></span> {{'BUTTON.USERS' | translate}}</a></li>
-          </ul>
-        </div>
-      </nav>
-    </div><!-- /.sidemenu -->
-
-    <div class="col-sm-3 col-sm-push-7 col-lg-push-7 col-md-push-7">
-      <h3>{{'HEADING.NOTIFICATIONS' | translate}}</h3>
-      <div class="panel panel-default">
-        <div class="panel-collapse">
-          <div class="panel-body">
-            <ul class="notifications">
-
-              <p ng-if="!notifications || notifications_loading_animation" class="loading-gif-animation"><img src="./images/loading.gif"></p>
-              <p ng-if="notifications && notifications.length == 0" >{{'NOTICE.NOTIFICATIONS_EMPTY' | translate}}</p>
-
-
-              <!-- SINGLE NOTIFICATION -->
-              <li ng-repeat="n in notifications" ng-class="!n.seen ? 'new' : 'old'" class="left clearfix">
-                <span class="notification-img pull-left">
-                  <img ng-src="./images/user/{{n.data.user.image_thumb}}?last_modified={{n.data.user.last_modified}}" alt="{{n.data.user.first_name}} {{n.data.user.last_name}}" class="img-circle" />
-                </span>
-                <div class="notification-body clearfix">
-                  <div class="header">
-                    <p>
-                      <a href="/#/user/{{n.data.user._id}}" title="{{n.data.user.first_name}} {{n.data.user.last_name}}">{{n.data.user.first_name}} {{n.data.user.last_name}}</a><br>
-                      <small class="pull-left text-muted clearfix">
-                        <span class="glyphicon glyphicon-time"></span> {{n.created | date:'dd.MM.yy HH:mm'}}
-                      </small>
-                    </p>
-                  </div>
-                  <p class="content-for-notification">{{'CONTENT.COMMENTED' | translate}}: "<a href="/#/scenario/{{n.data.scenario._id}}">{{ n.data.scenario.name | limitTo: 20 }}{{n.data.scenario.name.length > 20 ? '...' : ''}}</a>"</p>
+        <div class="col-sm-2 side-menu">
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="side-menu-container">
+                    <ul class="nav navbar-nav dash-menu">
+                        <li ng-class="{active:isActiveDash('feed')}"><a ng-click="updateDashList('feed')" href title="{{'BUTTON.FEED' | translate}}"><span class="glyphicon glyphicon-globe"></span> {{'BUTTON.FEED' | translate}}</a></li>
+                        <li ng-class="{active:isActiveDash('drafts')}"><a ng-click="updateDashList('drafts')" href title="{{'BUTTON.DRAFTS' | translate}}"><span class="glyphicon glyphicon glyphicon-file"></span> <strong>{{'BUTTON.DRAFTS' | translate}}</strong><!--<span class="badge">{{drafts_count}}</span>--></a></li>
+                        <li ng-class="{active:isActiveDash('published')}"><a ng-click="updateDashList('published')" href title="{{'BUTTON.PUBLISHED' | translate}}"><span class="glyphicon glyphicon-list-alt"></span> {{'BUTTON.PUBLISHED' | translate}}</a></li>
+                        <li ng-class="{active:isActiveDash('favorites')}"><a ng-click="updateDashList('favorites')" href title="{{'BUTTON.FAVORITES' | translate}}"><span class="glyphicon glyphicon-heart"></span> {{'BUTTON.FAVORITES' | translate}}</a></li>
+                        <li ng-class="{active:isActiveDash('users')}"><a ng-click="updateDashList('users')" href title="{{'BUTTON.USERS' | translate}}"><span class="glyphicon glyphicon-user"></span> {{'BUTTON.USERS' | translate}}</a></li>
+                    </ul>
                 </div>
-              </li>
-              <!-- SINGLE NOTIFICATION  END-->
+            </nav>
+        </div><!-- /.sidemenu -->
 
-            </ul>
-          </div>
+        <div class="col-sm-3 col-sm-push-7 col-lg-push-7 col-md-push-7">
+            <h3>{{'HEADING.NOTIFICATIONS' | translate}}</h3>
+            <div class="panel panel-default">
+                <div class="panel-collapse">
+                    <div class="panel-body">
+                        <ul class="notifications">
 
-          <div class="panel-footer clearfix">
-             <a  ng-click="getLatestNotifications()" style="cursor:pointer" class="pull-left" >{{'BUTTON.GET_LATEST' | translate}}</a>
-             <a  ng-if="notifications.length > 0" ng-hide="notifications.length > 10" ng-click="getAllNotifications()" style="cursor:pointer" class="pull-right" >{{'BUTTON.LOAD_ALL' | translate}}</a>
-          </div>
-        </div>
-      </div>
-    </div>
+                            <p ng-if="!notifications || notifications_loading_animation" class="loading-gif-animation"><img src="./images/loading.gif"></p>
+                            <p ng-if="notifications && notifications.length == 0" >{{'NOTICE.NOTIFICATIONS_EMPTY' | translate}}</p>
 
-    <div class="col-sm-7 col-sm-pull-3 col-lg-pull-3 col-md-pull-3" style="height:100%; min-height: 100px;">
-      <div class="dashboard-main-content">
 
-          <ul ng-if="!isActiveDash('users') && !messages.no_drafts && !messages.no_published && !messages.no_favorites && !messages.no_following" class="nav nav-tabs nav-tab-pop">
-              <li ng-class="{active:isSortActive('latest')}">
-                  <a href ng-click="updateSortList('latest')" title="{{ 'CONTENT.TAB_LATEST' | translate }}">{{ 'CONTENT.TAB_LATEST' | translate }}</a>
-              </li>
-              <li ng-class="{active:isSortActive('popular')}">
-                  <a href ng-click="updateSortList('popular')" title="{{ 'CONTENT.TAB_MOST_VIEWED' | translate }}">{{ 'CONTENT.TAB_MOST_VIEWED' | translate }}</a>
-              </li>
-              <li ng-class="{active:isSortActive('favorited')}">
-                  <a href ng-click="updateSortList('favorited')" title="{{ 'CONTENT.TAB_TOP_FAVORITED' | translate }}">{{ 'CONTENT.TAB_TOP_FAVORITED' | translate }}</a>
-              </li>
-              <li ng-class="{active:isSortActive('commented')}">
-                  <a href ng-click="updateSortList('commented')" title="{{ 'CONTENT.TAB_TOP_COMMENTED' | translate }}">{{ 'CONTENT.TAB_TOP_COMMENTED' | translate }}</a>
-              </li>
-          </ul>
+                            <!-- SINGLE NOTIFICATION -->
+                            <li ng-repeat="n in notifications" ng-class="!n.seen ? 'new' : 'old'" class="left clearfix">
+                                <span class="notification-img pull-left">
+                                    <img ng-src="./images/user/{{n.data.user.image_thumb}}?last_modified={{n.data.user.last_modified}}" alt="{{n.data.user.first_name}} {{n.data.user.last_name}}" class="img-circle" />
+                                </span>
+                                <div class="notification-body clearfix">
+                                    <div class="header">
+                                        <p>
+                                            <a href="/#/user/{{n.data.user._id}}" title="{{n.data.user.first_name}} {{n.data.user.last_name}}">{{n.data.user.first_name}} {{n.data.user.last_name}}</a><br>
+                                            <small class="pull-left text-muted clearfix">
+                                                <span class="glyphicon glyphicon-time"></span> {{n.created | date:'dd.MM.yy HH:mm'}}
+                                            </small>
+                                        </p>
+                                    </div>
+                                    <p class="content-for-notification">{{'CONTENT.COMMENTED' | translate}}: "<a href="/#/scenario/{{n.data.scenario._id}}">{{ n.data.scenario.name | limitTo: 20 }}{{n.data.scenario.name.length > 20 ? '...' : ''}}</a>"</p>
+                                </div>
+                            </li>
+                            <!-- SINGLE NOTIFICATION  END-->
 
-        <p ng-if="!scenarios || loading_animation" class="loading-gif-animation"><img src="./images/loading.gif"></p>
+                        </ul>
+                    </div>
 
-        <p ng-if="messages.no_drafts"> {{'NOTICE.DRAFTS_EMPTY' | translate }}</p>
-        <p ng-if="messages.no_published"> {{'NOTICE.NO_PUBLISHED' | translate }}</p>
-        <p ng-if="messages.no_favorites"> {{'NOTICE.FAVORITES_EMPTY' | translate }}</p>
-        <p ng-if="messages.no_following"> {{'NOTICE.FEED_EMPTY' | translate }}</p>
-
-        <!-- scenario items -->
-        <div class="single_scenario_item" current-page="pagination.current" dir-paginate="scenario in scenarios | itemsPerPage: 10" total-items="total_count">
-
-          <!-- SINGLE SCENARIO -->
-  				<div class="row no-margin">
-                    <a ng-repeat="subject in scenario.subjects"><span class="dash-scenario-label pull-right label label-primary">{{subject.name}}</span></a>
-  					<div class="col-sm-12">
-  						<h4 ng-if="!scenario.draft" ><strong><a href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{scenario.name}}</a></strong></h4>
-  						<h4 ng-if="scenario.draft"><strong><a href="/#/edit/{{scenario._id}}" title="{{scenario.name}}">{{scenario.name}}</a></strong></h4>
-  					</div>
-  				</div>
-
-  				<div class="row no-margin">
-  					<div class="col-sm-4">
-  						<a ng-if="!scenario.draft" href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}" class="thumbnail">
-  							<img src="./images/thumbnail_200.png" alt="">
-  						</a>
-              <a ng-if="scenario.draft" href="/#/edit/{{scenario._id}}" title="{{scenario.name}}" class="thumbnail">
-  							<img src="./images/thumbnail_200.png" alt="">
-  						</a>
-  					</div>
-  					<div class="col-sm-8">
-  						<p class="extra-info">
-  							<span class="glyphicon glyphicon-user"></span> <a href="/#/user/{{scenario.author._id}}" title="{{scenario.author.first_name}} {{scenario.author.last_name}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a><br>
-  							<span class="glyphicon glyphicon-calendar"></span> {{scenario.created | date:'dd.MM.yyyy'}}
-  							<span>| <span class="glyphicon glyphicon-eye-open"></span><span> {{scenario.view_count}}</span></span>
-  							<span>| <span class="glyphicon glyphicon-heart"></span><span> {{scenario.favorites_count}}</span></span>
-  							<span>| <span class="glyphicon glyphicon-comment"></span><span> {{scenario.comments_count}}</span></span>
-  						</p>
-  						<p class="description">{{scenario.description}}</p>
-  						<div class="row open-button">
-  							<div class="col-xs-8">
-  								<span class="labels">
-  									<a href="#"><span class="label label-danger">{{scenario.method}}</span></a>
-  									<a href="#"><span class="label label-success">{{scenario.materialType}}</span></a>
-  								 </span>
-  							</div>
-  							<div class="col-xs-4">
-  							 <a ng-if="!scenario.draft" class="btn btn-success btn-block btn-sm pull-right" href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{ 'BUTTON.OPEN' | translate }} <span class="glyphicon glyphicon-chevron-right"></span></a>
-                             <div ng-if="scenario.draft">
-                                 <a href="/#/edit/{{scenario._id}}" class="btn btn-success pull-right" title="{{'BUTTON.EDIT' | translate }} {{scenario.name}}">{{'BUTTON.EDIT' | translate }}</a>
-                            </div>
-  							</div>
-  						</div>
-  					</div>
-  				</div>
-  				<hr>
-  				<!-- SINGLE SCENARIO END -->
-        </div>
-
-        <dir-pagination-controls on-page-change="pageChanged(newPageNumber)"></dir-pagination-controls>
-
-        <div ng-if="users_list.length > 0" >
-          <label>{{'INPUT.FILTER_USERS' | translate}} </label><input class="form-control" type="search" ng-model="filter_text">
-          <!-- USERS LIST -->
-          <div ng-repeat="u in users_list | filter:filter_text">
-            <div class="row no-margin">
-              <div class="col-xs-9">
-                <a class="user-list-image" href="/#/user/{{u._id}}" title="{{u.first_name}} {{u.last_name}}">
-                  <img ng-src=/images/user/{{u.image_thumb}}?last_modified={{u.last_modified}} alt="{{u.first_name}} {{u.last_name}}" class="img-circle dashboard-user-thumb" />
-                </a>
-                <a href="/#/user/{{u._id}}" title="{{u.first_name}} {{u.last_name}}">{{u.first_name}} {{u.last_name}}</a> <span ng-if="u.organization" class="user-list-organization">| {{u.organization}}</span>
-                <span style="display: none;" class="follow">{{u.following}}</span>
-              </div>
-              <div class="col-xs-3">
-                <a ng-click="addRemoveFollow(u._id,'remove')" ng-if="u.following" class="btn btn-default btn-xs user-list-follow-unfollow-btn">{{'BUTTON.UNFOLLOW' | translate}}</a>
-                <a ng-click="addRemoveFollow(u._id)" ng-if="!u.following" class="btn btn-success btn-xs user-list-follow-unfollow-btn">{{'BUTTON.FOLLOW' | translate}}</a>
-              </div>
-
+                    <div class="panel-footer clearfix">
+                        <a  ng-click="getLatestNotifications()" style="cursor:pointer" class="pull-left" >{{'BUTTON.GET_LATEST' | translate}}</a>
+                        <a  ng-if="notifications.length > 0" ng-hide="notifications.length > 10" ng-click="getAllNotifications()" style="cursor:pointer" class="pull-right" >{{'BUTTON.LOAD_ALL' | translate}}</a>
+                    </div>
+                </div>
             </div>
-            <hr class="no-margin">
-          </div>
-
         </div>
 
-      </div><!-- dashboard main content end -->
-    </div>
+        <div class="col-sm-7 col-sm-pull-3 col-lg-pull-3 col-md-pull-3" style="height:100%; min-height: 100px;">
+            <div class="dashboard-main-content">
 
-  </div>
+                <ul ng-if="!isActiveDash('users') && !messages.no_drafts && !messages.no_published && !messages.no_favorites && !messages.no_following" class="nav nav-tabs nav-tab-pop">
+                    <li ng-class="{active:isSortActive('latest')}">
+                        <a href ng-click="updateSortList('latest')" title="{{ 'CONTENT.TAB_LATEST' | translate }}">{{ 'CONTENT.TAB_LATEST' | translate }}</a>
+                    </li>
+                    <li ng-class="{active:isSortActive('popular')}">
+                        <a href ng-click="updateSortList('popular')" title="{{ 'CONTENT.TAB_MOST_VIEWED' | translate }}">{{ 'CONTENT.TAB_MOST_VIEWED' | translate }}</a>
+                    </li>
+                    <li ng-class="{active:isSortActive('favorited')}">
+                        <a href ng-click="updateSortList('favorited')" title="{{ 'CONTENT.TAB_TOP_FAVORITED' | translate }}">{{ 'CONTENT.TAB_TOP_FAVORITED' | translate }}</a>
+                    </li>
+                    <li ng-class="{active:isSortActive('commented')}">
+                        <a href ng-click="updateSortList('commented')" title="{{ 'CONTENT.TAB_TOP_COMMENTED' | translate }}">{{ 'CONTENT.TAB_TOP_COMMENTED' | translate }}</a>
+                    </li>
+                </ul>
+
+                <p ng-if="!scenarios || loading_animation" class="loading-gif-animation"><img src="./images/loading.gif"></p>
+
+                <p ng-if="messages.no_drafts"> {{'NOTICE.DRAFTS_EMPTY' | translate }}</p>
+                <p ng-if="messages.no_published"> {{'NOTICE.NO_PUBLISHED' | translate }}</p>
+                <p ng-if="messages.no_favorites"> {{'NOTICE.FAVORITES_EMPTY' | translate }}</p>
+                <p ng-if="messages.no_following"> {{'NOTICE.FEED_EMPTY' | translate }}</p>
+
+                <!-- scenario items -->
+                <div class="single_scenario_item" current-page="pagination.current" dir-paginate="scenario in scenarios | itemsPerPage: 10" total-items="total_count">
+
+                    <!-- SINGLE SCENARIO -->
+                    <div class="row no-margin">
+                        <a ng-repeat="subject in scenario.subjects"><span class="dash-scenario-label pull-right label label-primary">{{subject.name}}</span></a>
+                        <div class="col-sm-12">
+                            <h4 ng-if="!scenario.draft" ><strong><a href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{scenario.name}}</a></strong></h4>
+                            <h4 ng-if="scenario.draft"><strong><a href="/#/edit/{{scenario._id}}" title="{{scenario.name}}">{{scenario.name}}</a></strong></h4>
+                        </div>
+                    </div>
+
+                    <div class="row no-margin">
+                        <div class="col-sm-4">
+                            <a ng-if="!scenario.draft" href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}" class="thumbnail">
+                                <img src="./images/thumbnail_200.png" alt="">
+                            </a>
+                            <a ng-if="scenario.draft" href="/#/edit/{{scenario._id}}" title="{{scenario.name}}" class="thumbnail">
+                                <img src="./images/thumbnail_200.png" alt="">
+                            </a>
+                        </div>
+                        <div class="col-sm-8">
+                            <p class="extra-info">
+                                <span class="glyphicon glyphicon-user"></span> <a href="/#/user/{{scenario.author._id}}" title="{{scenario.author.first_name}} {{scenario.author.last_name}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a><br>
+                                <span class="glyphicon glyphicon-calendar"></span> {{scenario.created | date:'dd.MM.yyyy'}}
+                                <span>| <span class="glyphicon glyphicon-eye-open"></span><span> {{scenario.view_count}}</span></span>
+                                <span>| <span class="glyphicon glyphicon-heart"></span><span> {{scenario.favorites_count}}</span></span>
+                                <span>| <span class="glyphicon glyphicon-comment"></span><span> {{scenario.comments_count}}</span></span>
+                            </p>
+                            <p class="description">{{scenario.description}}</p>
+                            <div class="row open-button">
+                                <div class="col-xs-8">
+                                    <span class="labels">
+                                        <a href="#"><span class="label label-danger">{{scenario.method}}</span></a>
+                                        <a href="#"><span class="label label-success">{{scenario.materialType}}</span></a>
+                                    </span>
+                                </div>
+                                <div class="col-xs-4">
+                                    <a ng-if="!scenario.draft" class="btn btn-success btn-block btn-sm pull-right" href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{ 'BUTTON.OPEN' | translate }} <span class="glyphicon glyphicon-chevron-right"></span></a>
+                                    <div ng-if="scenario.draft">
+                                        <a href="/#/edit/{{scenario._id}}" class="btn btn-success pull-right" title="{{'BUTTON.EDIT' | translate }} {{scenario.name}}">{{'BUTTON.EDIT' | translate }}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <!-- SINGLE SCENARIO END -->
+                </div>
+
+                <dir-pagination-controls on-page-change="pageChanged(newPageNumber)"></dir-pagination-controls>
+
+                <div ng-if="users_list.length > 0" >
+                    <label>{{'INPUT.FILTER_USERS' | translate}} </label><input class="form-control" type="search" ng-model="filter_text">
+                    <!-- USERS LIST -->
+                    <div ng-repeat="u in users_list | filter:filter_text">
+                        <div class="row no-margin">
+                            <div class="col-xs-9">
+                                <a class="user-list-image" href="/#/user/{{u._id}}" title="{{u.first_name}} {{u.last_name}}">
+                                    <img ng-src=/images/user/{{u.image_thumb}}?last_modified={{u.last_modified}} alt="{{u.first_name}} {{u.last_name}}" class="img-circle dashboard-user-thumb" />
+                                </a>
+                                <a href="/#/user/{{u._id}}" title="{{u.first_name}} {{u.last_name}}">{{u.first_name}} {{u.last_name}}</a> <span ng-if="u.organization" class="user-list-organization">| {{u.organization}}</span>
+                                <span style="display: none;" class="follow">{{u.following}}</span>
+                            </div>
+                            <div class="col-xs-3">
+                                <a ng-click="addRemoveFollow(u._id,'remove')" ng-if="u.following" class="btn btn-default btn-xs user-list-follow-unfollow-btn">{{'BUTTON.UNFOLLOW' | translate}}</a>
+                                <a ng-click="addRemoveFollow(u._id)" ng-if="!u.following" class="btn btn-success btn-xs user-list-follow-unfollow-btn">{{'BUTTON.FOLLOW' | translate}}</a>
+                            </div>
+
+                        </div>
+                        <hr class="no-margin">
+                    </div>
+
+                </div>
+
+            </div><!-- dashboard main content end -->
+        </div>
+
+    </div>
 </div>

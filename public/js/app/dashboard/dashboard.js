@@ -106,6 +106,8 @@
 
         function getScenarios(query){
 
+            console.log(query);
+
             requestService.post('/scenarios/dashboard', query)
             .then(function(data) {
 
@@ -223,14 +225,13 @@
         };
 
         $scope.updateDashList = function(tab){
-            $scope.pageChanged(1);
             if(tab === 'feed ' || tab === 'drafts' || tab === 'published' || tab === 'favorites' || tab === 'users'){
                 $rootScope.dash_active_tab = tab;
-                getDashboardData();
             }else{
                 $rootScope.dash_active_tab = 'feed';
-                getDashboardData();
             }
+
+            $scope.pageChanged(1);
         };
 
         $scope.isSortActive = function(tab){
