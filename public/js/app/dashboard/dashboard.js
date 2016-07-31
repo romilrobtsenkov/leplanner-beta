@@ -106,15 +106,13 @@
 
         function getScenarios(query){
 
-            console.log(query);
-
             requestService.post('/scenarios/dashboard', query)
             .then(function(data) {
-
+                console.log(data);
                 $scope.drafts_count = data.scenarios.length;
                 $scope.total_count =  data.count;
                 if(data.scenarios.length === 0){
-                    switch (query.page) {
+                    switch (query.tab) {
                         case 'feed':
                             $scope.messages.no_following = true;
                             break;

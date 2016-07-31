@@ -281,7 +281,7 @@
                 if (!data._id) { window.alert('something went wrong'); }
 
                 //redirect user to edit page
-                $location.path('/edit-details/'+data._id);
+                $location.path('/edit/'+data._id);
 
             })
             .catch(function (error) {

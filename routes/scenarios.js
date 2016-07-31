@@ -458,7 +458,7 @@ router.post('/dashboard/', restrict, function(req, res, next) {
                 return mongoService.findWithPromise(q, Favorite)
                 .then(function (favorites) {
 
-                    if(favorites.length === 0){ return Promise.resolve([]); }
+                    if(favorites.length === 0){ return Promise.resolve({scenarios: [], count: 0}); }
 
                     var list_of_scenario_ids = [];
                     //create a list of scenario ids
