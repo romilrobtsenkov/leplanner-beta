@@ -1,141 +1,141 @@
 <div class="container main-content" ng-if="!profile && !no_user">
-  <p class="loading-gif-animation"><img src="./images/loading.gif"></p>
+    <p class="loading-gif-animation"><img src="./images/loading.gif"></p>
 </div>
 <div class="container main-content" ng-show="no_user">
-  {{'NOTICE.NO_USER' | translate}}
+    {{'NOTICE.NO_USER' | translate}}
 </div>
 <div class="container main-content" ng-if="profile && !no_user">
-  <div class="row single_member">
+    <div class="row single_member">
 
-    <div style="border-right: 1px solid lightgray;" class="col-sm-3">
+        <div style="border-right: 1px solid lightgray;" class="col-sm-3">
 
-      <!-- user data -->
-      <div class="profile-sidebar">
-        <div class="profile-userpic">
-          <img ng-src="./images/user/{{profile.image}}?last_modified={{profile.last_modified}}" class="img-responsive" alt="">
+            <!-- user data -->
+            <div class="profile-sidebar">
+                <div class="profile-userpic">
+                    <img ng-src="./images/user/{{profile.image}}?last_modified={{profile.last_modified}}" class="img-responsive" alt="">
+                </div>
+                <div class="profile-userbuttons">
+                    <a ng-click="addFollow()" ng-if="!is_following && user && user._id!=profile._id" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> {{'BUTTON.FOLLOW' | translate}}</a>
+                    <a ng-click="removeFollow()" ng-if="is_following && user && user._id!=profile._id" class="btn btn-default btn-sm"><span class="glyphicon glyphicons-circle-minus"></span> {{'BUTTON.UNFOLLOW' | translate}}</a>
+                    <a href="/#/login" ng-if="!user" class=""> {{'BUTTON.LOG_IN_TO_FOLLOW' | translate}}</a>
+                    <a ng-if="user._id==profile._id" disabled="disabled" class="btn btn-success btn-sm">{{'BUTTON.FOLLOW_YOURSELF' | translate}}</a>
+                </div>
+                <div class="profile-usertitle">
+                    <div class="profile-usertitle-name">
+                        {{profile.first_name}} {{profile.last_name}}
+                    </div>
+                    <div class="profile-usertitle-job">
+                        {{profile.organization}}
+                    </div>
+                    <div class="profile-usertitle-sign-up">
+                        <span class="glyphicon glyphicon-time"></span> <span>{{'CONTENT.JOINED' | translate}} {{profile.created | date:'MM.yyyy'}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-if="followings" class="profile-side-box">
+                <h3>{{'HEADING.FOLLOWING' | translate}}</h3>
+
+                <div class="row">
+                    <div class="col-xs-3 col-md-3" ng-repeat="f in followings | limitTo:sidebox_quantity.followings">
+                        <a href="/#/user/{{f.following._id}}" class="thumbnail" title="{{f.following.first_name}} {{f.following.last_name}}">
+                            <img ng-src="./images/user/{{f.following.image_thumb}}?last_modified={{f.following.last_modified}}" alt="User">
+                        </a>
+                    </div>
+                </div>
+
+                <!-- more button -->
+                <a ng-click="expandSideBox('followings')" ng-if="sidebox_quantity.followings == 8  && followings.length > 8" class="pull-right" style="cursor: pointer; margin-right:-10px; margin-top:10px;"> {{'BUTTON.MORE' | translate}} <span class="glyphicon glyphicon-menu-right"></span></a>
+
+            </div>
+
+            <div ng-if="followers" class="profile-side-box">
+                <h3>{{'HEADING.FOLLOWERS' | translate}}</h3>
+
+                <div class="row">
+                    <div class="col-xs-3 col-md-3" ng-repeat="f in followers | limitTo:sidebox_quantity.followers">
+                        <a href="/#/user/{{f.follower._id}}" class="thumbnail" title="{{f.follower.first_name}} {{f.follower.last_name}}">
+                            <img ng-src="./images/user/{{f.follower.image_thumb}}?last_modified={{f.follower.last_modified}}" alt="User">
+                        </a>
+                    </div>
+                </div>
+
+                <!-- more button -->
+                <a ng-click="expandSideBox('followers')" ng-if="sidebox_quantity.followers == 8 && followers.length > 8" class="pull-right" style="cursor: pointer; margin-right:-10px; margin-top:10px;"> {{'BUTTON.MORE' | translate}} <span class="glyphicon glyphicon-menu-right"></span></a>
+
+            </div>
+            <br>
         </div>
-        <div class="profile-userbuttons">
-          <a ng-click="addRemoveFollow()" ng-if="!is_following && user && user._id!=profile._id" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> {{'BUTTON.FOLLOW' | translate}}</a>
-          <a ng-click="addRemoveFollow('remove')" ng-if="is_following && user && user._id!=profile._id" class="btn btn-default btn-sm"><span class="glyphicon glyphicons-circle-minus"></span> {{'BUTTON.UNFOLLOW' | translate}}</a>
-          <a href="/#/login" ng-if="!user" class=""> {{'BUTTON.LOG_IN_TO_FOLLOW' | translate}}</a>
-          <a ng-if="user._id==profile._id" disabled="disabled" class="btn btn-success btn-sm">{{'BUTTON.FOLLOW_YOURSELF' | translate}}</a>
-        </div>
-        <div class="profile-usertitle">
-          <div class="profile-usertitle-name">
-            {{profile.first_name}} {{profile.last_name}}
-          </div>
-          <div class="profile-usertitle-job">
-            {{profile.organization}}
-          </div>
-          <div class="profile-usertitle-sign-up">
-            <span class="glyphicon glyphicon-time"></span> <span>{{'CONTENT.JOINED' | translate}} {{profile.created | date:'MM.yyyy'}}</span>
-          </div>
-        </div>
-      </div>
 
-      <div ng-if="followings" class="profile-side-box">
-        <h3>{{'HEADING.FOLLOWING' | translate}}</h3>
+        <div class="col-sm-9">
 
-        <div class="row">
-          <div class="col-xs-3 col-md-3" ng-repeat="f in followings | limitTo:sidebox_quantity.followings">
-            <a href="/#/user/{{f.following._id}}" class="thumbnail" title="{{f.following.first_name}} {{f.following.last_name}}">
-              <img ng-src="./images/user/{{f.following.image_thumb}}?last_modified={{f.following.last_modified}}" alt="User">
-            </a>
-          </div>
-        </div>
+            <ul class="nav nav-tabs nav-tab-pop">
+                <li ng-class="{active:isSortActive('latest')}">
+                    <a href ng-click="updateSortList('latest')" title="{{ 'CONTENT.TAB_LATEST' | translate }}">{{ 'CONTENT.TAB_LATEST' | translate }}</a>
+                </li>
+                <li ng-class="{active:isSortActive('popular')}">
+                    <a href ng-click="updateSortList('popular')" title="{{ 'CONTENT.TAB_MOST_VIEWED' | translate }}">{{ 'CONTENT.TAB_MOST_VIEWED' | translate }}</a>
+                </li>
+                <li ng-class="{active:isSortActive('favorited')}">
+                    <a href ng-click="updateSortList('favorited')" title="{{ 'CONTENT.TAB_TOP_FAVORITED' | translate }}">{{ 'CONTENT.TAB_TOP_FAVORITED' | translate }}</a>
+                </li>
+                <li ng-class="{active:isSortActive('commented')}">
+                    <a href ng-click="updateSortList('commented')" title="{{ 'CONTENT.TAB_TOP_COMMENTED' | translate }}">{{ 'CONTENT.TAB_TOP_COMMENTED' | translate }}</a>
+                </li>
+            </ul>
 
-        <!-- more button -->
-        <a ng-click="expandSideBox('followings')" ng-if="sidebox_quantity.followings == 8  && followings.length > 8" class="pull-right" style="cursor: pointer; margin-right:-10px; margin-top:10px;"> {{'BUTTON.MORE' | translate}} <span class="glyphicon glyphicon-menu-right"></span></a>
-
-      </div>
-
-      <div ng-if="followers" class="profile-side-box">
-        <h3>{{'HEADING.FOLLOWERS' | translate}}</h3>
-
-        <div class="row">
-          <div class="col-xs-3 col-md-3" ng-repeat="f in followers | limitTo:sidebox_quantity.followers">
-            <a href="/#/user/{{f.follower._id}}" class="thumbnail" title="{{f.follower.first_name}} {{f.follower.last_name}}">
-              <img ng-src="./images/user/{{f.follower.image_thumb}}?last_modified={{f.follower.last_modified}}" alt="User">
-            </a>
-          </div>
-        </div>
-
-        <!-- more button -->
-        <a ng-click="expandSideBox('followers')" ng-if="sidebox_quantity.followers == 8 && followers.length > 8" class="pull-right" style="cursor: pointer; margin-right:-10px; margin-top:10px;"> {{'BUTTON.MORE' | translate}} <span class="glyphicon glyphicon-menu-right"></span></a>
-
-      </div>
-      <br>
-    </div>
-
-    <div class="col-sm-9">
-
-        <ul class="nav nav-tabs nav-tab-pop">
-          <li ng-class="{active:isSortActive('latest')}">
-            <a href ng-click="updateSortList('latest')" title="{{ 'CONTENT.TAB_LATEST' | translate }}">{{ 'CONTENT.TAB_LATEST' | translate }}</a>
-          </li>
-          <li ng-class="{active:isSortActive('popular')}">
-            <a href ng-click="updateSortList('popular')" title="{{ 'CONTENT.TAB_MOST_VIEWED' | translate }}">{{ 'CONTENT.TAB_MOST_VIEWED' | translate }}</a>
-          </li>
-          <li ng-class="{active:isSortActive('favorited')}">
-            <a href ng-click="updateSortList('favorited')" title="{{ 'CONTENT.TAB_TOP_FAVORITED' | translate }}">{{ 'CONTENT.TAB_TOP_FAVORITED' | translate }}</a>
-          </li>
-          <li ng-class="{active:isSortActive('commented')}">
-            <a href ng-click="updateSortList('commented')" title="{{ 'CONTENT.TAB_TOP_COMMENTED' | translate }}">{{ 'CONTENT.TAB_TOP_COMMENTED' | translate }}</a>
-          </li>
-        </ul>
-
-      <p ng-if="!scenarios || loading_animation" class="loading-gif-animation"><img src="./images/loading.gif"></p>
-      <p ng-if="no_scenarios && user._id==profile._id"> {{'NOTICE.NO_PUBLISHED' | translate}} </a></p>
-      <p ng-if="no_scenarios && user._id!=profile._id"> {{'NOTICE.NO_USER_SCENARIOS' | translate}}</p>
+            <p ng-if="!scenarios || loading_animation" class="loading-gif-animation"><img src="./images/loading.gif"></p>
+            <p ng-if="no_scenarios && user._id==profile._id"> {{'NOTICE.NO_PUBLISHED' | translate}} </a></p>
+            <p ng-if="no_scenarios && user._id!=profile._id"> {{'NOTICE.NO_USER_SCENARIOS' | translate}}</p>
 
 
-      <hr>
-      <!-- scenario items -->
-      <div class="single_scenario_item" dir-paginate="scenario in scenarios | itemsPerPage: 10" total-items="total_count" current-page="pagination.current" >
+            <hr>
+            <!-- scenario items -->
+            <div class="single_scenario_item" dir-paginate="scenario in scenarios | itemsPerPage: 10" total-items="total_count" current-page="pagination.current" >
 
-        <!-- SINGLE SCENARIO -->
-				<div class="row no-margin">
+                <!-- SINGLE SCENARIO -->
+                <div class="row no-margin">
                     <a ng-repeat="subject in scenario.subjects"><span class="dash-scenario-label pull-right label label-primary">{{subject.name}}</span></a>
-					<div class="col-sm-12">
-						<h4><strong><a href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{scenario.name}}</a></strong></h4>
-					</div>
-				</div>
+                    <div class="col-sm-12">
+                        <h4><strong><a href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{scenario.name}}</a></strong></h4>
+                    </div>
+                </div>
 
-				<div class="row no-margin">
-					<div class="col-sm-4">
-						<a href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}" class="thumbnail">
-							<img src="./images/thumbnail_200.png" alt="">
-						</a>
-					</div>
-					<div class="col-sm-8">
-						<p class="extra-info">
-							<span class="glyphicon glyphicon-user"></span> <a href="/#/user/{{scenario.author._id}}" title="{{scenario.author.first_name}} {{scenario.author.last_name}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a><br>
-							<span class="glyphicon glyphicon-calendar"></span> {{scenario.created | date:'dd.MM.yyyy'}}
-							<span>| <span class="glyphicon glyphicon-eye-open"></span><span> {{scenario.view_count}}</span></span>
-							<span>| <span class="glyphicon glyphicon-heart"></span><span> {{scenario.favorites_count}}</span></span>
-							<span>| <span class="glyphicon glyphicon-comment"></span><span> {{scenario.comments_count}}</span></span>
-						</p>
-						<p class="description">{{scenario.description}}</p>
-						<div class="row open-button">
-							<div class="col-xs-8">
-								<span class="labels">
-									<a href="#"><span class="label label-danger">{{scenario.method}}</span></a>
-									<a href="#"><span class="label label-success">{{scenario.materialType}}</span></a>
-								 </span>
-							</div>
-							<div class="col-xs-4">
-							 <a class="btn btn-success btn-block btn-sm pull-right" href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{'BUTTON.OPEN' | translate}} <span class="glyphicon glyphicon-chevron-right"></span></a>
-							</div>
-						</div>
-					</div>
-				</div>
-				<hr>
-				<!-- SINGLE SCENARIO END -->
+                <div class="row no-margin">
+                    <div class="col-sm-4">
+                        <a href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}" class="thumbnail">
+                            <img src="./images/thumbnail_200.png" alt="">
+                        </a>
+                    </div>
+                    <div class="col-sm-8">
+                        <p class="extra-info">
+                            <span class="glyphicon glyphicon-user"></span> <a href="/#/user/{{scenario.author._id}}" title="{{scenario.author.first_name}} {{scenario.author.last_name}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a><br>
+                            <span class="glyphicon glyphicon-calendar"></span> {{scenario.created | date:'dd.MM.yyyy'}}
+                            <span>| <span class="glyphicon glyphicon-eye-open"></span><span> {{scenario.view_count}}</span></span>
+                            <span>| <span class="glyphicon glyphicon-heart"></span><span> {{scenario.favorites_count}}</span></span>
+                            <span>| <span class="glyphicon glyphicon-comment"></span><span> {{scenario.comments_count}}</span></span>
+                        </p>
+                        <p class="description">{{scenario.description}}</p>
+                        <div class="row open-button">
+                            <div class="col-xs-8">
+                                <span class="labels">
+                                    <a href="#"><span class="label label-danger">{{scenario.method}}</span></a>
+                                    <a href="#"><span class="label label-success">{{scenario.materialType}}</span></a>
+                                </span>
+                            </div>
+                            <div class="col-xs-4">
+                                <a class="btn btn-success btn-block btn-sm pull-right" href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{'BUTTON.OPEN' | translate}} <span class="glyphicon glyphicon-chevron-right"></span></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <!-- SINGLE SCENARIO END -->
 
-      </div>
-      <dir-pagination-controls on-page-change="pageChanged(newPageNumber)"></dir-pagination-controls>
+            </div>
+            <dir-pagination-controls on-page-change="pageChanged(newPageNumber)"></dir-pagination-controls>
+
+        </div>
 
     </div>
-
-  </div>
 </div>

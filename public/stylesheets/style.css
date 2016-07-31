@@ -692,6 +692,7 @@ display: none;
 .dashboard-user-thumb {
     width: 40px;
     padding: 10px 0;
+    overflow: hidden;
 }
 
 .loading-gif-animation {

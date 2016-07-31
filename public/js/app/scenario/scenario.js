@@ -131,45 +131,27 @@
 
         };
 
-        /* TODO */
-        $scope.addRemoveFollow = function(remove_follow){
+        /* Fixed */
+        $scope.addFollow = function(){
 
-            var params = {
-                user: {
-                    _id: $rootScope.user._id
-                },
-                following: {
-                    _id: $scope.scenario.author._id
-                }
-            };
+            requestService.post('/followers/' + $scope.scenario.author._id)
+            .then(function(follower) {
+                $scope.is_following = true;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        };
 
-            if(typeof remove_follow !== 'undefined'){
-                params.remove_follow = true;
-            }
+        /* Fixed */
+        $scope.removeFollow = function(){
 
-            requestService.post('/user/add-remove-follow', params)
-            .then(function(data) {
-
-                if(data.success){
-                    //console.log(data.success);
-                    if(data.success === 'unfollow'){
-                        $scope.is_following = false;
-                    }else{
-                        $scope.is_following = true;
-                    }
-                }
-
-                if(data.error){
-                    switch (data.error.id) {
-                        case 100:
-                        // user changed
-                        $location.path('/');
-                        break;
-                        default:
-                        console.log(data.error);
-
-                    }
-                }
+            requestService.post('/followers/remove/' + $scope.scenario.author._id)
+            .then(function(follower) {
+                $scope.is_following = false;
+            })
+            .catch(function (error) {
+                console.log(error);
             });
         };
 

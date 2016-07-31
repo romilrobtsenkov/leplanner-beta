@@ -146,8 +146,8 @@
                                 <span style="display: none;" class="follow">{{u.following}}</span>
                             </div>
                             <div class="col-xs-3">
-                                <a ng-click="addRemoveFollow(u._id,'remove')" ng-if="u.following" class="btn btn-default btn-xs user-list-follow-unfollow-btn">{{'BUTTON.UNFOLLOW' | translate}}</a>
-                                <a ng-click="addRemoveFollow(u._id)" ng-if="!u.following" class="btn btn-success btn-xs user-list-follow-unfollow-btn">{{'BUTTON.FOLLOW' | translate}}</a>
+                                <a ng-click="removeFollow(u._id)" ng-if="u.following" class="btn btn-default btn-xs user-list-follow-unfollow-btn">{{'BUTTON.UNFOLLOW' | translate}}</a>
+                                <a ng-click="addFollow(u._id)" ng-if="!u.following" class="btn btn-success btn-xs user-list-follow-unfollow-btn">{{'BUTTON.FOLLOW' | translate}}</a>
                             </div>
 
                         </div>

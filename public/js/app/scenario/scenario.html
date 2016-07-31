@@ -1,238 +1,238 @@
 <div class="container main-content" ng-if="!scenario && !no_scenario">
-  <p class="loading-gif-animation"><img src="./images/loading.gif"></p>
+    <p class="loading-gif-animation"><img src="./images/loading.gif"></p>
 </div>
 <div class="container main-content" ng-if="no_scenario">
-  {{'NOTICE.NO_SCENARIO' | translate}}
+    {{'NOTICE.NO_SCENARIO' | translate}}
 </div>
 <div class="container main-content" ng-show="scenario.draft">
-  {{'CONTENT.IS_DRAFT' | translate}} <a class="print-button btn btn-primary" ng-if="user._id==scenario.author._id" href="/#/edit/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> {{'BUTTON.EDIT' | translate}}</a>
+    {{'CONTENT.IS_DRAFT' | translate}} <a class="print-button btn btn-primary" ng-if="user._id==scenario.author._id" href="/#/edit/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> {{'BUTTON.EDIT' | translate}}</a>
 </div>
 <div class="container main-content" ng-if="scenario && !no_scenario && !scenario.draft && fully_loaded">
 
-  <timeline></timeline>
-  <h4 class="only-print-title"><strong><a href="/#/scenario/{{scenario._id}}">{{scenario.name}}</a></strong></h4>
-  <h5 class="only-print-title"><strong>@<a href="/#/user/{{scenario.author._id}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a></strong></h5>
-  <br>
-  <div class="row scenario-page">
+    <timeline></timeline>
+    <h4 class="only-print-title"><strong><a href="/#/scenario/{{scenario._id}}">{{scenario.name}}</a></strong></h4>
+    <h5 class="only-print-title"><strong>@<a href="/#/user/{{scenario.author._id}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a></strong></h5>
+    <br>
+    <div class="row scenario-page">
 
-    <div class="col-sm-9 col-sm-push-3 col-lg-push-3 col-md-push-3">
+        <div class="col-sm-9 col-sm-push-3 col-lg-push-3 col-md-push-3">
 
-      <div class="single_scenario_item">
+            <div class="single_scenario_item">
 
-        <div class="row">
-          <div class="col-xs-9">
-            <h2 class="scnario-name" ><strong>{{scenario.name}}</strong></h2>
-            <span ng-repeat="s in scenario.subjects" class="label label-default subject-labels">{{s.name}}</span>
-            <br>
-            <br>
-          </div>
-          <div class="col-xs-3">
-            <div ng-if="!is_favorite && user">
-                <a ng-click="addFavorite()" class="add-favorite-button btn btn-success btn-sm pull-right"><span class="glyphicon glyphicon-heart"></span> {{'BUTTON.FAVORITE' | translate}}</a>
-            </div>
-            <div ng-if="is_favorite && user">
-              <a ng-click="removeFavorite()" class="add-favorite-button btn btn-default btn-sm pull-right"><span class="glyphicon glyphicon-heart-empty"></span> {{'BUTTON.UNFAVORITE' | translate}}</a>
-            </div>
-            <div ng-if=" user">
-              <a ng-click="createCopy()" style="margin-top:5px;" class="add-favorite-button btn btn-default btn-sm pull-right"><span class="glyphicon glyphicon-duplicate"></span> {{'BUTTON.CREATE_COPY' | translate}}</a>
-            </div>
-            <div ng-if="!user">
-              <a class="pull-right" ng-click='navigateToLogin($event)' href="/#/login">{{'BUTTON.LOG_IN_TO_FAVORITE' | translate}}</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-xs-9">
-            <span class="glyphicon glyphicon-calendar scnario-created"></span> <span> {{scenario.created | date:'dd.MM.yyyy HH:mm'}}</span> | <span class="glyphicon glyphicon-eye-open"></span> <span> {{scenario.view_count}}</span>
-            <span>| <span class="glyphicon glyphicon-heart"></span><span> {{scenario.favorites_count}}</span> | </span>
-            <a class="btn btn-xs btn-primary" ng-href="#/scenario-text/{{scenario._id}}">{{'BUTTON.TEXT_VIEW' | translate}}</a><br>
-            <span>{{'INPUT.GRADE' | translate}}: {{scenario.grade}}</span> | <span>{{'INPUT.DURATION' | translate}}: {{scenario.duration}} min</span><br>
-          </div>
-          <div class="col-xs-3">
-            <a class="print-button btn btn-sm pull-right" ng-if="user._id==scenario.author._id" href="/#/edit/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> {{'BUTTON.EDIT' | translate}}</a>
-          </div>
-        </div>
-
-        <div class="row visible-xs-block">
-          <div class="col-xs-9">
-            <div class="small-profile">
-              <div class="profile-usertitle-name">
-                <a a href="/#/user/{{scenario.author._id}}" title="{{scenario.author.first_name}} {{scenario.author.last_name}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a>
-              </div>
-              <div class="profile-usertitle-job">
-                {{scenario.author.organization}}
-              </div>
-              <div class="small-profile-usertitle-sign-up">
-                <span class="glyphicon glyphicon-time"></span> <span>{{'CONTENT.JOINED' | translate}} {{scenario.author.created | date:'MM.yyyy'}}</span>
-              </div>
-            </div>
-          </div>
-          <div class="col-xs-3">
-            <div class="small-profile-userbuttons">
-              <a ng-click="addRemoveFollow()" ng-if="!is_following && user && user._id!=scenario.author._id" class="btn btn-success btn-sm pull-right"><span class="glyphicon glyphicon-plus-sign"></span> {{'BUTTON.FOLLOW' | translate}}</a>
-              <a ng-click="addRemoveFollow('remove')" ng-if="is_following && user && user._id!=scenario.author._id" class="btn btn-default btn-sm pull-right"><span class="glyphicon glyphicons-circle-minus"></span> {{'BUTTON.UNFOLLOW' | translate}}</a>
-              <a href="/#/login" ng-if="!user" class="pull-right"> {{'BUTTON.LOG_IN_TO_FOLLOW' | translate}}</a>
-              <a ng-if="user._id==scenario.author._id" disabled="disabled" class="btn btn-success btn-sm pull-right">{{'BUTTON.FOLLOW_YOURSELF' | translate}}</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-sm-12">
-            <br>
-            <p class="enable-lines" ng-bind-html="scenario.description | linky:'_blank'"></p>
-            <div class="tags">
-                <a style="display:inline-block; padding:5px;" ng-repeat="tag in scenario.tags" ng-href="#/tags/{{tag.text}}">#{{tag.text}}</a>
-            </div>
-            <br>
-            <div class="row">
-              <div class="col-sm-12">
-                <span class="labels">
-                  <span class="label label-danger">{{scenario.method}}</span>
-                  <span class="label label-success">{{scenario.materialType}}</span>
-               </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <a ng-if="hasErasmusTag('CreativeClassroomCollection') || hasErasmusTag('CreativeClassroomKogumik')" href="https://creativeclassroomprojekt.wordpress.com"><img style="width:260px;margin-top:-15px;margin-bottom:10px;" src="/images/Erasmus.png"></a>
-
-
-        <p style="margin-bottom:15px;"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /> {{'CONTENT.THIS_WORK_HAS' | translate}} <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">{{'CONTENT.CC_LICENSE' | translate}}</a> {{'CONTENT.LICENSE' | translate}}</p>
-
-        <div style="margin-bottom:10px;" ng-if="scenario.mother_scenario">
-            <p><strong>{{'HEADING.MOTHER_SCENARIO' | translate}}:</strong></p>
-            <ul>
-                <li>{{scenario.mother_scenario.author.first_name}} {{scenario.mother_scenario.author.last_name}} | <a ng-href="/#/scenario/{{scenario.mother_scenario._id}}" alt="{{scenario.mother_scenario.name}}">{{scenario.mother_scenario.name}}</a></li>
-            </ul>
-        </div>
-        <div ng-if="scenario.child_scenarios.length > 0">
-            <p><strong>{{'HEADING.CHILD_SCENARIOS' | translate}}:</strong></p>
-            <ul>
-                <li ng-repeat="child in scenario.child_scenarios" >{{child.author.first_name}} {{child.author.last_name}} | <a ng-href="/#/scenario/{{child._id}}" alt="{{child.name}}">{{child.name}}</a></li>
-            </ul>
-        </div>
-
-      </div>
-
-      <div class="commets">
-
-        <p ng-if="!user"><strong>{{'NOTICE.LOGIN_TO_COMMENT' | translate}}</strong></p>
-        <div ng-if="user">
-          <form ng-submit="addComment(comment)">
-            <div class="form-group">
-              <label for="comment-text"><h3>{{'HEADING.ADD_COMMENT' | translate}}</h3></label><br>
-              <div ng-if='save_error' class="alert alert-danger" role="alert">{{save_error}}</div>
-              <div ng-if='save_success' class="alert alert-success" role="alert">{{save_success}}</div>
-              <textarea id="comment-text" name="comment-text" ng-model="comment.text" class="form-control" rows="5" placeholder="{{'INPUT.WRITE_COMMENT_HERE' | translate}}"></textarea>
-            </div>
-            <div class="form-submit">
-              <button ng-disabled="adding_comment_in_progress" type="submit" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-share-alt"></span> {{'BUTTON.ADD' | translate}}</button>
-            </div>
-          </form>
-        </div>
-        <br>
-
-        <div ng-if="scenario.comments_count > 0">
-
-          <h3>{{'HEADING.COMMENTS' | translate}} ({{scenario.comments_count}})</h3>
-
-          <p ng-if="!comments" class="loading-gif-animation"><img src="./images/loading.gif"></p>
-
-          <!-- Comment -->
-          <article ng-repeat="comment in comments" class="row comments-list">
-          <div class="col-sm-2 col-xs-3">
-            <figure class="thumbnail">
-              <a href="/#/user/{{comment.author._id}}" title="{{comment.author.first_name}} {{comment.author.last_name}}">
-                <img class="img-responsive" ng-src="./images/user/{{comment.author.image_thumb}}?last_modified={{comment.author.last_modified}}">
-              </a>
-            </figure>
-          </div>
-          <div class="col-sm-10 col-xs-9 comment-closer">
-            <div class="panel panel-default">
-              <div class="panel-body">
-                <header class="text-left">
-                  <a ng-if="user._id==scenario.author._id" ng-click="deleteComment(comment._id,comment.text)" class="pull-right" style="cursor:pointer;"><span style="color:gray;" class="glyphicon glyphicon-remove"><span ng-if="showDeleteText(comment._id)">{{comment_delete_text}}</span></span></a>
-                  <div class="comment-user">
-                    <a href="/#/user/{{comment.author._id}}" title="{{comment.author.first_name}} {{comment.author.last_name}}">
-                      {{comment.author.first_name}} {{comment.author.last_name}}
-                    </a>
-                  </div>
-                  <time class="comment-date"><span class="glyphicon glyphicon-time"></span> {{comment.created | date:'dd.MM.yyyy HH:mm'}}</time>
-                </header>
-                <div class="comment-post">
-                  <p class="enable-lines" ng-bind-html="comment.text | linky:'_blank'">
-                  </p>
+                <div class="row">
+                    <div class="col-xs-9">
+                        <h2 class="scnario-name" ><strong>{{scenario.name}}</strong></h2>
+                        <span ng-repeat="s in scenario.subjects" class="label label-default subject-labels">{{s.name}}</span>
+                        <br>
+                        <br>
+                    </div>
+                    <div class="col-xs-3">
+                        <div ng-if="!is_favorite && user">
+                            <a ng-click="addFavorite()" class="add-favorite-button btn btn-success btn-sm pull-right"><span class="glyphicon glyphicon-heart"></span> {{'BUTTON.FAVORITE' | translate}}</a>
+                        </div>
+                        <div ng-if="is_favorite && user">
+                            <a ng-click="removeFavorite()" class="add-favorite-button btn btn-default btn-sm pull-right"><span class="glyphicon glyphicon-heart-empty"></span> {{'BUTTON.UNFAVORITE' | translate}}</a>
+                        </div>
+                        <div ng-if=" user">
+                            <a ng-click="createCopy()" style="margin-top:5px;" class="add-favorite-button btn btn-default btn-sm pull-right"><span class="glyphicon glyphicon-duplicate"></span> {{'BUTTON.CREATE_COPY' | translate}}</a>
+                        </div>
+                        <div ng-if="!user">
+                            <a class="pull-right" ng-click='navigateToLogin($event)' href="/#/login">{{'BUTTON.LOG_IN_TO_FAVORITE' | translate}}</a>
+                        </div>
+                    </div>
                 </div>
-                <!--<p class="text-right"><a href="#" disabled="disabled" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-share-alt"></span> Respond</a></p>-->
-              </div>
+
+                <div class="row">
+                    <div class="col-xs-9">
+                        <span class="glyphicon glyphicon-calendar scnario-created"></span> <span> {{scenario.created | date:'dd.MM.yyyy HH:mm'}}</span> | <span class="glyphicon glyphicon-eye-open"></span> <span> {{scenario.view_count}}</span>
+                        <span>| <span class="glyphicon glyphicon-heart"></span><span> {{scenario.favorites_count}}</span> | </span>
+                        <a class="btn btn-xs btn-primary" ng-href="#/scenario-text/{{scenario._id}}">{{'BUTTON.TEXT_VIEW' | translate}}</a><br>
+                        <span>{{'INPUT.GRADE' | translate}}: {{scenario.grade}}</span> | <span>{{'INPUT.DURATION' | translate}}: {{scenario.duration}} min</span><br>
+                    </div>
+                    <div class="col-xs-3">
+                        <a class="print-button btn btn-sm pull-right" ng-if="user._id==scenario.author._id" href="/#/edit/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> {{'BUTTON.EDIT' | translate}}</a>
+                    </div>
+                </div>
+
+                <div class="row visible-xs-block">
+                    <div class="col-xs-9">
+                        <div class="small-profile">
+                            <div class="profile-usertitle-name">
+                                <a a href="/#/user/{{scenario.author._id}}" title="{{scenario.author.first_name}} {{scenario.author.last_name}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a>
+                            </div>
+                            <div class="profile-usertitle-job">
+                                {{scenario.author.organization}}
+                            </div>
+                            <div class="small-profile-usertitle-sign-up">
+                                <span class="glyphicon glyphicon-time"></span> <span>{{'CONTENT.JOINED' | translate}} {{scenario.author.created | date:'MM.yyyy'}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-3">
+                        <div class="small-profile-userbuttons">
+                            <a ng-click="addFollow()" ng-if="!is_following && user && user._id!=scenario.author._id" class="btn btn-success btn-sm pull-right"><span class="glyphicon glyphicon-plus-sign"></span> {{'BUTTON.FOLLOW' | translate}}</a>
+                            <a ng-click="removeFollow()" ng-if="is_following && user && user._id!=scenario.author._id" class="btn btn-default btn-sm pull-right"><span class="glyphicon glyphicons-circle-minus"></span> {{'BUTTON.UNFOLLOW' | translate}}</a>
+                            <a href="/#/login" ng-if="!user" class="pull-right"> {{'BUTTON.LOG_IN_TO_FOLLOW' | translate}}</a>
+                            <a ng-if="user._id==scenario.author._id" disabled="disabled" class="btn btn-success btn-sm pull-right">{{'BUTTON.FOLLOW_YOURSELF' | translate}}</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <br>
+                        <p class="enable-lines" ng-bind-html="scenario.description | linky:'_blank'"></p>
+                        <div class="tags">
+                            <a style="display:inline-block; padding:5px;" ng-repeat="tag in scenario.tags" ng-href="#/tags/{{tag.text}}">#{{tag.text}}</a>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <span class="labels">
+                                    <span class="label label-danger">{{scenario.method}}</span>
+                                    <span class="label label-success">{{scenario.materialType}}</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <a ng-if="hasErasmusTag('CreativeClassroomCollection') || hasErasmusTag('CreativeClassroomKogumik')" href="https://creativeclassroomprojekt.wordpress.com"><img style="width:260px;margin-top:-15px;margin-bottom:10px;" src="/images/Erasmus.png"></a>
+
+
+                <p style="margin-bottom:15px;"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /> {{'CONTENT.THIS_WORK_HAS' | translate}} <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">{{'CONTENT.CC_LICENSE' | translate}}</a> {{'CONTENT.LICENSE' | translate}}</p>
+
+                <div style="margin-bottom:10px;" ng-if="scenario.mother_scenario">
+                    <p><strong>{{'HEADING.MOTHER_SCENARIO' | translate}}:</strong></p>
+                    <ul>
+                        <li>{{scenario.mother_scenario.author.first_name}} {{scenario.mother_scenario.author.last_name}} | <a ng-href="/#/scenario/{{scenario.mother_scenario._id}}" alt="{{scenario.mother_scenario.name}}">{{scenario.mother_scenario.name}}</a></li>
+                    </ul>
+                </div>
+                <div ng-if="scenario.child_scenarios.length > 0">
+                    <p><strong>{{'HEADING.CHILD_SCENARIOS' | translate}}:</strong></p>
+                    <ul>
+                        <li ng-repeat="child in scenario.child_scenarios" >{{child.author.first_name}} {{child.author.last_name}} | <a ng-href="/#/scenario/{{child._id}}" alt="{{child.name}}">{{child.name}}</a></li>
+                    </ul>
+                </div>
+
             </div>
-          </div>
-          </article>
 
-        </div>
+            <div class="commets">
 
-        <p ng-if="scenario.comments_count == 0">{{'NOTICE.FIRST_TO_COMMENT' | translate}}</p>
+                <p ng-if="!user"><strong>{{'NOTICE.LOGIN_TO_COMMENT' | translate}}</strong></p>
+                <div ng-if="user">
+                    <form ng-submit="addComment(comment)">
+                        <div class="form-group">
+                            <label for="comment-text"><h3>{{'HEADING.ADD_COMMENT' | translate}}</h3></label><br>
+                            <div ng-if='save_error' class="alert alert-danger" role="alert">{{save_error}}</div>
+                            <div ng-if='save_success' class="alert alert-success" role="alert">{{save_success}}</div>
+                            <textarea id="comment-text" name="comment-text" ng-model="comment.text" class="form-control" rows="5" placeholder="{{'INPUT.WRITE_COMMENT_HERE' | translate}}"></textarea>
+                        </div>
+                        <div class="form-submit">
+                            <button ng-disabled="adding_comment_in_progress" type="submit" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-share-alt"></span> {{'BUTTON.ADD' | translate}}</button>
+                        </div>
+                    </form>
+                </div>
+                <br>
 
-      </div>
-    </div>
+                <div ng-if="scenario.comments_count > 0">
 
-    <div class="col-sm-3 col-sm-pull-9 col-lg-pull-9 col-md-pull-9">
+                    <h3>{{'HEADING.COMMENTS' | translate}} ({{scenario.comments_count}})</h3>
 
-      <div class="profile-sidebar hidden-xs">
+                    <p ng-if="!comments" class="loading-gif-animation"><img src="./images/loading.gif"></p>
 
-        <div class="profile-userpic">
-          <img ng-src="./images/user/{{scenario.author.image}}?last_modified={{scenario.author.last_modified}}" class="img-responsive" alt="{{user.first_name}} {{user.last_name}}">
-        </div>
+                    <!-- Comment -->
+                    <article ng-repeat="comment in comments" class="row comments-list">
+                        <div class="col-sm-2 col-xs-3">
+                            <figure class="thumbnail">
+                                <a href="/#/user/{{comment.author._id}}" title="{{comment.author.first_name}} {{comment.author.last_name}}">
+                                    <img class="img-responsive" ng-src="./images/user/{{comment.author.image_thumb}}?last_modified={{comment.author.last_modified}}">
+                                </a>
+                            </figure>
+                        </div>
+                        <div class="col-sm-10 col-xs-9 comment-closer">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <header class="text-left">
+                                        <a ng-if="user._id==scenario.author._id" ng-click="deleteComment(comment._id,comment.text)" class="pull-right" style="cursor:pointer;"><span style="color:gray;" class="glyphicon glyphicon-remove"><span ng-if="showDeleteText(comment._id)">{{comment_delete_text}}</span></span></a>
+                                        <div class="comment-user">
+                                            <a href="/#/user/{{comment.author._id}}" title="{{comment.author.first_name}} {{comment.author.last_name}}">
+                                                {{comment.author.first_name}} {{comment.author.last_name}}
+                                            </a>
+                                        </div>
+                                        <time class="comment-date"><span class="glyphicon glyphicon-time"></span> {{comment.created | date:'dd.MM.yyyy HH:mm'}}</time>
+                                    </header>
+                                    <div class="comment-post">
+                                        <p class="enable-lines" ng-bind-html="comment.text | linky:'_blank'">
+                                        </p>
+                                    </div>
+                                    <!--<p class="text-right"><a href="#" disabled="disabled" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-share-alt"></span> Respond</a></p>-->
+                                </div>
+                            </div>
+                        </div>
+                    </article>
 
-        <div class="profile-userbuttons">
-          <a ng-click="addRemoveFollow()" ng-if="!is_following && user && user._id!=scenario.author._id" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> {{'BUTTON.FOLLOW' | translate}}</a>
-          <a ng-click="addRemoveFollow('remove')" ng-if="is_following && user && user._id!=scenario.author._id" class="btn btn-default btn-sm"><span class="glyphicon glyphicons-circle-minus"></span> {{'BUTTON.UNFOLLOW' | translate}}</a>
-          <a href="/#/login" ng-if="!user" class=""> {{'BUTTON.LOG_IN_TO_FOLLOW' | translate}}</a>
-          <a ng-if="user._id==scenario.author._id" disabled="disabled" class="btn btn-success btn-sm">{{'BUTTON.FOLLOW_YOURSELF' | translate}}</a>
-        </div>
+                </div>
 
-        <div class="profile-usertitle">
-          <div class="profile-usertitle-name">
-            <a a href="/#/user/{{scenario.author._id}}" title="{{scenario.author.first_name}} {{scenario.author.last_name}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a>
-          </div>
-          <div class="profile-usertitle-job">
-            {{scenario.author.organization}}
-          </div>
-          <div class="profile-usertitle-sign-up">
-            <span class="glyphicon glyphicon-time"></span> <span>{{'CONTENT.JOINED' | translate}} {{scenario.author.created | date:'MM.yyyy'}}</span>
-          </div>
-        </div>
+                <p ng-if="scenario.comments_count == 0">{{'NOTICE.FIRST_TO_COMMENT' | translate}}</p>
 
-      </div>
-
-      <!-- Popular scenarios -->
-      <div ng-if="!no_popular_scenarios" class="similar-scenarios">
-        <h3>{{'HEADING.OTHER_USER_SCENARIOS' | translate}}</h3>
-        <div class="row">
-          <div class="col-xs-6 col-sm-12" ng-repeat="scenario in scenarios">
-            <div class="thumbnail thumbnail-first-page">
-              <a href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">
-                <img class="thumbnail-preview" src="./images/thumbnail_200.png" alt="Generic placeholder thumbnail">
-              </a>
-              <div class="caption">
-                <h4><a href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{scenario.name}}</a></h4>
-                <p class="thumbnail-caption">{{scenario.description | limitTo: 60}}{{scenario.description.length > 60 ? '...' : ''}}</p>
-                <p class="clearfix">
-                  <span class="favorited-and-comments">
-                    <span class="glyphicon glyphicon-heart"><span class="icon-space-after">{{scenario.favorites_count}}</span></span>
-                    <span class="glyphicon glyphicon-comment"><span class="icon-space-after">{{scenario.comments_count}}</span></span>
-                  </span>
-                  <a class="open-link pull-right" href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{'BUTTON.OPEN' | translate}}<span class="glyphicon glyphicon-chevron-right"></span></a>
-                </p>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
-    </div>
 
-  </div>
+        <div class="col-sm-3 col-sm-pull-9 col-lg-pull-9 col-md-pull-9">
+
+            <div class="profile-sidebar hidden-xs">
+
+                <div class="profile-userpic">
+                    <img ng-src="./images/user/{{scenario.author.image}}?last_modified={{scenario.author.last_modified}}" class="img-responsive" alt="{{user.first_name}} {{user.last_name}}">
+                </div>
+
+                <div class="profile-userbuttons">
+                    <a ng-click="addFollow()" ng-if="!is_following && user && user._id!=scenario.author._id" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> {{'BUTTON.FOLLOW' | translate}}</a>
+                    <a ng-click="removeFollow()" ng-if="is_following && user && user._id!=scenario.author._id" class="btn btn-default btn-sm"><span class="glyphicon glyphicons-circle-minus"></span> {{'BUTTON.UNFOLLOW' | translate}}</a>
+                    <a href="/#/login" ng-if="!user" class=""> {{'BUTTON.LOG_IN_TO_FOLLOW' | translate}}</a>
+                    <a ng-if="user._id==scenario.author._id" disabled="disabled" class="btn btn-success btn-sm">{{'BUTTON.FOLLOW_YOURSELF' | translate}}</a>
+                </div>
+
+                <div class="profile-usertitle">
+                    <div class="profile-usertitle-name">
+                        <a a href="/#/user/{{scenario.author._id}}" title="{{scenario.author.first_name}} {{scenario.author.last_name}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a>
+                    </div>
+                    <div class="profile-usertitle-job">
+                        {{scenario.author.organization}}
+                    </div>
+                    <div class="profile-usertitle-sign-up">
+                        <span class="glyphicon glyphicon-time"></span> <span>{{'CONTENT.JOINED' | translate}} {{scenario.author.created | date:'MM.yyyy'}}</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Popular scenarios -->
+            <div ng-if="!no_popular_scenarios" class="similar-scenarios">
+                <h3>{{'HEADING.OTHER_USER_SCENARIOS' | translate}}</h3>
+                <div class="row">
+                    <div class="col-xs-6 col-sm-12" ng-repeat="scenario in scenarios">
+                        <div class="thumbnail thumbnail-first-page">
+                            <a href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">
+                                <img class="thumbnail-preview" src="./images/thumbnail_200.png" alt="Generic placeholder thumbnail">
+                            </a>
+                            <div class="caption">
+                                <h4><a href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{scenario.name}}</a></h4>
+                                <p class="thumbnail-caption">{{scenario.description | limitTo: 60}}{{scenario.description.length > 60 ? '...' : ''}}</p>
+                                <p class="clearfix">
+                                    <span class="favorited-and-comments">
+                                        <span class="glyphicon glyphicon-heart"><span class="icon-space-after">{{scenario.favorites_count}}</span></span>
+                                        <span class="glyphicon glyphicon-comment"><span class="icon-space-after">{{scenario.comments_count}}</span></span>
+                                    </span>
+                                    <a class="open-link pull-right" href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{'BUTTON.OPEN' | translate}}<span class="glyphicon glyphicon-chevron-right"></span></a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>

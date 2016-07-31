@@ -149,17 +149,10 @@
             });
         }
 
-        /* TODO */
+        /* TODO  add pagination */
         function getUsers(){
 
-            // get users list to follow/unfollow
-            var params = {
-                user: {
-                    _id: $rootScope.user._id
-                }
-            };
-
-            requestService.post('/user/list', params)
+            requestService.post('/users/list')
             .then(function(data) {
 
                 $scope.total_count = 0;
@@ -249,54 +242,35 @@
             $scope.pageChanged(1);
         };
 
-        /* TODO */
-        $scope.addRemoveFollow = function(user_id,remove_follow){
+        /* Fixed */
+        $scope.addFollow = function(user_id){
 
-            var params = {
-                user: {
-                    _id: $rootScope.user._id
-                },
-                following: {
-                    _id: user_id
-                }
-            };
-
-            if(typeof remove_follow !== 'undefined'){
-                params.remove_follow = true;
-            }
-
-            requestService.post('/user/add-remove-follow', params)
-            .then(function(data) {
-
-                if(data.success){
-                    if(data.success === 'unfollow'){
-
-                        for(var i = 0; i < $scope.users_list.length; i++){
-                            if($scope.users_list[i]._id === user_id){
-                                $scope.users_list[i].following = undefined;
-                            }
-                        }
-
-                    }else{
-                        for(var j = 0; j < $scope.users_list.length; j++){
-                            if($scope.users_list[j]._id === user_id){
-                                $scope.users_list[j].following = 'following';
-                            }
-                        }
-                    }
-
-                }
-
-                if(data.error){
-                    switch (data.error.id) {
-                        case 100:
-                        // user changed
-                        $location.path('/');
-                        break;
-                        default:
-                        console.log(data.error);
+            requestService.post('/followers/' + user_id)
+            .then(function(follower) {
+                for(var j = 0; j < $scope.users_list.length; j++){
+                    if($scope.users_list[j]._id === user_id){
+                        $scope.users_list[j].following = 'following';
                     }
                 }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        };
+
+        /* Fixed */
+        $scope.removeFollow = function(user_id){
+
+            requestService.post('/followers/remove/' + user_id)
+            .then(function(follower) {
+                for(var i = 0; i < $scope.users_list.length; i++){
+                    if($scope.users_list[i]._id === user_id){
+                        $scope.users_list[i].following = undefined;
+                    }
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
             });
         };
 
