@@ -102,6 +102,8 @@
 
         "DETAILS": "Details",
         "CANVAS": "Canvas",
+        "TIMELINE": "Timeline",
+        "PUBLISH": "Publish",
         "TIMELINE_VIEW": "Timeline view",
         "TEXT_VIEW": "Text view"
 

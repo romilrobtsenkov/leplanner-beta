@@ -102,6 +102,8 @@
 
         "DETAILS": "Detailid",
         "CANVAS": "Lõuend",
+        "TIMELINE": "Ajajoon",
+        "PUBLISH": "Avaldamine",
         "TIMELINE_VIEW": "Ajajoone vaade",
         "TEXT_VIEW": "Tunnikava vaade"
 

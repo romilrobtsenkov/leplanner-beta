@@ -9,16 +9,16 @@
 
     <ul class="nav nav-tabs nav-tab-pop">
         <li>
-            <a ng-href="#/edit/{{scenario._id}}/" title="{{ 'CONTENT.TAB_LATEST' | translate }}">Details</a>
+            <a ng-href="#/edit/{{scenario._id}}/" ng-click="updateSortList('latest')" title="{{ 'BUTTON.DETAILS' | translate }}">{{ 'BUTTON.DETAILS' | translate }}</a>
         </li>
         <li class="active">
-            <a ng-href="#/edit/{{scenario._id}}/timeline" title="{{ 'CONTENT.TAB_MOST_VIEWED' | translate }}">Timeline</a>
+            <a ng-href="#/edit/{{scenario._id}}/timeline" title="{{ 'BUTTON.TIMELINE' | translate }}">{{ 'BUTTON.TIMELINE' | translate }}</a>
         </li>
         <li>
-            <a ng-href="#/edit/{{scenario._id}}/publish" title="{{ 'CONTENT.TAB_TOP_FAVORITED' | translate }}">Publish</a>
+            <a ng-href="#/edit/{{scenario._id}}/publish" title="{{ 'BUTTON.PUBLISH' | translate }}">{{ 'BUTTON.PUBLISH' | translate }}</a>
         </li>
         <li ng-if="!scenario.draft" class='pull-right'>
-            <a ng-href="#/scenario/{{scenario._id}}" target="_blank" title="{{ 'CONTENT.TAB_TOP_COMMENTED' | translate }}">Open <span class="glyphicon glyphicon-new-window"></span></a>
+            <a ng-href="#/scenario/{{scenario._id}}" target="_blank" title="{{ 'BUTTON.OPEN' | translate }}">{{ 'BUTTON.OPEN' | translate }} <span class="glyphicon glyphicon-new-window"></span></a>
         </li>
     </ul>
 
