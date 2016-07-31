@@ -1,16 +1,12 @@
 const express = require('express');
 const router = express.Router();
-
 const restrict = require('../auth/restrict');
-
 const Promise = require('bluebird');
 
 const mongoService = require('../services/mongo-service');
 const metaService = require('../services/meta-service');
 
-
 const Material = require('../models/activity-material').Material;
-
 const Scenario = require('../models/scenario').Scenario;
 
 const E = require('../errors');

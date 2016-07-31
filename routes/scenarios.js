@@ -1,46 +1,31 @@
-var express = require('express');
-var request = require('request');
-var fs = require('fs');
-var config = require('../config/config');
-var router = express.Router();
-var restrict = require('../auth/restrict');
-var mongoose = require('mongoose');
+const express = require('express');
+const request = require('request');
+const router = express.Router();
+const restrict = require('../auth/restrict');
+const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
+const Promise = require('bluebird');
 
-var Promise = require('bluebird');
+const mongoService = require('../services/mongo-service');
+const scenarioService = require('../services/scenario-service');
+const metaService = require('../services/meta-service');
 
-var mongoService = require('../services/mongo-service');
-var validateService = require('../services/validate-service');
-var validationPromise = Promise.promisify(validateService.validate);
-var scenarioService = require('../services/scenario-service');
-var metaService = require('../services/meta-service');
-
-
-var Scenario = require('../models/scenario').Scenario;
-var Comment = require('../models/comment').Comment;
-var Notification = require('../models/notification').Notification;
-var Favorite = require('../models/favorite').Favorite;
-var Follower = require('../models/follower').Follower;
-var Material = require('../models/activity-material').Material;
-var User = require('../models/user').User;
-
-var async = require('async');
-
-var main_subjects_languages = main_subjects_languages;
+const Scenario = require('../models/scenario').Scenario;
+const Comment = require('../models/comment').Comment;
+const Notification = require('../models/notification').Notification;
+const Favorite = require('../models/favorite').Favorite;
+const Follower = require('../models/follower').Follower;
+const Material = require('../models/activity-material').Material;
+const User = require('../models/user').User;
 
 const E = require('../errors');
-
-/* template
-async.waterfall([], function (err, result) {
-if(err){ res.json(err); }
-res.json(result);
-});
-*/
 
 /* Fixed */
 router.get('/copy/:id', restrict, function(req, res, next) {
 
     var params = req.params;
+    if (!params.id) { return res.sendStatus(404); }
+
     var response;
 
     console.log(req.user._id + ' creates copy of ' +params.id);
@@ -192,10 +177,7 @@ router.post('/single-edit/:id', restrict, function(req, res, next) {
     var q = {};
     q.args = { _id: params.id, author: req.user._id };
     q.populated_fields = [];
-    q.populated_fields.push({
-        field: 'subjects',
-        populate: main_subjects_languages
-    });
+    q.populated_fields.push({ field: 'subjects' });
 
     mongoService.findOneWithPromise(q, Scenario)
     .then(function (scenario) {
@@ -598,10 +580,7 @@ router.get('/single/:id', function(req, res, next) {
         field: 'author',
         populate: 'first_name last_name organization created image last_modified'
     });
-    q.populated_fields.push({
-        field: 'subjects',
-        populate: main_subjects_languages
-    });
+    q.populated_fields.push({ field: 'subjects' });
     // mother scenario id, scenario name ja scenario author
     q.populated_fields.push({
         field: 'mother_scenario',

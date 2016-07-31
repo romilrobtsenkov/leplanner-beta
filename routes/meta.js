@@ -1,9 +1,8 @@
-var express = require('express');
-var router = express.Router();
-var metaService = require('../services/meta-service');
-var async = require('async');
+const express = require('express');
+const router = express.Router();
+const Promise = require('bluebird');
 
-var Promise = require('bluebird');
+const metaService = require('../services/meta-service');
 
 router.get('/subjects/', function(req, res, next) {
 

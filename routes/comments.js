@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
 const restrict = require('../auth/restrict');
-
 const Promise = require('bluebird');
 
 const mongoService = require('../services/mongo-service');

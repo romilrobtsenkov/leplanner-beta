@@ -1,7 +1,7 @@
-var bcrypt = require('bcrypt');
-var crypto = require('crypto');
-var nodemailer = require('nodemailer');
-var config = require('../config/config');
+const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
+const config = require('../config/config');
 
 exports.bcryptCreatePassword = function(password, next) {
   bcrypt.hash(password, 10, function(err, hash) {
