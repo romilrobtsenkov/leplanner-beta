@@ -385,6 +385,7 @@ router.post('/dashboard/', restrict, function(req, res, next) {
 
         switch (query.tab) {
             case 'feed':
+            
                 var followerQ = {};
                 followerQ.args = {follower: query.user._id, removed: null};
                 followerQ.select = 'following';
