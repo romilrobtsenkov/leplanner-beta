@@ -15,7 +15,6 @@ var nodemailer = require('nodemailer');
 var config = require('./config/config');
 
 var user = require('./routes/user');
-var scenario = require('./routes/scenario');
 var upload = require('./routes/upload');
 var meta = require('./routes/meta');
 var maintance = require('./routes/maintance');
@@ -62,7 +61,6 @@ app.use(multipart({
 }));
 
 app.use('/api/user', user);
-app.use('/api/scenario', scenario);
 app.use('/api/upload', upload);
 app.use('/api/meta', meta);
 app.use('/api/maintance', maintance);
