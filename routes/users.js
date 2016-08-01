@@ -1,11 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const passport = require('passport');
 const Promise = require('bluebird');
+const bcrypt = Promise.promisifyAll(require('bcrypt'));
+const crypto = Promise.promisifyAll(require('crypto'));
+const nodemailer = require('nodemailer');
+
+const passport = require('passport');
+const saltRounds = 10;
 
 const mongoService = require('../services/mongo-service');
 const userService = require('../services/user-service');
-const validateService = require('../services/validate-service');
 
 const Follower = require('../models/follower').Follower;
 const User = require('../models/user').User;
@@ -16,73 +20,105 @@ const restrict = require('../auth/restrict');
 
 const E = require('../errors');
 
+const minPasswordLength = 8;
+
 var async = require('async');
 
-router.post('/create', function(req, res, next) {
+/* Fixed */
+router.post('/', function(req, res, next) {
 
-  var user = req.body;
+    console.log('create');
 
-  // Fix for auto login after new user save
-  req.body.email = req.body.new_email;
-  req.body.password = req.body.new_password;
+    var user = req.body;
 
-  async.waterfall([
-    function(next){
+    //validate
+    if (!user.new_first_name ||
+        !user.new_last_name ||
+        !user.new_email ||
+        !user.new_password) {
 
-      validateService.validate([{fn:'userData', data:user}], function(err){
-        if (err) { return next({error: err}); }
-        next();
-      });
-    },
-    function(next){
-
-      validateService.validate([{fn:'password', data:user.new_password}], function(err){
-        if (err) { return next({error: err}); }
-        next();
-      });
-    },
-    function(next){
-
-      userService.bcryptCreatePassword(user.new_password, function(err, hash){
-        if (err) { return next({error: err}); }
-        next(null, hash);
-      });
-    },
-    function(hash, next){
-
-      var new_user = {
-        first_name: user.new_first_name,
-        last_name: user.new_last_name,
-        organization: user.new_organization,
-        email: user.new_email.toLowerCase(),
-        password: hash
-      };
-
-      mongoService.saveNew(new_user, User, function(err) {
-        if (err) { return next({error: err}); }
-        next();
-      });
-    },
-    function(next){
-
-      passport.authenticate('local', function(err, user, info) {
-        if (err) { return next(err); }
-        if (!user) { return next({error: info.message}); }
-        next(null, user);
-      })(req, res, next);
-    },
-    function(user, next){
-
-      req.logIn(user, function(err) {
-        if (err) { return next(err); }
-        next(null, {user: {id: user._id}});
-      });
+        return res.sendStatus(404);
     }
 
-  ], function (err, result) {
-    if(err){ res.json(err); }
-    res.json(result);
-  });
+    if(user.new_password.length < minPasswordLength) {
+        return res.status(400).send('password too short');
+    }
+
+    if (!isValidEmail(user.new_email)) {
+        return res.status(400).send('invalid email');
+    }
+
+    console.log('passed validation');
+
+    bcrypt.hashAsync(user.new_password, saltRounds)
+    .then(function (hash) {
+
+        console.log(hash);
+
+        var new_user = {
+            first_name: user.new_first_name,
+            last_name: user.new_last_name,
+            organization: user.new_organization,
+            email: user.new_email.toLowerCase(),
+            password: hash
+        };
+
+        console.log('created hash');
+
+        return mongoService.saveNewWithPromise(new_user, User).catch(function (error) {
+            if(error.errors.email) {
+                return Promise.reject(new E.Error('email exists'));
+            }
+
+            return Promise.reject('Mongo error');
+        });
+    })
+    .then(function () {
+
+        console.log('saved successfully');
+
+        // Fix for auto login after new user save
+        req.body.email = req.body.new_email;
+        req.body.password = req.body.new_password;
+
+        return new Promise(function(resolve, reject) {
+            passport.authenticate('local', function(error, user) {
+
+                console.log(error, user);
+
+                if(error || !user) { return reject(error); }
+                return resolve(user);
+
+            })(req, res);
+       });
+    })
+    .then(function (user) {
+
+        console.log(user);
+        if(!user) { return Promise.reject(new E.NotAuthorizedError('Could not authenticate')); }
+
+        console.log('passport auth local');
+
+        return new Promise(function(resolve, reject) {
+            req.logIn(user, function(err) {
+              if (err) { return reject(); }
+              return resolve({user: {id: user._id, lang: user.lang }});
+            });
+       });
+
+    })
+    .then(function (response) {
+
+        console.log('req.logIn done');
+        res.status(200).json(response);
+    })
+    .catch(E.Error, function (err) {
+        return res.status(err.statusCode).send(err.message);
+    })
+    .catch(function (error) {
+        console.log(error);
+        return res.status(500).send('could not create user');
+    });
 
 });
 
@@ -136,414 +172,468 @@ router.post('/list', restrict, function(req, res, next){
 /* Fixed */
 router.get('/single/:id', function(req, res, next) {
 
-  var params = req.params;
-  if (!params.id) { return res.sendStatus(404); }
-  var response = {};
+    var params = req.params;
+    if (!params.id) { return res.sendStatus(404); }
+    var response = {};
 
-  var q = {};
-  q.where = {"_id": params.id};
-  q.update = { $inc: { profile_views: 1 }};
-  q.select = "-password -resetPasswordExpires -resetPasswordToken";
+    var q = {};
+    q.where = {"_id": params.id};
+    q.update = { $inc: { profile_views: 1 }};
+    q.select = "-password -resetPasswordExpires -resetPasswordToken";
 
-  mongoService.updateWithPromise(q, User)
-  .then(function (user) {
-      if(!user) { return Promise.reject(new E.NotFoundError('no user with such id')); }
+    mongoService.updateWithPromise(q, User)
+    .then(function (user) {
+        if(!user) { return Promise.reject(new E.NotFoundError('no user with such id')); }
 
-      response.profile = user;
+        response.profile = user;
 
-      // following
-      var followingQ = {};
-      followingQ.args = {follower: params.id, removed: null };
-      followingQ.populated_fields = [];
-      followingQ.populated_fields.push({
-        field: 'following',
-        populate: 'first_name last_name image_thumb last_modified'
-      });
+        // following
+        var followingQ = {};
+        followingQ.args = {follower: params.id, removed: null };
+        followingQ.populated_fields = [];
+        followingQ.populated_fields.push({
+            field: 'following',
+            populate: 'first_name last_name image_thumb last_modified'
+        });
 
-      // find followers
-      var followerQ = {};
-      followerQ.args = { following: params.id, removed: null };
-      followerQ.populated_fields = [];
-      followerQ.populated_fields.push({
-        field: 'follower',
-        populate: 'first_name last_name image_thumb last_modified'
-      });
+        // find followers
+        var followerQ = {};
+        followerQ.args = { following: params.id, removed: null };
+        followerQ.populated_fields = [];
+        followerQ.populated_fields.push({
+            field: 'follower',
+            populate: 'first_name last_name image_thumb last_modified'
+        });
 
-      return Promise.props({
-          following: mongoService.findWithPromise(followingQ, Follower),
-          followers: mongoService.findWithPromise(followerQ, Follower)
-      });
-  })
-  .then(function (meta) {
-      if(meta.following.length > 0){ response.following = meta.following; }
-      if(meta.followers.length > 0){ response.followers = meta.followers; }
+        return Promise.props({
+            following: mongoService.findWithPromise(followingQ, Follower),
+            followers: mongoService.findWithPromise(followerQ, Follower)
+        });
+    })
+    .then(function (meta) {
+        if(meta.following.length > 0){ response.following = meta.following; }
+        if(meta.followers.length > 0){ response.followers = meta.followers; }
 
-      return res.status(200).json(response);
-  })
-  .catch(E.Error, function (err) {
-      return res.status(err.statusCode).send(err.message);
-  })
-  .catch(function (error) {
-      console.log(error);
-      return res.status(500).send('could not copy scenario');
-  });
+        return res.status(200).json(response);
+    })
+    .catch(E.Error, function (err) {
+        return res.status(err.statusCode).send(err.message);
+    })
+    .catch(function (error) {
+        console.log(error);
+        return res.status(500).send('could not copy scenario');
+    });
 });
 
+/* Fixed */
 router.post('/login', function(req, res, next) {
     //console.log(req.body);
-    if (req.body.remember_me) { req.session.cookie.maxAge = config.cookieMaxAge; }
 
-    async.waterfall([
-      function(next){
+    var params = req.body;
 
-        // using req.body.email & password
-        passport.authenticate('local', function(err, user, info) {
-          if (err) { return next(err); }
-          if (!user) { return next({error: info.message}); }
-          next(null, user);
-        })(req, res, next);
-      },
-      function(user, next){
+    console.log(params);
 
-        req.logIn(user, function(err) {
-          if (err) { return next(err); }
-          next(null, {user: {id: user._id, lang: user.lang}});
-        });
-      }
+    if(!params.email ||
+        !params.password ||
+        !isValidEmail(params.email) ||
+        params.password.length < minPasswordLength) {
+        return res.status(400).send('Wrong credentials');
+    }
 
-    ], function (err, result) {
-      if(err){ res.json(err); }
-      res.json(result);
+    console.log('passed validation');
+
+    if (params.remember_me) { req.session.cookie.maxAge = config.cookieMaxAge; }
+
+    // !important
+    // using req.body.email req.body.password;
+    req.body.email = params.email;
+    req.body.password = params.password;
+
+    new Promise(function(resolve, reject) {
+        passport.authenticate('local', function(error, user) {
+
+            console.log(error, user);
+
+            if(error || !user) { return reject(error); }
+            return resolve(user);
+
+        })(req, res);
+   })
+    .then(function (user) {
+
+        console.log(user);
+        if(!user) { return Promise.reject(new E.NotAuthorizedError('Could not authenticate')); }
+
+        console.log('passport auth local');
+
+        return new Promise(function(resolve, reject) {
+            req.logIn(user, function(err) {
+              if (err) { return reject(); }
+              return resolve({user: {id: user._id,  lang: user.lang }});
+            });
+       });
+
+    })
+    .then(function (response) {
+
+        console.log('req.logIn done');
+        res.status(200).json(response);
+    })
+    .catch(E.Error, function (err) {
+        return res.status(err.statusCode).send(err.message);
+    })
+    .catch(function (error) {
+        console.log(error);
+        return res.status(500).send('could not create user');
     });
 
 });
 
-router.get('/logout', restrict, function(req, res, next) {
-  req.logout();
-  req.session.destroy();
-  res.json({success: 'logout sucessfull'});
+/* Fixed */
+router.post('/logout', restrict, function(req, res, next) {
+
+    var userId = req.user._id;
+
+    req.logout();
+    req.session.destroy();
+
+    // for logging
+    req.user = { _id: userId };
+
+    res.sendStatus(200);
 });
 
+/* Fixed */
 router.get('/me', function(req, res){
-  //http://toon.io/understanding-passportjs-authentication-flow/
-  if(!req.session.passport.user){
-    return res.status(401).send({error: 'Unauthorized'});
-  }else{
-    return res.status(200).json(req.user);
-  }
+    //http://toon.io/understanding-passportjs-authentication-flow/
+    if(!req.session.passport.user){
+        return res.status(401).json({error: 'Unauthorized'});
+    }else{
+        return res.status(200).json(req.user);
+    }
 });
 
-router.post('/notifications/',restrict , function(req, res, next) {
+/* Fixed */
+router.post('/notifications/', restrict , function(req, res, next) {
 
-  var user_id = req.body.user._id;
+    var user_id = req.body.user._id;
 
-  var q = {};
-  q.args = { user: user_id, type: 'comment' };
-  q.populated_fields = [];
-  q.populated_fields.push({
-    field: 'data.user',
-    populate: 'first_name last_name last_modified image_thumb'
-  });
-  q.populated_fields.push({
-    field: 'data.scenario',
-    populate: 'name '
-  });
-  q.select = '-type';
-  q.sort = { created: -1 };
-  if(typeof req.body.limit !== 'undefined'){
-    q.limit = req.body.limit;
-  }
+    var q = {};
+    q.args = { user: user_id, type: 'comment' };
+    q.populated_fields = [];
+    q.populated_fields.push({
+        field: 'data.user',
+        populate: 'first_name last_name last_modified image_thumb'
+    });
+    q.populated_fields.push({
+        field: 'data.scenario',
+        populate: 'name '
+    });
+    q.select = '-type';
+    q.sort = { created: -1 };
+    if(typeof req.body.limit !== 'undefined'){
+        q.limit = req.body.limit;
+    }
 
-  mongoService.find(q, Notification, function(err, notifications){
-    if (err) { return res.json({error: err}); }
-    res.json({ notifications: notifications });
-  });
+    mongoService.findWithPromise(q, Notification)
+    .then(function(notifications) {
+        res.status(200).json({ notifications: notifications });
+    }).catch(function (error) {
+        console.log(error);
+        return res.status(500).send('could not create user');
+    });
 
 });
 
+/* Fixed */
 router.post('/reset-password', function(req, res, next) {
 
-  var user = req.body;
+    var user = req.body;
 
-  async.waterfall([
-    function(next){
+    if((!user.new_password || !user.new_password_twice) ||
+        (user.new_password !== user.new_password_twice) ||
+        (user.new_password.length < 8)) {
 
-      var q = {};
-      q.args = {"resetPasswordToken": user.token};
+        return res.sendStatus(400);
+    }
 
-      mongoService.findOne(q, User, function(err, user_from_db) {
-        if (err) { return next({error: err}); }
-        if(!user_from_db){ return next({error: {id: 10, message: 'Request new token'}}); }
-        next(null, user_from_db);
-      });
-    },
-    function(user_from_db, next){
+    var q = {};
+    q.args = { resetPasswordToken: user.token};
 
-      if(user_from_db.resetPasswordExpires < Date.now()){ return next({error: {id: 11, message: 'Token expired'}}); }
+    mongoService.findOne(q, User)
+    .then(function (user_from_db) {
 
-      validateService.validate([{fn:'passwordReset', data:user}], function(err){
-        if (err) { return next({error: err}); }
-        next(null, user_from_db);
-      });
-    },
-    function(user_from_db, next){
+        if(!user_from_db){ Promise.reject(new E.NotFoundError('token not valid')); }
+        if(user_from_db.resetPasswordExpires < Date.now()){ return Promise.reject(new E.NotFoundError('token expired')); }
 
-      userService.bcryptCreatePassword(user.new_password, function(err, hash){
-        if (err) { return next({error: err}); }
-        next(null, user_from_db, hash);
-      });
-    },
-    function(user_from_db, new_password, next){
+        // create new password
+        return bcrypt.hashAsync(user.new_password, saltRounds);
+    })
+    .then(function(new_password) {
 
-      var update = {
-        password: new_password,
-        last_modified: new Date(),
-        resetPasswordToken: ''
-      };
-      var q = {};
-      q.where = {"_id": user_from_db._id};
-      q.update = update;
+        var update = {
+            password: new_password,
+            last_modified: new Date(),
+            resetPasswordToken: ''
+        };
+        var q = {};
+        q.where = {_id: req.user._id};
+        q.update = update;
 
-      mongoService.update(q, User, function(err, u_user){
-        if (err) { return next({error: err}); }
-        next(null, {success: 'success'});
-      });
-    },
-  ], function (err, result) {
-    if(err){ res.json(err); }
-    res.json(result);
-  });
-
+        return mongoService.update(q, User);
+    })
+    .then(function () {
+        return res.sendStatus(200);
+    })
+    .catch(E.Error, function (err) {
+        return res.status(err.statusCode).send(err.message);
+    })
+    .catch(function (error) {
+        console.log(error);
+        return res.status(500).send('could not update password');
+    });
 });
 
+/* TODO */
 router.post('/send-reset-token', function(req, res){
 
-  var user_email = req.body.reset_email;
+    var user_email = req.body.reset_email;
+    var userId;
 
-  async.waterfall([
-    function(next){
-
-      validateService.validate([{fn:'email', data:user_email}], function(err){
-        if (err) { return next({error: err}); }
-        next();
-      });
-    },
-    function(next){
-
-      var q = {};
-      q.args = {"email": user_email.toLowerCase()};
-
-      mongoService.findOne(q, User, function(err, user){
-        if (err) { return next({error: err}); }
-        if (!user) { return next({error: {id: 20, message: 'No user with that email'}}); }
-        next(null, user);
-      });
-    },
-    function(user, next){
-
-      userService.cryptoCreateToken(function(err, token){
-        if (err) { return next({error: err}); }
-        next(null, user, token);
-      });
-    },
-    function(user, token, next){
-
-      var update = {
-        resetPasswordToken: token,
-        resetPasswordExpires : Date.now() + 3600000, // 1 hour
-      };
-      var q = {};
-      q.where = {"_id": user._id};
-      q.update = update;
-      q.select = "email resetPasswordToken";
-
-      mongoService.update(q, User, function(err, user){
-        if (err) { return next({error: err}); }
-        next(null, user);
-      });
-    },
-    function(user, next){
-
-      userService.sendPasswordResetMail(user, function(err, success){
-        if (err) { return next({error: err}); }
-        next(null, {success: success});
-      });
+    if (!user_email || !isValidEmail(user_email)) {
+        return res.status(400).send('invalid email');
     }
 
-  ], function (err, result) {
-    if(err){ res.json(err); }
-    res.json(result);
-  });
+    var q = { args: { email: user_email.toLowerCase() } };
 
+    mongoService.findOneWithPromise(q, User)
+    .then(function (user) {
+        if(!user) {
+            return Promise.reject(new E.NotFoundError('no such user'));
+        }
+
+        userId = user._id;
+
+        return crypto.randomBytesAsync(20);
+    })
+    .then(function (buf) {
+
+        var token = buf.toString('hex');
+
+        console.log('created token');
+        console.log(token);
+
+        var update = {
+            resetPasswordToken: token,
+            resetPasswordExpires : Date.now() + (1000*60*60*2), // 2 hours
+        };
+        var q = {};
+        q.where = { _id: userId };
+        q.update = update;
+        q.select = "email resetPasswordToken";
+
+        return mongoService.updateWithPromise(q, User);
+    })
+    .then(function (user) {
+
+        console.log('sending mail');
+        console.log(user);
+
+        return new Promise(function (resolve, reject) {
+            nodemailer.sendmail = true;
+            var transporter = nodemailer.createTransport();
+            var mailOptions = {
+              to: user.email,
+              from: config.email,
+              subject: 'Password Reset',
+              text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+                'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+                config.site_url + '/#/reset/' + user.resetPasswordToken + '\n\n' +
+                'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+            };
+
+            transporter.sendMail(mailOptions, function(err) {
+              if (err) { return reject(err); }
+              return resolve();
+            });
+        });
+    })
+    .then(function () {
+        res.sendStatus(200);
+    })
+    .catch(E.Error, function (err) {
+        return res.status(err.statusCode).send(err.message);
+    })
+    .catch(function (error) {
+        console.log(error);
+        return res.status(500).send('unable to send email');
+    });
 });
 
-router.post('/save-language', restrict, function(req, res, next) {
+/* Fixed */
+router.post('/language', restrict, function(req, res, next) {
 
-  async.waterfall([
-    function(next){
+    if(!req.body.lang){ return res.sendStatus(404); }
 
-      if(!req.body.lang){ return next({error: "no lang"}); }
-
-      var update = {};
-
-      var q = {};
-      q.where = {"_id": req.user._id};
-      q.update = {lang: req.body.lang};
-      q.select = "-password -resetPasswordExpires -resetPasswordToken";
-
-      mongoService.update(q, User, function(err, u_user){
-        if (err) { return next({error: err}); }
-        next(null, {success: 'saved lang:'+u_user.lang});
-      });
-    }
-  ], function (err, result) {
-    if(err){ res.json(err); }
-    res.json(result);
-  });
-
-});
-
-router.post('/update-password', restrict, function(req, res, next) {
-
-  var user = req.body.user;
-
-  async.waterfall([
-    function(next){
-
-      validateService.validate([{fn:'passwordUpdate', data:user}], function(err){
-        if (err) { return next({error: err}); }
-        next();
-      });
-    },
-    function(next){
-
-      mongoService.findById(user._id, User, function(err, user_obj_from_db){
-        if (err) { return next({error: err}); }
-        if (!user_obj_from_db) { return next({error: {id: 21, message: 'No user with that id'}}); }
-        next(null, user_obj_from_db.password);
-      });
-    },
-    function(hash, next){
-
-      userService.bcryptCompare(user.password, hash, function(err, is_match){
-        if (err) { return next({error: err}); }
-        if(!is_match){ return next({error: {id: 10, message: 'Wrong password'}}); }
-        return next();
-      });
-    },
-    function(next){
-
-      userService.bcryptCreatePassword(user.new_password, function(err, hash){
-        if (err) { return next({error: err}); }
-        next(null, hash);
-      });
-    },
-    function(new_password, next){
-
-      var update = {
-        password: new_password,
-        last_modified: new Date()
-      };
-      var q = {};
-      q.where = {"_id": user._id};
-      q.update = update;
-      q.select = "_id";
-
-      mongoService.update(q, User, function(err, u_user){
-        if (err) { return next({error: err}); }
-        next(null, {user: {id: u_user._id}});
-      });
-    }
-  ], function (err, result) {
-    if(err){ res.json(err); }
-    res.json(result);
-  });
-
-});
-
-router.post('/update-profile', restrict, function(req, res, next) {
-
-  var user = req.body.user;
-
-  async.waterfall([
-    function(next){
-
-      validateService.validate([{fn:'userData', data:user}], function(err){
-        if (err) { return next({error: err}); }
-        next();
-      });
-    },
-    function(next){
-
-      if(user.email != user.new_email){
-        if(!user.confirm_password){ return next({error: {id: 7, message: 'Please enter password to confirm email change!'}}); }
+        var update = {};
 
         var q = {};
-        q.args = {"email": user.new_email.toLowerCase()};
+        q.where = {_id: req.user._id};
+        q.update = {lang: req.body.lang};
+        q.select = "-password -resetPasswordExpires -resetPasswordToken";
 
-        mongoService.findOne(q, User, function(err, user_with_same_email){
-          if (err) { return next({error: err}); }
-          if(user_with_same_email){ return next({error: {id: 6, message: 'That email is already in use'}}); }
-          // true to get user and check password
-          return next(null, user, true);
+        mongoService.updateWithPromise(q, User)
+        .then(function (user) {
+            if (!user) { return Promise.reject(new E.NotFoundError('No user')); }
+
+            res.sendStatus(200);
+        })
+        .catch(E.Error, function (err) {
+            return res.status(err.statusCode).send(err.message);
+        })
+        .catch(function (error) {
+            console.log(error);
+            return res.status(500).send('could not save user language');
         });
-      }else{
-        // email not changed, skip next 3 fn in waterfall
-        next(null, user, false);
-      }
-    },
-    function(user, validate, next ){
-      if(!validate){ return next(null, user, null); } //skip
-
-      validateService.validate([{fn:'email', data:user.new_email}], function(err){
-        if (err) { return next({error: err}); }
-        return next(null, user, true);
-      });
-    },
-    function(user, get_user, next){
-      if(!get_user){ return next(null, user, null, null); } //skip
-
-      mongoService.findById(user._id, User, function(err, user_obj_from_db){
-        if (err) { return next({error: err}); }
-        if (!user_obj_from_db) { return next({error: {id: 21, message: 'No user with that id'}}); }
-
-        // true to get user and compare passwds
-        return next(null, user, user_obj_from_db.password, true);
-      });
-    },
-    function(user, hash, compare_passwds, next){
-      if(!compare_passwds){ return next(null, user, null); } //skip
-
-      userService.bcryptCompare(user.confirm_password, hash, function(err, is_match){
-        if (err) { return next({error: err}); }
-        if(!is_match){ return next({error: {id: 10, message: 'Wrong password'}}); }
-        return next(null, user, true);
-      });
-    },
-    function(user, change_email, next){
-
-      var update = {};
-      if(user.first_name != user.new_first_name){ update.first_name = user.new_first_name; }
-      if(user.last_name != user.new_last_name){ update.last_name = user.new_last_name; }
-      if(user.organization != user.new_organization){ update.organization = user.new_organization; }
-      update.last_modified = new Date();
-      if(change_email){ update.email = user.new_email; }
-
-      var q = {};
-      q.where = {"_id": user._id};
-      q.update = update;
-      q.select = "-password -resetPasswordExpires -resetPasswordToken";
-
-      mongoService.update(q, User, function(err, u_user){
-        if (err) { return next({error: err}); }
-        next(null, {user: u_user});
-      });
-    }
-  ], function (err, result) {
-    if(err){ res.json(err); }
-    res.json(result);
-  });
-
 });
+
+/* Fixed */
+router.post('/update-password', restrict, function(req, res, next) {
+
+    var user = req.body.user;
+
+    if((!user.password || !user.new_password || !user.new_password_twice) ||
+        (user.password === user.new_password) ||
+        (user.new_password !== user.new_password_twice) ||
+        (user.new_password.length < 8)){
+        return res.sendStatus(400);
+    }
+
+    mongoService.findByIdWithPromise(req.user._id, User)
+    .then(function (user_obj_from_db) {
+        return bcrypt.compareAsync(user.password, user_obj_from_db.password);
+    })
+    .then(function (is_match) {
+        if(!is_match){ return Promise.reject(new E.Error('wrong password')); }
+
+        return bcrypt.hashAsync(user.new_password, saltRounds);
+    })
+    .then(function (new_password) {
+
+        var update = {
+            password: new_password,
+            last_modified: new Date()
+        };
+        var q = {};
+        q.where = {_id: req.user._id};
+        q.update = update;
+        q.select = "_id";
+
+        return mongoService.updateWithPromise(q, User);
+    })
+    .then(function () {
+        return res.sendStatus(200);
+    })
+    .catch(E.Error, function (err) {
+        return res.status(err.statusCode).send(err.message);
+    })
+    .catch(function (error) {
+        console.log(error);
+        return res.status(500).send('could not update user');
+    });
+});
+
+/* Fixed */
+router.post('/update', restrict, function(req, res, next) {
+
+    var user = req.body.user;
+    console.log(user);
+
+    //validate for empty
+    if (!user.new_first_name ||
+        !user.new_last_name ||
+        !user.new_email) {
+
+        return res.sendStatus(404);
+    }
+
+    //not changed
+    if(user.first_name === user.new_first_name &&
+        user.last_name === user.new_last_name &&
+        user.organization === user.new_organization &&
+        user.email === user.new_email ){
+        return res.status(404).send('no changes');
+    }
+
+    if (!isValidEmail(user.new_email)) {
+        return res.status(400).send('invalid email');
+    }
+
+    new Promise(function (resolve, reject) {
+
+        // email not changed, continues
+        if(user.email === user.new_email){
+            return resolve();
+        }
+
+        if(!user.confirm_password){ return reject(new E.Error('no password')); }
+
+        var q = {};
+        q.args = { email: user.new_email.toLowerCase()};
+
+        // check if email already in use
+        return mongoService.findOneWithPromise(q, User)
+        .then(function (user_with_same_email) {
+
+            if(user_with_same_email){ return Promise.reject(new E.Error('email exists')); }
+
+            return mongoService.findByIdWithPromise(req.user._id, User);
+        })
+        .then(function (user_obj_from_db) {
+            console.log(user_obj_from_db);
+
+            return bcrypt.compareAsync(user.confirm_password, user_obj_from_db.password);
+        })
+        .then(function (is_match) {
+            if(!is_match){ return Promise.reject(new E.Error('wrong password')); }
+
+            return resolve();
+        })
+        .catch(function (error) {
+            reject(error);
+        });
+    })
+    .then(function () {
+
+        var update = {};
+        if(user.first_name !== user.new_first_name){ update.first_name = user.new_first_name; }
+        if(user.last_name !== user.new_last_name){ update.last_name = user.new_last_name; }
+        if(user.organization !== user.new_organization){ update.organization = user.new_organization; }
+
+        update.last_modified = new Date();
+        if(user.email !== user.new_email){ update.email = user.new_email; }
+
+        var q = {};
+        q.where = {_id: req.user._id};
+        q.update = update;
+        q.select = "-password -resetPasswordExpires -resetPasswordToken";
+
+        return mongoService.updateWithPromise(q, User);
+    })
+    .then(function (u_user) {
+        return res.status(200).json({user: u_user});
+    })
+    .catch(E.Error, function (err) {
+        return res.status(err.statusCode).send(err.message);
+    })
+    .catch(function (error) {
+        console.log(error);
+        return res.status(500).send('could not update user');
+    });
+});
+
+var isValidEmail = function(email) {
+    return email.match(/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/) !== null;
+};
 
 module.exports = router;
