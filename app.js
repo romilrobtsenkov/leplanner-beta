@@ -14,7 +14,6 @@ var nodemailer = require('nodemailer');
 
 var config = require('./config/config');
 
-var user = require('./routes/user');
 var upload = require('./routes/upload');
 var meta = require('./routes/meta');
 var maintance = require('./routes/maintance');
@@ -60,7 +59,6 @@ app.use(multipart({
     uploadDir: config.profile_image_upload_temp_path
 }));
 
-app.use('/api/user', user);
 app.use('/api/upload', upload);
 app.use('/api/meta', meta);
 app.use('/api/maintance', maintance);
