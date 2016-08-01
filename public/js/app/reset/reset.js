@@ -16,19 +16,19 @@
             });
         });
 
-
+        /* TODO */
         $scope.reset = function(user){
 
             if(
-                typeof user.new_password != 'undefined' &&
-                typeof user.new_password_twice != 'undefined'
+                typeof user.new_password !== 'undefined' &&
+                typeof user.new_password_twice !== 'undefined'
             ){
-                if(user.new_password == user.new_password_twice){
+                if(user.new_password === user.new_password_twice){
 
                     // Save new password
                     user.token = $routeParams.token;
 
-                    requestService.post('/user/reset-password', user)
+                    requestService.post('/users/reset-password', user)
                     .then(function(data) {
                         if(data.success){
                             $location.path('/login');
