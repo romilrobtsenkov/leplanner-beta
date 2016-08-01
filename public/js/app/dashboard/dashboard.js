@@ -108,7 +108,7 @@
 
             requestService.post('/scenarios/dashboard', query)
             .then(function(data) {
-                console.log(data);
+
                 $scope.drafts_count = data.scenarios.length;
                 $scope.total_count =  data.count;
                 if(data.scenarios.length === 0){
@@ -173,41 +173,27 @@
             });
         }
 
-        /* TODO */
+        /* Fixed */
         function getNotifications(limit){
 
             $scope.notifications_loading_animation = true;
 
-            var params = {
-                user: {
-                    _id: $rootScope.user._id
-                }
-            };
+            var params = {};
 
             if(limit){
                 params.limit = limit;
             }
 
-            requestService.post('/user/notifications', params)
+            requestService.post('/users/notifications', params)
             .then(function(data) {
-                if(data.notifications){
-                    $scope.notifications = data.notifications;
-                    $scope.notifications_loading_animation = undefined;
-                }
 
-                if(data.error){
-                    switch (data.error.id) {
-                        case 100:
-                        // user changed
-                        $location.path('/');
-                        break;
-                        default:
-                        console.log(data.error);
-                    }
-                }
+                $scope.notifications = data.notifications;
+                $scope.notifications_loading_animation = undefined;
+
+            })
+            .catch(function (error) {
+                console.log(error);
             });
-
-
         }
 
         $scope.isActiveDash = function(tab){
@@ -216,6 +202,7 @@
         };
 
         $scope.updateDashList = function(tab){
+            $scope.total_count = 0;
             if(tab === 'feed ' || tab === 'drafts' || tab === 'published' || tab === 'favorites' || tab === 'users'){
                 $rootScope.dash_active_tab = tab;
             }else{

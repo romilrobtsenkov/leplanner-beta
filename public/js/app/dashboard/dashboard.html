@@ -81,62 +81,16 @@
                 <p ng-if="messages.no_favorites"> {{'NOTICE.FAVORITES_EMPTY' | translate }}</p>
                 <p ng-if="messages.no_following"> {{'NOTICE.FEED_EMPTY' | translate }}</p>
 
-                <!-- scenario items -->
-                <div class="single_scenario_item" current-page="pagination.current" dir-paginate="scenario in scenarios | itemsPerPage: 10" total-items="total_count">
-
-                    <!-- SINGLE SCENARIO -->
-                    <div class="row no-margin">
-                        <a ng-repeat="subject in scenario.subjects"><span class="dash-scenario-label pull-right label label-primary">{{subject.name}}</span></a>
-                        <div class="col-sm-12">
-                            <h4 ng-if="!scenario.draft" ><strong><a href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{scenario.name}}</a></strong></h4>
-                            <h4 ng-if="scenario.draft"><strong><a href="/#/edit/{{scenario._id}}" title="{{scenario.name}}">{{scenario.name}}</a></strong></h4>
-                        </div>
-                    </div>
-
-                    <div class="row no-margin">
-                        <div class="col-sm-4">
-                            <a ng-if="!scenario.draft" href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}" class="thumbnail">
-                                <img src="./images/thumbnail_200.png" alt="">
-                            </a>
-                            <a ng-if="scenario.draft" href="/#/edit/{{scenario._id}}" title="{{scenario.name}}" class="thumbnail">
-                                <img src="./images/thumbnail_200.png" alt="">
-                            </a>
-                        </div>
-                        <div class="col-sm-8">
-                            <p class="extra-info">
-                                <span class="glyphicon glyphicon-user"></span> <a href="/#/user/{{scenario.author._id}}" title="{{scenario.author.first_name}} {{scenario.author.last_name}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a><br>
-                                <span class="glyphicon glyphicon-calendar"></span> {{scenario.created | date:'dd.MM.yyyy'}}
-                                <span>| <span class="glyphicon glyphicon-eye-open"></span><span> {{scenario.view_count}}</span></span>
-                                <span>| <span class="glyphicon glyphicon-heart"></span><span> {{scenario.favorites_count}}</span></span>
-                                <span>| <span class="glyphicon glyphicon-comment"></span><span> {{scenario.comments_count}}</span></span>
-                            </p>
-                            <p class="description">{{scenario.description}}</p>
-                            <div class="row open-button">
-                                <div class="col-xs-8">
-                                    <span class="labels">
-                                        <a href="#"><span class="label label-danger">{{scenario.method}}</span></a>
-                                        <a href="#"><span class="label label-success">{{scenario.materialType}}</span></a>
-                                    </span>
-                                </div>
-                                <div class="col-xs-4">
-                                    <a ng-if="!scenario.draft" class="btn btn-success btn-block btn-sm pull-right" href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{ 'BUTTON.OPEN' | translate }} <span class="glyphicon glyphicon-chevron-right"></span></a>
-                                    <div ng-if="scenario.draft">
-                                        <a href="/#/edit/{{scenario._id}}" class="btn btn-success pull-right" title="{{'BUTTON.EDIT' | translate }} {{scenario.name}}">{{'BUTTON.EDIT' | translate }}</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
-                    <!-- SINGLE SCENARIO END -->
+                <!-- SCENARIOS -->
+                <div scenario class="single_scenario_item" current-page="pagination.current" dir-paginate="scenario in scenarios | itemsPerPage: 10" total-items="total_count" pagination-id="scenarios">
                 </div>
 
-                <dir-pagination-controls on-page-change="pageChanged(newPageNumber)"></dir-pagination-controls>
+                <dir-pagination-controls pagination-id="scenarios" on-page-change="pageChanged(newPageNumber)"></dir-pagination-controls>
 
                 <div ng-if="users_list.length > 0" >
                     <label>{{'INPUT.FILTER_USERS' | translate}} </label><input class="form-control" type="search" ng-model="filter_text">
                     <!-- USERS LIST -->
-                    <div ng-repeat="u in users_list | filter:filter_text">
+                    <div dir-paginate="u in users_list | filter:filter_text | itemsPerPage: 20" pagination-id="users">
                         <div class="row no-margin">
                             <div class="col-xs-9">
                                 <a class="user-list-image" href="/#/user/{{u._id}}" title="{{u.first_name}} {{u.last_name}}">
@@ -153,6 +107,8 @@
                         </div>
                         <hr class="no-margin">
                     </div>
+
+                    <dir-pagination-controls pagination-id="users"></dir-pagination-controls>
 
                 </div>
 
