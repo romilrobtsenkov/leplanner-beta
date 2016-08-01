@@ -9,7 +9,6 @@ const passport = require('passport');
 const saltRounds = 10;
 
 const mongoService = require('../services/mongo-service');
-const userService = require('../services/user-service');
 
 const Follower = require('../models/follower').Follower;
 const User = require('../models/user').User;

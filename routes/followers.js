@@ -3,7 +3,6 @@ const router = express.Router();
 const Promise = require('bluebird');
 
 const mongoService = require('../services/mongo-service');
-const userService = require('../services/user-service');
 
 const Follower = require('../models/follower').Follower;
 const User = require('../models/user').User;
