@@ -5,7 +5,7 @@
         <div class="main-login">
 
             <h3>
-              <span ng-if="!reset_form">{{'PAGE.SIGN_UP' | translate}}</span>
+                <span ng-if="!reset_form">{{'PAGE.SIGN_UP' | translate}}</span>
             </h3>
 
             <a ng-if="!reset_form" href="#/signup" class="btn btn-success btn-block" style="cursor:pointer">{{'BUTTON.SIGN_UP' | translate}}</a>
@@ -13,45 +13,46 @@
             <br>
 
             <h3>
-              <span ng-if="!reset_form">{{'PAGE.LOG_IN' | translate}}</span>
-              <span ng-if="reset_form">{{'PAGE.PASSWORD_RESET' | translate}}</span>
+                <span ng-if="!reset_form">{{'PAGE.LOG_IN' | translate}}</span>
+                <span ng-if="reset_form">{{'PAGE.PASSWORD_RESET' | translate}}</span>
             </h3>
 
             <!-- Using regular username and password to login -->
             <form ng-if="!reset_form" role="form" name="login-form" id="login-form" ng-submit="login(user)">
-              <div ng-if='login_error' class="alert alert-danger" role="alert">{{login_error}}</div>
-              <div class="form-group">
-                <label for="email">{{'INPUT.EMAIL' | translate}}</label>
-                <input type="email" class="form-control" id="email" name="email" ng-model="user.email" required />
-              </div>
-              <div class="form-group">
-                <a class="pull-right" style="cursor:pointer" ng-click="activateResetForm($event)" href="#/login">{{'BUTTON.RESET_PASSWORD' | translate}}</a>
-                <label for="password">{{'INPUT.PASSWORD' | translate}}</label>
-                <input type="password" class="form-control" id="password" name="password" ng-model="user.password"  required />
-              </div>
-              <div class="checkbox pull-right">
-                <label>
-                  <input ng-model="user.remember_me" type="checkbox">
-                  {{'BUTTON.REMEMBER_ME' | translate}}</label>
-              </div>
-              <div class="form-submit">
-                <input ng-disabled="login_in_process" type="submit" class="btn btn-sm btn btn-primary" value="{{'BUTTON.LOG_IN' | translate}}" />
-              </div>
-            </form>
+                <div ng-if='login_error' class="alert alert-danger" role="alert">{{login_error}}</div>
+                <div class="form-group">
+                    <label for="email">{{'INPUT.EMAIL' | translate}}</label>
+                    <input type="email" class="form-control" id="email" name="email" ng-model="user.email" required />
+                </div>
+                <div class="form-group">
+                    <a class="pull-right" style="cursor:pointer" ng-click="activateResetForm($event)" href="#/login">{{'BUTTON.RESET_PASSWORD' | translate}}</a>
+                    <label for="password">{{'INPUT.PASSWORD' | translate}}</label>
+                    <input type="password" class="form-control" id="password" name="password" ng-model="user.password"  required />
+                </div>
+                <div class="checkbox pull-right">
+                    <label>
+                        <input ng-model="user.remember_me" type="checkbox">
+                        {{'BUTTON.REMEMBER_ME' | translate}}</label>
+                    </div>
+                    <div class="form-submit">
+                        <input ng-disabled="login_in_process" type="submit" class="btn btn-sm btn btn-primary" value="{{'BUTTON.LOG_IN' | translate}}" />
+                    </div>
+                </form>
 
-            <!-- Send reset email-->
-            <form ng-if='reset_form' name="reset-user-form" id="reset-user-form" ng-submit="reset(user)">
-              <div ng-if='reset_error' class="alert alert-danger" role="alert">{{reset_error}}</div>
-              <div ng-if='success_alert' class="alert alert-success" role="alert">{{success_alert}}</div>
-              <div class="form-group">
-                <label for="reset_email">{{'INPUT.EMAIL' | translate}}</label>
-                <input type="text" class="form-control" id="reset_email" name="reset_email" ng-model="user.reset_email" required/>
-              </div>
-              <div class="form-submit">
-                <input ng-disabled="sending_in_progress" class="btn btn-sm btn btn-primary" type="submit" value="{{'BUTTON.SEND' | translate}}" />
-              </div>
-            </form>
+                <!-- Send reset email-->
+                <form ng-if='reset_form' name="reset-user-form" id="reset-user-form" ng-submit="reset(user)">
+                    <div ng-if='reset_error' class="alert alert-danger" role="alert">{{reset_error}}</div>
+                    <div ng-if='success_alert' class="alert alert-success" role="alert">{{success_alert}}</div>
+                    <div class="form-group">
+                        <label for="reset_email">{{'INPUT.EMAIL' | translate}}</label>
+                        <input type="email" class="form-control" id="reset_email" name="reset_email" ng-model="user.reset_email" required/>
+                    </div>
+                    <div class="form-submit">
+                        <input ng-disabled="sending_in_progress" class="btn btn-sm btn btn-primary" type="submit" value="{{'BUTTON.SEND' | translate}}" />
+                        <a ng-click="deactivateResetForm($event)" class="btn btn-sm btn-link pull-right" alt="{{'PAGE.LOG_IN' | translate}}">{{'PAGE.LOG_IN' | translate}}</a>
+                    </div>
+                </form>
 
+            </div>
         </div>
     </div>
-</div>

@@ -1,7 +1,7 @@
 (function() {
-  'use strict';
+    'use strict';
 
-  angular
+    angular
     .module('app')
     .controller('SettingsController', ['$scope','$rootScope','$location','$timeout','requestService','Upload','$translate','$window',
     function($scope,$rootScope,$location,$timeout,requestService,Upload,$translate,$window) {
@@ -11,293 +11,270 @@
 
             /* ANALYTICS */
             $window.ga('send', 'pageview', {
-              'page': $location.path(),
-              'title': $rootScope.title
+                'page': $location.path(),
+                'title': $rootScope.title
             });
         });
 
-      $scope.user = $rootScope.user;
-      $scope.user.profile_image ="./images/user/"+$scope.user._id+".jpg";
+        $scope.user = $rootScope.user;
+        $scope.user.profile_image ="./images/user/"+$scope.user._id+".jpg";
 
-      // INIT
-      fillUpdateProfileForm($scope.user);
+        // INIT
+        fillUpdateProfileForm($scope.user);
 
-      function fillUpdateProfileForm() {
-        $scope.user.new_first_name = $scope.user.first_name;
-        $scope.user.new_last_name = $scope.user.last_name;
-        $scope.user.new_email = $scope.user.email;
-        $scope.user.new_organization = $scope.user.organization;
-      }
+        function fillUpdateProfileForm() {
+            $scope.user.new_first_name = $scope.user.first_name;
+            $scope.user.new_last_name = $scope.user.last_name;
+            $scope.user.new_email = $scope.user.email;
+            $scope.user.new_organization = $scope.user.organization;
+        }
 
-      $scope.updateProfile = function(user){
+        /* Fixed */
+        $scope.updateProfile = function(user){
 
-        if($scope.user.new_first_name != $scope.user.first_name ||
-           $scope.user.new_last_name != $scope.user.last_name ||
-           $scope.user.new_email != $scope.user.email ||
-           $scope.user.new_organization != $scope.user.organization
-          ){
+            if(!$scope.user.new_first_name) {
+                $translate('NOTICE.PLEASE_ENTER_FIRST_NAME').then(function (t) {
+                    $scope.updateProfile_error = t;
+                });
+                $timeout(function() { $scope.updateProfile_error = null; }, 2000);
+                return;
+            } else if (!$scope.user.new_last_name) {
+                $translate('NOTICE.PLEASE_ENTER_LAST_NAME').then(function (t) {
+                    $scope.updateProfile_error = t;
+                });
+                $timeout(function() { $scope.updateProfile_error = null; }, 2000);
+                return;
+            } else if (!$scope.user.new_email) {
+                $translate('NOTICE.PLEASE_ENTER_EMAIL').then(function (t) {
+                    $scope.updateProfile_error = t;
+                });
+                $timeout(function() { $scope.updateProfile_error = null; }, 2000);
+                return;
+            }
+
+            if($scope.user.new_first_name === $scope.user.first_name &&
+                $scope.user.new_last_name === $scope.user.last_name &&
+                $scope.user.new_email === $scope.user.email &&
+                $scope.user.new_organization === $scope.user.organization ){
+
+                $translate('NOTICE.NO_DATA_MODIFIED').then(function (t) {
+                    $scope.updateProfile_error = t;
+                });
+                $timeout(function() { $scope.updateProfile_error = null; }, 2000);
+
+                return;
+            }
 
             $scope.updating_in_progress = true;
 
-            requestService.post('/user/update-profile', {user: $scope.user})
-              .then(function(data) {
+            requestService.post('/users/update', {user: $scope.user})
+            .then(function(data) {
 
                 $scope.updating_in_progress = undefined;
-                //console.log(data);
-                if(data.user){
-                  $rootScope.user = data.user;
-                  $scope.user = $rootScope.user;
-                  fillUpdateProfileForm();
-                  //$scope.updateProfile_success = 'Update successful';
-                  $translate('NOTICE.UPDATE_SUCCESS').then(function (t) {
-                      $scope.updateProfile_success = t;
-                  });
-                  $scope.updateProfile_error = null;
-                  $timeout(function() { $scope.updateProfile_success = null; }, 2000);
-                }
 
-                if(data.error){
-                  switch(data.error.id) {
-                    case 100:
-                      // user changed
-                      $location.path('/');
-                      break;
-                    case 0:
-                      //$scope.updateProfile_error = 'Please enter your first name';
-                      $translate('NOTICE.PLEASE_ENTER_FIRST_NAME').then(function (t) {
-                          $scope.updateProfile_error = t;
-                      });
-                      break;
-                    case 1:
-                      //$scope.updateProfile_error = 'Please enter your last name';
-                      $translate('NOTICE.PLEASE_ENTER_LAST_NAME').then(function (t) {
-                          $scope.updateProfile_error = t;
-                      });
-                      break;
-                    case 2:
-                      //$scope.updateProfile_error = 'Please enter yout email';
-                      $translate('NOTICE.PLEASE_ENTER_EMAIL').then(function (t) {
-                          $scope.updateProfile_error = t;
-                      });
-                      break;
-                    case 3:
-                      //$scope.updateProfile_error = 'Please enter correct email';
-                      $translate('NOTICE.PLEASE_ENTER_CORRECT_EMAIL').then(function (t) {
-                          $scope.updateProfile_error = t;
-                      });
-                      break;
-                    case 6:
-                      //$scope.updateProfile_error = 'That email is already in use';
-                      $translate('NOTICE.EMAIL_IN_USE').then(function (t) {
-                          $scope.updateProfile_error = t;
-                      });
-                      break;
-                    case 7:
-                      //$scope.updateProfile_error = 'Please enter password to confirm email change!';
-                      $translate('NOTICE.ENTER_PASSWORD_TO_CONFIRM').then(function (t) {
-                          $scope.updateProfile_error = t;
-                      });
-                      break;
-                    case 10:
-                      //$scope.updateProfile_error = 'Wrong password!';
-                      $translate('NOTICE.WRONG_PASSWORD').then(function (t) {
-                          $scope.updateProfile_error = t;
-                      });
-                      break;
-                    default:
-                      //$scope.updateProfile_error = 'Unknown error';
-                      $translate('NOTICE.UNKNOWN').then(function (t) {
-                          $scope.updateProfile_error = t;
-                      });
-                      console.log(data.error);
-                  }
-                  $timeout(function() { $scope.updateProfile_error = null; }, 2000);
-                }
+                console.log(data);
 
-            });
+                $rootScope.user = data.user;
+                $scope.user = $rootScope.user;
 
-        }else{
-          //$scope.updateProfile_error = 'No profile data modified';
-          $translate('NOTICE.NO_DATA_MODIFIED').then(function (t) {
-              $scope.updateProfile_error = t;
-          });
-          $timeout(function() { $scope.updateProfile_error = null; }, 2000);
-        }
-      };
+                fillUpdateProfileForm();
 
-      $scope.updatePassword = function(user){
+                $translate('NOTICE.UPDATE_SUCCESS').then(function (t) {
+                    $scope.updateProfile_success = t;
+                });
 
-        if(typeof user.password != 'undefined' &&
-           typeof user.new_password != 'undefined' &&
-           typeof user.new_password_twice != 'undefined'
-          ){
-            if(user.new_password == user.new_password_twice){
+                $scope.updateProfile_error = null;
+                $timeout(function() { $scope.updateProfile_success = null; }, 2000);
+            })
+            .catch(function (error) {
+                console.log(error);
+                $scope.updating_in_progress = undefined;
 
-              $scope.updating_in_progress = true;
-
-              requestService.post('/user/update-password', {user: user})
-                .then(function(data) {
-
-                  $scope.updating_in_progress = undefined;
-
-                  //console.log(data);
-                  if(data.user){
-                    //$scope.updatePassword_success = 'Update successful';
-                    $translate('NOTICE.UPDATE_SUCCESS').then(function (t) {
-                        $scope.updatePassword_success = t;
+                if (error.data === 'no changes') {
+                    $translate('NOTICE.NO_DATA_MODIFIED').then(function (t) {
+                        $scope.updateProfile_error = t;
                     });
-                    $scope.updatePassword_error = null;
-                    user.password = undefined;
-                    user.new_password = undefined;
-                    user.new_password_twice = undefined;
-                    $timeout(function() { $scope.updatePassword_success = null; }, 2000);
-                  }
+                } else if (error.data === 'invalid email') {
+                    $translate('NOTICE.PLEASE_ENTER_CORRECT_EMAIL').then(function (t) {
+                        $scope.updateProfile_error = t;
+                    });
+                } else if (error.data === 'no password') {
+                    $translate('NOTICE.ENTER_PASSWORD_TO_CONFIRM').then(function (t) {
+                        $scope.updateProfile_error = t;
+                    });
+                } else if (error.data === 'email exists') {
+                    $translate('NOTICE.EMAIL_IN_USE').then(function (t) {
+                        $scope.updateProfile_error = t;
+                    });
+                } else if (error.data === 'wrong password') {
+                    $translate('NOTICE.WRONG_PASSWORD').then(function (t) {
+                        $scope.updateProfile_error = t;
+                    });
+                } else {
+                    $translate('NOTICE.UNKNOWN').then(function (t) {
+                        $scope.updateProfile_error = t;
+                    });
+                }
 
-                  if(data.error){
-                    switch(data.error.id) {
-                      case 100:
-                        // user changed
-                        $location.path('/');
-                        break;
-                      case 5:
-                        //$scope.updatePassword_error = 'Password has to be min 8 chars long';
-                        $translate('NOTICE.PASSWORD_MIN_LENGTH').then(function (t) {
-                            $scope.updatePassword_error = t;
-                        });
-                        break;
-                      case 7:
-                        //$scope.updatePassword_error = 'Please enter all fields';
-                        $translate('NOTICE.ENTER_ALL').then(function (t) {
-                            $scope.updatePassword_error = t;
-                        });
-                        break;
-                      case 8:
-                        //$scope.updatePassword_error = 'New password has to be different from old one';
-                        $translate('NOTICE.NEW_PASSWORD_DIFFERENT').then(function (t) {
-                            $scope.updatePassword_error = t;
-                        });
-                        break;
-                      case 9:
-                        //$scope.updatePassword_error = 'New passwords dont match';
-                        $translate('NOTICE.NEW_PASSWORDS_DONT_MATCH').then(function (t) {
-                            $scope.updatePassword_error = t;
-                        });
-                        break;
-                      case 10:
-                        //$scope.updatePassword_error = 'Wrong password';
-                        $translate('NOTICE.WRONG_PASSWORD').then(function (t) {
-                            $scope.updatePassword_error = t;
-                        });
-                        break;
-                      default:
-                        //$scope.updatePassword_error = 'Unknown error';
-                        $translate('NOTICE.UNKNOWN').then(function (t) {
-                            $scope.updatePassword_error = t;
-                        });
-                    }
-                    $timeout(function() { $scope.updatePassword_error = null; }, 2000);
-                  }
+                $timeout(function() { $scope.updateProfile_error = null; }, 2000);
+            });
+        };
 
-              });
+        /* Fixed */
+        $scope.updatePassword = function(user){
 
-            }else{
-              //$scope.updatePassword_error = 'New passwords dont match';
-              $translate('NOTICE.NEW_PASSWORDS_DONT_MATCH').then(function (t) {
-                  $scope.updatePassword_error = t;
-              });
-              $timeout(function() { $scope.updatePassword_error = null; }, 2000);
+            if(!user.password ||
+                !user.new_password ||
+                !user.new_password_twice){
+
+                $translate('NOTICE.ENTER_ALL').then(function (t) {
+                    $scope.updatePassword_error = t;
+                });
+                $timeout(function() { $scope.updatePassword_error = null; }, 2000);
+                return;
             }
 
-        }else{
-          //$scope.updatePassword_error = 'All fields are required';
-          $translate('NOTICE.ENTER_ALL').then(function (t) {
-              $scope.updatePassword_error = t;
-          });
-          $timeout(function() { $scope.updatePassword_error = null; }, 2000);
-        }
-      };
-
-      $scope.uploadPicture = function(files){
-        if (files && files.length) {
-
-          var file = files[0];
-          //console.log(file);
-          var user_for_restrict_check = {};
-          user_for_restrict_check._id = $rootScope.user._id;
-          Upload.upload({
-              url: 'api/upload/profile-image',
-              fields: {
-                  user: user_for_restrict_check
-              },
-              sendFieldsAs: "form",
-              file: file
-          }).progress(function (evt) {
-              var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-              $scope.progress_percentage = progressPercentage+ '% ';
-              //console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
-          }).success(function (data, status, headers, config) {
-
-              if(data.success){
-                //console.log('success');
-
-                // to update image src & update image in browser
-                var last_modified = new Date();
-                $scope.user.profile_image ="./images/user/"+$scope.user._id+".jpg?last_modified="+last_modified;
-
-                //console.log(last_modified);
-                // update rootScope to change user profile_image everywhere
-                $rootScope.user.image = $scope.user._id+".jpg?last_modified="+last_modified;
-                $rootScope.user.image_thumb = $scope.user._id+"_thumb.jpg?last_modified="+last_modified;
-
-                //$scope.upload_success = 'Upload successful';
-                $translate('NOTICE.UPLOAD_SUCCESS').then(function (t) {
-                    $scope.upload_success = t;
+            if(user.new_password.length < 8) {
+                $translate('NOTICE.PASSWORD_MIN_LENGTH').then(function (t) {
+                    $scope.updatePassword_error = t;
                 });
-                $scope.progress_percentage = null;
-                $timeout(function() { $scope.upload_success = null; }, 2000);
-              }
+                $timeout(function() { $scope.updatePassword_error = null; }, 2000);
+                return;
+            }
 
-              if(data.error){
-                switch(data.error.id) {
-                  case 100:
-                    // user changed
-                    $location.path('/');
-                    break;
-                  case 20:
-                    //$scope.upload_error = 'File too large';
-                    $translate('NOTICE.FILE_TO_LARGE').then(function (t) {
-                        $scope.upload_error = t;
-                    });
-                    break;
-                  case 22:
-                    //$scope.upload_error = 'Unsupported file type';
-                    $translate('NOTICE.WRONG_FILE_TYPE').then(function (t) {
-                        $scope.upload_error = t;
-                    });
-                    break;
-                  case 23:
-                    //$scope.upload_error = 'Upload larger image than 400px x 400px';
-                    $translate('NOTICE.UPLOAD_LARGER_IMAGE').then(function (t) {
-                        $scope.upload_error = t+' 400px x 400px';
-                    });
-                    break;
+            if(user.new_password === user.password) {
+                $translate('NOTICE.NEW_PASSWORD_DIFFERENT').then(function (t) {
+                    $scope.updatePassword_error = t;
+                });
+                $timeout(function() { $scope.updatePassword_error = null; }, 2000);
+                return;
+            }
 
+            if(user.new_password !== user.new_password_twice){
+                $translate('NOTICE.NEW_PASSWORDS_DONT_MATCH').then(function (t) {
+                    $scope.updatePassword_error = t;
+                });
+                $timeout(function() { $scope.updatePassword_error = null; }, 2000);
+            }
+
+            $scope.updating_in_progress = true;
+
+            requestService.post('/users/update-password', {user: user})
+            .then(function(data) {
+
+                $scope.updating_in_progress = undefined;
+
+                console.log(data);
+
+                $translate('NOTICE.UPDATE_SUCCESS').then(function (t) {
+                    $scope.updatePassword_success = t;
+                });
+                $scope.updatePassword_error = null;
+                user.password = undefined;
+                user.new_password = undefined;
+                user.new_password_twice = undefined;
+                $timeout(function() { $scope.updatePassword_success = null; }, 2000);
+            })
+            .catch(function (error) {
+                console.log(error);
+                $scope.updating_in_progress = undefined;
+
+                if (error.data === 'wrong password') {
+                    $translate('NOTICE.WRONG_PASSWORD').then(function (t) {
+                        $scope.updatePassword_error = t;
+                    });
+                } else {
+                    $translate('NOTICE.UNKNOWN').then(function (t) {
+                        $scope.updatePassword_error = t;
+                    });
                 }
-                $scope.progress_percentage = null;
-                $timeout(function() { $scope.upload_error = null; }, 2000);
-              }
 
-          }).error(function (data, status, headers, config) {
-            $scope.progress_percentage = null;
-            //$scope.upload_error = 'Unknown error!';
-            $translate('NOTICE.UNKNOWN').then(function (t) {
-                $scope.upload_error = t;
+                $timeout(function() { $scope.updatePassword_error = null; }, 2000);
             });
-            $timeout(function() { $scope.upload_error = null; }, 2000);
-          });
+        };
 
-        }
-      };
+        /* TODO */
+        $scope.uploadPicture = function(files){
+            if (files && files.length) {
 
-  }]); // SettingsController end
+                var file = files[0];
+                //console.log(file);
+                var user_for_restrict_check = {};
+                user_for_restrict_check._id = $rootScope.user._id;
+                Upload.upload({
+                    url: 'api/upload/profile-image',
+                    fields: {
+                        user: user_for_restrict_check
+                    },
+                    sendFieldsAs: "form",
+                    file: file
+                }).progress(function (evt) {
+                    var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                    $scope.progress_percentage = progressPercentage+ '% ';
+                    //console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
+                }).success(function (data, status, headers, config) {
+
+                    if(data.success){
+                        //console.log('success');
+
+                        // to update image src & update image in browser
+                        var last_modified = new Date();
+                        $scope.user.profile_image ="./images/user/"+$scope.user._id+".jpg?last_modified="+last_modified;
+
+                        //console.log(last_modified);
+                        // update rootScope to change user profile_image everywhere
+                        $rootScope.user.image = $scope.user._id+".jpg?last_modified="+last_modified;
+                        $rootScope.user.image_thumb = $scope.user._id+"_thumb.jpg?last_modified="+last_modified;
+
+                        //$scope.upload_success = 'Upload successful';
+                        $translate('NOTICE.UPLOAD_SUCCESS').then(function (t) {
+                            $scope.upload_success = t;
+                        });
+                        $scope.progress_percentage = null;
+                        $timeout(function() { $scope.upload_success = null; }, 2000);
+                    }
+
+                    if(data.error){
+                        switch(data.error.id) {
+                            case 100:
+                            // user changed
+                            $location.path('/');
+                            break;
+                            case 20:
+                            //$scope.upload_error = 'File too large';
+                            $translate('NOTICE.FILE_TO_LARGE').then(function (t) {
+                                $scope.upload_error = t;
+                            });
+                            break;
+                            case 22:
+                            //$scope.upload_error = 'Unsupported file type';
+                            $translate('NOTICE.WRONG_FILE_TYPE').then(function (t) {
+                                $scope.upload_error = t;
+                            });
+                            break;
+                            case 23:
+                            //$scope.upload_error = 'Upload larger image than 400px x 400px';
+                            $translate('NOTICE.UPLOAD_LARGER_IMAGE').then(function (t) {
+                                $scope.upload_error = t+' 400px x 400px';
+                            });
+                            break;
+
+                        }
+                        $scope.progress_percentage = null;
+                        $timeout(function() { $scope.upload_error = null; }, 2000);
+                    }
+
+                }).error(function (data, status, headers, config) {
+                    $scope.progress_percentage = null;
+                    //$scope.upload_error = 'Unknown error!';
+                    $translate('NOTICE.UNKNOWN').then(function (t) {
+                        $scope.upload_error = t;
+                    });
+                    $timeout(function() { $scope.upload_error = null; }, 2000);
+                });
+
+            }
+        };
+
+    }]); // SettingsController end
 }());
