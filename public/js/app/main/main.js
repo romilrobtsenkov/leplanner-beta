@@ -10,17 +10,21 @@
 
       //console.log($rootScope.user);
       $scope.logout = function(){
-        requestService.get('/user/logout')
+
+        requestService.post('/users/logout')
           .then(function(data){
-            console.log(data);
             $rootScope.user = undefined;
             $location.path('/');
+          })
+          .catch(function(error) {
+              console.log(error);
+              window.alert('unable to logout, refresh the page');
           });
       };
 
       $scope.navigateToLogin = function($event){
         $event.preventDefault();
-        if($location.path().toString() != '/'){
+        if($location.path().toString() !== '/'){
           $rootScope.navigatedToLoginFrom = $location.path();
           $location.path('/login');
         }else{
@@ -31,11 +35,11 @@
       };
 
       $scope.searchFromTop = function($event){
-        if($location.path() == '/search'){
+        if($location.path() === '/search'){
           $rootScope.top_search_word = $scope.top_search_word;
           $scope.$broadcast ('triggerSearchForm');
         }else{
-          if(typeof $event !== 'undefined'){
+          if($event){
             $event.preventDefault();
           }
           $rootScope.top_search_word = $scope.top_search_word;
@@ -60,21 +64,19 @@
       };
 
       $scope.setLanguage = function(){
+
+          console.log('saving');
+
           var currentLang = $translate.proposedLanguage() || $translate.use();
-          requestService.post('/user/save-language', {lang: currentLang})
+          requestService.post('/users/language', { lang: currentLang })
             .then(function(data) {
 
-              if(data.success){
-                  //console.log(data.success);
-                  $rootScope.user.lang = currentLang;
-                  $scope.translateDefaults();
-                  $route.reload();
-              }
-
-              if(data.error){
-                //console.log(data);
-                console.log('unable to set user lang');
-              }
+              $rootScope.user.lang = currentLang;
+              $scope.translateDefaults();
+              $route.reload();
+          })
+          .catch(function (error) {
+              console.log(error);
           });
       };
 
