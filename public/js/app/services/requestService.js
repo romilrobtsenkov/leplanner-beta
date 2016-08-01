@@ -23,9 +23,8 @@
                 // Add user id to compare with server session
                 if ($rootScope.user && $rootScope.user._id) {
                     if (!query) { query = {}; }
-                    query.user = {
-                        _id: $rootScope.user._id
-                    };
+                    if (!query.user) { query.user = {}; }
+                    query.user._id = $rootScope.user._id;
                 }
 
                 return $http.post(API_BASE + request, query).then(success)
