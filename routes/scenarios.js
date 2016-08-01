@@ -21,7 +21,7 @@ const User = require('../models/user').User;
 const E = require('../errors');
 
 /* Fixed */
-router.get('/copy/:id', restrict, function(req, res, next) {
+router.get('/copy/:id', restrict, function(req, res) {
 
     var params = req.params;
     if (!params.id) { return res.sendStatus(404); }
@@ -103,7 +103,7 @@ router.get('/copy/:id', restrict, function(req, res, next) {
 });
 
 /* Fixed */
-router.post('/', restrict, function(req, res, next) {
+router.post('/', restrict, function(req, res) {
 
     var params = req.body;
 
@@ -131,7 +131,7 @@ router.post('/', restrict, function(req, res, next) {
 });
 
 /* Fixed */
-router.post('/delete/:id', restrict, function(req, res, next) {
+router.post('/delete/:id', restrict, function(req, res) {
 
     var params = req.params;
 
@@ -167,7 +167,7 @@ router.post('/delete/:id', restrict, function(req, res, next) {
 });
 
 /* Fixed */
-router.post('/single-edit/:id', restrict, function(req, res, next) {
+router.post('/single-edit/:id', restrict, function(req, res) {
 
     var params = req.params;
     var response = {};
@@ -240,7 +240,7 @@ router.post('/single-edit/:id', restrict, function(req, res, next) {
 });
 
 /* Fixed */
-router.get('/user/:id', function(req, res, next) {
+router.get('/user/:id', function(req, res) {
 
     var query = req.query;
     var params = req.params;
@@ -289,7 +289,7 @@ router.get('/user/:id', function(req, res, next) {
 });
 
 /* Fixed */
-router.post('/save/', restrict, function(req, res, next) {
+router.post('/save/', restrict, function(req, res) {
 
     var params = req.body;
 
@@ -355,7 +355,7 @@ router.post('/save/', restrict, function(req, res, next) {
 });
 
 /* Fixed */
-router.post('/dashboard/', restrict, function(req, res, next) {
+router.post('/dashboard/', restrict, function(req, res) {
 
     var query = req.body;
     if(!query.tab){ query.tab = 'feed'; }
@@ -385,7 +385,7 @@ router.post('/dashboard/', restrict, function(req, res, next) {
 
         switch (query.tab) {
             case 'feed':
-            
+
                 var followerQ = {};
                 followerQ.args = {follower: query.user._id, removed: null};
                 followerQ.select = 'following';
@@ -474,7 +474,7 @@ router.post('/dashboard/', restrict, function(req, res, next) {
 });
 
 /* Fixed */
-router.get('/search', function(req, res, next) {
+router.get('/search', function(req, res) {
 
     const PAGESIZE = 10;
 
@@ -540,7 +540,7 @@ router.get('/search', function(req, res, next) {
 });
 
 /* Fixed */
-router.get('/single/:id', function(req, res, next) {
+router.get('/single/:id', function(req, res) {
 
     var params = req.params;
     var response = {};
@@ -688,7 +688,7 @@ router.get('/single/:id', function(req, res, next) {
 });
 
 /* Fixed */
-router.get('/tag/', function(req, res, next) {
+router.get('/tag/', function(req, res) {
 
     var query = req.query;
 
@@ -739,7 +739,7 @@ router.get('/tag/', function(req, res, next) {
 /* Fixed */
 // Takes in parameters
 // order & limit & exclude? & author?
-router.get('/widget/', function(req, res, next) {
+router.get('/widget/', function(req, res) {
 
     var query = req.query;
 

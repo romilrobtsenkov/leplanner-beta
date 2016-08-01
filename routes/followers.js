@@ -10,7 +10,7 @@ const User = require('../models/user').User;
 
 const restrict = require('../auth/restrict');
 
-router.post('/:id',restrict, function(req, res, next) {
+router.post('/:id',restrict, function(req, res) {
 
     var params = req.params;
     if (!params.id) { return res.sendStatus(404); }
@@ -78,7 +78,7 @@ router.post('/:id',restrict, function(req, res, next) {
 
 });
 
-router.post('/remove/:id',restrict, function(req, res, next) {
+router.post('/remove/:id',restrict, function(req, res) {
 
     var params = req.params;
     if (!params.id) { return res.sendStatus(404); }

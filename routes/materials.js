@@ -22,7 +22,7 @@ const E = require('../errors');
 *    scenario._id
 * @return {Element} element
 */
-router.post('/', restrict, function (req, res, next) {
+router.post('/', restrict, function (req, res) {
 
     var params = req.body;
     var savedMaterial;
@@ -120,17 +120,18 @@ router.post('/', restrict, function (req, res, next) {
 *    scenario._id
 * @return {Element} element
 */
-router.post('/:id', restrict, function (req, res, next) {
 
-var params = req.params;
-var postData = req.body;
-var updatedMaterial;
+router.post('/:id', restrict, function (req, res) {
 
-if (!postData.material.material_name ||
-    !postData.material.activity_id ||
-    !postData.material.position ||
-    !params.id ||
-    !postData.scenario._id) {
+    var params = req.params;
+    var postData = req.body;
+    var updatedMaterial;
+
+    if (!postData.material.material_name ||
+        !postData.material.activity_id ||
+        !postData.material.position ||
+        !params.id ||
+        !postData.scenario._id) {
 
         return res.sendStatus(404);
     }
@@ -215,7 +216,7 @@ if (!postData.material.material_name ||
 * @param {String} tag
 * @return {Element} element
 */
-router.post('/delete/:id', restrict, function (req, res, next) {
+router.post('/delete/:id', restrict, function (req, res) {
 
     var params = req.params;
     var postData = req.body;

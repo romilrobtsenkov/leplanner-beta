@@ -22,7 +22,7 @@ const E = require('../errors');
 *   author._id - commented scenario author
 * @return {Status} 200
 */
-router.post('/', restrict, function (req, res, next) {
+router.post('/', restrict, function (req, res) {
 
     var params = req.body;
 
@@ -92,7 +92,7 @@ router.post('/', restrict, function (req, res, next) {
 * @param {String} scenario_id
 * @return {Status} 200
 */
-router.get('/scenario/:id', function (req, res, next) {
+router.get('/scenario/:id', function (req, res) {
 
     var params = req.params;
 
@@ -123,7 +123,7 @@ router.get('/scenario/:id', function (req, res, next) {
 * @param {String} id of the comment
 * @return {Status} 200
 */
-router.post('/delete/:id', restrict, function (req, res, next) {
+router.post('/delete/:id', restrict, function (req, res) {
 
     var params = req.params;
     var scenarioId; // store scenario id which has comment

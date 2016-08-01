@@ -16,7 +16,7 @@ const Scenario = require('../models/scenario').Scenario;
 * scenario_id - id of scenario to be favorited by user
 * @return {Status} 200
 */
-router.post('/', restrict, function (req, res, next) {
+router.post('/', restrict, function (req, res) {
 
     var params = req.body;
 
@@ -69,7 +69,7 @@ router.post('/', restrict, function (req, res, next) {
 * scenario_id - id of scenario to be favorited by user
 * @return {Status} 200
 */
-router.post('/delete/:scenario_id', restrict, function (req, res, next) {
+router.post('/delete/:scenario_id', restrict, function (req, res) {
 
     var params = req.params;
 

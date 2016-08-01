@@ -4,7 +4,7 @@ const Promise = require('bluebird');
 
 const metaService = require('../services/meta-service');
 
-router.get('/subjects/', function(req, res, next) {
+router.get('/subjects/', function(req, res) {
 
     metaService.getSubjects()
     .then(function (subjects) {
@@ -16,7 +16,7 @@ router.get('/subjects/', function(req, res, next) {
     });
 });
 
-router.get('/scenario/', function(req, res, next) {
+router.get('/scenario/', function(req, res) {
 
     Promise.props({
         subjects: metaService.getSubjects(),
