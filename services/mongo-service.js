@@ -48,6 +48,9 @@ exports.findById = function(id, Collection, next) {
         next(err, entry);
     });
 };
+exports.findByIdWithPromise = function(id, Collection, next) {
+    return Collection.findById(id);
+};
 
 exports.findOne = function(q, Collection, next){
     var query = Collection.findOne();
