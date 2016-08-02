@@ -6,9 +6,9 @@ var gulp   = require('gulp'),
     jshint = require('gulp-jshint'),
     sourcemaps = require('gulp-sourcemaps'),
     concat = require('gulp-concat'),
-    uglify = require('gulp-uglify');
-    jsonminify = require('gulp-jsonminify');
-    size = require('gulp-size');
+    uglify = require('gulp-uglify'),
+    jsonminify = require('gulp-jsonminify'),
+    size = require('gulp-size'),
     cleanCSS = require('gulp-clean-css');
 
 gulp.task('default', ['jshint', 'build-js', 'minify-languages', 'minify-css']);
