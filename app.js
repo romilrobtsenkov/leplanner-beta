@@ -14,16 +14,14 @@ var nodemailer = require('nodemailer');
 
 var config = require('./config/config');
 
-var upload = require('./routes/upload');
-var meta = require('./routes/meta');
-
-//NEW
 var comments = require('./routes/comments');
 var favorites = require('./routes/favorites');
-var materials = require('./routes/materials');
-var scenarios = require('./routes/scenarios');
-var users = require('./routes/users');
 var followers = require('./routes/followers');
+var materials = require('./routes/materials');
+var meta = require('./routes/meta');
+var scenarios = require('./routes/scenarios');
+var upload = require('./routes/upload');
+var users = require('./routes/users');
 
 var passportConfig = require('./auth/passport-config');
 passportConfig();
@@ -58,16 +56,14 @@ app.use(multipart({
     uploadDir: config.profile_image_upload_temp_path
 }));
 
-app.use('/api/upload', upload);
-app.use('/api/meta', meta);
-
-// NEW
 app.use('/api/comments', comments);
 app.use('/api/favorites', favorites);
-app.use('/api/materials', materials);
-app.use('/api/scenarios', scenarios);
-app.use('/api/users', users);
 app.use('/api/followers', followers);
+app.use('/api/materials', materials);
+app.use('/api/meta', meta);
+app.use('/api/scenarios', scenarios);
+app.use('/api/upload', upload);
+app.use('/api/users', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
