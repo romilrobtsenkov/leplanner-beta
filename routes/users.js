@@ -363,8 +363,11 @@ router.post('/reset-password', function(req, res, next) {
     mongoService.findOneWithPromise(q, User)
     .then(function (user_from_db) {
 
-        if(!user_from_db){ Promise.reject(new E.NotFoundError('token not valid')); }
+        if(!user_from_db){ return Promise.reject(new E.NotFoundError('token not valid')); }
         if(user_from_db.resetPasswordExpires < Date.now()){ return Promise.reject(new E.NotFoundError('token expired')); }
+
+        //for saving to db
+        user._id = user_from_db._id;
 
         // create new password
         return bcrypt.hashAsync(user.new_password, saltRounds);
@@ -377,7 +380,7 @@ router.post('/reset-password', function(req, res, next) {
             resetPasswordToken: ''
         };
         var q = {};
-        q.where = {_id: req.user._id};
+        q.where = {_id: user._id};
         q.update = update;
 
         return mongoService.updateWithPromise(q, User);
@@ -394,7 +397,7 @@ router.post('/reset-password', function(req, res, next) {
     });
 });
 
-/* TODO */
+/* Fixed */
 router.post('/send-reset-token', function(req, res){
 
     var user_email = req.body.reset_email;
