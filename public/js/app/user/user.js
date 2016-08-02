@@ -134,7 +134,6 @@
 
         }
 
-
         function followerExists(follower) {
             if(!$scope.followers){ return false; }
             for(var i = 0; i < $scope.followers.length; i++){
@@ -187,11 +186,11 @@
         $scope.expandSideBox = function(box_name){
             switch (box_name) {
                 case 'followings':
-                $scope.sidebox_quantity.followings = undefined;
-                break;
+                    $scope.sidebox_quantity.followings = undefined;
+                    break;
                 case 'followers':
-                $scope.sidebox_quantity.followers = undefined;
-                break;
+                    $scope.sidebox_quantity.followers = undefined;
+                    break;
                 default:
                 console.log('no name');
             }

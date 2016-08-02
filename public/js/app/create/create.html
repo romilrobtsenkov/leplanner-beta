@@ -1,38 +1,38 @@
 <div class="container main-content">
 
-  <div class="row no-margin">
+    <div class="row no-margin">
 
-    <!-- META DATA -->
-    <div class="col-sm-6 col-sm-offset-3">
+        <!-- META DATA -->
+        <div class="col-sm-6 col-sm-offset-3">
 
-      <h2>{{'PAGE.CREATE' | translate}}</h2>
+            <h2>{{'PAGE.CREATE' | translate}}</h2>
 
-      <form name="CreateScenario-form" id="CreateScenario-form" ng-submit="createScenario(scenario)">
+            <form name="CreateScenario-form" id="CreateScenario-form" ng-submit="createScenario(scenario)">
 
-        <div ng-if='errorMessage' class="alert alert-danger" role="alert">{{errorMessage}}</div>
+                <div ng-if='errorMessage' class="alert alert-danger" role="alert">{{errorMessage}}</div>
 
-        <div class="row no-margin">
-          <div class=" form-group">
-            <label for="name"><strong>{{'INPUT.TITLE' | translate}} ({{'INPUT.REQUIRED' | translate}})</strong></label>
-            <input type="text" ng-model="scenario.name" name="name" id="name" class="form-control" autofocus required/>
-          </div>
+                <div class="row no-margin">
+                    <div class=" form-group">
+                        <label for="name"><strong>{{'INPUT.TITLE' | translate}} ({{'INPUT.REQUIRED' | translate}})</strong></label>
+                        <input type="text" ng-model="scenario.name" name="name" id="name" class="form-control" autofocus required/>
+                    </div>
+                </div>
+
+                <div class="row no-margin">
+                    <div class=" form-group">
+                        <label for="description"><strong>{{'INPUT.DESCRIPTION' | translate}} ({{'INPUT.REQUIRED' | translate}})</strong></label>
+                        <textarea class="form-control" id="description" ng-model="scenario.description" name="description" required></textarea>
+                    </div>
+                </div>
+
+                <div class="row no-margin">
+                    <input ng-disabled="saving_in_progress" type="submit" class="btn btn-success pull-right" value="{{'BUTTON.SAVE_AND_CONTINUE' | translate}}" />
+                </div>
+
+            </form>
+
         </div>
-
-        <div class="row no-margin">
-          <div class=" form-group">
-            <label for="description"><strong>{{'INPUT.DESCRIPTION' | translate}} ({{'INPUT.REQUIRED' | translate}})</strong></label>
-            <textarea class="form-control" id="description" ng-model="scenario.description" name="description" required></textarea>
-          </div>
-        </div>
-
-        <div class="row no-margin">
-          <input ng-disabled="saving_in_progress" type="submit" class="btn btn-success pull-right" value="{{'BUTTON.SAVE_AND_CONTINUE' | translate}}" />
-        </div>
-
-      </form>
 
     </div>
-
-  </div>
 
 </div>

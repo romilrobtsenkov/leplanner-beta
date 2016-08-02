@@ -1,12 +1,12 @@
 (function() {
-  'use strict';
+    'use strict';
 
-  angular
+    angular
     .module('app')
     .directive('scenario', function() {
-      return {
-        templateUrl: 'js/app/directives/scenario/scenario.html',
-      };
-  });
+        return {
+            templateUrl: 'js/app/directives/scenario/scenario.html',
+        };
+    });
 
 }());

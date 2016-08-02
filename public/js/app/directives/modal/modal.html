@@ -1,114 +1,114 @@
 <!-- Modal -->
 <div class="modal" id="myModal" role="dialog" aria-labelledby="myModalLabel" ng-controller="ModalCtrl">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel"><strong>{{activity.name}}</strong></h4>
-        <p style="margin: 5px 0 0 0; font-size:14px;">
-            <i ng-if="whois_material == 'Teacher'">{{'CONTENT.TEACHER_RESOURCE' | translate}}</i>
-            <i ng-if="whois_material == 'Student'">{{'CONTENT.STUDENT_RESOURCE' | translate}}</i>
-        </p>
-        <p style="margin: 5px 0 0 0; font-size:14px;"><img height="12px" width="12px" ng-src="{{activity.org_image.src}}"> {{activity.org_title}}
-          | {{activity.duration}} min |
-            <span ng-if="activity.in_class">{{'CONTENT.INCLASS' | translate}}</span>
-            <span ng-if="!activity.in_class">{{'CONTENT.OFFCLASS' | translate}}</span>
-        </p>
-      </div>
-      <div class="modal-body">
-
-        <div ng-if='materialErrorMessage' class="alert alert-danger" role="alert">{{materialErrorMessage}}</div>
-
-        <div class="row no-margin">
-
-          <h4>{{'INPUT.RESOURCE' | translate}}</h4>
-          <div class="col-sm-5">
-            <div class=" form-group">
-
-              <input type="text" ng-model="material.material_name" name="material_name" id="material_name" class="form-control" placeholder="{{'INPUT.TITLE' | translate}}" required/>
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel"><strong>{{activity.name}}</strong></h4>
+                <p style="margin: 5px 0 0 0; font-size:14px;">
+                    <i ng-if="whois_material == 'Teacher'">{{'CONTENT.TEACHER_RESOURCE' | translate}}</i>
+                    <i ng-if="whois_material == 'Student'">{{'CONTENT.STUDENT_RESOURCE' | translate}}</i>
+                </p>
+                <p style="margin: 5px 0 0 0; font-size:14px;"><img height="12px" width="12px" ng-src="{{activity.org_image.src}}"> {{activity.org_title}}
+                    | {{activity.duration}} min |
+                    <span ng-if="activity.in_class">{{'CONTENT.INCLASS' | translate}}</span>
+                    <span ng-if="!activity.in_class">{{'CONTENT.OFFCLASS' | translate}}</span>
+                </p>
             </div>
-          </div>
+            <div class="modal-body">
 
-          <div class="col-sm-7">
+                <div ng-if='materialErrorMessage' class="alert alert-danger" role="alert">{{materialErrorMessage}}</div>
 
-            <div class=" form-group">
-              <input type="text" ng-model="material.material_url" name="material_url" id="material_url" class="form-control" placeholder="{{'INPUT.LOCATION' | translate}}" required/>
-            </div>
+                <div class="row no-margin">
 
-          </div>
-        </div>
+                    <h4>{{'INPUT.RESOURCE' | translate}}</h4>
+                    <div class="col-sm-5">
+                        <div class=" form-group">
 
-        <div ng-if="whois_material != 'Teacher'" class="row no-margin">
-          <h4>{{'INPUT.CO_AUTHORSHIP' | translate}}</h4>
-          <div class="col-sm-12">
+                            <input type="text" ng-model="material.material_name" name="material_name" id="material_name" class="form-control" placeholder="{{'INPUT.TITLE' | translate}}" required/>
+                        </div>
+                    </div>
 
-            <div class=" form-group">
-              <select class="form-control" id="involvement_level" ng-model="material.involvement_level" ng-options="option._id as option.name for option in involvement_options" name="involvement_level" required>
-              </select>
-            </div>
+                    <div class="col-sm-7">
 
-          </div>
-        </div>
+                        <div class=" form-group">
+                            <input type="text" ng-model="material.material_url" name="material_url" id="material_url" class="form-control" placeholder="{{'INPUT.LOCATION' | translate}}" required/>
+                        </div>
 
-        <div class="row no-margin">
-          <h4>{{'INPUT.CONVEYOR' | translate}}</h4>
-
-          <div class="row single-activity-item no-margin" ng-repeat="conveyor in material.conveyors track by $index">
-
-              <div class="col-sm-5">
-
-                <div class=" form-group">
-                  <input type="text" ng-model="conveyor.name" name="conveyor_name" id="conveyor_name" class="form-control" placeholder="{{'INPUT.CONVEYOR_NAME' | translate}}" required/>
+                    </div>
                 </div>
 
-              </div>
-              <div class="col-sm-6 col-xs-11">
+                <div ng-if="whois_material != 'Teacher'" class="row no-margin">
+                    <h4>{{'INPUT.CO_AUTHORSHIP' | translate}}</h4>
+                    <div class="col-sm-12">
 
-                <div class=" form-group">
-                  <input type="text" ng-model="conveyor.url" name="conveyor_url" id="conveyor_url" class="form-control" placeholder="{{'INPUT.CONVEYOR_URL' | translate}}" required/>
+                        <div class=" form-group">
+                            <select class="form-control" id="involvement_level" ng-model="material.involvement_level" ng-options="option._id as option.name for option in involvement_options" name="involvement_level" required>
+                            </select>
+                        </div>
+
+                    </div>
                 </div>
 
-              </div>
-              <div class="col-sm-1">
+                <div class="row no-margin">
+                    <h4>{{'INPUT.CONVEYOR' | translate}}</h4>
 
-                <div class=" form-group">
-                    <button ng-click="removeActivityItem($index)" class="btn btn-sm btn-default pull-left"><span class="glyphicon glyphicon-remove"></span></button>
+                    <div class="row single-activity-item no-margin" ng-repeat="conveyor in material.conveyors track by $index">
+
+                        <div class="col-sm-5">
+
+                            <div class=" form-group">
+                                <input type="text" ng-model="conveyor.name" name="conveyor_name" id="conveyor_name" class="form-control" placeholder="{{'INPUT.CONVEYOR_NAME' | translate}}" required/>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-6 col-xs-11">
+
+                            <div class=" form-group">
+                                <input type="text" ng-model="conveyor.url" name="conveyor_url" id="conveyor_url" class="form-control" placeholder="{{'INPUT.CONVEYOR_URL' | translate}}" required/>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-1">
+
+                            <div class=" form-group">
+                                <button ng-click="removeActivityItem($index)" class="btn btn-sm btn-default pull-left"><span class="glyphicon glyphicon-remove"></span></button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 30px;" class="row no-margin">
+                        <div class="col-sm-12">
+                            <button ng-click="addNewActivityItem()" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-plus"></span></button>
+                        </div>
+                    </div>
                 </div>
 
-              </div>
-          </div>
+                <div class="row no-margin">
+                    <h4>{{'INPUT.DISPLAY' | translate}}</h4>
+                    <div class="col-sm-8">
 
-          <div style="margin-bottom: 30px;" class="row no-margin">
-            <div class="col-sm-12">
-              <button ng-click="addNewActivityItem()" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-plus"></span></button>
+                        <div class=" form-group">
+                            <div ng-repeat="display in displays_list" class="checkbox">
+                                <label>
+                                    <input style="display: inline-block;" type="checkbox" name="optradio" ng-model="displays_selection[display._id]" ng-value="display._id">{{display.name}}
+                                </label>
+                                <input style="display: inline-block; width: 200px; margin-left: 10px;"  ng-if="displays_selection[display._id] && display._id == displays_list.length-1" type="text" ng-model="material.other_display" name="other_display" id="other_display" class="form-control" placeholder="Other" required/>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
             </div>
-          </div>
-        </div>
-
-        <div class="row no-margin">
-          <h4>{{'INPUT.DISPLAY' | translate}}</h4>
-          <div class="col-sm-8">
-
-            <div class=" form-group">
-              <div ng-repeat="display in displays_list" class="checkbox">
-                <label>
-                  <input style="display: inline-block;" type="checkbox" name="optradio" ng-model="displays_selection[display._id]" ng-value="display._id">{{display.name}}
-                </label>
-                <input style="display: inline-block; width: 200px; margin-left: 10px;"  ng-if="displays_selection[display._id] && display._id == displays_list.length-1" type="text" ng-model="material.other_display" name="other_display" id="other_display" class="form-control" placeholder="Other" required/>
-              </div>
+            <div class="modal-footer">
+                <a ng-if="material._id" ng-disabled="saving_material" ng-click="deleteMaterial(material._id)" class="pull-left delete-link" style="margin-left:20px; cursor: pointer;">{{'BUTTON.DELETE_RESOURCE' | translate}}</a>
+                <span ng-if="deleting_material" style="margin-left: 10px;" class="pull-left"> {{'NOTICE.DELETING' | translate}}</span>
+                <span ng-if="saving_material">{{'NOTICE.SAVING' | translate}}</span>
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{'BUTTON.CLOSE' | translate}}</button>
+                <button ng-disabled="saving_material" ng-click="saveMaterial()" type="button" class="btn btn-success">{{'BUTTON.SAVE' | translate}}</button>
             </div>
-
-          </div>
         </div>
-
-      </div>
-      <div class="modal-footer">
-        <a ng-if="material._id" ng-disabled="saving_material" ng-click="deleteMaterial(material._id)" class="pull-left delete-link" style="margin-left:20px; cursor: pointer;">{{'BUTTON.DELETE_RESOURCE' | translate}}</a>
-        <span ng-if="deleting_material" style="margin-left: 10px;" class="pull-left"> {{'NOTICE.DELETING' | translate}}</span>
-        <span ng-if="saving_material">{{'NOTICE.SAVING' | translate}}</span>
-        <button type="button" class="btn btn-default" data-dismiss="modal">{{'BUTTON.CLOSE' | translate}}</button>
-        <button ng-disabled="saving_material" ng-click="saveMaterial()" type="button" class="btn btn-success">{{'BUTTON.SAVE' | translate}}</button>
-      </div>
     </div>
-  </div>
 </div>

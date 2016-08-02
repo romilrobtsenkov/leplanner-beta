@@ -51,7 +51,7 @@ module.exports = function () {
     });
 
     passport.deserializeUser(function(id, next) {
-    console.log('deserializeUser');
+        //console.log('deserializeUser');
         mongoService.findByIdWithPromise(id, User)
         .then(function (user) {
             if (!user) { return next(null, null); }

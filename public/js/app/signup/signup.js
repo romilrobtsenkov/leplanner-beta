@@ -69,23 +69,26 @@
             .catch(function (error) {
                 console.log(error);
 
-                if(error.data === 'invalid email'){
-                    $translate('NOTICE.PLEASE_ENTER_CORRECT_EMAIL').then(function (t) {
-                        $scope.create_error = t;
-                    });
-
-                }else if (error.data === 'email exists') {
-                    $translate('NOTICE.EMAIL_IN_USE').then(function (t) {
-                        $scope.create_error = t;
-                    });
-                }else if (error.data === 'password too short') {
-                    $translate('NOTICE.PASSWORD_MIN_LENGTH').then(function (t) {
-                        $scope.create_error = t;
-                    });
-                } else {
-                    $translate('NOTICE.UNKNOWN').then(function (t) {
-                        $scope.create_error = t;
-                    });
+                switch (error.data) {
+                    case 'invalid email':
+                        $translate('NOTICE.PLEASE_ENTER_CORRECT_EMAIL').then(function (t) {
+                            $scope.create_error = t;
+                        });
+                        break;
+                    case 'email exists':
+                        $translate('NOTICE.EMAIL_IN_USE').then(function (t) {
+                            $scope.create_error = t;
+                        });
+                        break;
+                    case 'password too short':
+                        $translate('NOTICE.PASSWORD_MIN_LENGTH').then(function (t) {
+                            $scope.create_error = t;
+                        });
+                        break;
+                    default:
+                        $translate('NOTICE.UNKNOWN').then(function (t) {
+                            $scope.create_error = t;
+                        });
                 }
 
                 $scope.creating_in_progress = undefined;

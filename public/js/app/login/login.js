@@ -121,20 +121,23 @@
 
                 $scope.sending_in_progress = undefined;
 
-                if(error.data === 'invalid email'){
-                    $translate('NOTICE.PLEASE_ENTER_CORRECT_EMAIL').then(function (t) {
-                        $scope.reset_error = t;
-                    });
-                } else if(error.data === 'no such user'){
-                    $translate('NOTICE.NO_SUCH_EMAIL').then(function (t) {
-                        $scope.reset_error = t;
-                    });
-                } else {
-                    $translate('NOTICE.UNKNOWN').then(function (t) {
-                        $scope.reset_error = t;
-                    });
+                switch (error.data) {
+                    case 'invalid email':
+                        $translate('NOTICE.PLEASE_ENTER_CORRECT_EMAIL').then(function (t) {
+                            $scope.reset_error = t;
+                        });
+                        break;
+                    case 'no such user':
+                        $translate('NOTICE.NO_SUCH_EMAIL').then(function (t) {
+                            $scope.reset_error = t;
+                        });
+                        break;
+                    default:
+                        $translate('NOTICE.UNKNOWN').then(function (t) {
+                            $scope.reset_error = t;
+                        });
                 }
-
+                
                 $timeout(function() { $scope.reset_error = null; }, 2000);
 
             });

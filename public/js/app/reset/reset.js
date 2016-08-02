@@ -54,18 +54,22 @@
             })
             .catch(function (error) {
                 console.log(error);
-                if (error.data === 'token expired') {
-                    $translate('NOTICE.TOKEN_EXPIRED').then(function (t) {
-                        $scope.reset_error = t;
-                    });
-                } else if (error.data === 'token not valid') {
-                    $translate('NOTICE.REQUEST_NEW_TOKEN').then(function (t) {
-                        $scope.reset_error = t;
-                    });
-                } else {
-                    $translate('NOTICE.UNKNOWN').then(function (t) {
-                        $scope.reset_error = t;
-                    });
+
+                switch (error.data) {
+                    case 'token expired':
+                        $translate('NOTICE.TOKEN_EXPIRED').then(function (t) {
+                            $scope.reset_error = t;
+                        });
+                        break;
+                    case 'token not valid':
+                        $translate('NOTICE.REQUEST_NEW_TOKEN').then(function (t) {
+                            $scope.reset_error = t;
+                        });
+                        break;
+                    default:
+                        $translate('NOTICE.UNKNOWN').then(function (t) {
+                            $scope.reset_error = t;
+                        });
                 }
 
                 $timeout(function() { $scope.reset_error = null; }, 2000);

@@ -147,7 +147,7 @@
             });
         }
 
-        /* TODO  add pagination */
+        /* Fixed */
         function getUsers(){
 
             requestService.post('/users/list')
@@ -159,17 +159,9 @@
                     $scope.users_list = data.users;
                     $scope.loading_animation = false;
                 }
-
-                if(data.error){
-                    switch(data.error.id) {
-                        case 100:
-                        // user changed
-                        $location.path('/');
-                        break;
-                        default:
-                        console.log(data.error);
-                    }
-                }
+            })
+            .catch(function (error) {
+                console.log(error);
             });
         }
 

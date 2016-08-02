@@ -32,22 +32,25 @@
         /* Fixed */
         $scope.updateProfile = function(user){
 
+            var error = true;
+
             if(!$scope.user.new_first_name) {
                 $translate('NOTICE.PLEASE_ENTER_FIRST_NAME').then(function (t) {
                     $scope.updateProfile_error = t;
                 });
-                $timeout(function() { $scope.updateProfile_error = null; }, 2000);
-                return;
             } else if (!$scope.user.new_last_name) {
                 $translate('NOTICE.PLEASE_ENTER_LAST_NAME').then(function (t) {
                     $scope.updateProfile_error = t;
                 });
-                $timeout(function() { $scope.updateProfile_error = null; }, 2000);
-                return;
             } else if (!$scope.user.new_email) {
                 $translate('NOTICE.PLEASE_ENTER_EMAIL').then(function (t) {
                     $scope.updateProfile_error = t;
                 });
+            } else {
+                error = false;
+            }
+
+            if (error) {
                 $timeout(function() { $scope.updateProfile_error = null; }, 2000);
                 return;
             }
@@ -90,30 +93,36 @@
                 console.log(error);
                 $scope.updating_in_progress = undefined;
 
-                if (error.data === 'no changes') {
-                    $translate('NOTICE.NO_DATA_MODIFIED').then(function (t) {
-                        $scope.updateProfile_error = t;
-                    });
-                } else if (error.data === 'invalid email') {
-                    $translate('NOTICE.PLEASE_ENTER_CORRECT_EMAIL').then(function (t) {
-                        $scope.updateProfile_error = t;
-                    });
-                } else if (error.data === 'no password') {
-                    $translate('NOTICE.ENTER_PASSWORD_TO_CONFIRM').then(function (t) {
-                        $scope.updateProfile_error = t;
-                    });
-                } else if (error.data === 'email exists') {
-                    $translate('NOTICE.EMAIL_IN_USE').then(function (t) {
-                        $scope.updateProfile_error = t;
-                    });
-                } else if (error.data === 'wrong password') {
-                    $translate('NOTICE.WRONG_PASSWORD').then(function (t) {
-                        $scope.updateProfile_error = t;
-                    });
-                } else {
-                    $translate('NOTICE.UNKNOWN').then(function (t) {
-                        $scope.updateProfile_error = t;
-                    });
+                switch (error.data ) {
+                    case 'no changes':
+                        $translate('NOTICE.NO_DATA_MODIFIED').then(function (t) {
+                            $scope.updateProfile_error = t;
+                        });
+                        break;
+                    case 'invalid email':
+                        $translate('NOTICE.PLEASE_ENTER_CORRECT_EMAIL').then(function (t) {
+                            $scope.updateProfile_error = t;
+                        });
+                        break;
+                    case 'no password':
+                        $translate('NOTICE.ENTER_PASSWORD_TO_CONFIRM').then(function (t) {
+                            $scope.updateProfile_error = t;
+                        });
+                        break;
+                    case 'email exists':
+                        $translate('NOTICE.EMAIL_IN_USE').then(function (t) {
+                            $scope.updateProfile_error = t;
+                        });
+                        break;
+                    case 'wrong password':
+                        $translate('NOTICE.WRONG_PASSWORD').then(function (t) {
+                            $scope.updateProfile_error = t;
+                        });
+                        break;
+                    default:
+                        $translate('NOTICE.UNKNOWN').then(function (t) {
+                            $scope.updateProfile_error = t;
+                        });
                 }
 
                 $timeout(function() { $scope.updateProfile_error = null; }, 2000);
@@ -155,6 +164,7 @@
                     $scope.updatePassword_error = t;
                 });
                 $timeout(function() { $scope.updatePassword_error = null; }, 2000);
+                return;
             }
 
             $scope.updating_in_progress = true;
