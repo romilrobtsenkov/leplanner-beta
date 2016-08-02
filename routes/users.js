@@ -25,7 +25,7 @@ const minPasswordLength = 8;
 var async = require('async');
 
 /* Fixed */
-router.post('/', function(req, res, next) {
+router.post('/', function(req, res) {
 
     console.log('create');
 
@@ -123,7 +123,7 @@ router.post('/', function(req, res, next) {
 });
 
 /* Fixed */
-router.post('/list', restrict, function(req, res, next){
+router.post('/list', restrict, function(req, res){
 
     var response = {};
 
@@ -170,7 +170,7 @@ router.post('/list', restrict, function(req, res, next){
 });
 
 /* Fixed */
-router.get('/single/:id', function(req, res, next) {
+router.get('/single/:id', function(req, res) {
 
     var params = req.params;
     if (!params.id) { return res.sendStatus(404); }
@@ -226,7 +226,7 @@ router.get('/single/:id', function(req, res, next) {
 });
 
 /* Fixed */
-router.post('/login', function(req, res, next) {
+router.post('/login', function(req, res) {
     //console.log(req.body);
 
     var params = req.body;
@@ -290,7 +290,7 @@ router.post('/login', function(req, res, next) {
 });
 
 /* Fixed */
-router.post('/logout', restrict, function(req, res, next) {
+router.post('/logout', restrict, function(req, res) {
 
     var userId = req.user._id;
 
@@ -314,7 +314,7 @@ router.get('/me', function(req, res){
 });
 
 /* Fixed */
-router.post('/notifications/', restrict , function(req, res, next) {
+router.post('/notifications/', restrict , function(req, res) {
 
     var user_id = req.body.user._id;
 
@@ -346,7 +346,7 @@ router.post('/notifications/', restrict , function(req, res, next) {
 });
 
 /* Fixed */
-router.post('/reset-password', function(req, res, next) {
+router.post('/reset-password', function(req, res) {
 
     var user = req.body;
 
@@ -474,7 +474,7 @@ router.post('/send-reset-token', function(req, res){
 });
 
 /* Fixed */
-router.post('/language', restrict, function(req, res, next) {
+router.post('/language', restrict, function(req, res) {
 
     if(!req.body.lang){ return res.sendStatus(404); }
 
@@ -501,7 +501,7 @@ router.post('/language', restrict, function(req, res, next) {
 });
 
 /* Fixed */
-router.post('/update-password', restrict, function(req, res, next) {
+router.post('/update-password', restrict, function(req, res) {
 
     var user = req.body.user;
 
@@ -547,7 +547,7 @@ router.post('/update-password', restrict, function(req, res, next) {
 });
 
 /* Fixed */
-router.post('/update', restrict, function(req, res, next) {
+router.post('/update', restrict, function(req, res) {
 
     var user = req.body.user;
     console.log(user);
