@@ -1,4 +1,4 @@
-exports.getSortOrder = function(query, next){
+exports.getSortOrder = function(query){
 
   // default sort
   var sort = { created: -1 };
@@ -22,10 +22,6 @@ exports.getSortOrder = function(query, next){
     }
   }
 
-  // TODO promise peale
-  if(!next){
-      return sort;
-  }
-  next(null, sort);
+  return sort;
 
 };
