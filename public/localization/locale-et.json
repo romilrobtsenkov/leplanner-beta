@@ -194,7 +194,7 @@
         "DELETED": "Kustutatud",
         "ALL_SAVED": "Kõik muudatused salvestatud",
 
-        "PROFILE_IMAGE_ACCEPT": "Lubatud on .png / .jpg / .jpeg laiendiga failid - faili suurus kuni 1MB",
+        "PROFILE_IMAGE_ACCEPT": "Lubatud on .png / .jpg / .jpeg laiendiga failid - faili suurus kuni 5MB",
 
         "NOTIFICATIONS_EMPTY": "Teated ilmuvad siia kui keegi kommenteerib Sinu stsenaariumeid",
         "NO_PUBLISHED": "Loo stsenaarium ja avalda see. Edaspidi leiad siit kõik oma avaldatud stsenaariumid.",
