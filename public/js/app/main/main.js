@@ -36,8 +36,9 @@
 
         $scope.searchFromTop = function($event){
             if($location.path() === '/search'){
+                console.log($scope.top_search_word);
                 $rootScope.top_search_word = $scope.top_search_word;
-                $scope.$broadcast ('triggerSearchForm');
+                $location.search('q', $scope.top_search_word);
             }else{
                 if($event){
                     $event.preventDefault();
