@@ -281,6 +281,12 @@ router.post('/login', function(req, res) {
         return res.status(err.statusCode).send(err.message);
     })
     .catch(function (error) {
+
+        //catch authentication error
+        if (error === 'Wrong credentials') {
+            return res.status(400).send('Wrong credentials');
+        }
+
         console.log(error);
         return res.status(500).send('could not create user');
     });

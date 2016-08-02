@@ -23,7 +23,7 @@ module.exports = function () {
         .then(function (user) {
             console.log('user found');
             console.log(user);
-            if (!user) { return Promise.reject(new E.Error('Wrong credentials')); }
+            if (!user) { return Promise.reject('Wrong credentials'); }
 
             response.user = user;
 
@@ -32,7 +32,7 @@ module.exports = function () {
         .then(function(same) {
             console.log('compared');
             console.log(same);
-            if (!same) { return Promise.reject(new E.Error('Wrong credentials')); }
+            if (!same) { return Promise.reject('Wrong credentials'); }
 
             response.user.password = undefined;
             response.user.resetPasswordToken = undefined;
