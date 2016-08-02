@@ -4,6 +4,7 @@ const Promise = require('bluebird');
 const bcrypt = Promise.promisifyAll(require('bcrypt'));
 const crypto = Promise.promisifyAll(require('crypto'));
 const nodemailer = require('nodemailer');
+const sendmailTransport = require('nodemailer-sendmail-transport');
 
 const passport = require('passport');
 const saltRounds = 10;
@@ -359,7 +360,7 @@ router.post('/reset-password', function(req, res, next) {
     var q = {};
     q.args = { resetPasswordToken: user.token};
 
-    mongoService.findOne(q, User)
+    mongoService.findOneWithPromise(q, User)
     .then(function (user_from_db) {
 
         if(!user_from_db){ Promise.reject(new E.NotFoundError('token not valid')); }
@@ -379,7 +380,7 @@ router.post('/reset-password', function(req, res, next) {
         q.where = {_id: req.user._id};
         q.update = update;
 
-        return mongoService.update(q, User);
+        return mongoService.updateWithPromise(q, User);
     })
     .then(function () {
         return res.sendStatus(200);
@@ -440,7 +441,7 @@ router.post('/send-reset-token', function(req, res){
 
         return new Promise(function (resolve, reject) {
             nodemailer.sendmail = true;
-            var transporter = nodemailer.createTransport();
+            var transporter = nodemailer.createTransport(sendmailTransport());
             var mailOptions = {
               to: user.email,
               from: config.email,
@@ -451,9 +452,9 @@ router.post('/send-reset-token', function(req, res){
                 'If you did not request this, please ignore this email and your password will remain unchanged.\n'
             };
 
-            transporter.sendMail(mailOptions, function(err) {
+            transporter.sendMail(mailOptions, function(err, info) {
               if (err) { return reject(err); }
-              return resolve();
+              return resolve(info);
             });
         });
     })
