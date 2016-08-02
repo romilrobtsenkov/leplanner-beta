@@ -9,6 +9,8 @@ const metaService = require('../services/meta-service');
 const Material = require('../models/activity-material').Material;
 const Scenario = require('../models/scenario').Scenario;
 
+const screenshotService = require('../services/screenshot-service');
+
 const E = require('../errors');
 
 /**
@@ -95,6 +97,9 @@ router.post('/', restrict, function (req, res) {
         return mongoService.updateWithPromise(q, Scenario);
     })
     .then(function (scenario) {
+
+        screenshotService.create(scenario._id);
+
         console.log(req.user.first_name + ' updated scenario: ' + scenario._id);
         res.status(200).json({ material: savedMaterial });
     })
@@ -197,6 +202,9 @@ router.post('/:id', restrict, function (req, res) {
         return mongoService.updateWithPromise(q, Scenario);
     })
     .then(function (scenario) {
+
+        screenshotService.create(scenario._id);
+
         console.log(req.user.first_name + ' updated scenario: ' + scenario._id);
         res.status(200).json({ material: updatedMaterial });
     })
@@ -259,6 +267,9 @@ router.post('/delete/:id', restrict, function (req, res) {
         return mongoService.updateWithPromise(q, Material);
     })
     .then(function (material) {
+
+        screenshotService.create(postData.scenario._id);
+
         console.log('material ' + material._id + ' deleted');
         res.status(200).json({ material: { _id: material._id, activity_id: material.activity_id } });
     })

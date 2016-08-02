@@ -9,6 +9,7 @@ const Promise = require('bluebird');
 const mongoService = require('../services/mongo-service');
 const scenarioService = require('../services/scenario-service');
 const metaService = require('../services/meta-service');
+const screenshotService = require('../services/screenshot-service');
 
 const Scenario = require('../models/scenario').Scenario;
 const Comment = require('../models/comment').Comment;
@@ -343,7 +344,10 @@ router.post('/save/', restrict, function(req, res) {
     .then(function (scenario) {
         console.log(req.user.first_name+' updated scenario: '+scenario._id);
 
-        return res.json({ _id: scenario._id });
+        //create screenshot in the background
+        screenshotService.create(scenario._id);
+
+        return res.status(200).json({ _id: scenario._id });
     })
     .catch(E.Error, function (err) {
         return res.status(err.statusCode).send(err.message);
@@ -530,6 +534,10 @@ router.get('/search', function(req, res) {
         });
     })
     .then(function (response) {
+        /* CREATE ALL THUMBNAILS */
+        /*for (var i = 0; i < response.scenarios.length; i++){
+            screenshotService.create(response.scenarios[i]._id);
+        }*/
         return res.status(200).json(response);
     })
     .catch(function (err) {
