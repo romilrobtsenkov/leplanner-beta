@@ -16,7 +16,6 @@ var config = require('./config/config');
 
 var upload = require('./routes/upload');
 var meta = require('./routes/meta');
-var maintance = require('./routes/maintance');
 
 //NEW
 var comments = require('./routes/comments');
@@ -61,7 +60,6 @@ app.use(multipart({
 
 app.use('/api/upload', upload);
 app.use('/api/meta', meta);
-app.use('/api/maintance', maintance);
 
 // NEW
 app.use('/api/comments', comments);
