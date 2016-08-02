@@ -22,8 +22,6 @@ const E = require('../errors');
 
 const minPasswordLength = 8;
 
-var async = require('async');
-
 /* Fixed */
 router.post('/', function(req, res) {
 
