@@ -25,7 +25,7 @@ router.post('/profile-image/',multipartyMiddleware , restrict, function(req, res
     var file = req.files.file;
 
     // 5mb
-    if(file.size > 5000000){ res.staus(400).send('file too large'); }
+    if(file.size > 5000000){ return res.status(400).send('file too large'); }
 
     if(file.type.toLowerCase() !== 'image/jpeg' &&
         file.type.toLowerCase() !== 'image/jpg' &&

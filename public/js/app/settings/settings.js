@@ -193,87 +193,93 @@
             });
         };
 
-        /* TODO */
+        /* Fixed */
         $scope.uploadPicture = function(files){
-            if (files && files.length) {
 
-                var file = files[0];
-                //console.log(file);
-                var user_for_restrict_check = {};
-                user_for_restrict_check._id = $rootScope.user._id;
-                Upload.upload({
-                    url: 'api/upload/profile-image',
-                    fields: {
-                        user: user_for_restrict_check
-                    },
-                    sendFieldsAs: "form",
-                    file: file
-                }).progress(function (evt) {
-                    var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                    $scope.progress_percentage = progressPercentage+ '% ';
-                    //console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
-                }).success(function (data, status, headers, config) {
 
-                    if(data.success){
-                        //console.log('success');
+            if (!files || !files.length) { return; }
 
-                        // to update image src & update image in browser
-                        var last_modified = new Date();
-                        $scope.user.profile_image ="./images/user/"+$scope.user._id+".jpg?last_modified="+last_modified;
+            var file = files[0];
 
-                        //console.log(last_modified);
-                        // update rootScope to change user profile_image everywhere
-                        $rootScope.user.image = $scope.user._id+".jpg?last_modified="+last_modified;
-                        $rootScope.user.image_thumb = $scope.user._id+"_thumb.jpg?last_modified="+last_modified;
-
-                        //$scope.upload_success = 'Upload successful';
-                        $translate('NOTICE.UPLOAD_SUCCESS').then(function (t) {
-                            $scope.upload_success = t;
-                        });
-                        $scope.progress_percentage = null;
-                        $timeout(function() { $scope.upload_success = null; }, 2000);
-                    }
-
-                    if(data.error){
-                        switch(data.error.id) {
-                            case 100:
-                            // user changed
-                            $location.path('/');
-                            break;
-                            case 20:
-                            //$scope.upload_error = 'File too large';
-                            $translate('NOTICE.FILE_TO_LARGE').then(function (t) {
-                                $scope.upload_error = t;
-                            });
-                            break;
-                            case 22:
-                            //$scope.upload_error = 'Unsupported file type';
-                            $translate('NOTICE.WRONG_FILE_TYPE').then(function (t) {
-                                $scope.upload_error = t;
-                            });
-                            break;
-                            case 23:
-                            //$scope.upload_error = 'Upload larger image than 400px x 400px';
-                            $translate('NOTICE.UPLOAD_LARGER_IMAGE').then(function (t) {
-                                $scope.upload_error = t+' 400px x 400px';
-                            });
-                            break;
-
-                        }
-                        $scope.progress_percentage = null;
-                        $timeout(function() { $scope.upload_error = null; }, 2000);
-                    }
-
-                }).error(function (data, status, headers, config) {
-                    $scope.progress_percentage = null;
-                    //$scope.upload_error = 'Unknown error!';
-                    $translate('NOTICE.UNKNOWN').then(function (t) {
-                        $scope.upload_error = t;
-                    });
-                    $timeout(function() { $scope.upload_error = null; }, 2000);
+            // larger than 5mb
+            if (file.size > 5000000) {
+                $translate('NOTICE.FILE_TO_LARGE').then(function (t) {
+                    $scope.upload_error = t;
                 });
-
+                $scope.progress_percentage = null;
+                $timeout(function() { $scope.upload_error = null; }, 2000);
+                return;
             }
+
+            // wrong type
+            if(file.type.toLowerCase() !== 'image/jpeg' &&
+                file.type.toLowerCase() !== 'image/jpg' &&
+                file.type.toLowerCase() !== 'image/png'){
+                $translate('NOTICE.WRONG_FILE_TYPE').then(function (t) {
+                    $scope.upload_error = t;
+                });
+                $scope.progress_percentage = null;
+                $timeout(function() { $scope.upload_error = null; }, 2000);
+                return;
+            }
+
+            var user = {
+                _id: $rootScope.user._id
+            };
+
+            Upload.upload({
+                url: 'api/upload/profile-image',
+                fields: { user: user },
+                sendFieldsAs: 'form',
+                file: file
+            })
+            .then(function (resp) {
+                var last_modified = new Date();
+                $scope.user.profile_image ="./images/user/"+$scope.user._id+".jpg?last_modified="+last_modified;
+
+                //console.log(last_modified);
+                // update rootScope to change user profile_image everywhere
+                $rootScope.user.image = $scope.user._id+".jpg?last_modified="+last_modified;
+                $rootScope.user.image_thumb = $scope.user._id+"_thumb.jpg?last_modified="+last_modified;
+
+                //$scope.upload_success = 'Upload successful';
+                $translate('NOTICE.UPLOAD_SUCCESS').then(function (t) {
+                    $scope.upload_success = t;
+                });
+                $scope.progress_percentage = null;
+                $timeout(function() { $scope.upload_success = null; }, 2000);
+
+            }, function (error) {
+
+                switch(error.data) {
+                    case 'unsupported file type':
+                        $translate('NOTICE.WRONG_FILE_TYPE').then(function (t) {
+                            $scope.upload_error = t;
+                        });
+                        break;
+                    case 'file too large':
+                        $translate('NOTICE.FILE_TO_LARGE').then(function (t) {
+                            $scope.upload_error = t;
+                        });
+                        break;
+                    case 'upload larger image':
+                        $translate('NOTICE.UPLOAD_LARGER_IMAGE').then(function (t) {
+                            $scope.upload_error = t+' 400px x 400px';
+                        });
+                        break;
+                    default:
+                        $translate('NOTICE.UNKNOWN').then(function (t) {
+                            $scope.upload_error = t;
+                        });
+                }
+                $scope.progress_percentage = null;
+                $timeout(function() { $scope.upload_error = null; }, 2000);
+
+            }, function (evt) {
+                var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                $scope.progress_percentage = progressPercentage+ '% ';
+            });
+
         };
 
     }]); // SettingsController end
