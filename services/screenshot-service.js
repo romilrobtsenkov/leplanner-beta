@@ -11,7 +11,6 @@ exports.create = function(id){
     // check if already exists
     var exist = false;
     for(var i = 0; i < arrayOfIds.length; i++){
-        console.log(arrayOfIds[i].toString() === id.toString());
         if(arrayOfIds[i].toString() === id.toString()){
             exist = true;
             console.log('already in quene');
@@ -27,14 +26,44 @@ exports.create = function(id){
         return;
     }
 
-    timer = setTimeout(function() {
-        console.log('sent ' + arrayOfIds.length + ' for screenshots');
-        takeScreenshots(arrayOfIds);
-        arrayOfIds = [];
-        timer = null;
-    }, 10000);
+    startTimer(10000);
 
 };
+
+var startTimer = function (ms) {
+    timer = setTimeout(function() {
+
+        var toSend = [];
+
+        //max 5 per 10 seconds
+        if(arrayOfIds.length > 4) {
+            toSend = arrayOfIds.slice(0, 5);
+            arrayOfIds.splice(0, 5);
+        }else {
+            toSend = arrayOfIds;
+            arrayOfIds = [];
+        }
+
+        console.log('arrayOfIds');
+        console.log(arrayOfIds);
+        console.log('toSend');
+        console.log(toSend);
+
+        console.log('sent ' + toSend.length + ' for screenshots');
+        timer = null;
+        takeScreenshots(toSend);
+
+        //if not timer and there is que, start timer again
+        if(arrayOfIds.length !== 0 && !timer){
+            console.log('timer started again');
+            startTimer(20000);
+        }else{
+            console.log('timer already counting');
+        }
+
+    }, ms);
+};
+
 var takeScreenshots = function(ids) {
 
     var pageres = new Pageres({delay: 2});
