@@ -3,10 +3,11 @@ const config = require('../config/config');
 
 var arrayOfIds = [];
 var timer;
+var pageResCapturing;
 
 exports.create = function(id){
 
-    console.log(arrayOfIds);
+    //console.log(arrayOfIds);
 
     // check if already exists
     var exist = false;
@@ -33,30 +34,36 @@ exports.create = function(id){
 var startTimer = function (ms) {
     timer = setTimeout(function() {
 
+        if(pageResCapturing) {
+            console.log('wait for capturing to end ...');
+            startTimer(500);
+            return;
+        }
+
         var toSend = [];
 
-        //max 5 per 10 seconds
-        if(arrayOfIds.length > 5) {
-            toSend = arrayOfIds.slice(0, 5);
-            arrayOfIds.splice(0, 5);
+        //max 1 at a time
+        if(arrayOfIds.length > 1) {
+            toSend = arrayOfIds.slice(0, 1);
+            arrayOfIds.splice(0, 1);
         }else {
             toSend = arrayOfIds;
             arrayOfIds = [];
         }
 
-        console.log('arrayOfIds');
-        console.log(arrayOfIds);
-        console.log('toSend');
-        console.log(toSend);
+        //console.log('arrayOfIds');
+        console.log(arrayOfIds.length);
+        //console.log('toSend');
+        //console.log(toSend);
 
         console.log('sent ' + toSend.length + ' for screenshots');
-        timer = null;
         takeScreenshots(toSend);
+        timer = null;
 
         //if not timer and there is que, start timer again
-        if(arrayOfIds.length !== 0 && !timer){
-            console.log('timer started again');
-            startTimer(20000);
+        if(arrayOfIds.length !== 0){
+            console.log('timer start again');
+            startTimer(1000);
         }else{
             console.log('timer already counting');
         }
@@ -66,19 +73,23 @@ var startTimer = function (ms) {
 
 var takeScreenshots = function(ids) {
 
-    var pageres = new Pageres({delay: 2});
+    pageResCapturing = true;
+
+    var pageres = new Pageres({delay: 5});
 
         //multiple screenshots
         for(var i = 0; i < ids.length; i++){
-            pageres.src(config.site_url + '/#/scenario/' + ids[i], ['800x600'], {crop: true, format: 'png', filename: ids[i], selector: '#scenario-timeline-wrapper', scale: 0.5 });
+            pageres.src(config.site_url + '/#/scenario/' + ids[i], ['800x600'], {format: 'png', filename: ids[i], selector: '#scenario-timeline-wrapper' });
         }
 
         pageres.dest('./public/images/scenario_thumbs/');
         pageres.run().then(function () {
             console.log(ids.length + ' screenshot saved');
+            pageResCapturing = false;
         }).catch(function (error) {
             //probably too slow loading
             console.log('unable to save screenshot');
+            pageResCapturing = false;
             console.log(error);
         });
 };
