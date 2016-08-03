@@ -36,7 +36,7 @@ var startTimer = function (ms) {
         var toSend = [];
 
         //max 5 per 10 seconds
-        if(arrayOfIds.length > 4) {
+        if(arrayOfIds.length > 5) {
             toSend = arrayOfIds.slice(0, 5);
             arrayOfIds.splice(0, 5);
         }else {
