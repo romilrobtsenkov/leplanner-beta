@@ -98,7 +98,10 @@ router.post('/', restrict, function (req, res) {
     })
     .then(function (scenario) {
 
-        screenshotService.create(scenario._id);
+        //create screenshot in the background
+        if(!scenario.draft){
+            screenshotService.create(scenario._id);
+        }
 
         console.log(req.user.first_name + ' updated scenario: ' + scenario._id);
         res.status(200).json({ material: savedMaterial });
@@ -203,7 +206,10 @@ router.post('/:id', restrict, function (req, res) {
     })
     .then(function (scenario) {
 
-        screenshotService.create(scenario._id);
+        //create screenshot in the background
+        if(!scenario.draft){
+            screenshotService.create(scenario._id);
+        }
 
         console.log(req.user.first_name + ' updated scenario: ' + scenario._id);
         res.status(200).json({ material: updatedMaterial });
@@ -228,6 +234,7 @@ router.post('/delete/:id', restrict, function (req, res) {
 
     var params = req.params;
     var postData = req.body;
+    var responseMaterial;
 
     if (!params.id || !postData.scenario._id) {
         return res.sendStatus(404);
@@ -268,10 +275,24 @@ router.post('/delete/:id', restrict, function (req, res) {
     })
     .then(function (material) {
 
-        screenshotService.create(postData.scenario._id);
+        responseMaterial = material;
 
-        console.log('material ' + material._id + ' deleted');
-        res.status(200).json({ material: { _id: material._id, activity_id: material.activity_id } });
+        //update scenario last modified Date
+        var q = {};
+        q.where = { _id: postData.scenario._id };
+        q.update = { last_modified: new Date() };
+
+        return mongoService.updateWithPromise(q, Scenario);
+    })
+    .then(function (scenario) {
+
+        //create screenshot in the background
+        if(!scenario.draft){
+            screenshotService.create(scenario._id);
+        }
+
+        console.log('material ' + responseMaterial._id + ' deleted');
+        res.status(200).json({ material: { _id: responseMaterial._id, activity_id: responseMaterial.activity_id } });
     })
     .catch(E.Error, function (err) {
         res.status(err.statusCode).send(err.message);

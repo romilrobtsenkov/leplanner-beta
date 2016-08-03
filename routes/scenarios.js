@@ -345,7 +345,9 @@ router.post('/save/', restrict, function(req, res) {
         console.log(req.user.first_name+' updated scenario: '+scenario._id);
 
         //create screenshot in the background
-        screenshotService.create(scenario._id);
+        if(!scenario.draft){
+            screenshotService.create(scenario._id);
+        }
 
         return res.status(200).json({ _id: scenario._id });
     })
