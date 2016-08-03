@@ -10,7 +10,7 @@
 <div class="row no-margin">
     <div class="col-sm-4">
         <a ng-if="!scenario.draft" href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}" class="thumbnail">
-            <img ng-src="./images/scenario_thumbs/{{scenario._id}}.png" alt="{{scenario.name}}">
+            <img check-image ng-src="./images/scenario_thumbs/{{scenario._id}}.png" alt="{{scenario.name}}">
         </a>
         <a ng-if="scenario.draft" href="/#/edit/{{scenario._id}}" title="{{scenario.name}}" class="thumbnail">
             <img src="./images/thumbnail_200.png" alt="{{scenario.name}}">

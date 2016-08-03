@@ -66,6 +66,7 @@ gulp.task('build-js', function() {
       'public/js/app/directives/timeline/timeline.js',
       'public/js/app/directives/modal/modal.js',
       'public/js/app/directives/scenario/scenario.js',
+      'public/js/app/directives/checkImage/checkImage.js',
       'public/js/app/filters/prefixHttp.js',
     ])
       //.pipe(sourcemaps.init())
