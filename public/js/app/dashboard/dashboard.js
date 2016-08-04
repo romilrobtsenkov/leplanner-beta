@@ -34,6 +34,7 @@
         // INIT
         getDashboardData();
 
+        // NOTIFICATIONS
         var notification_limit = 20;
         getNotifications(notification_limit);
 
@@ -97,10 +98,10 @@
             }
 
             // IF users, get users list
-            if(query.tab !== 'users'){
-                getScenarios(query);
-            }else{
+            if(query.tab === 'users'){
                 getUsers();
+            }else{
+                getScenarios(query);
             }
         }
 
@@ -147,7 +148,6 @@
             });
         }
 
-        /* Fixed */
         function getUsers(){
 
             requestService.post('/users/list')
@@ -165,7 +165,6 @@
             });
         }
 
-        /* Fixed */
         function getNotifications(limit){
 
             $scope.notifications_loading_animation = true;
@@ -219,7 +218,6 @@
             $scope.pageChanged(1);
         };
 
-        /* Fixed */
         $scope.addFollow = function(user_id){
 
             requestService.post('/followers/' + user_id)
@@ -235,7 +233,6 @@
             });
         };
 
-        /* Fixed */
         $scope.removeFollow = function(user_id){
 
             requestService.post('/followers/remove/' + user_id)

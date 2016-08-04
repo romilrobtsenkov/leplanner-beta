@@ -25,7 +25,6 @@
                             <p ng-if="!notifications || notifications_loading_animation" class="loading-gif-animation"><img src="./images/loading.gif"></p>
                             <p ng-if="notifications && notifications.length == 0" >{{'NOTICE.NOTIFICATIONS_EMPTY' | translate}}</p>
 
-
                             <!-- SINGLE NOTIFICATION -->
                             <li ng-repeat="n in notifications" ng-class="!n.seen ? 'new' : 'old'" class="left clearfix">
                                 <span class="notification-img pull-left">

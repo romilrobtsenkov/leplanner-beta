@@ -69,7 +69,7 @@
         }
 
         $scope.deleteScenario = function(){
-            //var del = confirm("Do you really want to delete scenario '"+$scope.scenario.name+"', there is no turning back!");
+
             var del = window.confirm($rootScope.translated.confirm);
             if(!del){ return; }
 
@@ -123,7 +123,6 @@
                     $location.path(nextUrl.substring($location.absUrl().length - $location.url().length));
                 }
 
-                //{{'NOTICE.ALL_SAVED' | translate}}
                 $translate('NOTICE.ALL_SAVED').then(function (t) {
                      Notification.success({message: t, delay: 3000, positionY: 'bottom'});
                 });
@@ -158,6 +157,17 @@
                 event.preventDefault();
             }
 
+        });
+
+        /* trigger save before closing tab or window */
+        window.addEventListener("beforeunload", function (e) {
+          var confirmationMessage = "\o/";
+
+          if(!angular.equals($scope.scenario, prevData)) {
+              saveScenarioData();
+              (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+              return confirmationMessage;                            //Webkit, Safari, Chrome
+          }
         });
 
     }]); //EditPublishController end

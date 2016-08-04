@@ -29,7 +29,6 @@
             $scope.user.new_organization = $scope.user.organization;
         }
 
-        /* Fixed */
         $scope.updateProfile = function(user){
 
             var error = true;
@@ -74,8 +73,6 @@
             .then(function(data) {
 
                 $scope.updating_in_progress = undefined;
-
-                console.log(data);
 
                 $rootScope.user = data.user;
                 $scope.user = $rootScope.user;
@@ -129,7 +126,6 @@
             });
         };
 
-        /* Fixed */
         $scope.updatePassword = function(user){
 
             if(!user.password ||
@@ -174,8 +170,6 @@
 
                 $scope.updating_in_progress = undefined;
 
-                console.log(data);
-
                 $translate('NOTICE.UPDATE_SUCCESS').then(function (t) {
                     $scope.updatePassword_success = t;
                 });
@@ -203,7 +197,6 @@
             });
         };
 
-        /* Fixed */
         $scope.uploadPicture = function(files){
 
 
@@ -247,7 +240,6 @@
                 var last_modified = new Date();
                 $scope.user.profile_image ="./images/user/"+$scope.user._id+".jpg?last_modified="+last_modified;
 
-                //console.log(last_modified);
                 // update rootScope to change user profile_image everywhere
                 $rootScope.user.image = $scope.user._id+".jpg?last_modified="+last_modified;
                 $rootScope.user.image_thumb = $scope.user._id+"_thumb.jpg?last_modified="+last_modified;

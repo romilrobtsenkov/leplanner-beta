@@ -19,29 +19,7 @@
 	</div>
 <!-- Search div where all the results are shown -->
 	<div class="row advanced-options-and-results">
-		<!--<div class="col-sm-3">
-			<div id="accordion" class="panel-group">
-          <div class="panel panel-default">
 
-            <div class="panel-heading">
-							<h4 class="panel-title">
-								<a data-toggle="collapse" data-target="#collapseOne" data-parent="#accordion" >Additional options<span class="glyphicon glyphicon-menu-down"></span></a>
-							</h4>
-						</div>
-
-						<div id="collapseOne" class="panel-collapse collapse">
-							<div class="panel-body">
-								<ui-select multiple ng-model="tech" theme="bootstrap" ng-disabled="disabled" close-on-select="false" style="width: 200px;" title="Choose tech">
-							    <ui-select-match placeholder="Select tech...">{{$item}}</ui-select-match>
-							    <ui-select-choices repeat="tech in techs" theme="bootstrap">
-							    {{tech}}
-							    </ui-select-choices><br>
-							  </ui-select>
-							</div>
-						</div>
-          </div>
-      </div>
-    </div>-->
 		<div class="col-sm-12 col-md-9 col-lg-9 col-xs-12">
 			<h4 class="results-heading">{{ 'INPUT.FOUND' | translate }} <strong ng-if="total_count">{{total_count}}</strong> <span ng-if="search_word_end">{{ 'INPUT.FOR_KEYWORD' | translate }} <strong >"{{search_word_end}}"</strong></span></h4>
 			<!-- makes the clicked tab active-->

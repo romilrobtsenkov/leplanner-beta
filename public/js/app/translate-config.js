@@ -5,11 +5,6 @@
     .module('app')
     .config(['$translateProvider', function ($translateProvider) {
 
-        //disable flicker on load, by creating default values
-        /*$translateProvider.translations('en', {
-            'BUTTON_LANG': ''
-        });*/
-
         $translateProvider.useStaticFilesLoader({
             'prefix': 'localization/min/locale-',
             'suffix': '.json'

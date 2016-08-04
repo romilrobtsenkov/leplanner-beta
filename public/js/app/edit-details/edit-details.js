@@ -60,15 +60,8 @@
 
         function loadDropdownData(){
 
-            // PUBLISH / DRAFT dropdown
-            //$scope.publish_options = [{name: 'Draft', value: true},{name: 'Published', value: false}];
-            $scope.publish_options = [{name: $rootScope.translated.dropdowns.draft, value: true},{name: $rootScope.translated.dropdowns.published, value: false}];
-            $scope.language_options = [{name: $rootScope.translated.dropdowns.estonian, value: 'et'},{name: $rootScope.translated.dropdowns.english, value: 'en'}];
-
             requestService.get('/meta/scenario')
             .then(function(data) {
-
-                // data.subjects && data.activity_organization
 
                 $scope.subjects_list = data.subjects;
                 $scope.activity_organization = data.activity_organization;
@@ -228,7 +221,7 @@
         };
 
         $scope.deleteScenario = function(){
-            //var del = confirm("Do you really want to delete scenario '"+$scope.scenario.name+"', there is no turning back!");
+
             var del = window.confirm($rootScope.translated.confirm);
             if(!del){ return; }
 
@@ -262,7 +255,6 @@
             }, done_typing_interval);
         }
 
-        /* FIXED */
         function saveScenarioData(nextUrl) {
 
             $scope.saving_in_progress = true;
@@ -289,7 +281,6 @@
                     $location.path(nextUrl.substring($location.absUrl().length - $location.url().length));
                 }
 
-                //{{'NOTICE.ALL_SAVED' | translate}}
                 $translate('NOTICE.ALL_SAVED').then(function (t) {
                      Notification.success({message: t, delay: 3000, positionY: 'bottom'});
                 });
@@ -321,7 +312,7 @@
             s4() + '-' + s4() + s4() + s4();
         }
 
-        // FIXING - destroing timeout after navigationg away
+        // Destroing timeout after navigationg away
         $scope.$on("$destroy", function( event ) {
             if($scope.timer){ $timeout.cancel($scope.timer); }
         });

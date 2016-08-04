@@ -16,7 +16,6 @@
             });
         });
 
-
         $scope.activateResetForm = function($event){
             $event.preventDefault();
             $scope.reset_form = true;
@@ -48,8 +47,6 @@
 
             requestService.post('/users/login', query)
             .then(function(data) {
-
-                console.log(data);
 
                 $scope.login_in_process = undefined;
 
@@ -89,7 +86,6 @@
 
         $scope.reset = function(user){
 
-            console.log(user);
             if(!user || !user.reset_email) {
                 $translate('NOTICE.PLEASE_ENTER_CORRECT_EMAIL').then(function (t) {
                     $scope.reset_error = t;
@@ -104,8 +100,6 @@
 
             requestService.post('/users/send-reset-token', user)
             .then(function(data) {
-
-                console.log(data);
 
                 $scope.sending_in_progress = undefined;
 
@@ -137,7 +131,7 @@
                             $scope.reset_error = t;
                         });
                 }
-                
+
                 $timeout(function() { $scope.reset_error = null; }, 2000);
 
             });

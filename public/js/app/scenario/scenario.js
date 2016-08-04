@@ -13,7 +13,6 @@
         }
 
         // INIT
-        /* FIXED */
         requestService.get('/scenarios/single/' + $scope.scenario_id)
         .then(function (data) {
 
@@ -63,7 +62,6 @@
             $scope.no_scenario = true;
         });
 
-        /* FIXED */
         function getSidebarScenarios(){
             var q= {order: 'popular', limit: 3, exclude: $scope.scenario._id, author: $scope.scenario.author._id};
             requestService.get('/scenarios/widget/', q)
@@ -81,7 +79,6 @@
             });
         }
 
-        /* FIXED */
         function getComments(){
 
             requestService.get('/comments/scenario/'+$scope.scenario._id)
@@ -95,7 +92,6 @@
             }).catch(function (error) { console.error(error); });
         }
 
-        /* FIXED */
         $scope.addFavorite = function(){
 
             var params = {
@@ -104,7 +100,6 @@
 
             requestService.post('/favorites', params)
             .then(function(data) {
-                console.log(data);
 
                 $scope.is_favorite = true;
                 $scope.scenario.favorites_count++;
@@ -114,13 +109,10 @@
             });
         };
 
-        /* FIXED */
         $scope.removeFavorite = function(){
 
             requestService.post('/favorites/delete/' + $scope.scenario._id)
             .then(function(data) {
-
-                console.log(data);
 
                 $scope.is_favorite = false;
                 $scope.scenario.favorites_count--;
@@ -131,7 +123,6 @@
 
         };
 
-        /* Fixed */
         $scope.addFollow = function(){
 
             requestService.post('/followers/' + $scope.scenario.author._id)
@@ -143,7 +134,6 @@
             });
         };
 
-        /* Fixed */
         $scope.removeFollow = function(){
 
             requestService.post('/followers/remove/' + $scope.scenario.author._id)
@@ -161,7 +151,6 @@
             $location.path('/login');
         };
 
-        /* FIXED */
         $scope.addComment = function(comment){
 
             if (typeof comment === 'undefined' || typeof comment.text === 'undefined') {
@@ -217,7 +206,6 @@
             return false;
         };
 
-        /* FIXED */
         $scope.deleteComment = function(comment_id, text){
             var del = window.confirm("Are you sure that you want to delete comment: "+text);
             if (!del) { return; }
@@ -268,7 +256,6 @@
             });
         };
 
-        /* FIXED */
         $scope.createCopy = function(){
 
             var p = window.confirm($rootScope.translated.copy_confirm);
@@ -277,7 +264,6 @@
 
             requestService.get('/scenarios/copy/'+$scope.scenario_id)
             .then(function(data) {
-                console.log(data);
                 if (!data._id) { window.alert('something went wrong'); }
 
                 //redirect user to edit page

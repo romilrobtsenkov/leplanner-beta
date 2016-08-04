@@ -8,7 +8,6 @@
 
         $rootScope.title = 'Leplanner beta';
 
-        //console.log($rootScope.user);
         $scope.logout = function(){
 
             requestService.post('/users/logout')
@@ -36,7 +35,6 @@
 
         $scope.searchFromTop = function($event){
             if($location.path() === '/search'){
-                console.log($scope.top_search_word);
                 $rootScope.top_search_word = $scope.top_search_word;
                 $location.search('q', $scope.top_search_word);
             }else{
@@ -47,9 +45,6 @@
                 $location.path('/search');
             }
         };
-
-        //var currentLang = $translate.proposedLanguage() || $translate.use();
-        //console.log('language ' + currentLang);
 
         $scope.changeLanguage = function (langKey) {
             $translate.use(langKey).then(function(data){

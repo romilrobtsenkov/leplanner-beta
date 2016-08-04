@@ -167,7 +167,6 @@
             $scope.reDrawMaterial = directiveFn.theDirFn;
         };
 
-        /* FIXED */
         $scope.deleteMaterial = function(id){
 
             var del = window.confirm($rootScope.translated.confirm);
@@ -199,7 +198,6 @@
             });
         };
 
-        /* FIXED */
         $scope.saveMaterial = function(){
 
             if(!$scope.material.material_name || $scope.material.material_name.length === 0){

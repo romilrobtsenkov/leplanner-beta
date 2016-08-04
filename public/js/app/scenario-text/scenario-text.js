@@ -43,7 +43,6 @@
           });
 
           $scope.scenario = data.scenario;
-          //$scope.activity_list = data.scenario.activities;
           $scope.is_favorite = data.is_favorite;
           $scope.is_following = data.is_following;
 

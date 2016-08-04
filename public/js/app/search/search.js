@@ -25,14 +25,6 @@
             $scope.pagination.current = $location.search().page;
         }
 
-        if($location.search().subjects){
-            //console.log('subjects ', $location.search().subjects);
-        }
-
-        if($location.search().languages){
-            //console.log('languages ', $location.search().languages);
-        }
-
         $translate('PAGE.SEARCH').then(function (t) {
             $rootScope.title = t+' | Leplanner beta';
 
@@ -102,9 +94,6 @@
                     for(var a = 0; a < $scope.subjects.length; a++){
                         $scope.subjects[a].name = $scope.subjects[a]["name_"+$translate.use()];
                     }
-
-                    //Focus search
-                    //angular.element('#search-word-input').trigger('focus');
 
                     // INITAL SEARCH
                     getSearchParamsAndSearch();

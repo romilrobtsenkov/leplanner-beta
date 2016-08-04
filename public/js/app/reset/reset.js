@@ -16,7 +16,6 @@
             });
         });
 
-        /* fixed */
         $scope.reset = function(user){
 
             //validate

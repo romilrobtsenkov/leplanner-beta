@@ -31,7 +31,6 @@
         // INIT
         getUserData();
 
-        /* Fixed */
         function getUserData(){
 
             requestService.get('/users/single/' + $scope.get_profile_id)
@@ -143,7 +142,6 @@
             }
         }
 
-        /* Fixed */
         $scope.addFollow = function(){
 
             requestService.post('/followers/' + $scope.get_profile_id)
@@ -160,7 +158,6 @@
             });
         };
 
-        /* Fixed */
         $scope.removeFollow = function(){
 
             requestService.post('/followers/remove/' + $scope.get_profile_id)

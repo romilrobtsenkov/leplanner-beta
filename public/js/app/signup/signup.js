@@ -51,7 +51,6 @@
 
             $scope.creating_in_progress = true;
 
-
             requestService.post('/users', user)
             .then(function(data) {
 

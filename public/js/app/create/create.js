@@ -21,7 +21,7 @@
             $scope.saving_in_progress = true;
 
             if(!scenario || !scenario.name || scenario.name.length <= 2){
-                // 'Scenario name has to be atleast 3 chars long!';
+
                 $translate('NOTICE.SCENARIO_NAME_LONG').then(function (t) {
                     $scope.errorMessage = t;
                 });
@@ -31,7 +31,7 @@
             }
 
             if(!scenario.description || scenario.description.length <= 2){
-                // 'Scenario description has to be atleast 3 chars long!';
+
                 $translate('NOTICE.SCENARIO_DESC_LONG').then(function (t) {
                     $scope.errorMessage = t;
                 });

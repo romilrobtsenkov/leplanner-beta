@@ -8,10 +8,10 @@
             restrict: 'A',
             link: function(scope, element, attrs) {
                 attrs.$observe('ngSrc', function(ngSrc) {
-                    if(!ngSrc) {return;}
-                    $http.get(ngSrc).success(function(){
-                    }).error(function(){
-                        console.log('image not exist');
+                    if (!ngSrc) {
+                        return;
+                    }
+                    $http.get(ngSrc).error(function() {
                         element.attr('src', './images/ring.gif'); // set default image
                     });
                 });
