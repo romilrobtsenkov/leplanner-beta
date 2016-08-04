@@ -8,6 +8,8 @@ const mongoService = require('../services/mongo-service');
 const Favorite = require('../models/favorite').Favorite;
 const Scenario = require('../models/scenario').Scenario;
 
+const log = require('../logger');
+
 router.post('/', restrict, function (req, res) {
 
     var params = req.body;
@@ -47,7 +49,7 @@ router.post('/', restrict, function (req, res) {
         return res.status(200).send('successfully favorited scenario');
     })
     .catch(function (err) {
-        console.log(err);
+        log.error(err);
         return res.status(500).send('unable to add to favorites due to server error');
     });
 
@@ -97,7 +99,7 @@ router.post('/delete/:scenario_id', restrict, function (req, res) {
         return res.status(200).send('removed from favorite successfully');
     })
     .catch(function (err) {
-        console.log(err);
+        log.error(err);
         return res.status(500).send('unable to add to favorites due to server error');
     });
 

@@ -1,6 +1,8 @@
 const Pageres = require('pageres');
 const config = require('../config/config');
 
+const log = require('../logger');
+
 var arrayOfIds = [];
 var timer;
 var pageResCapturing;
@@ -47,7 +49,7 @@ var startTimer = function (ms) {
             arrayOfIds = [];
         }
 
-        console.log('sent ' + toSend.length + ' for screenshots and ' + arrayOfIds.length + ' left');
+        log.notice('sent ' + toSend.length + ' for screenshots and ' + arrayOfIds.length + ' left');
 
         takeScreenshots(toSend);
         timer = null;
@@ -73,12 +75,12 @@ var takeScreenshots = function(ids) {
 
         pageres.dest('./public/images/scenario_thumbs/');
         pageres.run().then(function () {
-            console.log(ids.length + ' screenshot saved');
+            log.notice(ids.length + ' screenshot saved');
             pageResCapturing = false;
         }).catch(function (error) {
             //probably too slow loading
-            console.log('unable to save screenshot');
+            log.error('unable to save screenshot');
             pageResCapturing = false;
-            console.log(error);
+            log.error(error);
         });
 };

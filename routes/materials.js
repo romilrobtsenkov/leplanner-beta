@@ -12,6 +12,7 @@ const Scenario = require('../models/scenario').Scenario;
 const screenshotService = require('../services/screenshot-service');
 
 const E = require('../errors');
+const log = require('../logger');
 
 router.post('/', restrict, function (req, res) {
 
@@ -92,14 +93,14 @@ router.post('/', restrict, function (req, res) {
             screenshotService.create(scenario._id);
         }
 
-        console.log(req.user.first_name + ' updated scenario: ' + scenario._id);
+        log.notice(req.user.first_name + '(' + req.user._id + ') updated scenario: ' + scenario._id);
         res.status(200).json({ material: savedMaterial });
     })
     .catch(E.Error, function (err) {
         res.status(err.statusCode).send(err.message);
     })
     .catch(function (err) {
-        console.log(err);
+        log.error(err);
         res.status(500).send('could not create material due to server error');
     });
 
@@ -187,14 +188,14 @@ router.post('/:id', restrict, function (req, res) {
             screenshotService.create(scenario._id);
         }
 
-        console.log(req.user.first_name + ' updated scenario: ' + scenario._id);
+        log.notice(req.user.first_name + '(' + req.user._id + ') updated scenario: ' + scenario._id);
         res.status(200).json({ material: updatedMaterial });
     })
     .catch(E.Error, function (err) {
         res.status(err.statusCode).send(err.message);
     })
     .catch(function (err) {
-        console.log(err);
+        log.error(err);
         res.status(500).send('could not update material due to server error');
     });
 });
@@ -260,15 +261,15 @@ router.post('/delete/:id', restrict, function (req, res) {
             screenshotService.create(scenario._id);
         }
 
-        console.log('material ' + responseMaterial._id + ' deleted');
-        console.log(req.user.first_name + ' updated scenario: ' + scenario._id);
+        log.notice('material ' + responseMaterial._id + ' deleted');
+        log.notice(req.user.first_name + ' updated scenario: ' + scenario._id);
         res.status(200).json({ material: { _id: responseMaterial._id, activity_id: responseMaterial.activity_id } });
     })
     .catch(E.Error, function (err) {
         res.status(err.statusCode).send(err.message);
     })
     .catch(function (err) {
-        console.log(err);
+        log.error(err);
         res.status(500).send('could not delete material due to server error');
     });
 

@@ -1,8 +1,8 @@
-var util = require('util');
-var moment = require('moment');
-var chalk = require('chalk');
-var config = require('./config/config.js');
-var onFinished = require('on-finished');
+const util = require('util');
+const moment = require('moment');
+const chalk = require('chalk');
+const config = require('./config/config.js');
+const onFinished = require('on-finished');
 
 var mail;
 

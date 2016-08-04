@@ -1,15 +1,15 @@
 /* File: gulpfile.js */
 
 // grab our gulp packages
-var gulp   = require('gulp'),
-gutil = require('gulp-util'),
-jshint = require('gulp-jshint'),
-sourcemaps = require('gulp-sourcemaps'),
-concat = require('gulp-concat'),
-uglify = require('gulp-uglify'),
-jsonminify = require('gulp-jsonminify'),
-size = require('gulp-size'),
-cleanCSS = require('gulp-clean-css');
+const gulp   = require('gulp');
+const gutil = require('gulp-util');
+const jshint = require('gulp-jshint');
+const sourcemaps = require('gulp-sourcemaps');
+const concat = require('gulp-concat');
+const uglify = require('gulp-uglify');
+const jsonminify = require('gulp-jsonminify');
+const size = require('gulp-size');
+const cleanCSS = require('gulp-clean-css');
 
 gulp.task('default', ['jshint', 'build-js', 'minify-languages', 'minify-css']);
 

@@ -4,6 +4,8 @@ const Promise = require('bluebird');
 
 const metaService = require('../services/meta-service');
 
+const log = require('../logger');
+
 router.get('/subjects/', function(req, res) {
 
     metaService.getSubjects()
@@ -11,7 +13,7 @@ router.get('/subjects/', function(req, res) {
         return res.status(200).json({ subjects: subjects });
     })
     .catch(function (error) {
-        console.log(error);
+        log.error(error);
         return res.status(500).send('could not get subjects');
     });
 });
@@ -28,7 +30,7 @@ router.get('/scenario/', function(req, res) {
         return res.status(200).json(response);
     })
     .catch(function (error) {
-        console.log(error);
+        log.error(error);
         return res.status(500).send('could not get meta for scenarios');
     });
 });

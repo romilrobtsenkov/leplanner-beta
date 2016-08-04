@@ -8,6 +8,8 @@ const mongoService = require('../services/mongo-service');
 const Follower = require('../models/follower').Follower;
 const User = require('../models/user').User;
 
+const log = require('../logger');
+
 router.post('/:id',restrict, function(req, res) {
 
     var params = req.params;
@@ -70,7 +72,7 @@ router.post('/:id',restrict, function(req, res) {
         res.status(200).json(response);
     })
     .catch(function (error) {
-        console.log(error);
+        log.error(error);
         return res.status(500).send('could not follow due to server error');
     });
 
@@ -133,7 +135,7 @@ router.post('/remove/:id',restrict, function(req, res) {
         res.status(200).json(response);
     })
     .catch(function (error) {
-        console.log(error);
+        log.error(error);
         return res.status(500).send('could not unfollow due to server error');
     });
 

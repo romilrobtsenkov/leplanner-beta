@@ -20,6 +20,7 @@ const Material = require('../models/activity-material').Material;
 const User = require('../models/user').User;
 
 const E = require('../errors');
+const log = require('../logger');
 
 router.get('/copy/:id', restrict, function(req, res) {
 
@@ -28,7 +29,7 @@ router.get('/copy/:id', restrict, function(req, res) {
 
     var response;
 
-    console.log(req.user._id + ' creates copy of ' +params.id);
+    log.notice(req.user._id + ' creates copy of ' +params.id);
 
     // find parent to copy
     var q = {};
@@ -60,7 +61,7 @@ router.get('/copy/:id', restrict, function(req, res) {
     })
     .then(function (newScenario) {
 
-        console.log('saved new copy');
+        log.notice('saved new copy');
         response = { _id: newScenario._id };
 
         // Find all materials
@@ -88,7 +89,7 @@ router.get('/copy/:id', restrict, function(req, res) {
     })
     .then(function (savedMaterials) {
 
-        if (savedMaterials) { console.log('materials added:' + savedMaterials.length); }
+        if (savedMaterials) { log.notice('materials added:' + savedMaterials.length); }
 
         return res.status(200).json(response);
     })
@@ -96,7 +97,7 @@ router.get('/copy/:id', restrict, function(req, res) {
         return res.status(err.statusCode).send(err.message);
     })
     .catch(function (error) {
-        console.log(error);
+        log.error(error);
         return res.status(500).send('could not copy scenario');
     });
 
@@ -123,7 +124,7 @@ router.post('/', restrict, function(req, res) {
         res.json({ _id: scenario._id } );
     })
     .catch(function (err) {
-        console.log(err);
+        log.error(err);
         res.json({error: err});
     });
 
@@ -159,7 +160,7 @@ router.post('/delete/:id', restrict, function(req, res) {
         return res.status(err.statusCode).send(err.message);
     })
     .catch(function (err) {
-        console.log(err);
+        log.error(err);
         return res.status(500).send('deleting scenario failed due to server error');
     });
 
@@ -232,7 +233,7 @@ router.post('/single-edit/:id', restrict, function(req, res) {
         return res.status(err.statusCode).send(err.message);
     })
     .catch(function (err) {
-        console.log(err);
+        log.error(err);
         return res.status(500).send('retrieving scenario failed due to server error');
     });
 });
@@ -279,7 +280,7 @@ router.get('/user/:id', function(req, res) {
         return res.status(200).json(response);
     })
     .catch(function (err) {
-        console.log(err);
+        log.error(err);
         return res.status(500).send('retrieving scenario failed due to server error');
     });
 
@@ -338,7 +339,7 @@ router.post('/save/', restrict, function(req, res) {
     })
     .then(function (scenario) {
 
-        console.log(req.user.first_name+' updated scenario: '+scenario._id);
+        log.notice(req.user.first_name + '(' + req.user._id + ') updated scenario: '+scenario._id);
 
         //create screenshot in the background
         if(!scenario.draft){
@@ -351,7 +352,7 @@ router.post('/save/', restrict, function(req, res) {
         return res.status(err.statusCode).send(err.message);
     })
     .catch(function (err) {
-        console.log(err);
+        log.error(err);
         return res.status(500).send('saving scenario failed due to server error');
     });
 });
@@ -469,7 +470,7 @@ router.post('/dashboard/', restrict, function(req, res) {
         return res.status(200).json(response);
     })
     .catch(function (error) {
-        console.log(error);
+        log.error(error);
         return res.status(500).send('could not get scenarios');
     });
 
@@ -538,7 +539,7 @@ router.get('/search', function(req, res) {
         return res.status(200).json(response);
     })
     .catch(function (err) {
-        console.log(err);
+        log.error(err);
         return res.status(500).send('retrieving scenario failed due to server error');
     });
 
@@ -684,7 +685,7 @@ router.get('/single/:id', function(req, res) {
         return res.status(err.statusCode).send(err.message);
     })
     .catch(function (err) {
-        console.log(err);
+        log.error(err);
         return res.status(500).send('retrieving scenario failed due to server error');
     });
 
@@ -733,7 +734,7 @@ router.get('/tag/', function(req, res) {
         return res.status(200).json(response);
     })
     .catch(function (err) {
-        console.log(err);
+        log.error(err);
         return res.status(500).send('retrieving scenarios failed due to server error');
     });
 
@@ -768,7 +769,7 @@ router.get('/widget/', function(req, res) {
         return res.status(200).json({scenarios: scenarios});
     })
     .catch(function (error) {
-        console.log(error);
+        log.error(error);
         return res.status(500).send('could not get scenarios');
     });
 

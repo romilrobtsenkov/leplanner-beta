@@ -10,6 +10,7 @@ const Comment = require('../models/comment').Comment;
 const Notification = require('../models/notification').Notification;
 
 const E = require('../errors');
+const log = require('../logger');
 
 router.post('/', restrict, function (req, res) {
 
@@ -68,7 +69,7 @@ router.post('/', restrict, function (req, res) {
         return res.status(200).send('comment successfully saved');
     })
     .catch(function (err) {
-        console.log(err);
+        log.error(err);
         return res.status(500).send('comment saving failed due to server error');
     });
 });
@@ -92,7 +93,7 @@ router.get('/scenario/:id', function (req, res) {
         return res.status(200).json({ comments: comments });
     })
     .catch(function (err) {
-        console.log(err);
+        log.error(err);
         return res.status(500).send('comments retrieving failed due to server error');
     });
 });
@@ -160,7 +161,7 @@ router.post('/delete/:id', restrict, function (req, res) {
         return res.status(err.statusCode).send(err.message);
     })
     .catch(function (err) {
-        console.log(err);
+        log.error(err);
         return res.status(500).send('could not delete comment due to server error');
     });
 

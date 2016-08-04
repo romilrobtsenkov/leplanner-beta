@@ -19,6 +19,7 @@ const config = require('../config/config');
 const restrict = require('../auth/restrict');
 
 const E = require('../errors');
+const log = require('../logger');
 
 const minPasswordLength = 8;
 
@@ -97,7 +98,7 @@ router.post('/', function(req, res) {
         return res.status(err.statusCode).send(err.message);
     })
     .catch(function (error) {
-        console.log(error);
+        log.error(error);
         return res.status(500).send('could not create user');
     });
 
@@ -143,7 +144,7 @@ router.post('/list', restrict, function(req, res){
         return res.status(err.statusCode).send(err.message);
     })
     .catch(function (error) {
-        console.log(error);
+        log.error(error);
         return res.status(500).send('could not copy scenario');
     });
 
@@ -199,7 +200,7 @@ router.get('/single/:id', function(req, res) {
         return res.status(err.statusCode).send(err.message);
     })
     .catch(function (error) {
-        console.log(error);
+        log.error(error);
         return res.status(500).send('could not copy scenario');
     });
 });
@@ -224,8 +225,6 @@ router.post('/login', function(req, res) {
 
     new Promise(function(resolve, reject) {
         passport.authenticate('local', function(error, user) {
-
-            console.log(error, user);
 
             if(error || !user) { return reject(error); }
             return resolve(user);
@@ -258,7 +257,7 @@ router.post('/login', function(req, res) {
             return res.status(400).send('Wrong credentials');
         }
 
-        console.log(error);
+        log.error(error);
         return res.status(500).send('could not create user');
     });
 
@@ -311,7 +310,7 @@ router.post('/notifications/', restrict , function(req, res) {
     .then(function(notifications) {
         res.status(200).json({ notifications: notifications });
     }).catch(function (error) {
-        console.log(error);
+        log.error(error);
         return res.status(500).send('could not create user');
     });
 
@@ -363,7 +362,7 @@ router.post('/reset-password', function(req, res) {
         return res.status(err.statusCode).send(err.message);
     })
     .catch(function (error) {
-        console.log(error);
+        log.error(error);
         return res.status(500).send('could not update password');
     });
 });
@@ -433,7 +432,7 @@ router.post('/send-reset-token', function(req, res){
         return res.status(err.statusCode).send(err.message);
     })
     .catch(function (error) {
-        console.log(error);
+        log.error(error);
         return res.status(500).send('unable to send email');
     });
 });
@@ -459,7 +458,7 @@ router.post('/language', restrict, function(req, res) {
         return res.status(err.statusCode).send(err.message);
     })
     .catch(function (error) {
-        console.log(error);
+        log.error(error);
         return res.status(500).send('could not save user language');
     });
 });
@@ -505,7 +504,7 @@ router.post('/update-password', restrict, function(req, res) {
         return res.status(err.statusCode).send(err.message);
     })
     .catch(function (error) {
-        console.log(error);
+        log.error(error);
         return res.status(500).send('could not update user');
     });
 });
@@ -592,7 +591,7 @@ router.post('/update', restrict, function(req, res) {
         return res.status(err.statusCode).send(err.message);
     })
     .catch(function (error) {
-        console.log(error);
+        log.error(error);
         return res.status(500).send('could not update user');
     });
 });

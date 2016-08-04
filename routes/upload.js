@@ -19,6 +19,7 @@ Promise.promisifyAll(require('lwip/lib/Batch').prototype);
 const mongoService = require('../services/mongo-service');
 
 const E = require('../errors');
+const log = require('../logger');
 
 router.post('/profile-image/',multipartyMiddleware , restrict, function(req, res) {
 
@@ -30,7 +31,7 @@ router.post('/profile-image/',multipartyMiddleware , restrict, function(req, res
     if(file.type.toLowerCase() !== 'image/jpeg' &&
         file.type.toLowerCase() !== 'image/jpg' &&
         file.type.toLowerCase() !== 'image/png'){
-        //console.log(file.type.toLowerCase());
+        //log.error(file.type.toLowerCase());
         return res.status(400).send('unsupported file type');
     }
 
@@ -95,7 +96,7 @@ router.post('/profile-image/',multipartyMiddleware , restrict, function(req, res
         return res.status(err.statusCode).send(err.message);
     })
     .catch(function (error) {
-        console.log(error);
+        log.error(error);
         return res.status(500).send('could not upload profile picture');
     });
 });
