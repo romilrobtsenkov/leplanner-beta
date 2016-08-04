@@ -180,7 +180,7 @@
             //also remove from activities selection
             for(var i = 0; i < $scope.scenario.activities.length; i++){
                 for(var j = 0; j < $scope.scenario.activities[i].outcomes.length; j++){
-                    if($scope.scenario.activities[i].outcomes[j]._id === $scope.scenario.outcomes[$index].id){
+                    if($scope.scenario.activities[i].outcomes[j]._id === $scope.scenario.outcomes[$index]._id){
                         $scope.scenario.activities[i].outcomes.splice(j, 1);
                         j--;
                     }
