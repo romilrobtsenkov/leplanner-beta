@@ -19,7 +19,7 @@ module.exports = function () {
 
         console.log('local authentication');
 
-        mongoService.findOneWithPromise(q, User)
+        mongoService.findOne(q, User)
         .then(function (user) {
             console.log('user found');
             console.log(user);
@@ -52,7 +52,7 @@ module.exports = function () {
 
     passport.deserializeUser(function(id, next) {
         //console.log('deserializeUser');
-        mongoService.findByIdWithPromise(id, User)
+        mongoService.findById(id, User)
         .then(function (user) {
             if (!user) { return next(null, null); }
 

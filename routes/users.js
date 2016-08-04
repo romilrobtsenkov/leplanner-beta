@@ -22,10 +22,7 @@ const E = require('../errors');
 
 const minPasswordLength = 8;
 
-/* Fixed */
 router.post('/', function(req, res) {
-
-    console.log('create');
 
     var user = req.body;
 
@@ -46,12 +43,8 @@ router.post('/', function(req, res) {
         return res.status(400).send('invalid email');
     }
 
-    console.log('passed validation');
-
     bcrypt.hashAsync(user.new_password, saltRounds)
     .then(function (hash) {
-
-        console.log(hash);
 
         var new_user = {
             first_name: user.new_first_name,
@@ -61,9 +54,7 @@ router.post('/', function(req, res) {
             password: hash
         };
 
-        console.log('created hash');
-
-        return mongoService.saveNewWithPromise(new_user, User).catch(function (error) {
+        return mongoService.saveNew(new_user, User).catch(function (error) {
             if(error.errors.email) {
                 return Promise.reject(new E.Error('email exists'));
             }
@@ -73,16 +64,12 @@ router.post('/', function(req, res) {
     })
     .then(function () {
 
-        console.log('saved successfully');
-
         // Fix for auto login after new user save
         req.body.email = req.body.new_email;
         req.body.password = req.body.new_password;
 
         return new Promise(function(resolve, reject) {
             passport.authenticate('local', function(error, user) {
-
-                console.log(error, user);
 
                 if(error || !user) { return reject(error); }
                 return resolve(user);
@@ -92,10 +79,7 @@ router.post('/', function(req, res) {
     })
     .then(function (user) {
 
-        console.log(user);
         if(!user) { return Promise.reject(new E.NotAuthorizedError('Could not authenticate')); }
-
-        console.log('passport auth local');
 
         return new Promise(function(resolve, reject) {
             req.logIn(user, function(err) {
@@ -107,7 +91,6 @@ router.post('/', function(req, res) {
     })
     .then(function (response) {
 
-        console.log('req.logIn done');
         res.status(200).json(response);
     })
     .catch(E.Error, function (err) {
@@ -120,7 +103,6 @@ router.post('/', function(req, res) {
 
 });
 
-/* Fixed */
 router.post('/list', restrict, function(req, res){
 
     var response = {};
@@ -130,7 +112,7 @@ router.post('/list', restrict, function(req, res){
     q.select =  'first_name last_name organization image_thumb last_modified';
     q.sort = {first_name: 1};
 
-    mongoService.findWithPromise(q, User)
+    mongoService.find(q, User)
     .then(function (users) {
 
         if(!users || users.length === 0) { return Promise.reject(new E.NotFoundError('no users found')); }
@@ -141,7 +123,7 @@ router.post('/list', restrict, function(req, res){
         q.args = { follower: req.user._, removed: null };
         q.select = 'following';
 
-        return mongoService.findWithPromise(q, Follower);
+        return mongoService.find(q, Follower);
     })
     .then(function (following){
 
@@ -167,7 +149,6 @@ router.post('/list', restrict, function(req, res){
 
 });
 
-/* Fixed */
 router.get('/single/:id', function(req, res) {
 
     var params = req.params;
@@ -179,7 +160,7 @@ router.get('/single/:id', function(req, res) {
     q.update = { $inc: { profile_views: 1 }};
     q.select = "-password -resetPasswordExpires -resetPasswordToken";
 
-    mongoService.updateWithPromise(q, User)
+    mongoService.update(q, User)
     .then(function (user) {
         if(!user) { return Promise.reject(new E.NotFoundError('no user with such id')); }
 
@@ -204,8 +185,8 @@ router.get('/single/:id', function(req, res) {
         });
 
         return Promise.props({
-            following: mongoService.findWithPromise(followingQ, Follower),
-            followers: mongoService.findWithPromise(followerQ, Follower)
+            following: mongoService.find(followingQ, Follower),
+            followers: mongoService.find(followerQ, Follower)
         });
     })
     .then(function (meta) {
@@ -223,13 +204,9 @@ router.get('/single/:id', function(req, res) {
     });
 });
 
-/* Fixed */
 router.post('/login', function(req, res) {
-    //console.log(req.body);
 
     var params = req.body;
-
-    console.log(params);
 
     if(!params.email ||
         !params.password ||
@@ -237,8 +214,6 @@ router.post('/login', function(req, res) {
         params.password.length < minPasswordLength) {
         return res.status(400).send('Wrong credentials');
     }
-
-    console.log('passed validation');
 
     if (params.remember_me) { req.session.cookie.maxAge = config.cookieMaxAge; }
 
@@ -259,10 +234,7 @@ router.post('/login', function(req, res) {
    })
     .then(function (user) {
 
-        console.log(user);
         if(!user) { return Promise.reject(new E.NotAuthorizedError('Could not authenticate')); }
-
-        console.log('passport auth local');
 
         return new Promise(function(resolve, reject) {
             req.logIn(user, function(err) {
@@ -274,7 +246,6 @@ router.post('/login', function(req, res) {
     })
     .then(function (response) {
 
-        console.log('req.logIn done');
         res.status(200).json(response);
     })
     .catch(E.Error, function (err) {
@@ -293,7 +264,6 @@ router.post('/login', function(req, res) {
 
 });
 
-/* Fixed */
 router.post('/logout', restrict, function(req, res) {
 
     var userId = req.user._id;
@@ -307,7 +277,6 @@ router.post('/logout', restrict, function(req, res) {
     res.sendStatus(200);
 });
 
-/* Fixed */
 router.get('/me', function(req, res){
     //http://toon.io/understanding-passportjs-authentication-flow/
     if(!req.session.passport.user){
@@ -317,7 +286,6 @@ router.get('/me', function(req, res){
     }
 });
 
-/* Fixed */
 router.post('/notifications/', restrict , function(req, res) {
 
     var user_id = req.body.user._id;
@@ -339,7 +307,7 @@ router.post('/notifications/', restrict , function(req, res) {
         q.limit = req.body.limit;
     }
 
-    mongoService.findWithPromise(q, Notification)
+    mongoService.find(q, Notification)
     .then(function(notifications) {
         res.status(200).json({ notifications: notifications });
     }).catch(function (error) {
@@ -349,7 +317,6 @@ router.post('/notifications/', restrict , function(req, res) {
 
 });
 
-/* Fixed */
 router.post('/reset-password', function(req, res) {
 
     var user = req.body;
@@ -364,7 +331,7 @@ router.post('/reset-password', function(req, res) {
     var q = {};
     q.args = { resetPasswordToken: user.token};
 
-    mongoService.findOneWithPromise(q, User)
+    mongoService.findOne(q, User)
     .then(function (user_from_db) {
 
         if(!user_from_db){ return Promise.reject(new E.NotFoundError('token not valid')); }
@@ -387,7 +354,7 @@ router.post('/reset-password', function(req, res) {
         q.where = {_id: user._id};
         q.update = update;
 
-        return mongoService.updateWithPromise(q, User);
+        return mongoService.update(q, User);
     })
     .then(function () {
         return res.sendStatus(200);
@@ -401,7 +368,6 @@ router.post('/reset-password', function(req, res) {
     });
 });
 
-/* Fixed */
 router.post('/send-reset-token', function(req, res){
 
     var user_email = req.body.reset_email;
@@ -411,9 +377,11 @@ router.post('/send-reset-token', function(req, res){
         return res.status(400).send('invalid email');
     }
 
-    var q = { args: { email: user_email.toLowerCase() } };
+    var q = {
+        args: { email: user_email.toLowerCase() }
+    };
 
-    mongoService.findOneWithPromise(q, User)
+    mongoService.findOne(q, User)
     .then(function (user) {
         if(!user) {
             return Promise.reject(new E.NotFoundError('no such user'));
@@ -426,10 +394,6 @@ router.post('/send-reset-token', function(req, res){
     .then(function (buf) {
 
         var token = buf.toString('hex');
-
-        console.log('created token');
-        console.log(token);
-
         var update = {
             resetPasswordToken: token,
             resetPasswordExpires : Date.now() + (1000*60*60*2), // 2 hours
@@ -439,12 +403,9 @@ router.post('/send-reset-token', function(req, res){
         q.update = update;
         q.select = "email resetPasswordToken";
 
-        return mongoService.updateWithPromise(q, User);
+        return mongoService.update(q, User);
     })
     .then(function (user) {
-
-        console.log('sending mail');
-        console.log(user);
 
         return new Promise(function (resolve, reject) {
             nodemailer.sendmail = true;
@@ -477,34 +438,32 @@ router.post('/send-reset-token', function(req, res){
     });
 });
 
-/* Fixed */
 router.post('/language', restrict, function(req, res) {
 
     if(!req.body.lang){ return res.sendStatus(404); }
 
-        var update = {};
+    var update = {};
 
-        var q = {};
-        q.where = {_id: req.user._id};
-        q.update = {lang: req.body.lang};
-        q.select = "-password -resetPasswordExpires -resetPasswordToken";
+    var q = {};
+    q.where = {_id: req.user._id};
+    q.update = {lang: req.body.lang};
+    q.select = "-password -resetPasswordExpires -resetPasswordToken";
 
-        mongoService.updateWithPromise(q, User)
-        .then(function (user) {
-            if (!user) { return Promise.reject(new E.NotFoundError('No user')); }
+    mongoService.update(q, User)
+    .then(function (user) {
+        if (!user) { return Promise.reject(new E.NotFoundError('No user')); }
 
-            res.sendStatus(200);
-        })
-        .catch(E.Error, function (err) {
-            return res.status(err.statusCode).send(err.message);
-        })
-        .catch(function (error) {
-            console.log(error);
-            return res.status(500).send('could not save user language');
-        });
+        res.sendStatus(200);
+    })
+    .catch(E.Error, function (err) {
+        return res.status(err.statusCode).send(err.message);
+    })
+    .catch(function (error) {
+        console.log(error);
+        return res.status(500).send('could not save user language');
+    });
 });
 
-/* Fixed */
 router.post('/update-password', restrict, function(req, res) {
 
     var user = req.body.user;
@@ -516,7 +475,7 @@ router.post('/update-password', restrict, function(req, res) {
         return res.sendStatus(400);
     }
 
-    mongoService.findByIdWithPromise(req.user._id, User)
+    mongoService.findById(req.user._id, User)
     .then(function (user_obj_from_db) {
         return bcrypt.compareAsync(user.password, user_obj_from_db.password);
     })
@@ -536,9 +495,10 @@ router.post('/update-password', restrict, function(req, res) {
         q.update = update;
         q.select = "_id";
 
-        return mongoService.updateWithPromise(q, User);
+        return mongoService.update(q, User);
     })
     .then(function () {
+
         return res.sendStatus(200);
     })
     .catch(E.Error, function (err) {
@@ -550,11 +510,9 @@ router.post('/update-password', restrict, function(req, res) {
     });
 });
 
-/* Fixed */
 router.post('/update', restrict, function(req, res) {
 
     var user = req.body.user;
-    console.log(user);
 
     //validate for empty
     if (!user.new_first_name ||
@@ -589,15 +547,14 @@ router.post('/update', restrict, function(req, res) {
         q.args = { email: user.new_email.toLowerCase()};
 
         // check if email already in use
-        return mongoService.findOneWithPromise(q, User)
+        return mongoService.findOne(q, User)
         .then(function (user_with_same_email) {
 
             if(user_with_same_email){ return Promise.reject(new E.Error('email exists')); }
 
-            return mongoService.findByIdWithPromise(req.user._id, User);
+            return mongoService.findById(req.user._id, User);
         })
         .then(function (user_obj_from_db) {
-            console.log(user_obj_from_db);
 
             return bcrypt.compareAsync(user.confirm_password, user_obj_from_db.password);
         })
@@ -625,9 +582,10 @@ router.post('/update', restrict, function(req, res) {
         q.update = update;
         q.select = "-password -resetPasswordExpires -resetPasswordToken";
 
-        return mongoService.updateWithPromise(q, User);
+        return mongoService.update(q, User);
     })
     .then(function (u_user) {
+
         return res.status(200).json({user: u_user});
     })
     .catch(E.Error, function (err) {

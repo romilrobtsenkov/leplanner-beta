@@ -8,14 +8,6 @@ const mongoService = require('../services/mongo-service');
 const Favorite = require('../models/favorite').Favorite;
 const Scenario = require('../models/scenario').Scenario;
 
-/**
-* POST /api/favorites/
-* favorite the scenario
-*
-* @param {Object} params
-* scenario_id - id of scenario to be favorited by user
-* @return {Status} 200
-*/
 router.post('/', restrict, function (req, res) {
 
     var params = req.body;
@@ -26,12 +18,12 @@ router.post('/', restrict, function (req, res) {
     q.args = { scenario: params.scenario_id, user: req.user._id, removed: null };
     q.select = '_id';
 
-    mongoService.findOneWithPromise(q, Favorite)
+    mongoService.findOne(q, Favorite)
     .then(function (favoriteDoc) {
 
         if (!favoriteDoc) {
             var newFavoriteDoc = { scenario: params.scenario_id, user: req.user._id };
-            return mongoService.saveNewWithPromise(newFavoriteDoc, Favorite);
+            return mongoService.saveNew(newFavoriteDoc, Favorite);
         } else {
             return Promise.resolve();
         }
@@ -41,7 +33,7 @@ router.post('/', restrict, function (req, res) {
         var q = {};
         q.args = { scenario: params.scenario_id, removed: null };
 
-        return mongoService.countWithPromise(q, Favorite);
+        return mongoService.count(q, Favorite);
     })
     .then(function (count) {
 
@@ -49,7 +41,7 @@ router.post('/', restrict, function (req, res) {
         q.where = { _id: params.scenario_id };
         q.update = { favorites_count: count };
 
-        return mongoService.updateWithPromise(q, Scenario);
+        return mongoService.update(q, Scenario);
     })
     .then(function () {
         return res.status(200).send('successfully favorited scenario');
@@ -61,14 +53,6 @@ router.post('/', restrict, function (req, res) {
 
 });
 
-/**
-* POST /api/favorites/delete/:id
-* remove the scenario from favorites
-*
-* @param {Object} params
-* scenario_id - id of scenario to be favorited by user
-* @return {Status} 200
-*/
 router.post('/delete/:scenario_id', restrict, function (req, res) {
 
     var params = req.params;
@@ -79,7 +63,7 @@ router.post('/delete/:scenario_id', restrict, function (req, res) {
     q.args = { scenario: params.scenario_id, user: req.user._id, removed: null };
     q.select = '_id';
 
-    mongoService.findOneWithPromise(q, Favorite)
+    mongoService.findOne(q, Favorite)
     .then(function (favoriteDoc) {
 
         if (!favoriteDoc) {
@@ -91,7 +75,7 @@ router.post('/delete/:scenario_id', restrict, function (req, res) {
             q.update = { removed: Date.now() };
             q.select = '_id';
 
-            return mongoService.updateWithPromise(q, Favorite);
+            return mongoService.update(q, Favorite);
         }
     })
     .then(function () {
@@ -99,7 +83,7 @@ router.post('/delete/:scenario_id', restrict, function (req, res) {
         var q = {};
         q.args = { scenario: params.scenario_id, removed: null };
 
-        return mongoService.countWithPromise(q, Favorite);
+        return mongoService.count(q, Favorite);
     })
     .then(function (count) {
 
@@ -107,7 +91,7 @@ router.post('/delete/:scenario_id', restrict, function (req, res) {
         q.where = { _id: params.scenario_id };
         q.update = { favorites_count: count };
 
-        return mongoService.updateWithPromise(q, Scenario);
+        return mongoService.update(q, Scenario);
     })
     .then(function () {
         return res.status(200).send('removed from favorite successfully');

@@ -11,17 +11,6 @@ const Notification = require('../models/notification').Notification;
 
 const E = require('../errors');
 
-/**
-* POST /api/comments/
-* create new scenario comment, adds notification, updates scenarios comment count, returns all scenario omments
-*
-* @param {Object} params
-*   comment.text - comment
-*   user._id - comment author
-*   scenario._id - commented scenario
-*   author._id - commented scenario author
-* @return {Status} 200
-*/
 router.post('/', restrict, function (req, res) {
 
     var params = req.body;
@@ -37,7 +26,7 @@ router.post('/', restrict, function (req, res) {
         scenario: params.scenario._id,
     };
 
-    mongoService.saveNewWithPromise(newComment, Comment)
+    mongoService.saveNew(newComment, Comment)
     .then(function (comment) {
 
         // No notification if scenario author comments own scenario
@@ -53,7 +42,7 @@ router.post('/', restrict, function (req, res) {
             },
         };
 
-        return mongoService.saveNewWithPromise(newNotification, Notification);
+        return mongoService.saveNew(newNotification, Notification);
     })
     .then(function () {
 
@@ -65,7 +54,7 @@ router.post('/', restrict, function (req, res) {
             populate: 'first_name last_name last_modified image_thumb',
         });
 
-        return mongoService.countWithPromise(q, Comment);
+        return mongoService.count(q, Comment);
     })
     .then(function (count) {
 
@@ -73,7 +62,7 @@ router.post('/', restrict, function (req, res) {
         q.where = { _id: params.scenario._id };
         q.update = { comments_count: count };
 
-        return mongoService.updateWithPromise(q, Scenario);
+        return mongoService.update(q, Scenario);
     })
     .then(function () {
         return res.status(200).send('comment successfully saved');
@@ -84,14 +73,6 @@ router.post('/', restrict, function (req, res) {
     });
 });
 
-/**
-* GET /api/comments/scenario/:id
-* retrieve all scenario comments
-* based on given scenario id
-*
-* @param {String} scenario_id
-* @return {Status} 200
-*/
 router.get('/scenario/:id', function (req, res) {
 
     var params = req.params;
@@ -106,7 +87,7 @@ router.get('/scenario/:id', function (req, res) {
         populate: 'first_name last_name last_modified image_thumb',
     });
 
-    mongoService.findWithPromise(q, Comment)
+    mongoService.find(q, Comment)
     .then(function (comments) {
         return res.status(200).json({ comments: comments });
     })
@@ -116,13 +97,6 @@ router.get('/scenario/:id', function (req, res) {
     });
 });
 
-/**
-* POST /api/comments/delete/:id
-* delete comment based on passed id, update comment count
-*
-* @param {String} id of the comment
-* @return {Status} 200
-*/
 router.post('/delete/:id', restrict, function (req, res) {
 
     var params = req.params;
@@ -134,7 +108,7 @@ router.post('/delete/:id', restrict, function (req, res) {
     q.where = { _id: params.id, deleted: false };
     q.select = 'scenario';
 
-    mongoService.updateWithPromise(q, Comment)
+    mongoService.update(q, Comment)
     .then(function (comment) {
 
         if (comment === null) { return Promise.reject(new E.NotFoundError()); }
@@ -145,7 +119,7 @@ router.post('/delete/:id', restrict, function (req, res) {
         var q = {};
         q.args = { _id: scenarioId, author: req.user._id };
 
-        return mongoService.findOneWithPromise(q, Scenario);
+        return mongoService.findOne(q, Scenario);
     })
     .then(function (scenario) {
 
@@ -162,14 +136,14 @@ router.post('/delete/:id', restrict, function (req, res) {
         };
         q.select = '_id';
 
-        return mongoService.updateWithPromise(q, Comment);
+        return mongoService.update(q, Comment);
     })
     .then(function (comment) {
 
         var q = {};
         q.args = { scenario: scenarioId, deleted: false };
 
-        return mongoService.countWithPromise(q, Comment);
+        return mongoService.count(q, Comment);
     })
     .then(function (count) {
 
@@ -177,7 +151,7 @@ router.post('/delete/:id', restrict, function (req, res) {
         q.where = { _id: scenarioId };
         q.update = { comments_count: count };
 
-        return mongoService.updateWithPromise(q, Scenario);
+        return mongoService.update(q, Scenario);
     })
     .then(function () {
         return res.status(200).send('scenario comment successfully deleted');

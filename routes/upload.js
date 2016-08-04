@@ -83,7 +83,7 @@ router.post('/profile-image/',multipartyMiddleware , restrict, function(req, res
             last_modified: new Date()
         };
 
-        return mongoService.updateWithPromise(q, User);
+        return mongoService.update(q, User);
     })
     .then(function (user) {
 

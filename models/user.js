@@ -25,7 +25,7 @@ var userSchema = new Schema({
 //validation on first save
 userSchema.path('email').validate(function(value, next) {
     var q = { args: {"email": value } };
-    mongoService.findOneWithPromise(q, User)
+    mongoService.findOne(q, User)
     .then(function(user) {
         if (user) {return next(false); }
 

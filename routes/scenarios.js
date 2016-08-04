@@ -21,7 +21,6 @@ const User = require('../models/user').User;
 
 const E = require('../errors');
 
-/* Fixed */
 router.get('/copy/:id', restrict, function(req, res) {
 
     var params = req.params;
@@ -35,7 +34,7 @@ router.get('/copy/:id', restrict, function(req, res) {
     var q = {};
     q.args = { _id: params.id };
 
-    mongoService.findOneWithPromise(q, Scenario)
+    mongoService.findOne(q, Scenario)
     .then(function (scenario) {
 
         if(!scenario) { return Promise.reject(new E.NotFoundError('no scenario with such id')); }
@@ -57,7 +56,7 @@ router.get('/copy/:id', restrict, function(req, res) {
         newOne.draft = true;
         newOne.last_modified = new Date();
 
-        return mongoService.saveNewWithPromise(newOne, Scenario);
+        return mongoService.saveNew(newOne, Scenario);
     })
     .then(function (newScenario) {
 
@@ -71,7 +70,7 @@ router.get('/copy/:id', restrict, function(req, res) {
             deleted: false
         };
 
-        return mongoService.findWithPromise(q, Material);
+        return mongoService.find(q, Material);
     })
     .then(function (materials) {
 
@@ -103,7 +102,6 @@ router.get('/copy/:id', restrict, function(req, res) {
 
 });
 
-/* Fixed */
 router.post('/', restrict, function(req, res) {
 
     var params = req.body;
@@ -120,7 +118,7 @@ router.post('/', restrict, function(req, res) {
     newScenario.draft = true;
     newScenario.last_modified = new Date();
 
-    mongoService.saveNewWithPromise(newScenario, Scenario)
+    mongoService.saveNew(newScenario, Scenario)
     .then(function (scenario){
         res.json({ _id: scenario._id } );
     })
@@ -131,7 +129,6 @@ router.post('/', restrict, function(req, res) {
 
 });
 
-/* Fixed */
 router.post('/delete/:id', restrict, function(req, res) {
 
     var params = req.params;
@@ -141,7 +138,7 @@ router.post('/delete/:id', restrict, function(req, res) {
     var q = {};
     q.args = { _id: params.id, author: req.user._id, deleted: false };
 
-    mongoService.findOneWithPromise(q, Scenario)
+    mongoService.findOne(q, Scenario)
     .then(function (scenario) {
         if (!scenario) { return Promise.reject(new E.ForbiddenError('not your scenario or already deleted')); }
 
@@ -152,10 +149,11 @@ router.post('/delete/:id', restrict, function(req, res) {
         };
         q.select = '_id';
 
-        return mongoService.updateWithPromise(q, Scenario);
+        return mongoService.update(q, Scenario);
     })
     .then(function () {
-        return res.status(200).send('already deleted');
+
+        return res.status(200).send('deleted');
     })
     .catch(E.Error, function (err) {
         return res.status(err.statusCode).send(err.message);
@@ -167,7 +165,6 @@ router.post('/delete/:id', restrict, function(req, res) {
 
 });
 
-/* Fixed */
 router.post('/single-edit/:id', restrict, function(req, res) {
 
     var params = req.params;
@@ -180,7 +177,7 @@ router.post('/single-edit/:id', restrict, function(req, res) {
     q.populated_fields = [];
     q.populated_fields.push({ field: 'subjects' });
 
-    mongoService.findOneWithPromise(q, Scenario)
+    mongoService.findOne(q, Scenario)
     .then(function (scenario) {
 
         if (!scenario) { return Promise.reject(new E.ForbiddenError('not your scenario')); }
@@ -191,7 +188,7 @@ router.post('/single-edit/:id', restrict, function(req, res) {
         q.args = { scenario: params.id, deleted: false };
 
         return Promise.props({
-            materials: mongoService.findWithPromise(q, Material),
+            materials: mongoService.find(q, Material),
             activity_organization: metaService.getActivityOrganization(),
             involvement_options: metaService.getInvolvementOptions(),
             displays: metaService.getDisplays(),
@@ -240,7 +237,6 @@ router.post('/single-edit/:id', restrict, function(req, res) {
     });
 });
 
-/* Fixed */
 router.get('/user/:id', function(req, res) {
 
     var query = req.query;
@@ -275,8 +271,8 @@ router.get('/user/:id', function(req, res) {
         count_q.skip = count_q.limit = undefined;
 
         return Promise.props({
-            scenarios: mongoService.findWithPromise(q, Scenario),
-            count: mongoService.countWithPromise(count_q, Scenario)
+            scenarios: mongoService.find(q, Scenario),
+            count: mongoService.count(count_q, Scenario)
         });
     })
     .then(function (response) {
@@ -289,7 +285,6 @@ router.get('/user/:id', function(req, res) {
 
 });
 
-/* Fixed */
 router.post('/save/', restrict, function(req, res) {
 
     var params = req.body;
@@ -297,7 +292,7 @@ router.post('/save/', restrict, function(req, res) {
     var q = {};
     q.args = { _id: params.scenario._id, author: req.user._id };
 
-    mongoService.findOneWithPromise(q, Scenario)
+    mongoService.findOne(q, Scenario)
     .then(function (latestScenario) {
         if (!latestScenario) { return Promise.reject(new E.ForbiddenError('not your scenario')); }
 
@@ -339,9 +334,10 @@ router.post('/save/', restrict, function(req, res) {
         q.update = newScenario;
         q.update.last_modified = new Date();
 
-        return mongoService.updateWithPromise(q, Scenario);
+        return mongoService.update(q, Scenario);
     })
     .then(function (scenario) {
+
         console.log(req.user.first_name+' updated scenario: '+scenario._id);
 
         //create screenshot in the background
@@ -360,7 +356,6 @@ router.post('/save/', restrict, function(req, res) {
     });
 });
 
-/* Fixed */
 router.post('/dashboard/', restrict, function(req, res) {
 
     var query = req.body;
@@ -396,7 +391,7 @@ router.post('/dashboard/', restrict, function(req, res) {
                 followerQ.args = {follower: query.user._id, removed: null};
                 followerQ.select = 'following';
 
-                return mongoService.findWithPromise(followerQ, Follower)
+                return mongoService.find(followerQ, Follower)
                 .then(function(following) {
 
                     var list_of_following_ids = [];
@@ -410,8 +405,8 @@ router.post('/dashboard/', restrict, function(req, res) {
                     count_q.skip = count_q.limit = undefined;
 
                     return Promise.props({
-                        scenarios: mongoService.findWithPromise(q, Scenario),
-                        count: mongoService.countWithPromise(count_q, Scenario)
+                        scenarios: mongoService.find(q, Scenario),
+                        count: mongoService.count(count_q, Scenario)
                     });
                 });
 
@@ -423,8 +418,8 @@ router.post('/dashboard/', restrict, function(req, res) {
                 count_q.skip = count_q.limit = undefined;
 
                 return Promise.props({
-                    scenarios: mongoService.findWithPromise(q, Scenario),
-                    count: mongoService.countWithPromise(count_q, Scenario)
+                    scenarios: mongoService.find(q, Scenario),
+                    count: mongoService.count(count_q, Scenario)
                 });
 
             case 'published':
@@ -435,8 +430,8 @@ router.post('/dashboard/', restrict, function(req, res) {
                 count_q.skip = count_q.limit = undefined;
 
                 return Promise.props({
-                    scenarios: mongoService.findWithPromise(q, Scenario),
-                    count: mongoService.countWithPromise(count_q, Scenario)
+                    scenarios: mongoService.find(q, Scenario),
+                    count: mongoService.count(count_q, Scenario)
                 });
 
             case 'favorites':
@@ -445,7 +440,7 @@ router.post('/dashboard/', restrict, function(req, res) {
                 favoriteQ.args = {user: query.user._id, removed: null};
                 favoriteQ.select = 'scenario';
 
-                return mongoService.findWithPromise(favoriteQ, Favorite)
+                return mongoService.find(favoriteQ, Favorite)
                 .then(function (favorites) {
 
                     if(favorites.length === 0){ return Promise.resolve({scenarios: [], count: 0}); }
@@ -462,14 +457,15 @@ router.post('/dashboard/', restrict, function(req, res) {
                     count_q.skip = count_q.limit = undefined;
 
                     return Promise.props({
-                        scenarios: mongoService.findWithPromise(q, Scenario),
-                        count: mongoService.countWithPromise(count_q, Scenario)
+                        scenarios: mongoService.find(q, Scenario),
+                        count: mongoService.count(count_q, Scenario)
                     });
                 });
 
         }
     })
     .then(function (response) {
+
         return res.status(200).json(response);
     })
     .catch(function (error) {
@@ -479,7 +475,6 @@ router.post('/dashboard/', restrict, function(req, res) {
 
 });
 
-/* Fixed */
 router.get('/search', function(req, res) {
 
     const PAGESIZE = 10;
@@ -531,8 +526,8 @@ router.get('/search', function(req, res) {
         count_q.skip = count_q.limit = undefined;
 
         return Promise.props({
-            scenarios: mongoService.findWithPromise(q, Scenario),
-            count: mongoService.countWithPromise(count_q, Scenario)
+            scenarios: mongoService.find(q, Scenario),
+            count: mongoService.count(count_q, Scenario)
         });
     })
     .then(function (response) {
@@ -549,7 +544,6 @@ router.get('/search', function(req, res) {
 
 });
 
-/* Fixed */
 router.get('/single/:id', function(req, res) {
 
     var params = req.params;
@@ -572,7 +566,7 @@ router.get('/single/:id', function(req, res) {
     });
     q.update = { $inc: { view_count: 1 } };
 
-    mongoService.updateWithPromise(q, Scenario)
+    mongoService.update(q, Scenario)
     .then(function (scenario) {
 
         if(!scenario){return Promise.reject(new E.NotFoundError('no scenario with such id')); }
@@ -589,7 +583,7 @@ router.get('/single/:id', function(req, res) {
             populate: 'first_name last_name'
         });
 
-        return mongoService.findWithPromise(q, Scenario);
+        return mongoService.find(q, Scenario);
     })
     .then(function (childScenarios) {
 
@@ -604,7 +598,7 @@ router.get('/single/:id', function(req, res) {
         q.args = { _id: response.scenario.mother_scenario.author };
         q.select = "first_name last_name";
 
-        return mongoService.findOneWithPromise(q, User);
+        return mongoService.findOne(q, User);
     })
     .then(function (user) {
 
@@ -619,8 +613,8 @@ router.get('/single/:id', function(req, res) {
         folQ.args = { follower: req.user._id, following: response.scenario.author._id, removed: null };
 
         return Promise.props({
-            favorite: mongoService.findOneWithPromise(favQ, Favorite),
-            following: mongoService.findOneWithPromise(folQ, Follower)
+            favorite: mongoService.findOne(favQ, Favorite),
+            following: mongoService.findOne(folQ, Follower)
         });
     })
     .then(function (obj) {
@@ -637,7 +631,7 @@ router.get('/single/:id', function(req, res) {
         q.where = { user: req.user._id, type: 'comment', 'data.scenario': response.scenario._id, seen: null };
         q.update = { seen: new Date() };
 
-        return mongoService.updateMultipleWithPromise(q, Notification);
+        return mongoService.updateMultiple(q, Notification);
     })
     .then(function () {
 
@@ -646,7 +640,7 @@ router.get('/single/:id', function(req, res) {
         q.args = { scenario: response.scenario._id, deleted: false };
 
         return Promise.props({
-            materials: mongoService.findWithPromise(q, Material),
+            materials: mongoService.find(q, Material),
             activity_organization: metaService.getActivityOrganization(),
             involvement_options: metaService.getInvolvementOptions(),
             displays: metaService.getDisplays(),
@@ -697,7 +691,6 @@ router.get('/single/:id', function(req, res) {
 
 });
 
-/* Fixed */
 router.get('/tag/', function(req, res) {
 
     var query = req.query;
@@ -732,8 +725,8 @@ router.get('/tag/', function(req, res) {
         count_q.skip = count_q.limit = undefined;
 
         return Promise.props({
-            scenarios: mongoService.findWithPromise(q, Scenario),
-            count: mongoService.countWithPromise(count_q, Scenario)
+            scenarios: mongoService.find(q, Scenario),
+            count: mongoService.count(count_q, Scenario)
         });
     })
     .then(function (response) {
@@ -746,9 +739,6 @@ router.get('/tag/', function(req, res) {
 
 });
 
-/* Fixed */
-// Takes in parameters
-// order & limit & exclude? & author?
 router.get('/widget/', function(req, res) {
 
     var query = req.query;
@@ -772,7 +762,7 @@ router.get('/widget/', function(req, res) {
         if (query.limit) { query.limit = parseInt(query.limit); }
         q.limit = query.limit;
 
-        return mongoService.findWithPromise(q, Scenario);
+        return mongoService.find(q, Scenario);
     })
     .then(function (scenarios) {
         return res.status(200).json({scenarios: scenarios});

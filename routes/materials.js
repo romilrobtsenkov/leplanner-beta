@@ -13,17 +13,6 @@ const screenshotService = require('../services/screenshot-service');
 
 const E = require('../errors');
 
-/**
-* POST /api/materials/
-* save new material for activity
-*
-* @param {Object} params
-*    material.material_name
-*    material.activity_id
-*    material.position
-*    scenario._id
-* @return {Element} element
-*/
 router.post('/', restrict, function (req, res) {
 
     var params = req.body;
@@ -41,7 +30,7 @@ router.post('/', restrict, function (req, res) {
     q.args = { _id: params.scenario._id, author: req.user._id };
     q.select = '_id';
 
-    mongoService.findOneWithPromise(q, Scenario)
+    mongoService.findOne(q, Scenario)
     .then(function (latestScenario) {
 
         if (!latestScenario) {
@@ -57,7 +46,7 @@ router.post('/', restrict, function (req, res) {
         };
         q.select = '_id';
 
-        return mongoService.findOneWithPromise(q, Material);
+        return mongoService.findOne(q, Material);
     })
     .then(function (material) {
         if (material) { return Promise.reject(new E.Error('already exists')); }
@@ -68,7 +57,7 @@ router.post('/', restrict, function (req, res) {
         newMaterial.last_modified = new Date();
 
         return Promise.props({
-            material: mongoService.saveNewWithPromise(newMaterial, Material),
+            material: mongoService.saveNew(newMaterial, Material),
             involvement_options: metaService.getInvolvementOptions(),
             displays: metaService.getDisplays(),
         });
@@ -94,7 +83,7 @@ router.post('/', restrict, function (req, res) {
         q.where = { _id: params.scenario._id };
         q.update = { last_modified: new Date() };
 
-        return mongoService.updateWithPromise(q, Scenario);
+        return mongoService.update(q, Scenario);
     })
     .then(function (scenario) {
 
@@ -116,19 +105,6 @@ router.post('/', restrict, function (req, res) {
 
 });
 
-/**
-* POST /api/materials/:id
-* update material for activity
-*
-* @param {Object} id of the material
-* @param {Object} params
-*    material.material_name
-*    material.activity_id
-*    material.position
-*    scenario._id
-* @return {Element} element
-*/
-
 router.post('/:id', restrict, function (req, res) {
 
     var params = req.params;
@@ -148,7 +124,7 @@ router.post('/:id', restrict, function (req, res) {
     q.args = { _id: postData.scenario._id, author: req.user._id };
     q.select = '_id';
 
-    mongoService.findOneWithPromise(q, Scenario)
+    mongoService.findOne(q, Scenario)
     .then(function (latestScenario) {
 
         if (!latestScenario) { return Promise.reject(new E.ForbiddenError('no access to others scenarios')); }
@@ -176,7 +152,7 @@ router.post('/:id', restrict, function (req, res) {
         }
 
         return Promise.props({
-            material: mongoService.updateWithPromise(q, Material),
+            material: mongoService.update(q, Material),
             involvement_options: metaService.getInvolvementOptions(),
             displays: metaService.getDisplays(),
         });
@@ -202,7 +178,7 @@ router.post('/:id', restrict, function (req, res) {
         q.where = { _id: postData.scenario._id };
         q.update = { last_modified: new Date() };
 
-        return mongoService.updateWithPromise(q, Scenario);
+        return mongoService.update(q, Scenario);
     })
     .then(function (scenario) {
 
@@ -223,13 +199,6 @@ router.post('/:id', restrict, function (req, res) {
     });
 });
 
-/**
-* POST /api/materials/delete/:id
-* delete activity material based on id
-*
-* @param {String} tag
-* @return {Element} element
-*/
 router.post('/delete/:id', restrict, function (req, res) {
 
     var params = req.params;
@@ -244,7 +213,7 @@ router.post('/delete/:id', restrict, function (req, res) {
     q.args = { _id: postData.scenario._id, author: req.user._id };
     q.select = '_id';
 
-    mongoService.findOneWithPromise(q, Scenario)
+    mongoService.findOne(q, Scenario)
     .then(function (latestScenario) {
 
         if (!latestScenario) {
@@ -255,7 +224,7 @@ router.post('/delete/:id', restrict, function (req, res) {
         q.args = { _id: params.id, deleted: false };
         q.select = '_id';
 
-        return mongoService.findOneWithPromise(q, Material);
+        return mongoService.findOne(q, Material);
     })
     .then(function (existingMaterial) {
 
@@ -271,7 +240,7 @@ router.post('/delete/:id', restrict, function (req, res) {
         };
         q.select = '_id activity_id';
 
-        return mongoService.updateWithPromise(q, Material);
+        return mongoService.update(q, Material);
     })
     .then(function (material) {
 
@@ -282,7 +251,7 @@ router.post('/delete/:id', restrict, function (req, res) {
         q.where = { _id: postData.scenario._id };
         q.update = { last_modified: new Date() };
 
-        return mongoService.updateWithPromise(q, Scenario);
+        return mongoService.update(q, Scenario);
     })
     .then(function (scenario) {
 
@@ -292,6 +261,7 @@ router.post('/delete/:id', restrict, function (req, res) {
         }
 
         console.log('material ' + responseMaterial._id + ' deleted');
+        console.log(req.user.first_name + ' updated scenario: ' + scenario._id);
         res.status(200).json({ material: { _id: responseMaterial._id, activity_id: responseMaterial.activity_id } });
     })
     .catch(E.Error, function (err) {

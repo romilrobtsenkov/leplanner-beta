@@ -40,14 +40,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 var multipart = require('connect-multiparty');
 
 app.use(expressSession(
-  {
-    secret: config.secret,
-    saveUninitialized: false,
-    resave: false,
-    store: new MongoStore({
-       mongooseConnection: mongoose.connection
-    })
-  }
+    {
+        secret: config.secret,
+        saveUninitialized: false,
+        resave: false,
+        store: new MongoStore({
+            mongooseConnection: mongoose.connection
+        })
+    }
 ));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -90,32 +90,32 @@ if (config.errorMails) {
     var transport = nodemailer.createTransport();
 
     transport.sendMail({
-      from: config.email,
-      to: config.developer_email,
-      subject: '[LePlanner beta] process restarted',
-      text: 'leplanner restarted '+(new Date())
+        from: config.email,
+        to: config.developer_email,
+        subject: '[LePlanner beta] process restarted',
+        text: 'leplanner restarted '+(new Date())
     }, function (err) {
-       if (err) console.error(err);
-       log.warning('Email sent to developer about restart');
+        if (err) console.error(err);
+        log.warning('Email sent to developer about restart');
     });
 
     process.on('uncaughtException', function (err) {
-    log.error(err.stack);
+        log.error(err.stack);
 
-    var transport = nodemailer.createTransport();
+        var transport = nodemailer.createTransport();
 
-    transport.sendMail({
-      from: config.email,
-      to: config.developer_email,
-      subject: '[LePlanner beta][uncaughtException] '+err.message,
-      text: err.stack
-    }, function (err) {
-       if (err) console.error(err);
-       log.warning('Email sent to developer about error');
-       process.exit(1);
+        transport.sendMail({
+            from: config.email,
+            to: config.developer_email,
+            subject: '[LePlanner beta][uncaughtException] '+err.message,
+            text: err.stack
+        }, function (err) {
+            if (err) console.error(err);
+            log.warning('Email sent to developer about error');
+            process.exit(1);
+        });
+
     });
-
-  });
 }
 
 module.exports = app;

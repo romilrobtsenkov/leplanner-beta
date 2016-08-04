@@ -1,13 +1,12 @@
 const express = require('express');
 const router = express.Router();
+const restrict = require('../auth/restrict');
 const Promise = require('bluebird');
 
 const mongoService = require('../services/mongo-service');
 
 const Follower = require('../models/follower').Follower;
 const User = require('../models/user').User;
-
-const restrict = require('../auth/restrict');
 
 router.post('/:id',restrict, function(req, res) {
 
@@ -25,14 +24,14 @@ router.post('/:id',restrict, function(req, res) {
       populate: 'first_name last_name image_thumb last_modified'
     });
 
-    mongoService.findOneWithPromise(q, Follower)
+    mongoService.findOne(q, Follower)
     .then(function (follower) {
 
         if(follower){ return Promise.resolve (follower); }
 
         var newFollower = { follower: req.user._id, following: params.id };
 
-        return mongoService.saveNewWithPromise(newFollower, Follower)
+        return mongoService.saveNew(newFollower, Follower)
         .then(function(follower) {
             return Follower.populate(follower, { path: 'follower', select: 'first_name last_name image_thumb last_modified' });
         });
@@ -50,8 +49,8 @@ router.post('/:id',restrict, function(req, res) {
         followersQ.args = {following: params.id, removed: null};
 
         return Promise.props({
-            following_count: mongoService.countWithPromise(followingQ, Follower),
-            followers_count: mongoService.countWithPromise(followersQ, Follower)
+            following_count: mongoService.count(followingQ, Follower),
+            followers_count: mongoService.count(followersQ, Follower)
         });
     })
     .then(function(counts){
@@ -64,8 +63,8 @@ router.post('/:id',restrict, function(req, res) {
         followedUserQ.where = {"_id": params.id};
         followedUserQ.update = { followers_count: counts.followers_count };
 
-        return [mongoService.updateWithPromise(currentUserQ, User),
-                mongoService.updateWithPromise(followedUserQ, User)];
+        return [mongoService.update(currentUserQ, User),
+                mongoService.update(followedUserQ, User)];
     })
     .then(function () {
         res.status(200).json(response);
@@ -89,7 +88,7 @@ router.post('/remove/:id',restrict, function(req, res) {
     q.args = { follower: req.user._id, following: params.id, removed: null };
     q.select = "_id";
 
-    mongoService.findOneWithPromise(q, Follower)
+    mongoService.findOne(q, Follower)
     .then(function (follower) {
 
         if(!follower){ return Promise.resolve(follower); }
@@ -99,7 +98,7 @@ router.post('/remove/:id',restrict, function(req, res) {
         q.update =  { removed : Date.now() };
         q.select = "_id";
 
-        return mongoService.updateWithPromise(q, Follower);
+        return mongoService.update(q, Follower);
     })
     .then(function (follower) {
 
@@ -113,8 +112,8 @@ router.post('/remove/:id',restrict, function(req, res) {
         followersQ.args = {following: params.id, removed: null};
 
         return Promise.props({
-            following_count: mongoService.countWithPromise(followingQ, Follower),
-            followers_count: mongoService.countWithPromise(followersQ, Follower)
+            following_count: mongoService.count(followingQ, Follower),
+            followers_count: mongoService.count(followersQ, Follower)
         });
     })
     .then(function(counts){
@@ -127,8 +126,8 @@ router.post('/remove/:id',restrict, function(req, res) {
         followedUserQ.where = {"_id": params.id};
         followedUserQ.update = { followers_count: counts.followers_count };
 
-        return [mongoService.updateWithPromise(currentUserQ, User),
-                mongoService.updateWithPromise(followedUserQ, User)];
+        return [mongoService.update(currentUserQ, User),
+                mongoService.update(followedUserQ, User)];
     })
     .then(function () {
         res.status(200).json(response);
