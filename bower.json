@@ -22,6 +22,6 @@
     "angular-ui-notification": "^0.2.0"
   },
   "resolutions": {
-    "angular": "1.5.3"
+    "angular": "1.5.8"
   }
 }
