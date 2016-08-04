@@ -93,10 +93,10 @@
                     <div dir-paginate="u in users_list | filter:filter_text | itemsPerPage: 20" pagination-id="users">
                         <div class="row no-margin">
                             <div class="col-xs-9">
-                                <a class="user-list-image" href="/#/user/{{u._id}}" title="{{u.first_name}} {{u.last_name}}">
+                                <a class="user-list-image" ng-href="/#/user/{{u._id}}" title="{{u.first_name}} {{u.last_name}}">
                                     <img ng-src=/images/user/{{u.image_thumb}}?last_modified={{u.last_modified}} alt="{{u.first_name}} {{u.last_name}}" class="img-circle dashboard-user-thumb" />
                                 </a>
-                                <a href="/#/user/{{u._id}}" title="{{u.first_name}} {{u.last_name}}">{{u.first_name}} {{u.last_name}}</a> <span ng-if="u.organization" class="user-list-organization">| {{u.organization}}</span>
+                                <a ng-href="/#/user/{{u._id}}" title="{{u.first_name}} {{u.last_name}}">{{u.first_name}} {{u.last_name}}</a> <span ng-if="u.organization" class="user-list-organization">| {{u.organization}}</span>
                                 <span style="display: none;" class="follow">{{u.following}}</span>
                             </div>
                             <div class="col-xs-3">

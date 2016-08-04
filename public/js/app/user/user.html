@@ -17,7 +17,7 @@
                 <div class="profile-userbuttons">
                     <a ng-click="addFollow()" ng-if="!is_following && user && user._id!=profile._id" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> {{'BUTTON.FOLLOW' | translate}}</a>
                     <a ng-click="removeFollow()" ng-if="is_following && user && user._id!=profile._id" class="btn btn-default btn-sm"><span class="glyphicon glyphicons-circle-minus"></span> {{'BUTTON.UNFOLLOW' | translate}}</a>
-                    <a href="/#/login" ng-if="!user" class=""> {{'BUTTON.LOG_IN_TO_FOLLOW' | translate}}</a>
+                    <a ng-href="/#/login" ng-if="!user" class=""> {{'BUTTON.LOG_IN_TO_FOLLOW' | translate}}</a>
                     <a ng-if="user._id==profile._id" disabled="disabled" class="btn btn-success btn-sm">{{'BUTTON.FOLLOW_YOURSELF' | translate}}</a>
                 </div>
                 <div class="profile-usertitle">
@@ -38,7 +38,7 @@
 
                 <div class="row">
                     <div class="col-xs-3 col-md-3" ng-repeat="f in followings | limitTo:sidebox_quantity.followings">
-                        <a href="/#/user/{{f.following._id}}" class="thumbnail" title="{{f.following.first_name}} {{f.following.last_name}}">
+                        <a ng-href="/#/user/{{f.following._id}}" class="thumbnail" title="{{f.following.first_name}} {{f.following.last_name}}">
                             <img ng-src="./images/user/{{f.following.image_thumb}}?last_modified={{f.following.last_modified}}" alt="User">
                         </a>
                     </div>
@@ -54,7 +54,7 @@
 
                 <div class="row">
                     <div class="col-xs-3 col-md-3" ng-repeat="f in followers | limitTo:sidebox_quantity.followers">
-                        <a href="/#/user/{{f.follower._id}}" class="thumbnail" title="{{f.follower.first_name}} {{f.follower.last_name}}">
+                        <a ng-href="/#/user/{{f.follower._id}}" class="thumbnail" title="{{f.follower.first_name}} {{f.follower.last_name}}">
                             <img ng-src="./images/user/{{f.follower.image_thumb}}?last_modified={{f.follower.last_modified}}" alt="User">
                         </a>
                     </div>

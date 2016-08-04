@@ -5,13 +5,13 @@
     {{'NOTICE.NO_SCENARIO' | translate}}
 </div>
 <div class="container main-content" ng-show="scenario.draft">
-    {{'CONTENT.IS_DRAFT' | translate}} <a class="print-button btn btn-primary" ng-if="user._id==scenario.author._id" href="/#/edit/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> {{'BUTTON.EDIT' | translate}}</a>
+    {{'CONTENT.IS_DRAFT' | translate}} <a class="print-button btn btn-primary" ng-if="user._id==scenario.author._id" ng-href="/#/edit/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> {{'BUTTON.EDIT' | translate}}</a>
 </div>
 <div class="container main-content" ng-if="scenario && !no_scenario && !scenario.draft && fully_loaded">
 
     <timeline></timeline>
-    <h4 class="only-print-title"><strong><a href="/#/scenario/{{scenario._id}}">{{scenario.name}}</a></strong></h4>
-    <h5 class="only-print-title"><strong>@<a href="/#/user/{{scenario.author._id}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a></strong></h5>
+    <h4 class="only-print-title"><strong><a ng-href="/#/scenario/{{scenario._id}}">{{scenario.name}}</a></strong></h4>
+    <h5 class="only-print-title"><strong>@<a ng-href="/#/user/{{scenario.author._id}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a></strong></h5>
     <br>
     <div class="row scenario-page">
 
@@ -50,7 +50,7 @@
                         <span>{{'INPUT.GRADE' | translate}}: {{scenario.grade}}</span> | <span>{{'INPUT.DURATION' | translate}}: {{scenario.duration}} min</span><br>
                     </div>
                     <div class="col-xs-3">
-                        <a class="print-button btn btn-sm pull-right" ng-if="user._id==scenario.author._id" href="/#/edit/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> {{'BUTTON.EDIT' | translate}}</a>
+                        <a class="print-button btn btn-sm pull-right" ng-if="user._id==scenario.author._id" ng-href="/#/edit/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> {{'BUTTON.EDIT' | translate}}</a>
                     </div>
                 </div>
 
@@ -58,7 +58,7 @@
                     <div class="col-xs-9">
                         <div class="small-profile">
                             <div class="profile-usertitle-name">
-                                <a a href="/#/user/{{scenario.author._id}}" title="{{scenario.author.first_name}} {{scenario.author.last_name}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a>
+                                <a ng-href="/#/user/{{scenario.author._id}}" title="{{scenario.author.first_name}} {{scenario.author.last_name}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a>
                             </div>
                             <div class="profile-usertitle-job">
                                 {{scenario.author.organization}}
@@ -72,7 +72,7 @@
                         <div class="small-profile-userbuttons">
                             <a ng-click="addFollow()" ng-if="!is_following && user && user._id!=scenario.author._id" class="btn btn-success btn-sm pull-right"><span class="glyphicon glyphicon-plus-sign"></span> {{'BUTTON.FOLLOW' | translate}}</a>
                             <a ng-click="removeFollow()" ng-if="is_following && user && user._id!=scenario.author._id" class="btn btn-default btn-sm pull-right"><span class="glyphicon glyphicons-circle-minus"></span> {{'BUTTON.UNFOLLOW' | translate}}</a>
-                            <a href="/#/login" ng-if="!user" class="pull-right"> {{'BUTTON.LOG_IN_TO_FOLLOW' | translate}}</a>
+                            <a ng-href="/#/login" ng-if="!user" class="pull-right"> {{'BUTTON.LOG_IN_TO_FOLLOW' | translate}}</a>
                             <a ng-if="user._id==scenario.author._id" disabled="disabled" class="btn btn-success btn-sm pull-right">{{'BUTTON.FOLLOW_YOURSELF' | translate}}</a>
                         </div>
                     </div>
@@ -145,7 +145,7 @@
                     <article ng-repeat="comment in comments" class="row comments-list">
                         <div class="col-sm-2 col-xs-3">
                             <figure class="thumbnail">
-                                <a href="/#/user/{{comment.author._id}}" title="{{comment.author.first_name}} {{comment.author.last_name}}">
+                                <a ng-href="/#/user/{{comment.author._id}}" title="{{comment.author.first_name}} {{comment.author.last_name}}">
                                     <img class="img-responsive" ng-src="./images/user/{{comment.author.image_thumb}}?last_modified={{comment.author.last_modified}}">
                                 </a>
                             </figure>
@@ -156,7 +156,7 @@
                                     <header class="text-left">
                                         <a ng-if="user._id==scenario.author._id" ng-click="deleteComment(comment._id,comment.text)" class="pull-right" style="cursor:pointer;"><span style="color:gray;" class="glyphicon glyphicon-remove"><span ng-if="showDeleteText(comment._id)">{{comment_delete_text}}</span></span></a>
                                         <div class="comment-user">
-                                            <a href="/#/user/{{comment.author._id}}" title="{{comment.author.first_name}} {{comment.author.last_name}}">
+                                            <a ng-href="/#/user/{{comment.author._id}}" title="{{comment.author.first_name}} {{comment.author.last_name}}">
                                                 {{comment.author.first_name}} {{comment.author.last_name}}
                                             </a>
                                         </div>
@@ -190,13 +190,13 @@
                 <div class="profile-userbuttons">
                     <a ng-click="addFollow()" ng-if="!is_following && user && user._id!=scenario.author._id" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus-sign"></span> {{'BUTTON.FOLLOW' | translate}}</a>
                     <a ng-click="removeFollow()" ng-if="is_following && user && user._id!=scenario.author._id" class="btn btn-default btn-sm"><span class="glyphicon glyphicons-circle-minus"></span> {{'BUTTON.UNFOLLOW' | translate}}</a>
-                    <a href="/#/login" ng-if="!user" class=""> {{'BUTTON.LOG_IN_TO_FOLLOW' | translate}}</a>
+                    <a ng-href="/#/login" ng-if="!user" class=""> {{'BUTTON.LOG_IN_TO_FOLLOW' | translate}}</a>
                     <a ng-if="user._id==scenario.author._id" disabled="disabled" class="btn btn-success btn-sm">{{'BUTTON.FOLLOW_YOURSELF' | translate}}</a>
                 </div>
 
                 <div class="profile-usertitle">
                     <div class="profile-usertitle-name">
-                        <a a href="/#/user/{{scenario.author._id}}" title="{{scenario.author.first_name}} {{scenario.author.last_name}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a>
+                        <a a ng-href="/#/user/{{scenario.author._id}}" title="{{scenario.author.first_name}} {{scenario.author.last_name}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a>
                     </div>
                     <div class="profile-usertitle-job">
                         {{scenario.author.organization}}
@@ -214,18 +214,18 @@
                 <div class="row">
                     <div class="col-xs-6 col-sm-12" ng-repeat="scenario in scenarios">
                         <div class="thumbnail thumbnail-first-page">
-                            <a href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">
+                            <a ng-href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">
                                 <img check-image class="thumbnail-preview" ng-src="./images/scenario_thumbs/{{scenario._id}}.png" alt="{{scenario.name}}">
                             </a>
                             <div class="caption">
-                                <h4><a href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{scenario.name}}</a></h4>
+                                <h4><a ng-href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{scenario.name}}</a></h4>
                                 <p class="thumbnail-caption">{{scenario.description | limitTo: 60}}{{scenario.description.length > 60 ? '...' : ''}}</p>
                                 <p class="clearfix">
                                     <span class="favorited-and-comments">
                                         <span class="glyphicon glyphicon-heart"><span class="icon-space-after">{{scenario.favorites_count}}</span></span>
                                         <span class="glyphicon glyphicon-comment"><span class="icon-space-after">{{scenario.comments_count}}</span></span>
                                     </span>
-                                    <a class="open-link pull-right" href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{'BUTTON.OPEN' | translate}}<span class="glyphicon glyphicon-chevron-right"></span></a>
+                                    <a class="open-link pull-right" ng-href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{'BUTTON.OPEN' | translate}}<span class="glyphicon glyphicon-chevron-right"></span></a>
                                 </p>
                             </div>
                         </div>
