@@ -407,7 +407,6 @@ router.post('/send-reset-token', function(req, res){
     .then(function (user) {
 
         return new Promise(function (resolve, reject) {
-            nodemailer.sendmail = true;
             var transporter = nodemailer.createTransport(sendmailTransport());
             var mailOptions = {
               to: user.email,
