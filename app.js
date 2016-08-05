@@ -94,7 +94,6 @@ if (config.errorMails) {
         text: 'leplanner restarted '+(new Date())
     }, function (err) {
         if (err) log.error(err);
-        log.warning('Email sent to developer about restart');
         log.error('Email sent to developer about restart');
     });
 
