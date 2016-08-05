@@ -87,6 +87,9 @@
                     if(data.comments.length > 0){
                         $scope.comments = data.comments;
                         $scope.scenario.comments_count = data.comments.length;
+                    }else{
+                        $scope.comments = [];
+                        $scope.scenario.comments_count = 0;
                     }
                 }
             }).catch(function (error) { console.error(error); });
@@ -207,7 +210,7 @@
         };
 
         $scope.deleteComment = function(comment_id, text){
-            var del = window.confirm("Are you sure that you want to delete comment: "+text);
+            var del = window.confirm($rootScope.translated.confirm + ' ' + text);
             if (!del) { return; }
 
             $scope.is_deleting = comment_id;
