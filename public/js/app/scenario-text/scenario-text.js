@@ -29,127 +29,59 @@
       }
 
       // INIT
-      requestService.post('/scenario/single-scenario', params)
-        .then(function(data) {
-          if(data.scenario){
+      requestService.get('/scenarios/single/' + $scope.scenario_id)
+      .then(function (data) {
 
-            $rootScope.title = data.scenario.name+' - '+data.scenario.author.first_name+' '+data.scenario.author.last_name+' | Leplanner beta';
+          if (!data.scenario) { $scope.no_scenario = true; }
 
-            /* ANALYTICS */
-            $window.ga('send', 'pageview', {
+          $rootScope.title = data.scenario.name + ' - ' + data.scenario.author.first_name + ' ' + data.scenario.author.last_name + ' | Leplanner beta';
+
+          /* ANALYTICS */
+          $window.ga('send', 'pageview', {
               'page': $location.path(),
               'title': $rootScope.title
-            });
+          });
 
-            $scope.scenario = data.scenario;
+          $scope.scenario = data.scenario;
+          $scope.is_favorite = data.is_favorite;
+          $scope.is_following = data.is_following;
 
-            //translating subjects
-            for(var a = 0; a < $scope.scenario.subjects.length; a++){
-                $scope.scenario.subjects[a].name = $scope.scenario.subjects[a]["name_"+$translate.use()];
-            }
-
-            $scope.activity_list = data.scenario.activities;
-            $scope.is_favorite = data.is_favorite;
-            $scope.is_following = data.is_following;
-            //console.log(data.scenario);
-            if(typeof data.materials !== 'undefined'){
-              $scope.materials = data.materials;
-
-              updateActivityList();
-              //console.log($scope.activity_list);
-              //console.log('Loaded materials');
-            }
-            loadMetaData();
+          //translating subjects
+          for(var a = 0; a < $scope.scenario.subjects.length; a++){
+              $scope.scenario.subjects[a].name = $scope.scenario.subjects[a]["name_"+$translate.use()];
           }
 
-          if(data.error){
-            switch (data.error.id) {
-              case 0:
-                $scope.no_scenario = true;
-                break;
-              default:
-                $scope.no_scenario = true;
-                console.log(data.error);
-            }
+          //translate activities and displays
+          for (var i = 0; i < $scope.scenario.activities.length; i++) {
+              //translate activity organization
+              $scope.scenario.activities[i].activity_organization.name = $rootScope.translated.organization[$scope.scenario.activities[i].activity_organization._id];
+
+              if(!$scope.scenario.activities[i].materials ) { continue; }
+              for (var m = 0; m < $scope.scenario.activities[i].materials.length; m++) {
+                  for (var d = 0; d < $scope.scenario.activities[i].materials[m].displays.length; d++) {
+                      //translate display name
+                      $scope.scenario.activities[i].materials[m].displays[d].name = $rootScope.translated.displays[$scope.scenario.activities[i].materials[m].displays[d]._id];
+
+                      //involvement_level
+                      $scope.scenario.activities[i].materials[m].involvement.name = $rootScope.translated.co_authorship[$scope.scenario.activities[i].materials[m].involvement._id];
+                  }
+              }
           }
+
+          $scope.activityImageNames = ['./images/one.png','./images/pair.png','./images/group.png','./images/group.png'];
+
+          $scope.fully_loaded = true;
+      })
+      .catch(function (error) {
+          console.log(error);
+          $scope.no_scenario = true;
       });
-
-      function loadMetaData(){
-
-        requestService.get('/meta/get-scenario-meta')
-        .then(function(data) {
-
-          if(data.subjects && data.activity_organization && data.involvement_options && data.displays){
-            $scope.subjects = data.subjects;
-            $scope.activity_organization = data.activity_organization;
-            console.log($scope.activity_organization);
-            $scope.activityImageNames = ['./images/one.png','./images/pair.png','./images/group.png','./images/group.png'];
-
-            $scope.involvement_options = data.involvement_options;
-            $scope.displays_list = data.displays;
-
-            //load translations
-            if($rootScope.translated && $rootScope.translated.organization){
-                for(var i = 0; i < $scope.activity_organization.length; i++){
-                    $scope.activity_organization[i].name = $rootScope.translated.organization[i];
-                }
-            }
-            if($rootScope.translated && $rootScope.translated.co_authorship){
-                for(var j = 0; j < $scope.involvement_options.length; j++){
-                    $scope.involvement_options[j].name = $rootScope.translated.co_authorship[j];
-                }
-            }
-            if($rootScope.translated && $rootScope.translated.displays){
-                for(var k = 0; k < $scope.displays_list.length; k++){
-                    $scope.displays_list[k].name = $rootScope.translated.displays[k];
-                }
-            }
-
-            $scope.fully_loaded = true;
-
-          }else{
-            //$scope.errorMessage = 'Please try reloading the page';
-            $translate('NOTICE.RELOAD').then(function (t) {
-                $scope.errorMessage = t;
-            });
-          }
-
-          if(data.error){
-            console.log(data.error);
-            //$scope.errorMessage = 'Please try reloading the page';
-            $translate('NOTICE.RELOAD').then(function (t) {
-                $scope.errorMessage = t;
-            });
-          }
-        });
-
-      }
 
       $scope.navigateToLogin = function($event){
         $event.preventDefault();
         $rootScope.navigatedToLoginFrom = $location.path();
         $location.path('/login');
       };
-
-      var updateActivityList = function(){
-        // add material to relevant activities
-        for(var i = 0; i < $scope.activity_list.length; i++){
-
-          // empty materials
-          $scope.activity_list[i].materials = undefined;
-
-          for(var j = 0; j < $scope.materials.length; j++){
-            if($scope.activity_list[i]._id == $scope.materials[j].activity_id){
-              if(typeof $scope.activity_list[i].materials == 'undefined'){
-                $scope.activity_list[i].materials = [];
-              }
-              $scope.activity_list[i].materials.push($scope.materials[j]);
-            }
-          }
-        }
-        console.log($scope.activity_list);
-      };
-
 
   }]); // ScenarioController end
 }());

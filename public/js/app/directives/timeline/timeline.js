@@ -25,7 +25,6 @@
                 this.timeline = this.WIDTH = this.HEIGHT = null;
                 this.activities = [];
                 this.activities_duration = null;
-                this.activity_images = [];
                 this.timeouts = []; //animation timeouts
 
                 this.zoom = false;
@@ -59,7 +58,7 @@
             };
 
             Planner.config = {
-                activityImageNames: ['./images/one.png','./images/pair.png','./images/group.png'],
+                activityImageNames: ['./images/one.png','./images/pair.png','./images/group.png','./images/group.png'],
                 scenarioWrapperId: '#scenario-wrapper',
                 timelineWrapperId: '#scenario-timeline-wrapper',
                 ColorInClass: 'rgb(100,126,228)',
@@ -86,19 +85,6 @@
                     //assigning canvas
                     this.timeline = document.querySelector(this.config.timelineWrapperId);
 
-                    //assigning group organization images
-                    var one_img = new Image();
-                    one_img.src = this.config.activityImageNames[0];
-                    this.activity_images.push(one_img);
-                    var pair_img = new Image();
-                    pair_img.src = this.config.activityImageNames[1];
-                    this.activity_images.push(pair_img);
-                    var group_img = new Image();
-                    group_img.src = this.config.activityImageNames[2];
-                    this.activity_images.push(group_img);
-                    // same icon for whole class
-                    this.activity_images.push(group_img);
-
                     this.activities_duration = $scope.scenario.activities_duration;
 
                     this.resize();
@@ -106,7 +92,13 @@
                     this.drawBaseLayer();
                     this.initActivities();
 
-                    window.addEventListener("resize", this.timelineResizeDelay.bind(this));
+                    // Resize
+                    var resizer = this.timelineResizeDelay.bind(this);
+                    window.addEventListener("resize", resizer);
+                    // remove resize listener when navigating away
+                    $scope.$on('$destroy', function () {
+                        window.removeEventListener("resize", resizer);
+                    });
 
                     //ZOOM
                     window.addEventListener("keypress", this.keyPressed.bind(this));
@@ -114,7 +106,7 @@
 
                 },
                 resize: function(){
-                    var border_fix = 2;
+                    var border_fix = 2; // for extra padding in the begginning and end for small activities
 
                     // wrapper
                     var timeline_wrapper = document.querySelector(this.config.scenarioWrapperId);
@@ -126,7 +118,6 @@
                         //box minimum width when zoomed in
                         var min_width = 100;
                         width = (min_width / this.activity_min_px_for_zoom) * width;
-                        //width = 3000;
                     }
 
                     //do the defaults
@@ -218,7 +209,7 @@
 
                       if(this.config.allow_edit){
                           $translate('NOTICE.PLEASE_ADD_ACTIVITY').then(function (t) {
-                              alert(t);
+                              window.alert(t);
                           });
                       }
 
@@ -314,10 +305,10 @@
                         if(todo === "delete" || todo === "update"){
                             for(var k = 0; k < Planner.instance_.activities[i].materialElements.length; k++){
                                 //update materials from scope for each activity
-                                if(Planner.instance_.activities[i].materialElements[k].material._id == material_id){
+                                if(Planner.instance_.activities[i].materialElements[k].material._id === material_id){
 
 
-                                    if(Planner.instance_.activities[i].materialElements[k].material.position == 'top'){
+                                    if(Planner.instance_.activities[i].materialElements[k].material.position === 'top'){
                                         Planner.instance_.activities[i].has_top_material = false;
                                     }else{
                                         Planner.instance_.activities[i].has_bottom_material = false;
@@ -328,7 +319,6 @@
 
                                     //delete from DOM
                                     document.querySelector('#activities-wrapper').removeChild(document.querySelector('div.material-wrapper[data-id="'+material_id+'"]'));
-
                                 }
                             }
                         }
@@ -347,7 +337,7 @@
                 findMaterial: function(id){
                     for(var i = 0; i < Planner.instance_.activities.length; i++){
                         for(var k = 0; k < Planner.instance_.activities[i].materialElements.length; k++){
-                            if(Planner.instance_.activities[i].materialElements[k].material._id == id){
+                            if(Planner.instance_.activities[i].materialElements[k].material._id === id){
                                 return Planner.instance_.activities[i].materialElements[k].material;
                             }
                         }
@@ -378,7 +368,7 @@
                 this.materials = data.materials;
                 this.has_top_material = false;
                 this.has_bottom_material = false;
-                if(typeof data.in_class == 'undefined'){
+                if(typeof data.in_class === 'undefined'){
                   this.in_class = false;
                 }else{
                   this.in_class = true;
@@ -393,14 +383,10 @@
                   this.add_new_button_color =  Planner.instance_.config.ColorAddNewButtonOffClass;
                 }
                 this.materialElements = [];
-                this.organization = data.activity_organization._id;
-                this.org_title = '';
-                for(var i = 0; i < $scope.activity_organization.length; i++){
-                  if($scope.activity_organization[i]._id == this.organization){
-                    this.org_title = $scope.activity_organization[i][Planner.instance_.config.org_language];
-                  }
-                }
-                this.org_image = Planner.instance_.activity_images[this.organization].cloneNode(); //img element
+
+                // ADDING ORG
+                this.organization = data.activity_organization;
+                this.org_image = new Image();
                 this.conveyor_icon_size = this.display_icon_size = 12;
                 this.duration_mark = 'min'; //can be changed if needed
 
@@ -420,10 +406,14 @@
                     var padding = 5; //between activities
 
                     this.minute_constant = ((Planner.instance_.WIDTH-((this.array_total_length+1)*padding))/Planner.instance_.activities_duration); // min in px
+
                     this.x = (this.minute_constant * this.start) + ((this.index+1)* padding);
                     this.height = 20;
                     this.y = parseInt((Planner.instance_.HEIGHT*Planner.instance_.top_percent/100)-this.height/2);
                     this.width = parseInt(this.minute_constant * this.duration);
+
+                    // fix for extra short activities
+                    if (this.width === 0) { this.width = 2; }
 
                     if(this.width < Planner.instance_.activity_min_px_for_zoom){
                         Planner.instance_.activity_min_px_for_zoom = this.width;
@@ -470,13 +460,14 @@
 
                     // ORG ICON
                     var org_icon_style = this.getOrgIconStyle();
+                    this.org_image.src = Planner.instance_.config.activityImageNames[this.organization._id];
                     this.org_image.className = 'activity-org-icon';
-                    this.org_image.alt = this.org_title;
+                    this.org_image.alt = this.organization.name;
                     setElementStyle(this.org_image, org_icon_style);
                     el.appendChild(this.org_image);
 
                     //ORG ICON TEXT
-                    var org_title = document.createTextNode(this.org_title);
+                    var org_title = document.createTextNode(this.organization.name);
                     this.org_title_span = createElementWithStyle('span','.activity-org-title');
                     this.org_title_span.appendChild(org_title);
                     el.appendChild(this.org_title_span);
@@ -684,7 +675,7 @@
                                         // DISPLAY IMAGE
                                         var display_icon = new Image();
                                         display_icon.className = 'display-icon';
-                                        display_icon.src = 'images/'+$scope.displays_list[current_display].icon;
+                                        display_icon.src = 'images/'+current_display.icon;
                                         display_icon.style.width = this.display_icon_size + 'px';
                                         display_icon.style.height = this.display_icon_size + 'px';
 
@@ -695,11 +686,11 @@
                                         //display.title = $scope.displays_list[current_display].name; hide for popover
 
                                         //name for popover
-                                        if(current_display == $scope.displays_list[$scope.displays_list.length-1]._id){
+                                        if(current_display._id === 5){
                                             //OTHER
                                             display.setAttribute("data-popdata", material.other_display);
                                         }else{
-                                            display.setAttribute("data-popdata", $scope.displays_list[current_display].name);
+                                            display.setAttribute("data-popdata", current_display.name);
                                         }
 
                                         display.appendChild(display_icon);
@@ -872,10 +863,10 @@
                     button_wrapper.appendChild(button_overflow);
 
                     //add tooltip
-                    if(pos == "top"){
+                    if(pos === "top"){
                         button_overflow.title = Planner.instance_.config.AddaboveAxisLegend;
                         jQuery(button_overflow).tooltip({container: '#scenario-timeline-wrapper', animation: false, placement: "auto "+pos, html: true});
-                    }else if(pos == "bottom"){
+                    }else if(pos === "bottom"){
                         button_overflow.title = Planner.instance_.config.AddbelowAxisLegend;
                         jQuery(button_overflow).tooltip({container: '#scenario-timeline-wrapper', animation: false, placement: "auto "+pos, html: true});
                     }
@@ -1056,7 +1047,8 @@
             };
 
             var getScopeList = function(){
-                return $scope.activity_list;
+                //return $scope.activity_list;
+                return $scope.scenario.activities;
             };
 
             angular.element($window).ready(function() {

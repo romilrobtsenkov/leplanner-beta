@@ -1,0 +1,45 @@
+<!-- singleScenario -->
+<div class="row no-margin">
+    <a ng-repeat="subject in scenario.subjects"><span class="dash-scenario-label pull-right label label-primary">{{subject.name}}</span></a>
+    <div class="col-sm-12">
+        <h4 ng-if="!scenario.draft" ><strong><a ng-href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{scenario.name}}</a></strong></h4>
+        <h4 ng-if="scenario.draft"><strong><a ng-href="/#/edit/{{scenario._id}}" title="{{scenario.name}}">{{scenario.name}}</a></strong></h4>
+    </div>
+</div>
+
+<div class="row no-margin">
+    <div class="col-sm-4">
+        <a ng-if="!scenario.draft" ng-href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}" class="thumbnail">
+            <img check-image ng-src="./images/scenario-thumbs/{{scenario._id}}.png" alt="{{scenario.name}}">
+        </a>
+        <a ng-if="scenario.draft" ng-href="/#/edit/{{scenario._id}}" title="{{scenario.name}}" class="thumbnail">
+            <img src="./images/thumbnail_200.png" alt="{{scenario.name}}">
+        </a>
+    </div>
+    <div class="col-sm-8">
+        <p class="extra-info">
+            <span class="glyphicon glyphicon-user"></span> <a ng-href="/#/user/{{scenario.author._id}}" title="{{scenario.author.first_name}} {{scenario.author.last_name}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a><br>
+            <span class="glyphicon glyphicon-calendar"></span> {{scenario.created | date:'dd.MM.yyyy'}}
+            <span>| <span class="glyphicon glyphicon-eye-open"></span><span> {{scenario.view_count}}</span></span>
+            <span>| <span class="glyphicon glyphicon-heart"></span><span> {{scenario.favorites_count}}</span></span>
+            <span>| <span class="glyphicon glyphicon-comment"></span><span> {{scenario.comments_count}}</span></span>
+        </p>
+        <p class="description">{{ scenario.description | limitTo: 300 }}{{scenario.description.length > 300 ? '...' : ''}}</p>
+        <div class="row open-button">
+            <div class="col-xs-8">
+                <span class="labels">
+                    <a ng-href="#"><span class="label label-danger">{{scenario.method}}</span></a>
+                    <a ng-href="#"><span class="label label-success">{{scenario.materialType}}</span></a>
+                </span>
+            </div>
+            <div class="col-xs-4">
+                <a ng-if="!scenario.draft" class="btn btn-success btn-block btn-sm pull-right" ng-href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{ 'BUTTON.OPEN' | translate }} <span class="glyphicon glyphicon-chevron-right"></span></a>
+                <div ng-if="scenario.draft">
+                    <a ng-href="/#/edit/{{scenario._id}}" class="btn btn-success pull-right" title="{{'BUTTON.EDIT' | translate }} {{scenario.name}}">{{'BUTTON.EDIT' | translate }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+<!-- singleScenario end -->

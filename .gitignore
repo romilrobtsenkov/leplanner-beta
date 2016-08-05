@@ -3,7 +3,7 @@ config/
 public/bower/
 public/images/user/
 public/images/user-temp/
-public/images/favs/
+public/images/scenario-thumbs/
 public/js/min/
 public/stylesheets/min/
 public/localization/min/

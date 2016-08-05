@@ -1,8 +1,8 @@
-var util = require('util');
-var moment = require('moment');
-var chalk = require('chalk');
-var config = require('./config/config.js');
-var onFinished = require('on-finished');
+const util = require('util');
+const moment = require('moment');
+const chalk = require('chalk');
+const config = require('./config/config.js');
+const onFinished = require('on-finished');
 
 var mail;
 
@@ -65,7 +65,7 @@ module.exports = function (config) {
 			return function (req, res, next) {
 				var start = new Date();
 				onFinished(res, function (err) {
-					this.info(req.url, req.user && req.user._id || 'guest' , statusStyle(res.statusCode), (new Date() - start) + 'ms');
+					this.info(req.method, req.originalUrl.replace('/api',''), req.user && req.user._id || 'guest' , statusStyle(res.statusCode), (new Date() - start) + 'ms');
 				}.bind(this));
 				next();
 			}.bind(this);
@@ -84,4 +84,3 @@ module.exports = function (config) {
 		}
 	};
 }(config.log);
-

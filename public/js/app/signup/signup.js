@@ -1,104 +1,100 @@
 (function() {
-  'use strict';
+    'use strict';
 
-  angular
+    angular
     .module('app')
     .controller('SignUpController', ['$scope','$rootScope','$location','$timeout','requestService','$translate','$window',
     function($scope,$rootScope,$location,$timeout,requestService,$translate,$window) {
 
         $translate('PAGE.SIGN_UP').then(function (t) {
-           $rootScope.title = t+' | Leplanner beta';
+            $rootScope.title = t+' | Leplanner beta';
 
-           /* ANALYTICS */
-           $window.ga('send', 'pageview', {
-             'page': $location.path(),
-             'title': $rootScope.title
-           });
+            /* ANALYTICS */
+            $window.ga('send', 'pageview', {
+                'page': $location.path(),
+                'title': $rootScope.title
+            });
         });
 
-      $scope.create = function(user){
+        $scope.create = function(user){
 
-        $scope.creating_in_progress = true;
-
-        requestService.post('/user/create', user)
-          .then(function(data) {
-
-            $scope.creating_in_progress = undefined;
-
-            console.log(data);
-            if(data.user){
-              //user id
-              //console.log(data.user.id);
-              if(typeof $rootScope.navigatedToLoginFrom !== 'undefined'){
-                $location.path($rootScope.navigatedToLoginFrom);
-                $rootScope.navigatedToLoginFrom = undefined;
-              }else{
-                $location.path('/dashboard');
-              }
-
+            var error = true;
+            //validate
+            if(!user.new_first_name) {
+                $translate('NOTICE.PLEASE_ENTER_FIRST_NAME').then(function (t) {
+                    $scope.create_error = t;
+                });
+            } else if (!user.new_last_name) {
+                $translate('NOTICE.PLEASE_ENTER_LAST_NAME').then(function (t) {
+                    $scope.create_error = t;
+                });
+            } else if (!user.new_email){
+                $translate('NOTICE.PLEASE_ENTER_EMAIL').then(function (t) {
+                    $scope.create_error = t;
+                });
+            } else if (!user.new_password){
+                $translate('NOTICE.PLEASE_ENTER_PASSWORD').then(function (t) {
+                    $scope.create_error = t;
+                });
+            } else if (user.new_password.length < 8){
+                $translate('NOTICE.PASSWORD_MIN_LENGTH').then(function (t) {
+                    $scope.create_error = t;
+                });
+            } else {
+                error = false;
             }
 
-            if(data.error){
-              switch(data.error.id) {
-                case 'beta':
-                  $scope.create_error = 'Please enter required beta code';
-                  break;
-                case 'wrong_beta':
-                  $scope.create_error = 'Wrong beta code!';
-                  break;
-                case 0:
-                  //$scope.create_error = 'Please enter your first name';
-                  $translate('NOTICE.PLEASE_ENTER_FIRST_NAME').then(function (t) {
-                      $scope.create_error = t;
-                  });
-                  break;
-                case 1:
-                  //$scope.create_error = 'Please enter your last name';
-                  $translate('NOTICE.PLEASE_ENTER_LAST_NAME').then(function (t) {
-                      $scope.create_error = t;
-                  });
-                  break;
-                case 2:
-                  //$scope.create_error = 'Please enter yout email';
-                  $translate('NOTICE.PLEASE_ENTER_EMAIL').then(function (t) {
-                      $scope.create_error = t;
-                  });
-                  break;
-                case 3:
-                  //$scope.create_error = 'Please enter correct email';
-                  $translate('NOTICE.PLEASE_ENTER_CORRECT_EMAIL').then(function (t) {
-                      $scope.create_error = t;
-                  });
-                  break;
-                case 4:
-                  //$scope.create_error = 'Please enter your password';
-                  $translate('NOTICE.PLEASE_ENTER_PASSWORD').then(function (t) {
-                      $scope.create_error = t;
-                  });
-                  break;
-                case 5:
-                  //$scope.create_error = 'Password has to be min 8 chars long';
-                  $translate('NOTICE.PASSWORD_MIN_LENGTH').then(function (t) {
-                      $scope.create_error = t;
-                  });
-                  break;
-                case 6:
-                  //$scope.create_error = 'That email is already in use';
-                  $translate('NOTICE.EMAIL_IN_USE').then(function (t) {
-                      $scope.create_error = t;
-                  });
-                  break;
-                default:
-                  //$scope.create_error = 'Unknown error';
-                  $translate('NOTICE.UNKNOWN').then(function (t) {
-                      $scope.create_error = t;
-                  });
-              }
-              $timeout(function() { $scope.create_error = null; }, 2000);
+            if (error) {
+                $timeout(function() { $scope.create_error = null; }, 2000);
+                return;
             }
 
-        });
-      };
+            $scope.creating_in_progress = true;
 
-  }]); // LoginController end
+            requestService.post('/users', user)
+            .then(function(data) {
+
+                $scope.creating_in_progress = undefined;
+
+                //user id
+                if($rootScope.navigatedToLoginFrom){
+                    $location.path($rootScope.navigatedToLoginFrom);
+                    $rootScope.navigatedToLoginFrom = undefined;
+                }else{
+                    $location.path('/dashboard');
+                }
+
+            })
+            .catch(function (error) {
+                console.log(error);
+
+                switch (error.data) {
+                    case 'invalid email':
+                        $translate('NOTICE.PLEASE_ENTER_CORRECT_EMAIL').then(function (t) {
+                            $scope.create_error = t;
+                        });
+                        break;
+                    case 'email exists':
+                        $translate('NOTICE.EMAIL_IN_USE').then(function (t) {
+                            $scope.create_error = t;
+                        });
+                        break;
+                    case 'password too short':
+                        $translate('NOTICE.PASSWORD_MIN_LENGTH').then(function (t) {
+                            $scope.create_error = t;
+                        });
+                        break;
+                    default:
+                        $translate('NOTICE.UNKNOWN').then(function (t) {
+                            $scope.create_error = t;
+                        });
+                }
+
+                $scope.creating_in_progress = undefined;
+                $timeout(function() { $scope.create_error = null; }, 2000);
+
+            });
+        };
+
+    }]); // LoginController end
 }());

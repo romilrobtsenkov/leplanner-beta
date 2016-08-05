@@ -1,63 +1,38 @@
-var express = require('express');
-var router = express.Router();
-var metaService = require('../services/meta-service');
-var async = require('async');
+const express = require('express');
+const router = express.Router();
+const Promise = require('bluebird');
 
-router.get('/subjects/', function(req, res, next) {
-  metaService.getSubjects(function(err, subjects) {
-    if (err) { return res.json({error: err}); }
-    return res.json({ subjects: subjects });
-  });
+const metaService = require('../services/meta-service');
+
+const log = require('../logger');
+
+router.get('/subjects/', function(req, res) {
+
+    metaService.getSubjects()
+    .then(function (subjects) {
+        return res.status(200).json({ subjects: subjects });
+    })
+    .catch(function (error) {
+        log.error(error);
+        return res.status(500).send('could not get subjects');
+    });
 });
 
-router.get('/get-scenario-meta/', function(req, res, next) {
+router.get('/scenario/', function(req, res) {
 
-  async.waterfall([
-    function(next){
-
-      metaService.getSubjects(function(err, subjects) {
-        if (err) { return next({error: err}); }
-        next(null, subjects);
-      });
-    },
-    function(subjects, next){
-
-      metaService.getActivityOrganization(function(err, activity_organization) {
-        if (err) { return next({error: err}); }
-        next(null, subjects, activity_organization );
-      });
-    },
-    function(subjects, activity_organization, next){
-
-      metaService.getInvolvementOptions(function(err, involvement_options) {
-        if (err) { return next({error: err}); }
-        next(null, subjects, activity_organization, involvement_options );
-      });
-    },
-    function(subjects, activity_organization, involvement_options, next){
-
-      metaService.getDisplays(function(err, displays) {
-        if (err) { return next({error: err}); }
-        next(null, {
-          subjects: subjects,
-          activity_organization: activity_organization,
-          involvement_options: involvement_options,
-          displays: displays
-         });
-      });
-    }
-  ], function (err, result) {
-    if(err){ res.json(err); }
-    res.json(result);
-  });
-
+    Promise.props({
+        subjects: metaService.getSubjects(),
+        activity_organization: metaService.getActivityOrganization(),
+        involvement_options: metaService.getInvolvementOptions(),
+        displays: metaService.getDisplays(),
+    })
+    .then(function (response) {
+        return res.status(200).json(response);
+    })
+    .catch(function (error) {
+        log.error(error);
+        return res.status(500).send('could not get meta for scenarios');
+    });
 });
-
-/* router.get('/insert-subjects/', function(req, res, next) {
-  metaService.insertSubjects(function(err, subjects) {
-    if (err) { return res.json({error: err}); }
-    return res.json(subjects);
-  });
-}); */
 
 module.exports = router;

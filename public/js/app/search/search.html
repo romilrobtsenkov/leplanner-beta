@@ -19,31 +19,9 @@
 	</div>
 <!-- Search div where all the results are shown -->
 	<div class="row advanced-options-and-results">
-		<!--<div class="col-sm-3">
-			<div id="accordion" class="panel-group">
-          <div class="panel panel-default">
 
-            <div class="panel-heading">
-							<h4 class="panel-title">
-								<a data-toggle="collapse" data-target="#collapseOne" data-parent="#accordion" >Additional options<span class="glyphicon glyphicon-menu-down"></span></a>
-							</h4>
-						</div>
-
-						<div id="collapseOne" class="panel-collapse collapse">
-							<div class="panel-body">
-								<ui-select multiple ng-model="tech" theme="bootstrap" ng-disabled="disabled" close-on-select="false" style="width: 200px;" title="Choose tech">
-							    <ui-select-match placeholder="Select tech...">{{$item}}</ui-select-match>
-							    <ui-select-choices repeat="tech in techs" theme="bootstrap">
-							    {{tech}}
-							    </ui-select-choices><br>
-							  </ui-select>
-							</div>
-						</div>
-          </div>
-      </div>
-    </div>-->
 		<div class="col-sm-12 col-md-9 col-lg-9 col-xs-12">
-			<h4 class="results-heading">{{ 'INPUT.FOUND' | translate }} <strong>{{scenarios.length}}</strong> <span ng-if="search_word_end">{{ 'INPUT.FOR_KEYWORD' | translate }} <strong >"{{search_word_end}}"</strong></span></h4>
+			<h4 class="results-heading">{{ 'INPUT.FOUND' | translate }} <strong ng-if="total_count">{{total_count}}</strong> <span ng-if="search_word_end">{{ 'INPUT.FOR_KEYWORD' | translate }} <strong >"{{search_word_end}}"</strong></span></h4>
 			<!-- makes the clicked tab active-->
 			<ul class="nav nav-tabs nav-tab-pop">
 				<li ng-class="{active:isSortActive('latest')}">
@@ -63,51 +41,10 @@
 			<p ng-if="!scenarios || loading_animation" class="loading-gif-animation"><img src="./images/loading.gif"></p>
 
 			<hr>
-			<div class="single_scenario_item" id="{{scenario._id}}" current-page="search_page_nr" dir-paginate="scenario in scenarios | itemsPerPage: 10">
-
-				<!-- SINGLE SCENARIO -->
-				<div class="row no-margin">
-					<a ng-repeat="subject in scenario.subjects"><span class="dash-scenario-label pull-right label label-primary">{{subject.name}}</span></a>
-					<div class="col-sm-12">
-						<h4><strong><a href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{scenario.name}}</a></strong></h4>
-					</div>
-				</div>
-
-				<div class="row no-margin">
-					<div class="col-sm-4">
-						<a href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}" class="thumbnail">
-							<img src="./images/thumbnail_200.png" alt="">
-						</a>
-					</div>
-					<div class="col-sm-8">
-						<p class="extra-info">
-							<span class="glyphicon glyphicon-user"></span> <a href="/#/user/{{scenario.author._id}}" title="{{scenario.author.first_name}} {{scenario.author.last_name}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a><br>
-							<span class="glyphicon glyphicon-calendar"></span> {{scenario.created | date:'dd.MM.yyyy'}}
-							<span>| <span class="glyphicon glyphicon-eye-open"></span><span> {{scenario.view_count}}</span></span>
-							<span>| <span class="glyphicon glyphicon-heart"></span><span> {{scenario.favorites_count}}</span></span>
-							<span>| <span class="glyphicon glyphicon-comment"></span><span> {{scenario.comments_count}}</span></span>
-						</p>
-						<p class="description">{{scenario.description}}</p>
-						<div class="row open-button">
-							<div class="col-xs-8">
-								<span class="labels">
-									<a href="#"><span class="label label-danger">{{scenario.method}}</span></a>
-									<a href="#"><span class="label label-success">{{scenario.materialType}}</span></a>
-								 </span>
-							</div>
-							<div class="col-xs-4">
-							 <a class="btn btn-success btn-block btn-sm pull-right" href="/#/scenario/{{scenario._id}}" title="{{scenario.name}}">{{ 'BUTTON.OPEN' | translate }} <span class="glyphicon glyphicon-chevron-right"></span></a>
-							</div>
-						</div>
-					</div>
-				</div>
-				<hr>
-				<!-- SINGLE SCENARIO END -->
-
-			</div>
-
+			<div scenario class="single_scenario_item" id="{{scenario._id}}" current-page="pagination.current" dir-paginate="scenario in scenarios | itemsPerPage: 10" total-items="total_count">
+            </div>
 			<!-- https://github.com/michaelbromley/angularUtils/tree/master/src/directives/pagination -->
-			<dir-pagination-controls on-page-change="pageChanged(newPageNumber)"></dir-pagination-controls>
+			<dir-pagination-controls on-page-change="pageChanged(newPageNumber)" ></dir-pagination-controls>
 
 		</div>
 	</div>

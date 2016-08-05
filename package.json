@@ -10,8 +10,8 @@
     "node": "0.12.x"
   },
   "dependencies": {
-    "async": "~1.4.0",
     "bcrypt": "~0.8.0",
+    "bluebird": "^3.4.1",
     "body-parser": "~1.10.1",
     "chalk": "^1.1.1",
     "connect-mongo": "^0.5.3",
@@ -23,17 +23,20 @@
     "express-session": "~1.11.3",
     "lwip": "~0.0.7",
     "moment": "^2.10.6",
-    "mongoose": "^4.3.6",
+    "mongoose": "^4.5.5",
     "morgan": "~1.5.1",
     "nodemailer": "~1.4.0",
+    "nodemailer-sendmail-transport": "^1.0.0",
     "on-finished": "^2.3.0",
+    "pageres": "^4.1.2",
     "passport": "~0.2.1",
     "passport-local": "~1.0.0",
     "request": "^2.61.0",
-    "snyk": "^1.9.2"
+    "snyk": "^1.9.2",
+    "subclass-error": "^0.1.1"
   },
   "devDependencies": {
-    "gulp": "~3.9.0",
+    "gulp": "^3.9.1",
     "gulp-clean-css": "^2.0.3",
     "gulp-concat": "~2.6.0",
     "gulp-jshint": "~1.11.2",

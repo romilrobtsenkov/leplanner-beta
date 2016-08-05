@@ -1,450 +1,348 @@
 (function() {
-  'use strict';
+    'use strict';
 
-  angular
+    angular
     .module('app')
-    .controller('EditDetailsController', ['$scope','$rootScope','$timeout','$routeParams','$location','requestService','$translate','$window',
-    function($scope,$rootScope,$timeout,$routeParams,$location,requestService, $translate,$window) {
+    .controller('EditDetailsController', ['$scope','$rootScope','$timeout','$routeParams','$location','requestService','$translate','$window','Notification',
+    function($scope,$rootScope,$timeout,$routeParams,$location,requestService, $translate,$window, Notification) {
 
-      if(typeof $routeParams.id !== 'undefined'){
-        $scope.scenario_id = $routeParams.id;
-      }else{
-        $location.path('/');
-      }
+        if(typeof $routeParams.id !== 'undefined'){
+            $scope.scenario_id = $routeParams.id;
+        }else{
+            $location.path('/');
+        }
 
-      $scope.selected_subjects = [];
+        $scope.subjects_list = [];
 
-      $scope.subjects_list = [];
-      $scope.outcomes_list = [];
-      $scope.activity_list = [];
+        var prevData = null;
 
-      $scope.tags = [];
+        init();
 
-      init();
+        function init(){
 
-      function init(){
+            requestService.post('/scenarios/single-edit/' + $scope.scenario_id)
+            .then(function(data) {
 
-          var params = {
-            user: {
-              _id: $rootScope.user._id
-            },
-            scenario: {
-              _id: $scope.scenario_id
-            }
-          };
+                $scope.scenario = data.scenario;
+                prevData = JSON.parse(JSON.stringify($scope.scenario));
 
-          requestService.post('/scenario/get-edit-data-single-scenario', params)
-          .then(function(data) {
+                if($scope.scenario.outcomes.length === 0){
+                    $scope.scenario.outcomes.push(createNewEmptyOutcome());
+                    console.log('added empty outcome init');
+                }
 
-            if(data.scenario){
-              //console.log(data.scenario);
+                if($scope.scenario.activities.length === 0){
+                    $scope.scenario.activities.push(createNewEmptyActivity());
+                    console.log('added empty activity init');
+                }
 
-              $scope.scenario = data.scenario;
-              //console.log(data.scenario.subjects);
-              if(data.scenario.subjects){
-                $scope.selected_subjects = data.scenario.subjects;
-              }
+                $translate('PAGE.EDIT').then(function (t) {
+                    $rootScope.title = t+' '+$scope.scenario.name+' details | Leplanner beta';
 
-              console.log('Loaded scenario');
+                    /* ANALYTICS */
+                    $window.ga('send', 'pageview', {
+                        'page': $location.path(),
+                        'title': $rootScope.title
+                    });
+                });
 
-              //if there is no language, define by ui language
+                loadDropdownData();
 
-              if(typeof data.scenario.outcomes !== 'undefined'){
-                $scope.outcomes_list = data.scenario.outcomes;
-                console.log('Loaded outcomes');
-              }
+            })
+            .catch(function (error) {
+                console.log(error);
 
-              if(typeof data.scenario.activities !== 'undefined'){
-                $scope.activity_list = data.scenario.activities;
-                console.log('Loaded activities');
-              }
-
-              //console.log(data.scenario);
-              $translate('PAGE.EDIT').then(function (t) {
-                  $rootScope.title = t+' '+$scope.scenario.name+' details | Leplanner beta';
-
-                  /* ANALYTICS */
-                  $window.ga('send', 'pageview', {
-                    'page': $location.path(),
-                    'title': $rootScope.title
-                  });
-              });
-
-              loadDropdownData();
-
-            }
-
-            if(data.error){
-              if(typeof data.error.id !== 'undefined' && data.error.id === 0){
-                //$scope.errorMessage = 'No such scenario found, check URL!';
                 $translate('NOTICE.NO_SCENARIO').then(function (t) {
                     $scope.errorMessage = t;
                 });
-              }else if(typeof data.error.id !== 'undefined' && data.error.id === 3){
-                //no rights
-                $location.path('/');
-              }else{
-                //$scope.errorMessage = 'No such scenario found, check URL!';
-                $translate('NOTICE.NO_SCENARIO').then(function (t) {
+            });
+        }
+
+        function loadDropdownData(){
+
+            requestService.get('/meta/scenario')
+            .then(function(data) {
+
+                $scope.subjects_list = data.subjects;
+                $scope.activity_organization = data.activity_organization;
+
+                //translate
+                for(var a = 0; a < $scope.subjects_list.length; a++){
+                    $scope.subjects_list[a].name = $scope.subjects_list[a]["name_"+$translate.use()];
+                }
+
+                if($rootScope.translated && $rootScope.translated.organization){
+                    for(var i = 0; i < $scope.activity_organization.length; i++){
+                        $scope.activity_organization[i].name = $rootScope.translated.organization[i];
+                    }
+                }
+
+                $scope.fully_loaded = true;
+
+                createDropdowns();
+                addWatchListeners();
+
+            })
+            .catch(function (error) {
+                console.log(error);
+                $translate('NOTICE.RELOAD').then(function (t) {
                     $scope.errorMessage = t;
                 });
-              }
-              console.log(data.error);
-            }
-          });
-      }
+            });
 
-      function loadDropdownData(){
-
-        if($scope.outcomes_list.length === 0){
-          $scope.outcomes_list.push(createNewEmptyOutcome());
-          console.log('added empty outcome init');
         }
 
-        if($scope.activity_list.length === 0){
-          $scope.activity_list.push(createNewEmptyActivity());
-          console.log('added empty activity init');
+        function createDropdowns(){
+
+            $scope.subjectsSettings = {
+                scrollableHeight: '250px',
+                scrollable: true,
+                smartButtonMaxItems: 1,
+                displayProp: 'name',
+                showCheckAll: false,
+                enableSearch: true,
+                //showUncheckAll: false,
+                idProp: '_id',
+                externalIdProp: '',
+                buttonClasses: 'btn btn-default',
+            };
+            //$scope.subjectsText = {buttonDefaultText: 'Subjects'};
+            $scope.subjectsText = {
+                buttonDefaultText: $rootScope.translated.dropdowns.subjects,
+                uncheckAll: $rootScope.translated.dropdowns.uncheck_all,
+                searchPlaceholder: $rootScope.translated.dropdowns.search
+            };
+
+            $scope.outcomesSettings = {
+                scrollableHeight: '200px',
+                scrollable: true,
+                smartButtonMaxItems: 1,
+                displayProp: 'name',
+                showCheckAll: false,
+                showUncheckAll: false,
+                idProp: '_id',
+                externalIdProp: '',
+                buttonClasses: 'btn btn-default',
+            };
+            //$scope.outcomesText = {buttonDefaultText: 'Learning outcomes'};
+            $scope.outcomesText = {buttonDefaultText: $rootScope.translated.dropdowns.learning_outcomes};
+
+            $scope.activity_organizationSettings = {
+                scrollableHeight: '200px',
+                scrollable: false,
+                selectionLimit: 1,
+                smartButtonMaxItems: 1,
+                displayProp: 'name',
+                showCheckAll: false,
+                showUncheckAll: false,
+                closeOnSelect: true,
+                idProp: '_id',
+                externalIdProp: '',
+                buttonClasses: 'btn btn-default',
+            };
+            $scope.activity_organizationText = {buttonDefaultText: 'Organization'}; // it is not used, first selection marked as default
+
         }
 
-        //publish/draft dropdown
-        //$scope.publish_options = [{name: 'Draft', value: true},{name: 'Published', value: false}];
-        $scope.publish_options = [{name: $rootScope.translated.dropdowns.draft, value: true},{name: $rootScope.translated.dropdowns.published, value: false}];
-        $scope.language_options = [{name: $rootScope.translated.dropdowns.estonian, value: 'et'},{name: $rootScope.translated.dropdowns.english, value: 'en'}];
+        function addWatchListeners(){
 
-        requestService.get('/meta/get-scenario-meta')
-        .then(function(data) {
+            $scope.$watch("scenario", function(v) {
+                userChangedScenario();
+            }, true);
 
-          if(data.subjects && data.activity_organization){
-            $scope.subjects_list = data.subjects;
-            //console.log($scope.subjects_list);
+            //resize textare on change
+            $scope.$watch("scenario.description", function(v) {
+                $scope.resizeTextarea();
+            }, true);
+        }
 
-            //translating subjects
-            for(var a = 0; a < $scope.subjects_list.length; a++){
-                $scope.subjects_list[a].name = $scope.subjects_list[a]["name_"+$translate.use()];
-            }
+        $scope.resizeTextarea = function(){
+            var el = angular.element("#description")[0];
+            var heightLimit = 400;
+            el.style.height = ""; /* Reset the height*/
+            el.style.height = Math.min(el.scrollHeight, heightLimit) + "px";
+        };
 
-            $scope.activity_organization = data.activity_organization;
+        $scope.addNewOutcomeItem = function(){
+            var new_outcome = createNewEmptyOutcome();
+            $scope.scenario.outcomes.push(new_outcome);
+        };
 
-            //replace with translation
-            if($rootScope.translated && $rootScope.translated.organization){
-                for(var i = 0; i < $scope.activity_organization.length; i++){
-                    $scope.activity_organization[i].name = $rootScope.translated.organization[i];
+        function createNewEmptyOutcome(){
+            return {
+                _id: guid(),
+                name: ''
+            };
+        }
+
+        $scope.removeOutcome = function($index){
+
+            //also remove from activities selection
+            for(var i = 0; i < $scope.scenario.activities.length; i++){
+                for(var j = 0; j < $scope.scenario.activities[i].outcomes.length; j++){
+                    if($scope.scenario.activities[i].outcomes[j]._id === $scope.scenario.outcomes[$index]._id){
+                        $scope.scenario.activities[i].outcomes.splice(j, 1);
+                        j--;
+                    }
                 }
             }
 
-            $scope.fully_loaded = true;
+            $scope.scenario.outcomes.splice($index,1);
+        };
 
-            createDropdowns();
-            addWatchListeners();
+        $scope.addNewActivityItem = function(){
+            var new_activity = createNewEmptyActivity();
+            $scope.scenario.activities.push(new_activity);
+        };
 
+        function createNewEmptyActivity(){
+            return {
+                _id: guid(), // fix for making empty list items different
+                name: '',
+                duration: '',
+                in_class: true,
+                activity_organization: {
+                    _id: 0
+                },
+                outcomes: []
+            };
+        }
 
-          }else{
-            //$scope.errorMessage = 'Please try reloading the page';
-            $translate('NOTICE.RELOAD').then(function (t) {
-                $scope.errorMessage = t;
+        function getTotalActivityTime(){
+            var time = 0;
+            for(var i = 0; i < $scope.scenario.activities.length; i++){
+                time += parseInt($scope.scenario.activities[i].duration);
+            }
+            return time;
+        }
+
+        $scope.removeActivity = function($index){
+            $scope.scenario.activities.splice($index,1);
+        };
+
+        $scope.deleteScenario = function(){
+
+            var del = window.confirm($rootScope.translated.confirm);
+            if(!del){ return; }
+
+            requestService.post('/scenarios/delete/' + $scope.scenario._id)
+            .then(function(data) {
+                console.log('deleted');
+                $location.path('/dashboard');
+            })
+            .catch(function (error) {
+                console.log(error);
+                //$scope.errorMessage = 'Please try reloading the page';
+                $translate('NOTICE.RELOAD').then(function (t) {
+                    $scope.errorMessage = t;
+                });
             });
-          }
+        };
 
-          if(data.error){
-            console.log(data.error);
-            //$scope.errorMessage = 'Please try reloading the page';
-            $translate('NOTICE.RELOAD').then(function (t) {
-                $scope.errorMessage = t;
+        function userChangedScenario(){
+
+            // after typing init autosave
+            var done_typing_interval = 2500;
+
+            if($scope.timer){ $timeout.cancel($scope.timer); }
+
+            $scope.timer = $timeout(function() {
+
+                // check if really changed
+                if(!angular.equals($scope.scenario, prevData)) {
+                    saveScenarioData();
+                }
+            }, done_typing_interval);
+        }
+
+        function saveScenarioData(nextUrl) {
+
+            $scope.saving_in_progress = true;
+
+            // allow empty grade, duration
+            if(!$scope.scenario.grade){ $scope.scenario.grade = null; }
+            if(!$scope.scenario.duration){ $scope.scenario.duration = null; }
+
+            var params = {
+                scenario: $scope.scenario
+            };
+
+            requestService.post('/scenarios/save', params)
+            .then(function(data) {
+
+                console.log('saved scenario');
+
+                // For future comparison
+                prevData = JSON.parse(JSON.stringify($scope.scenario));
+
+                if(nextUrl){
+                    isLeaving = true; // inside saveScenario!
+                    isSaved = true;
+                    $location.path(nextUrl.substring($location.absUrl().length - $location.url().length));
+                }
+
+                $translate('NOTICE.ALL_SAVED').then(function (t) {
+                     Notification.success({message: t, delay: 3000, positionY: 'bottom'});
+                });
+
+                $scope.saving_in_progress = undefined;
+                $scope.errorMessage = null;
+
+            })
+            .catch(function (error) {
+                console.log(error);
+
+                $scope.saving_in_progress = undefined;
+
+                $translate('NOTICE.UNKNOWN').then(function (t) {
+                    $scope.errorMessage = t;
+                });
+                $timeout(function() { $scope.errorMessage = null; }, 2000);
             });
-          }
+        }
+
+        // http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+        function guid() {
+            function s4() {
+                return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+            }
+            return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
+        }
+
+        // Destroing timeout after navigationg away
+        $scope.$on("$destroy", function( event ) {
+            if($scope.timer){ $timeout.cancel($scope.timer); }
         });
 
-      }
+        var isLeaving = false;
+        var isSaved = false;
+        $scope.$on('$locationChangeStart', function( event, nextUrl ) {
 
-      function createDropdowns(){
-
-        $scope.subjectsSettings = {
-            scrollableHeight: '250px',
-            scrollable: true,
-            smartButtonMaxItems: 1,
-            displayProp: 'name',
-            showCheckAll: false,
-            enableSearch: true,
-            //showUncheckAll: false,
-            idProp: '_id',
-            externalIdProp: '',
-            buttonClasses: 'btn btn-default',
-        };
-        //$scope.subjectsText = {buttonDefaultText: 'Subjects'};
-        $scope.subjectsText = {
-            buttonDefaultText: $rootScope.translated.dropdowns.subjects,
-            uncheckAll: $rootScope.translated.dropdowns.uncheck_all,
-            searchPlaceholder: $rootScope.translated.dropdowns.search};
-
-
-        $scope.outcomesSettings = {
-          scrollableHeight: '200px',
-          scrollable: true,
-          smartButtonMaxItems: 1,
-          displayProp: 'name',
-          showCheckAll: false,
-          showUncheckAll: false,
-          idProp: '_id',
-          externalIdProp: '',
-          buttonClasses: 'btn btn-default',
-        };
-        //$scope.outcomesText = {buttonDefaultText: 'Learning outcomes'};
-        $scope.outcomesText = {buttonDefaultText: $rootScope.translated.dropdowns.learning_outcomes};
-
-        $scope.activity_organizationSettings = {
-          scrollableHeight: '200px',
-          scrollable: false,
-          selectionLimit: 1,
-          smartButtonMaxItems: 1,
-          displayProp: 'name',
-          showCheckAll: false,
-          showUncheckAll: false,
-          closeOnSelect: true,
-          idProp: '_id',
-          externalIdProp: '',
-          buttonClasses: 'btn btn-default',
-        };
-        $scope.activity_organizationText = {buttonDefaultText: 'Organization'}; // it is not used, first selection marked as default
-
-      }
-
-      function addWatchListeners(){
-
-        $scope.watch_init_event = true;
-
-        $scope.$watch("scenario", function(v) {
-          userChangedScenario();
-        }, true);
-
-        $scope.$watch("subjects_list", function(v) {
-          userChangedScenario();
-        }, true);
-
-        $scope.$watch("outcomes_list", function(v) {
-          userChangedScenario();
-        }, true);
-
-        $scope.$watch("activity_list", function(v) {
-          userChangedScenario();
-        }, true);
-
-        //resize textare on change
-        $scope.$watch("scenario.description", function(v) {
-          $scope.resizeTextarea();
-        }, true);
-      }
-
-      $scope.resizeTextarea = function(){
-          var el = angular.element("#description")[0];
-          var heightLimit = 400;
-          el.style.height = ""; /* Reset the height*/
-          el.style.height = Math.min(el.scrollHeight, heightLimit) + "px";
-      };
-
-      $scope.saveScenario = function(scenario) {
-        saveScenarioData({forward_to_edit_canvas: true});
-      };
-
-      $scope.addNewOutcomeItem = function(){
-        var new_outcome = createNewEmptyOutcome();
-        $scope.outcomes_list.push(new_outcome);
-      };
-
-      function createNewEmptyOutcome(){
-        return {
-          _id: guid(),
-          name: ''
-        };
-      }
-
-      $scope.removeOutcome = function($index){
-
-        //also remove from activities selection
-        for(var i = 0; i < $scope.activity_list.length; i++){
-          for(var j = 0; j < $scope.activity_list[i].outcomes.length; j++){
-            if($scope.activity_list[i].outcomes[j].id == $scope.outcomes_list[$index].id){
-              $scope.activity_list[i].outcomes.splice(j, 1);
-              j--;
+            // check if really changed
+            if(!isLeaving && !isSaved && !angular.equals($scope.scenario, prevData)) {
+                saveScenarioData(nextUrl);
+            }else{
+                isLeaving = true;
             }
-          }
-        }
-
-        $scope.outcomes_list.splice($index,1);
-
-      };
-
-      $scope.addNewActivityItem = function(){
-        var new_activity = createNewEmptyActivity();
-        $scope.activity_list.push(new_activity);
-      };
-
-      function createNewEmptyActivity(){
-        return {
-          _id: guid(), // fix for making empty list items different
-          name: '',
-          duration: '',
-          in_class: true,
-          activity_organization: {
-            _id: 0
-          },
-          outcomes: []
-        };
-      }
-
-      function getTotalActivirtyTime(){
-        var time = 0;
-        for(var i = 0; i < $scope.activity_list.length; i++){
-          time += parseInt($scope.activity_list[i].duration);
-        }
-        return time;
-      }
-
-      $scope.removeActivity = function($index){
-        $scope.activity_list.splice($index,1);
-      };
-
-      $scope.deleteScenario = function(){
-        //var del = confirm("Do you really want to delete scenario '"+$scope.scenario.name+"', there is no turning back!");
-        var del = confirm($rootScope.translated.confirm);
-        if(del === true){
-
-          var params = {
-            user: {
-              _id: $rootScope.user._id
-            },
-            scenario: {
-              _id: $scope.scenario_id
-            }
-          };
-
-          requestService.post('/scenario/delete-scenario', params)
-          .then(function(data) {
-
-            if(data.success){
-              console.log('deleted');
-              $location.path('/dashboard');
-            }
-
-            if(data.error){
-              console.log(data.error);
-              //$scope.errorMessage = 'Please try reloading the page';
-              $translate('NOTICE.RELOAD').then(function (t) {
-                  $scope.errorMessage = t;
-              });
-            }
-          });
-        }
-      };
-
-      function userChangedScenario(){
-
-        // after typing init autosave
-
-        var done_typing_interval = 3000;
-
-        if($scope.timer){ $timeout.cancel($scope.timer); }
-
-        $scope.timer = $timeout(function() {
-
-          // fix for first loading listeners
-          if(!$scope.watch_init_event){
-            saveScenarioData();
-          }else{
-            $scope.watch_init_event = undefined;
-          }
-        }, done_typing_interval);
-
-      }
-
-      function saveScenarioData(forward) {
-
-        $scope.saving_in_progress = true;
-
-        $scope.scenario.outcomes = $scope.outcomes_list;
-        $scope.scenario.activities = $scope.activity_list;
-
-        // allow empty, grade, duration
-        if(typeof $scope.scenario.grade == 'undefined'){ $scope.scenario.grade = null; }
-        if(typeof $scope.scenario.duration == 'undefined'){ $scope.scenario.duration = null; }
-        //console.log($scope.scenario.subject);
-        //$scope.scenario.subject = $scope.selected_subject;
-        //console.log($scope.scenario);
-
-        var params = {
-          user: {
-            _id: $rootScope.user._id
-          },
-          scenario_data: $scope.scenario
-        };
-
-        $scope.saving = true;
-
-        requestService.post('/scenario/save', params)
-          .then(function(data) {
-
-            //enable save button
-            $scope.saving_in_progress = undefined;
-
-            if(data.scenario){
-              console.log('saved scenario ');
-
-              // user clicked save button
-              if(forward){
-                $location.path('/edit/'+data.scenario._id);
-              }
-
-              $timeout(function() {
-                $scope.saved = true;
-                $scope.saving = undefined;
-              }, 1000);
-
-              $scope.errorMessage = null;
-            }
-
-            if(data.error){
-              console.log(data.error);
-              switch (data.error.id) {
-                case 100:
-                  // user changed
-                  $location.path('/');
-                  break;
-                case 3:
-                  //$scope.errorMessage = 'no rights';
-                  $translate('NOTICE.NO_RIGHTS').then(function (t) {
-                      $scope.errorMessage = t;
-                  });
-                  $location.path('/');
-                  break;
-                default:
-                  //$scope.errorMessage = 'Unknown error';
-                  $translate('NOTICE.UNKNOWN').then(function (t) {
-                      $scope.errorMessage = t;
-                  });
-              }
-
-              $timeout(function() { $scope.errorMessage = null; }, 2000);
-
+            if (!isLeaving) {
+                event.preventDefault();
             }
 
         });
 
-      }
+        /* trigger save before closing tab or window */
+        window.addEventListener("beforeunload", function (e) {
+          var confirmationMessage = "\o/";
 
-      // http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
-      function guid() {
-        function s4() {
-          return Math.floor((1 + Math.random()) * 0x10000)
-            .toString(16)
-            .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-          s4() + '-' + s4() + s4() + s4();
-      }
+          if(!angular.equals($scope.scenario, prevData)) {
+              saveScenarioData();
+              (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+              return confirmationMessage;                            //Webkit, Safari, Chrome
+          }
+        });
 
-      // fix destroing timeout after navigationg away
-      $scope.$on("$destroy", function( event ) {
-        if($scope.timer){ $timeout.cancel($scope.timer); }
-      });
-
-  }]); //editDetailsController end
+    }]); //editDetailsController end
 }());

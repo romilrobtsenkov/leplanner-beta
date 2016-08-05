@@ -1,28 +1,29 @@
-var express = require('express');
-var path = require('path');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const passport = require('passport');
+const expressSession = require('express-session');
+const connectMongo = require('connect-mongo');
+const MongoStore = connectMongo(expressSession);
+const nodemailer = require('nodemailer');
+const log = require('./logger');
 
-var log = require('./logger');
+const config = require('./config/config');
 
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
-var passport = require('passport');
-var expressSession = require('express-session');
-var connectMongo = require('connect-mongo');
-var MongoStore = connectMongo(expressSession);
-var nodemailer = require('nodemailer');
+const comments = require('./routes/comments');
+const favorites = require('./routes/favorites');
+const followers = require('./routes/followers');
+const materials = require('./routes/materials');
+const meta = require('./routes/meta');
+const scenarios = require('./routes/scenarios');
+const upload = require('./routes/upload');
+const users = require('./routes/users');
 
-var config = require('./config/config');
-
-var user = require('./routes/user');
-var scenario = require('./routes/scenario');
-var upload = require('./routes/upload');
-var meta = require('./routes/meta');
-var maintance = require('./routes/maintance');
-
-var passportConfig = require('./auth/passport-config');
+const passportConfig = require('./auth/passport-config');
 passportConfig();
-var restrict = require('./auth/restrict');
+const restrict = require('./auth/restrict');
 
 mongoose.connect(config.db);
 
@@ -34,17 +35,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-var multipart = require('connect-multiparty');
+const multipart = require('connect-multiparty');
 
 app.use(expressSession(
-  {
-    secret: config.secret,
-    saveUninitialized: false,
-    resave: false,
-    store: new MongoStore({
-       mongooseConnection: mongoose.connection
-    })
-  }
+    {
+        secret: config.secret,
+        saveUninitialized: false,
+        resave: false,
+        store: new MongoStore({
+            mongooseConnection: mongoose.connection
+        })
+    }
 ));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -53,11 +54,14 @@ app.use(multipart({
     uploadDir: config.profile_image_upload_temp_path
 }));
 
-app.use('/api/user', user);
-app.use('/api/scenario', scenario);
-app.use('/api/upload', upload);
+app.use('/api/comments', comments);
+app.use('/api/favorites', favorites);
+app.use('/api/followers', followers);
+app.use('/api/materials', materials);
 app.use('/api/meta', meta);
-app.use('/api/maintance', maintance);
+app.use('/api/scenarios', scenarios);
+app.use('/api/upload', upload);
+app.use('/api/users', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -84,32 +88,33 @@ if (config.errorMails) {
     var transport = nodemailer.createTransport();
 
     transport.sendMail({
-      from: config.email,
-      to: config.developer_email,
-      subject: '[LePlanner beta] process restarted',
-      text: 'leplanner restarted '+(new Date())
+        from: config.email,
+        to: config.developer_email,
+        subject: '[LePlanner beta] process restarted',
+        text: 'leplanner restarted '+(new Date())
     }, function (err) {
-       if (err) console.error(err);
-       log.warning('Email sent to developer about restart');
+        if (err) log.error(err);
+        log.warning('Email sent to developer about restart');
+        log.error('Email sent to developer about restart');
     });
 
     process.on('uncaughtException', function (err) {
-    log.error(err.stack);
+        log.error(err.stack);
 
-    var transport = nodemailer.createTransport();
+        var transport = nodemailer.createTransport();
 
-    transport.sendMail({
-      from: config.email,
-      to: config.developer_email,
-      subject: '[LePlanner beta][uncaughtException] '+err.message,
-      text: err.stack
-    }, function (err) {
-       if (err) console.error(err);
-       log.warning('Email sent to developer about error');
-       process.exit(1);
+        transport.sendMail({
+            from: config.email,
+            to: config.developer_email,
+            subject: '[LePlanner beta][uncaughtException] '+err.message,
+            text: err.stack
+        }, function (err) {
+            if (err) log.error(err);
+            log.warning('Email sent to developer about error');
+            process.exit(1);
+        });
+
     });
-
-  });
 }
 
 module.exports = app;

@@ -1,62 +1,54 @@
 (function() {
-  'use strict';
+    'use strict';
 
-  angular
+    angular
     .module('app')
     .factory('userAuthService', ['$q', '$rootScope', '$location', 'requestService','$translate',
-  function($q, $rootScope, $location, requestService, $translate) {
-    return {
-      checkUser: function(option) {
+    function($q, $rootScope, $location, requestService, $translate) {
+        return {
+            checkUser: function(option) {
 
-        var deferred = $q.defer();
-        requestService.get('/user/me')
-          .then(function(data){
+                var deferred = $q.defer();
 
-            if(!$rootScope.user){
-               //console.log('rootscope null, saved to rootscope');
-               $rootScope.user = data;
-            }
+                requestService.get('/users/me')
+                .then(function(data){
 
-            // check if user has changed
-            if($rootScope.user._id != data._id){
-              console.log('user changed');
+                    //rootscope null, saved to rootscope
+                    if(!$rootScope.user){ $rootScope.user = data; }
 
-              // rewrite with new user data
-              $rootScope.user = data;
-            }
+                    // user has changed
+                    if($rootScope.user._id !== data._id){ $rootScope.user = data; }
 
-            //check and fix language
-            var currentLang = $translate.proposedLanguage() || $translate.use();
-            if(data.lang && currentLang != data.lang){
-                $translate.use(data.lang).then(function(data){
-    	            //console.log(data.lang);
-                    //load default translation
-                    $rootScope.translateDefaults();
+                    //check and fix language
+                    var currentLang = $translate.proposedLanguage() || $translate.use();
+                    if(data.lang && currentLang !== data.lang){
+                        $translate.use(data.lang).then(function(data){
+                            $rootScope.translateDefaults();
+                        });
+                    }
+
+                    if(typeof option !== 'undefined' && option.success_location){
+                        console.log('redirected to '+ option.success_location);
+                        $location.path(option.success_location);
+                    }else{
+                        deferred.resolve();
+                    }
+
+                })
+                .catch(function(error){
+                    $rootScope.user = undefined;
+                    if(typeof option !== 'undefined' && option.error_location){
+                        console.log('redirected to '+ option.error_location);
+                        $location.path(option.error_location);
+                    }else{
+                        deferred.resolve();
+                    }
                 });
+                return deferred.promise;
+
             }
+        };
 
-            if(typeof option !== 'undefined' && option.success_location){
-              console.log('redirected to '+ option.success_location);
-              $location.path(option.success_location);
-            }else{
-              deferred.resolve();
-            }
-
-          })
-          .catch(function(fallback){
-            $rootScope.user = undefined;
-            if(typeof option !== 'undefined' && option.error_location){
-              console.log('redirected to '+ option.error_location);
-              $location.path(option.error_location);
-            }else{
-              deferred.resolve();
-            }
-          });
-          return deferred.promise;
-
-      }
-    };
-
-  }]);
+    }]);
 
 }());

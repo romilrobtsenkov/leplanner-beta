@@ -1,162 +1,162 @@
 <div class="container main-content" ng-if="!scenario && !no_scenario">
-  <p class="loading-gif-animation"><img src="./images/loading.gif"></p>
+    <p class="loading-gif-animation"><img src="./images/loading.gif"></p>
 </div>
 <div class="container main-content" ng-if="no_scenario">
-  {{'NOTICE.NO_SCENARIO' | translate}}
+    {{'NOTICE.NO_SCENARIO' | translate}}
 </div>
 <div class="container main-content" ng-show="scenario.draft">
-  {{'CONTENT.IS_DRAFT' | translate}} <a class="print-button btn btn-primary" ng-if="user._id==scenario.author._id" href="/#/edit-details/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> {{'BUTTON.EDIT' | translate}}</a>
+    {{'CONTENT.IS_DRAFT' | translate}} <a class="print-button btn btn-primary" ng-if="user._id==scenario.author._id" ng-href="/#/edit-details/{{scenario._id}}"><span class="glyphicon glyphicon-edit"></span> {{'BUTTON.EDIT' | translate}}</a>
 </div>
 <div class="container main-content" ng-if="scenario && !no_scenario && !scenario.draft && fully_loaded">
-  <a class="btn btn-xs btn-primary timeline-back-button" ng-href="#/scenario/{{scenario._id}}">{{'BUTTON.TIMELINE_VIEW' | translate}}</a><br>
+    <a class="btn btn-xs btn-primary timeline-back-button" ng-href="#/scenario/{{scenario._id}}">{{'BUTTON.TIMELINE_VIEW' | translate}}</a><br>
 
-  <div id="scenario-text-container">
-      <div class="row">
-        <div class="col-xs-12">
-          <h2 class="scnario-name" ><strong><a class="link-for-print" href="/#/scenario/{{scenario._id}}">{{scenario.name}}</a></strong></h2>
-          <span ng-repeat="s in scenario.subjects" class="label label-default subject-labels">{{s.name}}</span>
-          <br>
-          <br>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-xs-12">
-          <div class="small-profile">
-            <div class="profile-usertitle-name">
-              <h3><a class="link-for-print" href="/#/user/{{scenario.author._id}}" title="{{scenario.author.first_name}} {{scenario.author.last_name}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a></h3>
+    <div id="scenario-text-container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="scnario-name" ><strong><a class="link-for-print" ng-href="/#/scenario/{{scenario._id}}">{{scenario.name}}</a></strong></h2>
+                <span ng-repeat="s in scenario.subjects" class="label label-default subject-labels">{{s.name}}</span>
+                <br>
+                <br>
             </div>
-            <div class="profile-usertitle-job">
-              {{scenario.author.organization}}
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="small-profile">
+                    <div class="profile-usertitle-name">
+                        <h3><a class="link-for-print" ng-href="/#/user/{{scenario.author._id}}" title="{{scenario.author.first_name}} {{scenario.author.last_name}}">{{scenario.author.first_name}} {{scenario.author.last_name}}</a></h3>
+                    </div>
+                    <div class="profile-usertitle-job">
+                        {{scenario.author.organization}}
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
 
-      <div class="row">
-        <div class="col-xs-12">
-          <span class="glyphicon glyphicon-calendar scnario-created"></span> <span> {{scenario.created | date:'dd.MM.yyyy HH:mm'}}</span> | <span class="glyphicon glyphicon-eye-open"></span> <span> {{scenario.view_count}}</span>
-          <span>| <span class="glyphicon glyphicon-heart"></span><span> {{scenario.favorites_count}}</span></span><br>
-          <span>{{'INPUT.GRADE' | translate}}: {{scenario.grade}}</span> | <span>{{'INPUT.DURATION' | translate}}: {{scenario.duration}} min</span><br>
+        <div class="row">
+            <div class="col-xs-12">
+                <span class="glyphicon glyphicon-calendar scnario-created"></span> <span> {{scenario.created | date:'dd.MM.yyyy HH:mm'}}</span> | <span class="glyphicon glyphicon-eye-open"></span> <span> {{scenario.view_count}}</span>
+                <span>| <span class="glyphicon glyphicon-heart"></span><span> {{scenario.favorites_count}}</span></span><br>
+                <span>{{'INPUT.GRADE' | translate}}: {{scenario.grade}}</span> | <span>{{'INPUT.DURATION' | translate}}: {{scenario.duration}} min</span><br>
+            </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-sm-12">
-          <br>
-          <p class="p-with-links enable-lines" ng-bind-html="scenario.description | linky:'_blank'">
-          </p>
-          <div style="margin-bottom:15px;" class="tags">
-              <a class="link-for-print" style="display:inline-block; padding:5px;" ng-repeat="tag in scenario.tags" ng-href="#/tags/{{tag.text}}">#{{tag.text}}</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-xs-12">
-            <h3>{{'INPUT.ACTIVITIES' | translate}}</h3>
-            <span style="background-color: rgb(100,126,228) !important; display:inline-block; height:15px; width:15px; margin-right:4px;"></span>{{'CONTENT.INCLASS_ACTIVITY' | translate}}<br>
-            <span style="background-color: rgb(92,184,92) !important; display:inline-block; height:15px; width:15px; margin-right:4px;"></span>{{'CONTENT.OFFCLASS_ACTIVITY' | translate}}
-            <br>
-            <br>
-        </div>
-      </div>
-      <div ng-repeat="activity in activity_list" class="row no-margin" style="border-bottom:1px solid black; margin-bottom:20px;">
-        <div class="col-xs-12">
-            <h4><strong>
-                <span ng-if="activity.in_class" style="background-color: rgb(100,126,228) !important; display:inline-block; height:15px; width:15px;"></span>
-                <span ng-if="!activity.in_class" style="background-color: rgb(92,184,92) !important; display:inline-block; height:15px; width:15px;"></span>
-                [{{activity.duration}}min] {{activity.name}}
-            </strong></h4>
-            <div style="margin-left:20px;">
-                <div class="row no-margin">
-                    <img width="16" height="16" ng-src="{{activityImageNames[activity.activity_organization._id]}}"/> <strong>{{activity_organization[activity.activity_organization._id].name}} <span ng-if="activity.in_class">{{'CONTENT.INCLASS_ACTIVITY' | translate}}</span><span ng-if="!activity.in_class">{{'CONTENT.OFFCLASS_ACTIVITY' | translate}}</span></strong>
+        <div class="row">
+            <div class="col-sm-12">
+                <br>
+                <p class="p-with-links enable-lines" ng-bind-html="scenario.description | linky:'_blank'">
+                </p>
+                <div style="margin-bottom:15px;" class="tags">
+                    <a class="link-for-print" style="display:inline-block; padding:5px;" ng-repeat="tag in scenario.tags" ng-href="#/tags/{{tag.text}}">#{{tag.text}}</a>
                 </div>
-                <div ng-if="activity.outcomes.length > 0" class="row no-margin">
-                    <strong>{{'INPUT.LEARNING_OUTCOMES' | translate}}:</strong>
-                    <ul class="outcomes-text">
-                        <li ng-repeat="o in activity.outcomes">{{o.name}}</li>
-                    </ul>
-                </div>
+            </div>
+        </div>
 
-                <div ng-repeat="m in activity.materials" class="row no-margin">
-                    <span ng-if="m.position == 'bottom'">
-                        <strong>{{'CONTENT.STUDENT_RESOURCE' | translate}}:</strong>
-                        <ul class="materjal-text">
-                            <li>
-                                <a class="link-for-print" ng-if="m.material_url" ng-href="{{m.material_url|prefixHttp}}">{{m.material_name}}</a>
-                                <span ng-if="!m.material_url">{{m.material_name}}</span>
-                                <br>
-                                <div style="margin-left:20px;">
-                                    <i>{{'INPUT.CO_AUTHORSHIP' | translate}}: {{involvement_options[m.involvement_level].name}}</i></span><br>
-                                    <span ng-if="m.conveyors.length > 0">
-                                        {{'INPUT.CONVEYORS' | translate}}:
-                                        <ul>
-                                            <li ng-repeat="c in m.conveyors">
-                                                <a class="link-for-print" ng-if="c.url" ng-href="{{c.url|prefixHttp}}"><img width="16" height="16" ng-src="{{'http://www.google.com/s2/favicons?domain=' + c.url}}"> {{c.name}}</a>
-                                                <span ng-if="!c.url">{{c.name}}</span>
-                                            </li>
-                                        </ul>
-                                    </span>
-                                    <span ng-if="m.displays.length > 0">
-                                        {{'INPUT.DISPLAYS' | translate}}:
-                                        <ul>
-                                            <li ng-repeat="d in m.displays">
-                                                <span><img width="16" height="16" ng-src="./images/{{displays_list[d].icon}}">
-                                                    <span ng-if="d != 5">{{displays_list[d].name}}</span>
-                                                    <span ng-if="d == 5">{{m.other_display}}</span>
-                                                </span>
-                                            </li>
-                                        </ul>
-                                    </span>
-                                </div>
-                            </li>
+        <div class="row">
+            <div class="col-xs-12">
+                <h3>{{'INPUT.ACTIVITIES' | translate}}</h3>
+                <span style="background-color: rgb(100,126,228) !important; display:inline-block; height:15px; width:15px; margin-right:4px;"></span>{{'CONTENT.INCLASS_ACTIVITY' | translate}}<br>
+                <span style="background-color: rgb(92,184,92) !important; display:inline-block; height:15px; width:15px; margin-right:4px;"></span>{{'CONTENT.OFFCLASS_ACTIVITY' | translate}}
+                <br>
+                <br>
+            </div>
+        </div>
+        <div ng-repeat="activity in scenario.activities" class="row no-margin" style="border-bottom:1px solid black; margin-bottom:20px;">
+            <div class="col-xs-12">
+                <h4><strong>
+                    <span ng-if="activity.in_class" style="background-color: rgb(100,126,228) !important; display:inline-block; height:15px; width:15px;"></span>
+                    <span ng-if="!activity.in_class" style="background-color: rgb(92,184,92) !important; display:inline-block; height:15px; width:15px;"></span>
+                    [{{activity.duration}}min] {{activity.name}}
+                </strong></h4>
+                <div style="margin-left:20px;">
+                    <div class="row no-margin">
+                        <img width="16" height="16" ng-src="{{activityImageNames[activity.activity_organization._id]}}"/> <strong>{{activity.activity_organization.name}} <span ng-if="activity.in_class">{{'CONTENT.INCLASS_ACTIVITY' | translate}}</span><span ng-if="!activity.in_class">{{'CONTENT.OFFCLASS_ACTIVITY' | translate}}</span></strong>
+                    </div>
+                    <div ng-if="activity.outcomes.length > 0" class="row no-margin">
+                        <strong>{{'INPUT.LEARNING_OUTCOMES' | translate}}:</strong>
+                        <ul class="outcomes-text">
+                            <li ng-repeat="o in activity.outcomes">{{o.name}}</li>
                         </ul>
-                    </span>
-                </div>
+                    </div>
 
-                <div ng-repeat="m in activity.materials" class="row no-margin">
-                    <span ng-if="m.position == 'top'">
-                        <strong>{{'CONTENT.TEACHER_RESOURCE' | translate}}:</strong>
-                        <ul class="materjal-text">
-                            <li>
-                                <a class="link-for-print" ng-if="m.material_url" ng-href="{{m.material_url|prefixHttp}}">{{m.material_name}}</a>
-                                <span ng-if="!m.material_url">{{m.material_name}}</span>
-                                <br>
-                                <div style="margin-left:20px;">
-                                    <span ng-if="m.conveyors.length > 0">
-                                        {{'INPUT.CONVEYORS' | translate}}:
-                                        <ul>
-                                            <li ng-repeat="c in m.conveyors">
-                                                <a class="link-for-print" ng-if="c.url" ng-href="{{c.url|prefixHttp}}"><img width="16" height="16" ng-src="{{'http://www.google.com/s2/favicons?domain=' + c.url}}"> {{c.name}}</a>
-                                                <span ng-if="!c.url">{{c.name}}</span>
-                                            </li>
-                                        </ul>
-                                    </span>
-                                    <span ng-if="m.displays.length > 0">
-                                        {{'INPUT.DISPLAYS' | translate}}:
-                                        <ul>
-                                            <li ng-repeat="d in m.displays">
-                                                <span><img width="16" height="16" ng-src="./images/{{displays_list[d].icon}}">
-                                                    <span ng-if="d != 5">{{displays_list[d].name}}</span>
-                                                    <span ng-if="d == 5">{{m.other_display}}</span>
-                                                </span>
-                                            </li>
-                                        </ul>
-                                    </span>
-                                </div>
-                            </li>
-                        </ul>
-                    </span>
-                </div>
+                    <div ng-repeat="m in activity.materials" class="row no-margin">
+                        <span ng-if="m.position == 'bottom'">
+                            <strong>{{'CONTENT.STUDENT_RESOURCE' | translate}}:</strong>
+                            <ul class="materjal-text">
+                                <li>
+                                    <a class="link-for-print" ng-if="m.material_url" target="_blank" ng-href="{{m.material_url|prefixHttp}}">{{m.material_name}}</a>
+                                    <span ng-if="!m.material_url">{{m.material_name}}</span>
+                                    <br>
+                                    <div style="margin-left:20px;">
+                                        <i>{{'INPUT.CO_AUTHORSHIP' | translate}}: {{m.involvement.name}}</i></span><br>
+                                        <span ng-if="m.conveyors.length > 0">
+                                            {{'INPUT.CONVEYORS' | translate}}:
+                                            <ul>
+                                                <li ng-repeat="c in m.conveyors">
+                                                    <a class="link-for-print" ng-if="c.url" target="_blank" ng-href="{{c.url|prefixHttp}}"><img width="16" height="16" ng-src="{{'http://www.google.com/s2/favicons?domain=' + c.url}}"> {{c.name}}</a>
+                                                    <span ng-if="!c.url">{{c.name}}</span>
+                                                </li>
+                                            </ul>
+                                        </span>
+                                        <span ng-if="m.displays.length > 0">
+                                            {{'INPUT.DISPLAYS' | translate}}:
+                                            <ul>
+                                                <li ng-repeat="d in m.displays">
+                                                    <span><img width="16" height="16" ng-src="./images/{{d.icon}}">
+                                                        <span ng-if="d != 5">{{d.name}}</span>
+                                                        <span ng-if="d == 5">{{m.other_display}}</span>
+                                                    </span>
+                                                </li>
+                                            </ul>
+                                        </span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </span>
+                    </div>
 
+                    <div ng-repeat="m in activity.materials" class="row no-margin">
+                        <span ng-if="m.position == 'top'">
+                            <strong>{{'CONTENT.TEACHER_RESOURCE' | translate}}:</strong>
+                            <ul class="materjal-text">
+                                <li>
+                                    <a class="link-for-print" ng-if="m.material_url" target="_blank" ng-href="{{m.material_url|prefixHttp}}">{{m.material_name}}</a>
+                                    <span ng-if="!m.material_url">{{m.material_name}}</span>
+                                    <br>
+                                    <div style="margin-left:20px;">
+                                        <span ng-if="m.conveyors.length > 0">
+                                            {{'INPUT.CONVEYORS' | translate}}:
+                                            <ul>
+                                                <li ng-repeat="c in m.conveyors">
+                                                    <a class="link-for-print" ng-if="c.url" target="_blank" ng-href="{{c.url|prefixHttp}}"><img width="16" height="16" ng-src="{{'http://www.google.com/s2/favicons?domain=' + c.url}}"> {{c.name}}</a>
+                                                    <span ng-if="!c.url">{{c.name}}</span>
+                                                </li>
+                                            </ul>
+                                        </span>
+                                        <span ng-if="m.displays.length > 0">
+                                            {{'INPUT.DISPLAYS' | translate}}:
+                                            <ul>
+                                                <li ng-repeat="d in m.displays">
+                                                    <span><img width="16" height="16" ng-src="./images/{{d.icon}}">
+                                                        <span ng-if="d != 5">{{d.name}}</span>
+                                                        <span ng-if="d == 5">{{m.other_display}}</span>
+                                                    </span>
+                                                </li>
+                                            </ul>
+                                        </span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </span>
+                    </div>
+
+                </div>
+                <br>
             </div>
-            <br>
         </div>
-      </div>
-      <p style="margin-bottom:15px;"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /> {{'CONTENT.THIS_WORK_HAS' | translate}} <a class="link-for-print" rel="license" href="http://creativecommons.org/licenses/by/4.0/">{{'CONTENT.CC_LICENSE' | translate}}</a> {{'CONTENT.LICENSE' | translate}}</p>
+        <p style="margin-bottom:15px;"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /> {{'CONTENT.THIS_WORK_HAS' | translate}} <a class="link-for-print" rel="license" href="http://creativecommons.org/licenses/by/4.0/">{{'CONTENT.CC_LICENSE' | translate}}</a> {{'CONTENT.LICENSE' | translate}}</p>
 
-  </div>
+    </div>
 </div>
 <style>
-    @page { size: A4 portrait }
+@page { size: A4 portrait }
 </style>

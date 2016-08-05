@@ -1,7 +1,7 @@
+const Promise = require('bluebird');
+
 exports.count = function(q, Collection, next){
-    Collection.count(q.args, function (err, count) {
-        next(err, count);
-    });
+    return Collection.count(q.args);
 };
 
 exports.find = function(q, Collection, next){
@@ -14,16 +14,14 @@ exports.find = function(q, Collection, next){
     }
     if(q.select){ query.select(q.select); }
     if(q.sort){ query.sort(q.sort); }
+    if(q.skip){ query.skip(q.skip); }
     if(q.limit){ query.limit(q.limit); }
-    query.exec(function(err, array) {
-        next(err, array);
-    });
+
+    return query.exec();
 };
 
 exports.findById = function(id, Collection, next) {
-    Collection.findById(id, function(err, entry) {
-        next(err, entry);
-    });
+    return Collection.findById(id);
 };
 
 exports.findOne = function(q, Collection, next){
@@ -35,22 +33,12 @@ exports.findOne = function(q, Collection, next){
             query.populate(q.populated_fields[i].field, q.populated_fields[i].populate);
         }
     }
-    query.exec(function(err, entry) {
-        next(err, entry);
-    });
+    return query.exec();
 };
 
-exports.saveNew = function(newEntry, Collection, next) {
+exports.saveNew = function(newEntry, Collection) {
     var newCollection = new Collection(newEntry);
-    newCollection.save(function(err, entry) {
-        //handle user saving error
-        if(err && err.errors && err.errors.email && err.errors.email.message == 'That email is already in use'){
-            return next({id: 6, message: 'That email is already in use'});
-        }else if(err){
-            return next(err);
-        }
-        next(err, entry);
-    });
+    return newCollection.save();
 };
 
 exports.update = function(q, Collection, next){
@@ -64,9 +52,7 @@ exports.update = function(q, Collection, next){
             query.populate(q.populated_fields[i].field, q.populated_fields[i].populate);
         }
     }
-    query.exec(function(err, entry) {
-        next(err, entry);
-    });
+    return query.exec();
 };
 
 exports.updateMultiple = function(q, Collection, next){
@@ -74,7 +60,5 @@ exports.updateMultiple = function(q, Collection, next){
     var update = q.update;
     var options = { multi: true };
     var query = Collection.update(conditions, update, options);
-    query.exec(function(err, success) {
-        next(err, success);
-    });
+    return query.exec();
 };

@@ -102,6 +102,8 @@
 
         "DETAILS": "Details",
         "CANVAS": "Canvas",
+        "TIMELINE": "Timeline",
+        "PUBLISH": "Publish",
         "TIMELINE_VIEW": "Timeline view",
         "TEXT_VIEW": "Text view"
 
@@ -192,7 +194,7 @@
         "DELETED": "deleted",
         "ALL_SAVED": "all modifications saved",
 
-        "PROFILE_IMAGE_ACCEPT": "Accepts image file types .png / .jpg / .jpeg - file size up to 1MB",
+        "PROFILE_IMAGE_ACCEPT": "Accepts image file types .png / .jpg / .jpeg - file size up to 5MB",
 
         "NOTIFICATIONS_EMPTY": "Notifications will appear if someone comments your published scenarios",
         "NO_PUBLISHED": "Create scenario draft and then publish it. All your published scenarios will appear here!",

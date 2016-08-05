@@ -1,0 +1,49 @@
+CACHE MANIFEST
+# v0.0.5 2010-08-04
+
+# Explicitly cached 'master entries'.
+CACHE:
+index.html
+/js/min/leplanner-min.js
+/stylesheets/min/style.css
+/js/app/home/home.html
+/js/app/login/login.html
+/js/app/signup/signup.html
+/js/app/create/create.html
+/js/app/edit-details/edit-details.html
+/js/app/edit-publish/edit-publish.html
+/js/app/edit/edit.html
+/js/app/scenario/scenario.html
+/js/app/scenario-text/scenario-text.html
+/js/app/user/user.html
+/js/app/reset/reset.html
+/js/app/settings/settings.html
+/js/app/dashboard/dashboard.html
+/js/app/search/search.html
+/js/app/tags/tags.html
+/js/app/directives/timeline/timeline.html
+/js/app/directives/modal/modal.html
+/js/app/directives/scenario/scenario.html
+
+/localization/min/locale-en.json
+/localization/min/locale-et.json
+/images/Erasmus.png
+/images/group.png
+/images/loading.gif
+/images/logo.png
+/images/one.png
+/images/other_display.png
+/images/pair.png
+/images/pc.png
+/images/profile.png
+/images/ring.gif
+/images/smartphone.png
+/images/tablet.png
+/images/thumbnail_200.png
+/images/unnamed.png
+/images/flags/et-24.png
+/images/flags/en-24.png
+
+# Resources that require the user to be online.
+NETWORK:
+*

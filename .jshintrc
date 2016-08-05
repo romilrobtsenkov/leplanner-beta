@@ -1,0 +1,16 @@
+{
+    "esversion": 6,
+    "predef": [
+        "-Promise",
+        "angular",
+        "document"
+    ],
+    "globals": {
+        "$": false,
+        "jQuery": false
+    },
+    "node": true,
+    "undef": true,
+    "eqeqeq": true,
+    "browser": true
+}

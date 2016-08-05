@@ -1,27 +1,27 @@
-exports.getSortOrder = function(query, next){
+exports.getSortOrder = function(query){
 
-  // default sort
-  var sort = { created: -1 };
+    // default sort
+    var sort = { created: -1 };
 
-  if(typeof query != 'undefined' && typeof query.order != 'undefined'){
-    switch (query.order) {
-      case 'latest':
-        sort = { created: -1 };
-        break;
-      case 'popular':
-        sort = { view_count: -1 };
-        break;
-      case 'favorited':
-        sort = { favorites_count: -1 };
-        break;
-      case 'commented':
-        sort = { comments_count: -1 };
-        break;
-      default:
-        sort = { created: -1 };
+    if (query && query.order) {
+        switch (query.order) {
+            case 'latest':
+                sort = { created: -1 };
+                break;
+            case 'popular':
+                sort = { view_count: -1 };
+                break;
+            case 'favorited':
+                sort = { favorites_count: -1 };
+                break;
+            case 'commented':
+                sort = { comments_count: -1 };
+                break;
+            default:
+                sort = { created: -1 };
+        }
     }
-  }
 
-  next(null, sort);
+    return sort;
 
 };
