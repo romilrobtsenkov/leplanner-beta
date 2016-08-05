@@ -73,7 +73,7 @@ var takeScreenshots = function(ids) {
             pageres.src(config.site_url + '/#/scenario/' + ids[i], ['800x600'], {format: 'png', filename: ids[i], selector: '#scenario-timeline-wrapper' });
         }
 
-        pageres.dest('./public/images/scenario_thumbs/');
+        pageres.dest(config.scenarios_thumb_upload_path);
         pageres.run().then(function () {
             log.notice(ids.length + ' screenshot saved');
             pageResCapturing = false;

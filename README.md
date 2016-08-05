@@ -1,6 +1,6 @@
 # LePlanner beta
 
-## Setup
+## Setup (Ubuntu 16)
 * install [nginx](http://nginx.org)
 * configure nginx to to share `/public` folder for domain and to share `/api` route to node server port
 ```
@@ -31,22 +31,29 @@ config.port = 3000; //port, default 3000
 config.db = ''; // mongodb://[username:password@]host1[:port1][/[database][?options]]
 config.secret = ''; // cookie secret
 config.cookieMaxAge = 30 * 24 * 3600 * 1000; // 30 days
-config.beta_code = ''; // limitation for creating users
 config.profile_image_upload_path = './public/images/user/';
 config.profile_image_upload_temp_path = './public/images/user-temp/';
+config.scenarios_thumb_upload_path = './public/images/scenario-thumbs/';
 config.site_url = ''; //site URL, example http://leplanner-beta.romil.ee
 config.email = ''; // password reset emails sender
 config.developer_email = ''; // critical error email will be sent here
-config.fav_icons_path = './public/images/favs/'; //favicon upload path when adding conveyor  
 
 config.errorMails = true; // email developer on critical error
 
+// for logger.js
 config.log = {
 	level: 7,
 	appName: 'LePlanner'
 };
 
 module.exports = config;
+```
+
+## Create required folders
+```
+/public/images/user/
+/public/images/user-temp/
+/public/images/scenario-thumbs/
 ```
 
 ## Run from console
