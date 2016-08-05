@@ -106,7 +106,7 @@
 
                 },
                 resize: function(){
-                    var border_fix = 2;
+                    var border_fix = 24; // for extra padding in the begginning and end for small activities
 
                     // wrapper
                     var timeline_wrapper = document.querySelector(this.config.scenarioWrapperId);
@@ -118,7 +118,6 @@
                         //box minimum width when zoomed in
                         var min_width = 100;
                         width = (min_width / this.activity_min_px_for_zoom) * width;
-                        //width = 3000;
                     }
 
                     //do the defaults
@@ -405,12 +404,23 @@
                 calculateVariables: function(){
 
                     var padding = 5; //between activities
+                    var start_padding = 19;
 
                     this.minute_constant = ((Planner.instance_.WIDTH-((this.array_total_length+1)*padding))/Planner.instance_.activities_duration); // min in px
-                    this.x = (this.minute_constant * this.start) + ((this.index+1)* padding);
+
+                    // fix for extra short activities in beginning or end
+                    if (this.start === 0) {
+                        this.x = start_padding + ((this.index+1)* padding);
+                    }else{
+                        this.x = (this.minute_constant * this.start) + ((this.index+1)* padding) + start_padding;
+                    }
+
                     this.height = 20;
                     this.y = parseInt((Planner.instance_.HEIGHT*Planner.instance_.top_percent/100)-this.height/2);
                     this.width = parseInt(this.minute_constant * this.duration);
+
+                    // fix for extra short activities
+                    if (this.width === 0) { this.width = 2; }
 
                     if(this.width < Planner.instance_.activity_min_px_for_zoom){
                         Planner.instance_.activity_min_px_for_zoom = this.width;
