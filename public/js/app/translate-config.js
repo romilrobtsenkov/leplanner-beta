@@ -15,6 +15,7 @@
             'en-*': 'en',
             'et_*': 'et',
             'et-*': 'et',
+               '*': 'en', // fallback if not estonian and not english
         });
 
         $translateProvider.preferredLanguage('en');
