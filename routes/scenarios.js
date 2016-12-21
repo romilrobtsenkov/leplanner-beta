@@ -314,6 +314,23 @@ router.post('/save/', restrict, function(req, res) {
             newScenario.duration = Math.abs(newScenario.duration);
         }
 
+        //fix #tags if user added hashtags in beginning
+        for(var k = 0; k< newScenario.tags.length;k++){
+            if (newScenario.tags[k].text && newScenario.tags[k].text.charAt(0) === '#'){
+                newScenario.tags[k].text = newScenario.tags[k].text.replace(/#/g,'');
+
+            }
+        }
+
+        //check if tags unique
+        for(var l = 0; l < newScenario.tags.length; l++){
+            for(var m = 0; m < newScenario.tags.length; m++){
+                if (newScenario.tags[l].text === newScenario.tags[m].text && l !== m){
+                    newScenario.tags.splice(l,1);
+                }
+            }
+        }
+
         // reset to calculate again
         newScenario.activities_duration = 0;
 
