@@ -39,7 +39,7 @@ module.exports = function (config) {
 	const LEVEL_DEBUG = 'DEB';
 
 	function noop() {}
-	mail = noop;
+	mail = noop; //add emailing errors
 
 	function logFn(levelString) {
 		if (config.level < levels[levelString]) return noop;
