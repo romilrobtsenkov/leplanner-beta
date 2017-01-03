@@ -20,6 +20,7 @@ const meta = require('./routes/meta');
 const scenarios = require('./routes/scenarios');
 const upload = require('./routes/upload');
 const users = require('./routes/users');
+const research = require('./routes/research');
 
 const passportConfig = require('./auth/passport-config');
 passportConfig();
@@ -62,6 +63,7 @@ app.use('/api/meta', meta);
 app.use('/api/scenarios', scenarios);
 app.use('/api/upload', upload);
 app.use('/api/users', users);
+app.use('/api/research', research);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
