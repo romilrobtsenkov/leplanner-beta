@@ -52,6 +52,7 @@ config.scenarios_thumb_upload_path = './public/images/scenario-thumbs/';
 config.site_url = ''; //site URL, example http://leplanner-beta.romil.ee
 config.email = ''; // password reset emails sender
 config.developer_email = ''; // critical error email will be sent here
+config.apiKey = ''; // used for public api for getting data
 
 config.errorMails = true; // email developer on critical error
 
