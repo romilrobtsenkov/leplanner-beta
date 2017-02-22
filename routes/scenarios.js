@@ -5,6 +5,8 @@ const restrict = require('../auth/restrict');
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 const Promise = require('bluebird');
+const fs = require('fs');
+Promise.promisifyAll(fs);
 
 const mongoService = require('../services/mongo-service');
 const scenarioService = require('../services/scenario-service');
@@ -21,6 +23,7 @@ const User = require('../models/user').User;
 
 const E = require('../errors');
 const log = require('../logger');
+const config = require('../config/config');
 
 router.get('/copy/:id', restrict, function(req, res) {
 
@@ -558,6 +561,65 @@ router.get('/search', function(req, res) {
     .catch(function (err) {
         log.error(err);
         return res.status(500).send('retrieving scenario failed due to server error');
+    });
+
+});
+
+router.get('/screenshot/:id', function(req, res) {
+
+    var params = req.params;
+    var response = {};
+
+    if (!params.id) { return res.sendStatus(404); }
+
+    var q = {};
+    q.where = {
+        _id: params.id,
+        draft:false,
+        deleted:false
+    };
+
+    //check if valid id
+    mongoService.update(q, Scenario)
+    .then(function (scenario) {
+
+        if (!scenario) { return Promise.reject(new E.NotFoundError('no scenario with such id')); }
+
+        console.log("Creating screenshot via URL "+config.scenarios_thumb_upload_path+scenario._id+'.png');
+
+        // check if already exists
+        return fs.statAsync(config.scenarios_thumb_upload_path+scenario._id+'.png')
+        .then(function (exists) {
+            return true;
+        }).catch(function (err) {
+
+            if(err.code !== 'ENOENT'){
+                return Promise.reject(new E.NotFoundError('no scenario with such id'));
+            }else{
+                // no file
+                return Promise.resolve(false);
+            }
+
+        });
+    })
+    .then(function (exists) {
+
+        //if screenshot already exists, return
+        if(exists){
+            return res.json({"error":"Screenshot already exists"});
+        }
+
+        //create new
+        screenshotService.create(params.id);
+        return res.json({"sucess":"Creating screenshot..."});
+
+    })
+    .catch(E.Error, function (err) {
+        return res.status(err.statusCode).send(err.message);
+    })
+    .catch(function (err) {
+        log.error(err);
+        return res.status(500).send('scenario screenshot failed due to server error');
     });
 
 });
