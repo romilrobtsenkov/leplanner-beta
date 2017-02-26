@@ -20,6 +20,52 @@ server {
   }
 }
 ```
+example config with SSL
+```
+# beta.leplanner.net
+server {
+        listen 80;
+        server_name beta.leplanner.net;
+        location /manifest.appcache {
+           return 404;
+        }
+        location / {
+           return 301 https://beta.leplanner.net$request_uri;
+        }
+}
+
+server {
+    listen 443 ssl;
+    ssl on;
+
+    root /var/www/html/leplanner-beta/public;
+    index index.html index.htm;
+
+    client_max_body_size 5M;
+
+    server_name beta.leplanner.net;
+    ssl_certificate /etc/nginx/ssl/nginx.crt;
+    ssl_certificate_key /etc/nginx/ssl/nginx.key;
+
+    location / {
+        try_files $uri $uri/ =404;
+        autoindex off;
+    }
+
+    location /api {
+        proxy_pass http://localhost:3000;
+    }
+
+}
+
+# leplanner.net
+server {
+    listen 80;
+
+    server_name leplanner.net www.leplanner.net;
+    return 301 https://beta.leplanner.net$request_uri;
+}
+```
 * install [mongodb](https://www.mongodb.com/)
 ```
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
