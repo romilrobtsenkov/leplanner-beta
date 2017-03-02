@@ -20,6 +20,52 @@ server {
   }
 }
 ```
+example config with SSL
+```
+# beta.leplanner.net
+server {
+        listen 80;
+        server_name beta.leplanner.net;
+        location /manifest.appcache {
+           return 404;
+        }
+        location / {
+           return 301 https://beta.leplanner.net$request_uri;
+        }
+}
+
+server {
+    listen 443 ssl;
+    ssl on;
+
+    root /var/www/html/leplanner-beta/public;
+    index index.html index.htm;
+
+    client_max_body_size 5M;
+
+    server_name beta.leplanner.net;
+    ssl_certificate /etc/nginx/ssl/nginx.crt;
+    ssl_certificate_key /etc/nginx/ssl/nginx.key;
+
+    location / {
+        try_files $uri $uri/ =404;
+        autoindex off;
+    }
+
+    location /api {
+        proxy_pass http://localhost:3000;
+    }
+
+}
+
+# leplanner.net
+server {
+    listen 80;
+
+    server_name leplanner.net www.leplanner.net;
+    return 301 https://beta.leplanner.net$request_uri;
+}
+```
 * install [mongodb](https://www.mongodb.com/)
 ```
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
@@ -77,3 +123,53 @@ module.exports = config;
 node bin/www
 ```
 PS! use [pm2](http://pm2.keymetrics.io) for better control  
+
+
+## Automate backup
+install [gdrive](https://github.com/prasmussen/gdrive#downloads) and authenticate
+```
+create gdrive
+sudo wget https://docs.google.com/uc?id=0B3X9GlR6EmbnQ0FtZmJJUXEyRTA&export=download
+sudo chmod +x gdrive
+
+gdrive list
+```
+
+Add backup script for example to `sudo nano /opt/bckp.sh`
+```
+#!/bin/sh
+_now=$(date +"%d_%m_%Y")
+#_file="/opt/backup/mongodump-$_now"
+_folder="$_now"
+_file="$_folder/mongodump-$_now"
+
+_leplannerDir="/var/www/html/leplanner-beta"
+_backupLocation="/opt/backup";
+
+mongodump --host 127.0.0.1 --port 26016 --username MONGOUSERNAME --password MONGOPASSWORD --db leplanner  --$
+
+cp -a "$_leplannerDir/public/images/scenario-thumbs" "$_backupLocation/$_folder"
+cp -a "$_leplannerDir/public/images/user" "$_backupLocation/$_folder"
+echo "copied"
+_tarfile="$_now.tar"
+tar -cf "$_backupLocation/tar/$_tarfile" -C "$_backupLocation/$_folder" .
+echo "zipped"
+
+#echo "LePlanner backup - $_now" | mail -s "LePlanner backup - $_now" EMAIL
+
+_data=`/opt/gdrive --config /home/LINUXUSERNAMEWITHAUTHENTICATEDGDRIVE/.gdrive upload "$_backupLocation/tar/$_tarfile" --parent GOOGLEDRIVEFOLDERID --name$
+
+#_data=`/opt/gdrive list --query "name contains '$_tarfile' and trashed = false " --order "modifiedTime desc" -m 1`
+echo $_data
+_arr=($_data)
+#echo "id: ${arr[5]} file: ${arr[6]} size: ${arr[8]} ${arr[9]} date-time: ${arr[10]} ${arr[11]}"
+
+/opt/gdrive --config /home/LINUXUSERNAMEWITHAUTHENTICATEDGDRIVE/.gdrive share --type user --email EMAILTOSHAREFILEWITHANDSENDNOTIFICATION ${_arr[3]}
+```
+add cronjob TO RUN ONCE A WEEK AND NOTIFY TO EMAIL
+```
+sudo crontab -e
+
+MAILTO=EMAILTONOTIFY
+59 23 * * 0 bash /opt/bckp.sh
+```
