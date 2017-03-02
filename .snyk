@@ -1,3 +1,12 @@
-ignore: {}
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  'npm:qs:20170213':
+    - connect-multiparty > qs:
+        reason: None given
+        expires: '2017-04-01T14:55:17.381Z'
+    - pageres > screenshot-stream > phantom-bridge > phantomjs-prebuilt > request > qs:
+        reason: None given
+        expires: '2017-04-01T14:55:17.381Z'
 patch: {}
-version: v1
+version: v1.7.0
