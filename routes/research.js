@@ -19,6 +19,8 @@ const config = require('../config/config');
     - key
     - tag || sceanrios
     - limit (default 500)
+    - draft
+    - deleted
     - order (default created)
         latest
         popular
@@ -30,6 +32,8 @@ router.get('/', restrict, function(req, res) {
     var query = req.query;
     var response = {};
     var msg = '';
+    var deleted = false;
+    var draft = false;
 
     if(!query.key ||  query.key !== config.apiKey){
         var key = '';
@@ -67,7 +71,7 @@ router.get('/', restrict, function(req, res) {
         if(query.tag){
             /* REGEX exact match with lowercase */
             var tagRegex = '^' + query.tag+'$';
-            q.args = { 'tags.text': { "$regex": tagRegex, "$options": "i" }, draft: false, deleted: false};
+            q.args = { 'tags.text': { "$regex": tagRegex, "$options": "i" }, draft: true, deleted: false};
         }else{
             // find by scenarios id - one or many
             q.args = {_id: { $in: scenariosApiList}, draft: false, deleted: false};
