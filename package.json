@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "snyk test"
+    "test": "snyk test",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "engines": {
     "node": "0.12.x"
@@ -12,26 +14,26 @@
   "dependencies": {
     "bcrypt": "~0.8.0",
     "bluebird": "^3.4.1",
-    "body-parser": "^1.17.0",
+    "body-parser": "^1.17.2",
     "chalk": "^1.1.1",
     "connect-mongo": "^0.5.3",
     "connect-multiparty": "~2.0.0",
     "cookie-parser": "~1.3.3",
     "crypto": "~0.0.3",
-    "debug": "^2.2.0",
-    "express": "^4.15.0",
-    "express-session": "~1.11.3",
+    "debug": "^2.6.7",
+    "express": "^4.15.3",
+    "express-session": "^1.15.3",
     "lwip": "~0.0.7",
     "moment": "^2.15.2",
-    "mongoose": "^4.5.5",
-    "morgan": "~1.5.1",
+    "mongoose": "^4.10.2",
+    "morgan": "^1.8.2",
     "nodemailer": "~1.4.0",
     "nodemailer-sendmail-transport": "^1.0.0",
     "on-finished": "^2.3.0",
     "pageres": "^4.1.2",
     "passport": "~0.2.1",
     "passport-local": "~1.0.0",
-    "request": "^2.74.0",
+    "request": "^2.81.0",
     "snyk": "^1.17.5",
     "subclass-error": "^0.1.1"
   },
@@ -46,5 +48,6 @@
     "gulp-uglify": "~1.2.0",
     "gulp-util": "~3.0.6",
     "jshint-stylish": "~2.0.1"
-  }
+  },
+  "snyk": true
 }

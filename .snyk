@@ -8,5 +8,13 @@ ignore:
     - pageres > screenshot-stream > phantom-bridge > phantomjs-prebuilt > request > qs:
         reason: None given
         expires: '2017-04-01T14:55:17.381Z'
-patch: {}
-version: v1.7.0
+  'npm:concat-stream:20160901':
+    - pageres > screenshot-stream > phantom-bridge > phantomjs-prebuilt > extract-zip > concat-stream:
+        reason: None given
+        expires: '2017-09-16T16:55:08.855Z'
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:qs:20170213':
+    - pageres > screenshot-stream > phantom-bridge > phantomjs-prebuilt > request > qs:
+        patched: '2017-08-17T16:53:43.694Z'
+version: v1.7.1
