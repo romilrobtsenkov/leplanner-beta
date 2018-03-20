@@ -51,7 +51,7 @@
             // PUBLISH / DRAFT dropdown
             //$scope.publish_options = [{name: 'Draft', value: true},{name: 'Published', value: false}];
             $scope.publish_options = [{name: $rootScope.translated.dropdowns.draft, value: true},{name: $rootScope.translated.dropdowns.published, value: false}];
-            $scope.language_options = [{name: $rootScope.translated.dropdowns.estonian, value: 'et'},{name: $rootScope.translated.dropdowns.english, value: 'en'}];
+            $scope.language_options = [{name: $rootScope.translated.dropdowns.estonian, value: 'et'},{name: $rootScope.translated.dropdowns.english, value: 'en'},{name: $rootScope.translated.dropdowns.croatian, value: 'hr'}];
 
             $scope.fully_loaded = true;
 

@@ -1,0 +1,249 @@
+{
+    "BUTTON_LANG": "en",
+    "BUTTON_LANG_LONG_ET": "Estonski",
+    "BUTTON_LANG_LONG_EN": "Engleski",
+    "BUTTON_LANG_LONG_HR": "Hrvatski",
+
+    "HEADING": {
+        "SUBJECTS": "Teme",
+        "SEARCH": "Pretraži",
+        "NOTIFICATIONS": "Obavijesti",
+        "MAIN_HEADLINE": "Stvori. Dijeli. Otkrij scenarije",
+        "OTHER_USER_SCENARIOS": "Scenariji drugih korisnika",
+        "COMMENTS": "Komentari",
+        "ADD_COMMENT": "Dodaj komentar",
+        "FOLLOWING": "Prati",
+        "FOLLOWERS": "Pratioci",
+        "PROFILE_PIC": "Profilna slika",
+        "UPDATE_PASSWORD": "Ažuriraj lozinku",
+        "UPDATE_PROFILE": "Ažuriraj profil",
+        "MOTHER_SCENARIO": "Scenarij-roditelj",
+        "CHILD_SCENARIOS": "Scenariji-djeca"
+    },
+
+    "PAGE": {
+        "LOG_IN": "Prijava",
+        "SIGN_UP": "Registracija",
+        "PASSWORD_RESET": "Promijeni lozinku",
+        "SETTINGS": "Postavke",
+        "DASHBOARD": "Kontrolna ploča",
+        "CREATE": "Stvori novi scenarij",
+        "EDIT": "Uredi scenarij",
+        "SEARCH": "Pretraži"
+    },
+
+    "CONTENT": {
+        "TAB_LATEST": "Najnovije",
+        "TAB_MOST_VIEWED": "Najgledanije",
+        "TAB_TOP_FAVORITED": "Najpopularnije",
+        "TAB_TOP_COMMENTED": "Najkomentiranije",
+        "JOINED": "Pridruženo",
+        "THIS_WORK_HAS": "Ovaj rad ima",
+        "CC_LICENSE": "Creative Commons Attribution 4.0 International",
+        "LICENSE": "licenca",
+        "IS_DRAFT": "Ovaj scenarij nije u finalnoj verziji!",
+        "COMMENTED": "Komentirano",
+        "INCLASS": "u razredu",
+        "OFFCLASS": "izvan razreda",
+        "INCLASS_ACTIVITY": "aktivnost u razredu",
+        "OFFCLASS_ACTIVITY": "aktivnost izvan razreda",
+        "TEACHER_RESOURCE": "Resursi učitelja",
+        "STUDENT_RESOURCE": "Resursi učenika"
+
+    },
+
+    "BUTTON": {
+        "CREATE_SCENARIO": "Stvori scenarij",
+
+        "LOG_IN": "Prijava",
+        "SIGN_UP": "Registracija",
+        "CREATE_MY_ACCOUNT": "Stvori moj račun",
+        "RESET_PASSWORD": "Promijeni lozinku",
+        "SEND": "Pošalji",
+        "REMEMBER_ME": "Zapamti me",
+
+        "OPEN": "Otvori",
+        "SEARCH": "Pretraži",
+        "SUBJECTS": "Teme",
+
+        "USER_PAGE": "Korisnička stranica",
+        "SETTINGS": "Postavke",
+        "LOG_OUT": "Odjava",
+
+        "UPDATE": "Ažuriraj",
+        "UPDATE_PASSWORD": "Ažuriraj lozinku",
+
+        "FEED": "Učitaj",
+        "DRAFTS": "Skice",
+        "PUBLISHED": "Objavljeno",
+        "DRAFT": "Skica",
+        "FAVORITES": "Omiljeno",
+        "USERS": "Korisnici",
+        "GET_LATEST": "Najnovije",
+        "LOAD_ALL": "Učitaj sve",
+
+        "FAVORITE": "Stavi u omiljene",
+        "UNFAVORITE": "Makni iz omiljenih ",
+        "CREATE_COPY": "Stvori kopiju",
+        "FOLLOW": "Prati",
+        "LOG_IN_TO_FOLLOW": " Prijavi se kako bi mogao pratiti ",
+        "LOG_IN_TO_FAVORITE": " Prijavi se kako bi mogao staviti u omiljene",
+        "UNFOLLOW": "Prestani pratiti",
+        "ADD": "Dodaj",
+        "EDIT": "Uredi",
+        "FOLLOW_YOURSELF": "Ti si fenomenalan!",
+
+        "SAVE_AND_CONTINUE": "Sačuvaj i nastavi",
+        "CANCEL": "Odustani",
+        "CLOSE": "Zatvori",
+        "SAVE": "Spremi",
+        "MORE": "Više",
+        "EDIT_DETAILS": "Uredi detalje",
+        "DELETE_RESOURCE": "Izbriši resurs",
+
+        "DETAILS": "Detalji",
+        "CANVAS": "Platno",
+        "TIMELINE": "Vremenska linija",
+        "PUBLISH": "Objavi",
+        "TIMELINE_VIEW": "Prikaz vremenske trake",
+        "TEXT_VIEW": "Tekstualni prikaz"
+
+    },
+    "INPUT": {
+        "REQUIRED": "Potrebno",
+
+        "FIRST_NAME": "Ime",
+        "LAST_NAME": "Prezime",
+        "ORGANIZATION": "Organizacija",
+        "EMAIL": "E-pošta",
+        "PASSWORD": "Lozinka",
+        "OLD_PASSWORD": "Stara lozinka",
+        "NEW_PASSWORD": "Nova lozinka",
+        "NEW_PASSWORD_AGAIN": "Ponovo upiši novu lozinku",
+        "PASSWORD_TO_CONFIRM": "Lozinka (za potvdru promjene e-pošte)",
+        "SEARCH": "Pretraži",
+        "UNCHECK_ALL": "Poništi sve",
+        "SEARCH_SCENARIOS": "Pretraži scenarije",
+        "FOUND": "Pronađeno",
+        "FOR_KEYWORD": "za ključnu riječ",
+        "FILTER_USERS": "Filtriraj po imenu / prezimenu / organizaciji",
+
+        "TITLE": "Naslov",
+        "DESCRIPTION": "Opis",
+        "TAGS": "Oznake",
+        "LANGUAGE": "Jezik",
+        "ADD_TAGS": "Upiši oznaku i onda pritisni Enter",
+        "SUBJECTS": "Teme",
+        "LEARNING_OUTCOMES": "Ishodi učenja",
+        "GRADE": "Ocjena",
+        "DURATION": "Trajanje",
+        "ACTIVITIES": "Aktivnosti",
+        "ACTIVITY": "Aktivnost",
+        "INCLASS": "u razredu",
+        "PUBLISH": "Objavi",
+        "I_WANT_TO_DELETE": "Želim obrisati moj scenarij",
+
+        "CO_AUTHORSHIP": "Razina koautorstva",
+        "CONVEYOR": "Izvođač",
+        "CONVEYORS": "Izvođači",
+        "CONVEYOR_NAME": "Ime",
+        "CONVEYOR_URL": "URL",
+        "DISPLAY": "Prikaz",
+        "DISPLAYS": "Prikazuje",
+        "RESOURCE": "Resurs",
+        "LOCATION": "URL mjesta",
+
+        "WRITE_COMMENT_HERE": "Napiši komentar ovdje"
+    },
+
+    "NOTICE": {
+        "UNKNOWN": "Nepoznata pogreška",
+        "WRONG_CREDENTIALS": "Pogrešni podaci",
+        "PLEASE_ENTER_CORRECT_EMAIL": "Unesite ispravnu e-adresu",
+        "SUCCESS_EMAIL_SENT": "E-pošta uspješno poslana",
+        "PLEASE_ENTER_FIRST_NAME": "Unesite svoje ime",
+        "PLEASE_ENTER_LAST_NAME": "Unesite svoje prezime",
+        "PLEASE_ENTER_EMAIL": "Unesite svoju e-poštu",
+        "PLEASE_ENTER_PASSWORD": "Unesite svoju lozinku",
+        "PASSWORD_MIN_LENGTH": "Lozinka mora sadržavati najmanje 8 znakova",
+        "EMAIL_IN_USE": "Ta e-pošta već je u upotrebi",
+        "NO_SUCH_EMAIL": "Nema takve e-pošte",
+        "ENTER_ALL": "Molimo unesite sva polja",
+        "TOKEN_EXPIRED": "Token istekao",
+        "REQUEST_NEW_TOKEN": "Zatraži novi token",
+        "ENTER_PASSWORD_TO_CONFIRM": "Molimo unesite lozinku kako biste potvrdili promjenu e-pošte!",
+        "NO_DATA_MODIFIED": "Nisu izmijenjeni podaci profila!",
+
+        "COMMENT_EMPTY": "Tekst komentara ne može biti prazan",
+        "COMMENT_SUCCESS": "Komentar je uspješno objavljen!",
+        "LOGIN_TO_COMMENT": "Morate se prijaviti kako biste mogli komentirati!",
+        "FIRST_TO_COMMENT": "Budite prvi koji će komentirati!",
+        "WRONG_PASSWORD": "Pogrešna lozinka",
+        "NEW_PASSWORD_DIFFERENT": "Nova lozinka mora se razlikovati od stare",
+        "NEW_PASSWORDS_DONT_MATCH": "Nove lozinke ne odgovaraju",
+
+        "FILE_TO_LARGE": "Datoteka prevelika",
+        "WRONG_FILE_TYPE": "Pogrešna vrsta datoteke",
+        "UPLOAD_LARGER_IMAGE": "Učitaj sliku veću od",
+
+        "UPDATE_SUCCESS": "Uspješno ažurirano",
+        "UPLOAD_SUCCESS": "Uspješno preneseno",
+        "SAVING": "spremanje...",
+        "DELETING": "brisanje...",
+        "DELETED": "izbrisano",
+        "ALL_SAVED": "sve izmjene sačuvane",
+
+        "PROFILE_IMAGE_ACCEPT": "Prihvaća vrste slikovnih datoteka .png / .jpg / .jpeg – veličina datoteke do 5MB",
+
+        "NOTIFICATIONS_EMPTY": "Obavijesti će se pojaviti ako netko komentira objavljene scenarije",
+        "NO_PUBLISHED": "Stvori skicu scenarija i objavi ga. Svi objavljeni scenariji prikazat će se ovdje!",
+        "FAVORITES_EMPTY": "Svi vaši omiljeni scenariji bit će prikazani ovdje!",
+        "FEED_EMPTY": "Prati objavljene scenarije drugih korisnika, njihovi će se scenariji prikazati ovdje!",
+        "DRAFTS_EMPTY": "Skice vaših scenarija prikazat će se ovdje!",
+
+        "PLEASE_ADD_ACTIVITY": "Dodajte aktivnosti",
+
+        "SCENARIO_NAME_LONG": "Ime scenarija mora sadržavati najmanje 3 znaka!",
+        "SCENARIO_DESC_LONG": " Opis scenarija mora sadržavati najmanje 3 znaka!",
+        "NO_SCENARIO": "Scenarij nije pronađen, provjerite URL!",
+        "NO_USER": "Korisnik nije pronađen, provjerite URL",
+        "NO_TAG": "Ne postoje scenariji s tom oznakom",
+        "RELOAD": "Pokušajte ponovo učitati stranicu",
+        "NO_RIGHTS": "nemate potrebna prava",
+        "MATERIAL_NAME_REQUIRED": "Ime resursa ne smije biti prazno",
+        "MATERIAL_EXISTS": "Resurs već postoji, pokušajte ponovo učitati stranicu",
+
+        "NO_USER_SCENARIOS": "Korisnik još nema svojih scenarija",
+
+        "DELETE_CONFIRM": "Jeste li sigurni da želite obrisati?",
+
+        "COPY_CONFIRM": "Napravit ćete kopiju ovog scenarija. Dodat će se vašim skicama. Želite li nastaviti?"
+    },
+
+    "ORGANIZATION": {
+        "0": "Pojedinac",
+        "1": "Par",
+        "2": "Mala grupa",
+        "3": "Cijeli razred"
+    },
+
+    "CO_AUTHORSHIP": {
+        "0": "0 - Korištenje (čitanje, pregledavanje, slušanje)",
+        "1": "1 - Označavanje (dodavanje oznaka, knjiških oznaka, komentara)",
+        "2": "2 - Interakcija (odabiranje, drag-n-drop, unošenje odgovora, isprobavanje testa)",
+        "3": "3 - Predaja (slanje odgovora nastavniku za povratnu informaciju ili procjenu)",
+        "4": "4 - Proširivanje (dodavanje videa, stranica, datoteka)",
+        "5": "5 - Izmjene (izmijenjivanje sadržaja, pojedinih dijelova, dodavanje titlova)",
+        "6": "6 - Stvaranje (sastavljanje novog sadržaja, ponovno korištenje nekih dijelova)"
+    },
+
+    "DISPLAYS": {
+        "0": "Projektor/TV",
+        "1": "Pametna ploča",
+        "2": "Računalo",
+        "3": "Tablet",
+        "4": "Pametni telefon",
+        "5": "Drugo"
+    }
+
+}

@@ -2,6 +2,7 @@
     "BUTTON_LANG": "et",
     "BUTTON_LANG_LONG_ET": "Eesti",
     "BUTTON_LANG_LONG_EN": "Inglise",
+    "BUTTON_LANG_LONG_HR": "Horvaatia",
 
     "HEADING": {
         "SUBJECTS": "Õppeained",
@@ -165,7 +166,6 @@
         "PLEASE_ENTER_LAST_NAME": "Palun sisesta oma perekonnanimi",
         "PLEASE_ENTER_EMAIL": "Palun sisesta oma e-posti aadress",
         "PLEASE_ENTER_PASSWORD": "Palun sisesta oma parool",
-        "SUCCESS_EMAIL_SENT": "Parooli taastamise e-kiri edukalt saadetud",
         "PASSWORD_MIN_LENGTH": "Parool peab olema vähemalt 8 tähemärkki pikk",
         "EMAIL_IN_USE": "E-post juba kasutusel",
         "NO_SUCH_EMAIL": "Sellist e-posti aadressi ei eksisteeri",

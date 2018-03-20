@@ -10,11 +10,13 @@
             'suffix': '.json'
         });
         $translateProvider.useSanitizeValueStrategy('escape');
-        $translateProvider.registerAvailableLanguageKeys(['en', 'et'], {
+        $translateProvider.registerAvailableLanguageKeys(['en', 'et', 'hr'], {
             'en_*': 'en',
             'en-*': 'en',
             'et_*': 'et',
             'et-*': 'et',
+            'hr_*': 'hr',
+            'hr-*': 'hr',
                '*': 'en', // fallback if not estonian and not english
         });
 

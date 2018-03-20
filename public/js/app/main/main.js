@@ -90,7 +90,7 @@
 
                 'NOTICE.DELETE_CONFIRM',
 
-                'INPUT.LANGUAGE', 'BUTTON_LANG_LONG_ET', 'BUTTON_LANG_LONG_EN',
+                'INPUT.LANGUAGE', 'BUTTON_LANG_LONG_ET', 'BUTTON_LANG_LONG_EN', 'BUTTON_LANG_LONG_HR',
 
                 'NOTICE.COPY_CONFIRM'
             ]).then(function (t) {
@@ -110,6 +110,7 @@
                         language: t['INPUT.LANGUAGE'],
                         estonian: t.BUTTON_LANG_LONG_ET,
                         english: t.BUTTON_LANG_LONG_EN,
+                        croatian: t.BUTTON_LANG_LONG_HR,
                     },
                     confirm: t['NOTICE.DELETE_CONFIRM'],
                     copy_confirm: t['NOTICE.COPY_CONFIRM']

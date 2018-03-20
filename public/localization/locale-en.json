@@ -2,6 +2,7 @@
     "BUTTON_LANG": "en",
     "BUTTON_LANG_LONG_ET": "Estonian",
     "BUTTON_LANG_LONG_EN": "English",
+    "BUTTON_LANG_LONG_HR": "Croatian",
 
     "HEADING": {
         "SUBJECTS": "Subjects",
@@ -165,7 +166,6 @@
         "PLEASE_ENTER_LAST_NAME": "Please enter your first name",
         "PLEASE_ENTER_EMAIL": "Please enter your email",
         "PLEASE_ENTER_PASSWORD": "Please enter your password",
-        "SUCCESS_EMAIL_SENT": "Successfully reset email sent",
         "PASSWORD_MIN_LENGTH": "Password has to be min 8 chars long",
         "EMAIL_IN_USE": "That email is already in use",
         "NO_SUCH_EMAIL": "There is no such email",

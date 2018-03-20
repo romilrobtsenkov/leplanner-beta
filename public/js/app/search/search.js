@@ -85,7 +85,7 @@
                 searchPlaceholder: $rootScope.translated.dropdowns.search
             };
 
-            $scope.language_options = [{name: $rootScope.translated.dropdowns.estonian, value: 'et'},{name: $rootScope.translated.dropdowns.english, value: 'en'}];
+            $scope.language_options = [{name: $rootScope.translated.dropdowns.estonian, value: 'et'},{name: $rootScope.translated.dropdowns.english, value: 'en'},{name: $rootScope.translated.dropdowns.croatian, value: 'hr'}];
 
             requestService.get('/meta/subjects')
             .then(function(data) {
