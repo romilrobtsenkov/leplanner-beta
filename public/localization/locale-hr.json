@@ -5,7 +5,7 @@
     "BUTTON_LANG_LONG_HR": "Hrvatski",
 
     "HEADING": {
-        "SUBJECTS": "Teme",
+        "SUBJECTS": "Predmeti",
         "SEARCH": "Pretraži",
         "NOTIFICATIONS": "Obavijesti",
         "MAIN_HEADLINE": "Stvori. Dijeli. Otkrij scenarije",
@@ -64,7 +64,7 @@
 
         "OPEN": "Otvori",
         "SEARCH": "Pretraži",
-        "SUBJECTS": "Teme",
+        "SUBJECTS": "Predmeti",
 
         "USER_PAGE": "Korisnička stranica",
         "SETTINGS": "Postavke",
@@ -133,9 +133,9 @@
         "TAGS": "Oznake",
         "LANGUAGE": "Jezik",
         "ADD_TAGS": "Upiši oznaku i onda pritisni Enter",
-        "SUBJECTS": "Teme",
+        "SUBJECTS": "Predmeti",
         "LEARNING_OUTCOMES": "Ishodi učenja",
-        "GRADE": "Ocjena",
+        "GRADE": "Razred",
         "DURATION": "Trajanje",
         "ACTIVITIES": "Aktivnosti",
         "ACTIVITY": "Aktivnost",
@@ -144,8 +144,8 @@
         "I_WANT_TO_DELETE": "Želim obrisati moj scenarij",
 
         "CO_AUTHORSHIP": "Razina koautorstva",
-        "CONVEYOR": "Izvođač",
-        "CONVEYORS": "Izvođači",
+        "CONVEYOR": "Vanjski alat",
+        "CONVEYORS": "Vanjski alati",
         "CONVEYOR_NAME": "Ime",
         "CONVEYOR_URL": "URL",
         "DISPLAY": "Prikaz",
