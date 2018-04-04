@@ -5,7 +5,7 @@ exports.getSubjects = function() {
 
     var query = Subject.find();
     query.sort({name: 1});
-    query.select('_id name_et name_en');
+    query.select('_id name_et name_en name_hr');
 
     return query.exec();
 };
