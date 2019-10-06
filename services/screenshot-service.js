@@ -66,7 +66,7 @@ var takeScreenshots = function(ids) {
 
     pageResCapturing = true;
 
-    var pageres = new Pageres({delay: 5});
+    var pageres = new Pageres({delay: 10});
 
         //multiple screenshots
         for(var i = 0; i < ids.length; i++){
