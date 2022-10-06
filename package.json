@@ -34,7 +34,7 @@
     "passport": "~0.2.1",
     "passport-local": "~1.0.0",
     "request": "^2.81.0",
-    "snyk": "^1.17.5",
+    "snyk": "^1.996.0",
     "subclass-error": "^0.1.1"
   },
   "devDependencies": {
